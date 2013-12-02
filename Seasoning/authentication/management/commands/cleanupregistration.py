@@ -6,10 +6,8 @@ Calls ``RegistrationProfile.objects.delete_expired_users()``, which
 contains the actual logic for determining which accounts are deleted.
 
 """
-
-from django.core.management.base import NoArgsCommand
-
 from authentication.models import RegistrationProfile
+from django.core.management.base import NoArgsCommand
 
 
 class Command(NoArgsCommand):

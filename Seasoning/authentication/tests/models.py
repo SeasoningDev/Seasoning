@@ -1,14 +1,13 @@
 import datetime, re
-
-from authentication.models import User, RegistrationProfile, NewEmail
 from django.test import TestCase
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core import mail, management
 from django.utils.hashcompat import sha_constructor
 from django_dynamic_fixture import G
+from django.core.exceptions import ValidationError
+from authentication.models import User, RegistrationProfile, NewEmail
 from recipes.models import Recipe, Cuisine
-from django.core.exceptions import PermissionDenied, ValidationError
 
 
 user_info = {'givenname': 'test',

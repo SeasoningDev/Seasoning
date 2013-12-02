@@ -79,10 +79,10 @@
     {% if not viewing_other %}
     <div id="account-settings-links">
     	<ul>
-    		<li class="{% block public_profile_active %}active{% endblock %}"><a href="/profile/">Publiek Profiel</a></li>
-            <li class="{% block profile_settings_active %}{% endblock %}"><a href="/account/settings/profile/">Profielinstellingen</a></li>
-            <li class="{% block social_settings_active %}{% endblock %}"><a href="/account/settings/social/">Sociale Netwerken</a></li>
-    		<li class="{% block privacy_settings_active %}{% endblock %}"><a href="/account/settings/privacy/">Privacyinstellingen</a></li>
+    		<li class="{% block public_profile_active %}active{% endblock %}"><a href="{% url 'authentication.views.account_settings' %}">Publiek Profiel</a></li>
+            <li class="{% block profile_settings_active %}{% endblock %}"><a href="{% url 'authentication.views.account_settings_profile' %}">Profielinstellingen</a></li>
+            <li class="{% block social_settings_active %}{% endblock %}"><a href="{% url 'authentication.views.account_settings_social' %}">Sociale Netwerken</a></li>
+    		<li class="{% block privacy_settings_active %}{% endblock %}"><a href="{% url 'authentication.views.account_settings_privacy' %}">Privacyinstellingen</a></li>
     	</ul>
     </div>
     {% endif %}

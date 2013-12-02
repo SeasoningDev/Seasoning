@@ -1,31 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Copyright 2012, 2013 Driesen Joep
-
-This file is part of Seasoning.
-
-Seasoning is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Seasoning is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
-    
-"""
-from django.db import models
 import time
+import datetime
+import recipes
+from django.db import models
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import ResizeToFill, SmartResize
-import datetime
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-import recipes
-from django.utils.translation import ugettext_lazy as _
 
 def get_image_filename(instance, old_filename):
     """
@@ -150,7 +130,7 @@ class Ingredient(models.Model):
     base_footprint = models.FloatField()
     
     image = ProcessedImageField(processors=[ResizeToFill(350, 350)], format='PNG', upload_to=get_image_filename, default='images/ingredients/no_image.png')
-    thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
+    thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='PNG')
     
     accepted = models.BooleanField(default=False)
     bramified = models.BooleanField(default=False)

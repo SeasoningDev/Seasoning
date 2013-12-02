@@ -1,5 +1,3 @@
-from authentication.models import User
-from captcha.fields import ReCaptchaField
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
@@ -14,6 +12,8 @@ from django.contrib.sites.models import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
+from authentication.models import User
+from captcha.fields import ReCaptchaField
 
         
 class ShownImageInput(ClearableFileInput):

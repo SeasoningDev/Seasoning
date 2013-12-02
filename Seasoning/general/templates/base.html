@@ -18,7 +18,7 @@
 		{% block default_static_stuff %}
         <link rel="icon" href="/static/img/logos/favicon.png" type="image/png" />
 		{% compressed_css 'global' %}
-        {% if 'authentication' in request.path %}
+        {% if 'profile' in request.path %}
         {% compressed_css 'authentication' %}
         {% elif 'ingredients' in request.path %}
         {% compressed_css 'ingredients' %}
@@ -61,30 +61,30 @@
 	    <div id="header">
 	        <div id="header-container" class="container">
 	            <div id="logo">
-                    <a href="/"><img src="{{ STATIC_URL }}img/logos/header2.png" /></a>
+                    <a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/logos/header2.png" /></a>
                 </div>
                 {% if user.is_staff %}
                 <a href="/admin/" style="position:absolute;top:0;right:0;">Admin Pages</a>
                 <a href="/admin/ingredients/list/" style="position:absolute;top:20px;right:0;">Ingredient List</a>
                 <a href="/backup/" style="position:absolute;top:40px;right:0;">Backup Database</a>
                 <a href="/upload/img/" style="position:absolute;top:60px;right:0;">Upload Image</a>
+                <a href="https://github.com/SeasoningDev/Seasoning/issues/new" style="position:absolute;top:80px;right:0;">Bug report</a>
                 {% endif %}
                 <span id="grass-end-left"> </span>
                 <span id="grass"> </span>
                 <span id="grass-end-right"> </span>
                 <div id="nav-container">
-                    <a href="/recipes/"><div class="{% block recipes-active %}{% endblock %} navlink three columns alpha omega">RECEPTEN</div></a>
-                    <a href="/ingredients/"><div class="{% block ingredients-active %}{% endblock %} navlink three columns alpha omega">INGREDIËNTEN</div></a>
-                    <a href="/news/"><div class="{% block news-active %}{% endblock %} navlink three columns alpha omega">NIEUWS</div></a>
-                    <a href="/contribute/"><div class="{% block contribute-active %}{% endblock %} navlink three columns alpha omega">BIJDRAGEN</div></a>
+                    <a href="{% url 'browse_recipes' %}"><div class="{% block recipes-active %}{% endblock %} navlink three columns alpha omega">RECEPTEN</div></a>
+                    <a href="{% url 'view_ingredients' %}"><div class="{% block ingredients-active %}{% endblock %} navlink three columns alpha omega">INGREDIËNTEN</div></a>
+                    <a href="{% url 'browse_news' %}"><div class="{% block news-active %}{% endblock %} navlink three columns alpha omega">NIEUWS</div></a>
+                    <a href="{% url 'contribute' %}"><div class="{% block contribute-active %}{% endblock %} navlink three columns alpha omega">BIJDRAGEN</div></a>
                     {% if user.is_authenticated %}
-                    <a href="/profile/"><div class="{% block myaccount-active %}{% endblock %} navlink three columns alpha omega">MIJN PROFIEL</div></a>
-                    <a href="/logout/"><div class="navlink three columns alpha omega">AFMELDEN</div></a>
+                    <a href="{% url 'my_profile' %}"><div class="{% block myaccount-active %}{% endblock %} navlink three columns alpha omega">MIJN PROFIEL</div></a>
+                    <a href="{% url 'logout' %}"><div class="navlink three columns alpha omega">AFMELDEN</div></a>
                     {% else %}
-                    <a href="/register/"><div class="{% block register-active %}{% endblock %} navlink three columns alpha omega">REGISTREREN</div></a>
-                    <a href="/login/"><div class="{% block login-active %}{% endblock %} navlink three columns alpha omega">AANMELDEN</div></a>
-                    {% endif %}
-                    
+                    <a href="{% url 'registration' %}"><div class="{% block register-active %}{% endblock %} navlink three columns alpha omega">REGISTREREN</div></a>
+                    <a href="{% url 'login' %}"><div class="{% block login-active %}{% endblock %} navlink three columns alpha omega">AANMELDEN</div></a>
+                    {% endif %}                    
                 </div>
             </div>
         </div>
@@ -123,27 +123,27 @@
                 <div id="footer-links" class="small-screen-hidden">
                     <ul>
                         <li class="first">
-                            <a href="/about/">Over Seasoning</a>
+                            <a href="{% url 'static_page' 'about' %}">Over Seasoning</a>
                         </li>
                         <li>
-                            <a href="/contact/">Contact</a>
+                            <a href="{% url 'contact' %}">Contact</a>
                         </li>
                         <li>
-                            <a href="/thanks/">Dankbetuigingen</a>
+                            <a href="{% url 'static_page' 'thanks' %}">Dankbetuigingen</a>
                         </li>
                         <li>
-                            <a href="/faq/">Help</a>
+                            <a href="{% url 'faq' %}">Help</a>
                         </li>
                     </ul>
                     <ul>
                         <li>
-                            <a href="/terms/">Voorwaarden</a>
+                            <a href="{% url 'static_page' 'terms' %}">Voorwaarden</a>
                         </li>
                         <li>
-                            <a href="/privacypolicy/">Privacybeleid</a>
+                            <a href="{% url 'static_page' 'privacypolicy' %}">Privacybeleid</a>
                         </li>
                         <li>
-                            <a href="/sitemap/">Sitemap</a>
+                            <a href="{% url 'static_page' 'sitemap' %}">Sitemap</a>
                         </li>
                     </ul>
                 </div>
@@ -154,25 +154,25 @@
                 </div>
                 <div id="footer-links-responsive">
 				    <div class="two columns omega">
-    				    <a href="/about/">Over Seasoning</a>
+    				    <a href="{% url 'static_page' 'about' %}">Over Seasoning</a>
     				</div>
         			<div class="two columns alpha omega">
-        				<a href="/contact/">Contact</a>
+        				<a href="{% url 'contact' %}">Contact</a>
         			</div>
         			<div class="two columns alpha omega">
-        				<a href="/help/">Help</a>
+        				<a href="{% url 'faq' %}">Help</a>
         			</div>
         			<div class="two columns alpha omega">
-        				<a href="/help/">Dankbetuigingen</a>
+        				<a href="{% url 'static_page' 'thanks' %}">Dankbetuigingen</a>
         			</div>
         			<div class="two columns alpha omega">
-        				<a href="/terms/">Voorwaarden</a>
+        				<a href="{% url 'static_page' 'terms' %}">Voorwaarden</a>
         			</div>
         			<div class="two columns alpha omega">
-        				<a href="/privacypolicy/">Privacybeleid</a>
+        				<a href="{% url 'static_page' 'privacypolicy' %}">Privacybeleid</a>
         			</div>
         			<div class="two columns alpha">
-        				<a href="/sitemap.xml">Sitemap</a>
+        				<a href="{% url 'static_page' 'sitemap' %}">Sitemap</a>
         			</div>
                 </div>
    			</div>

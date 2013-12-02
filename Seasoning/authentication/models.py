@@ -1,5 +1,4 @@
 import datetime, hashlib, random, re, time
-
 from django.db import models, transaction
 from django.conf import settings
 from django.contrib.auth.hashers import make_password, check_password, is_password_usable

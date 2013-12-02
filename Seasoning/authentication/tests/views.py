@@ -1,14 +1,13 @@
-from django.test import TestCase
-from django.conf import settings
-from authentication.forms import RegistrationForm, ResendActivationEmailForm,\
-    AccountSettingsForm, DeleteAccountForm, CheckActiveAuthenticationForm
-from authentication.models import User, RegistrationProfile, NewEmail
 import datetime
 import os
+from django.test import TestCase
+from django.conf import settings
 from django.core import mail
-from django.contrib.sites.models import Site
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django_dynamic_fixture import G
+from authentication.forms import RegistrationForm, ResendActivationEmailForm,\
+    AccountSettingsForm, DeleteAccountForm, CheckActiveAuthenticationForm
+from authentication.models import User, RegistrationProfile
 
 class AccountViewsTestCase(TestCase):
     

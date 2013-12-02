@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.conf import settings
 from django.utils import simplejson
 from general.decorators import mysqldb_required
 

@@ -1,16 +1,16 @@
 import base64
-from authentication.backends import GoogleAuthBackend, FacebookAuthBackend
 from django.contrib.auth import authenticate, login as auth_login
 from django.shortcuts import redirect, render
-from authentication.models import User
 from django.contrib import messages
-from general.views import home
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
-from authentication.forms import SocialRegistrationForm
 from django.core.exceptions import PermissionDenied
+from authentication.backends import GoogleAuthBackend, FacebookAuthBackend
+from authentication.forms import SocialRegistrationForm
+from authentication.models import User
+from general.views import home
 
 BACKENDS = {'google': GoogleAuthBackend,
             'fb': FacebookAuthBackend}

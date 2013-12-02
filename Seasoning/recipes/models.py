@@ -1,36 +1,16 @@
-"""
-Copyright 2012, 2013 Driesen Joep
-
-This file is part of Seasoning.
-
-Seasoning is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Seasoning is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
-    
-"""
-import os, time
-from django.db import models
-from authentication.models import User
-from imagekit.models.fields import ProcessedImageField, ImageSpecField
-from imagekit.processors.resize import ResizeToFill, Resize, SmartResize
-from imagekit.processors.crop import Crop
+import time
 import ingredients
-from ingredients.models import CanUseUnit, Ingredient, Unit
 import datetime
+from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator,\
     MaxLengthValidator
 from django.db.models.fields import FloatField
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext_lazy as _
+from authentication.models import User
+from imagekit.models.fields import ProcessedImageField, ImageSpecField
+from imagekit.processors.resize import SmartResize
+from ingredients.models import Ingredient, Unit
 
 def get_image_filename(instance, old_filename):
     filename = str(time.time()) + '.png'
@@ -142,7 +122,7 @@ class Recipe(models.Model):
     
     image = ProcessedImageField(format='PNG', upload_to=get_image_filename, default='images/ingredients/no_image.png',
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
-    thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
+    thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='PNG')
     
     # Derived Parameters
     # Footprint per portion

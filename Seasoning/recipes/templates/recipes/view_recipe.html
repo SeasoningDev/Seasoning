@@ -339,8 +339,8 @@
     {{ recipe.name }}
     <div id="recipe-actions">
         {% if recipe.author == user %}
-        <a href="/recipes/delete/{{ recipe.id }}/" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" /></a>
-        <a href="/recipes/edit/{{ recipe.id }}/" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" /></a>
+        <a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" /></a>
+        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" /></a>
         {% endif %}
     </div>
 </h1>
@@ -348,7 +348,7 @@
 <div id="below-recipe-name">
     
     <div id="add-info">
-        <span id="author">Toegevoegd door <a href="/profile/{{ recipe.author.id }}/">{{ recipe.author.get_full_name }}</a></span><br />
+        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
         <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
     </div>
     
@@ -373,7 +373,7 @@
                     {% if user.is_authenticated %}
                     <div id="user-rating-display"> </div>
                     {% else %}
-                    <a href="/login/">Meld je aan</a> om een rating aan dit recept te geven
+                    <a href="{% url 'login' %}">Meld je aan</a> om een rating aan dit recept te geven
                     {% endif %}
                 </div>
             </div>
@@ -499,7 +499,7 @@
                 <img src="{{ MEDIA_URL }}{{ user.avatar }}" alt="De avatar van {{ user.get_full_name }}"/>
             </div>
             <div class="comment-content">
-                <div class="commenter"><a href="/profile/{{ user.id }}/">{{ user.get_full_name }}</a> zegt:</div>
+                <div class="commenter"><a href="{% url 'user_profile' user.id %}">{{ user.get_full_name }}</a> zegt:</div>
                 <div class="comment-body">
                     {% get_comment_form for recipe as form %}
                     <form action="{% comment_form_target %}" method="POST">
@@ -531,9 +531,9 @@
             <img src="{{ MEDIA_URL }}{{ comment.user.avatar }}" alt="De avatar van {{ comment.user.get_full_name }}"/>
         </div>
         <div class="comment-content">
-            <div class="commenter"><a href="/profile/{{ comment.user.id }}/">{{ comment.user.get_full_name }}</a> zegt:</div>
+            <div class="commenter"><a href="{% url 'user_profile' comment.user.id %}">{{ comment.user.get_full_name }}</a> zegt:</div>
             <div class="comment-submit-date"><a href="#comment-{{ forloop.counter }}">{{ comment.submit_date|date:"j F Y, G" }}u{{ comment.submit_date|date:"i" }}</a></div>
-            {% if comment.user == user %}<div class="comment-delete"><a href="/recipes/deletecomment/{{ recipe.id }}/{{ comment.id }}/">Verwijder Reactie</a></div>{% endif %}
+            {% if comment.user == user %}<div class="comment-delete"><a href="{% url 'delete_comment' recipe.id comment.id %}">Verwijder Reactie</a></div>{% endif %}
             <div class="comment-body">
                 {{ comment.comment }}
             </div>

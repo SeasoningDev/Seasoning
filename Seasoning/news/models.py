@@ -1,10 +1,10 @@
+import time
+import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
-import time
+from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
-import datetime
-from django.utils.translation import ugettext_lazy as _
 
 def get_image_filename(instance, old_filename):
     filename = str(time.time()) + '.png'

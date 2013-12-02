@@ -1,8 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from authentication.forms import AccountSettingsForm, DeleteAccountForm,\
-    CheckActiveAuthenticationForm
-from authentication.models import NewEmail, User
 from django.contrib import messages
 from django.contrib.sites.models import RequestSite
 from django.shortcuts import render, redirect
@@ -13,6 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models.aggregates import Avg, Count
+from authentication.forms import AccountSettingsForm, DeleteAccountForm,\
+    CheckActiveAuthenticationForm
+from authentication.models import NewEmail, User
 
 def login(request):
     return django_login(request, template_name='authentication/login.html', 

@@ -7,9 +7,8 @@ actually it is, only it is added as inactive.
 """
 
 from __future__ import absolute_import
-import datetime
 from django import forms
-from .models import Question, Topic
+from .models import Question
 
 class SubmitFAQForm(forms.ModelForm):
     class Meta:

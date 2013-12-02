@@ -1,6 +1,6 @@
 from django.contrib import sitemaps
-from general.models import StaticPage
 from django.core.urlresolvers import reverse
+from general.models import StaticPage
 
 class GeneralViewsSitemap(sitemaps.Sitemap):
     priority = 0.5

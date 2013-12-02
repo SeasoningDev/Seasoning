@@ -1,13 +1,11 @@
-from django.test import TestCase
-import ingredients.models
-from ingredients.models import Unit, Country, Ingredient, AvailableInCountry, TransportMethod, AvailableIn, CanUseUnit, AvailableInSea
 import datetime
-from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+import ingredients
+from django.test import TestCase
 from django_dynamic_fixture import G
 from ingredients.tests import test_datetime
 from general.decorators import mysqldb_required
 from recipes.models import Recipe, UsesIngredient, Cuisine
+from ingredients.models import Unit, Country, Ingredient, AvailableInCountry, TransportMethod, AvailableIn, CanUseUnit, AvailableInSea
 
 # All calls to datetime.date.today within ingredients.models will
 # return 2013-05-05 as the current date

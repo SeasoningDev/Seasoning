@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from recipes.models import Recipe, UsesIngredient
 from ingredients.models import Ingredient
+from recipes.models import Recipe, UsesIngredient
 
 class Command(BaseCommand):
     def handle(self):

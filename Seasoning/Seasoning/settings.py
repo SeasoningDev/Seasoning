@@ -1,22 +1,3 @@
-"""
-Copyright 2012, 2013 Driesen Joep
-
-This file is part of Seasoning.
-
-Seasoning is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Seasoning is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
-    
-"""
 # Django settings for Seasoning project.
 import os
 from Seasoning import secrets
@@ -111,74 +92,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-
-PIPELINE_CSS = {
-    'global': {
-        'source_filenames': {
-            'css/base/reset.scss',
-            'css/base/global.scss',
-            'css/base/skeleton.scss',
-            'css/base/base.scss',
-            'css/includes/*.scss',
-            'css/plugins/*.scss',
-        },
-        'output_filename': 'css/global.css',
-    },
-    'general': {
-        'source_filenames': {
-            'css/contribute/*.scss',
-            'css/general/*.scss',
-        },
-        'output_filename': 'css/general.css',
-    },
-    'authentication': {
-        'source_filenames': {
-            'css/authentication/*.scss',
-        },
-        'output_filename': 'css/authentication.css',
-    },
-    'ingredients': {
-        'source_filenames': {
-            'css/ingredients/*.scss',
-        },
-        'output_filename': 'css/ingredients.css',
-    },
-    'recipes': {
-        'source_filenames': {
-            'css/recipes/*.scss',
-        },
-        'output_filename': 'css/recipes.css',
-    },
-    'faq': {
-        'source_filenames': {
-            'css/faq/*.scss',
-        },
-        'output_filename': 'css/faq.css',
-    },
-    'news': {
-        'source_filenames': {
-            'css/news/*.scss',
-        },
-        'output_filename': 'css/news.css',
-    },
-}
-
-PIPELINE_COMPILERS = (
-  'pipeline.compilers.sass.SASSCompiler',
-)
-
-PIPELINE_SASS_BINARY = secrets.SASS_BINARY
-PIPELINE_SASS_ARGUMENTS = '--update --force --load-path %s/css/imports/' % STATIC_ROOT
-
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
-PIPELINE_CSSMIN_BINARY = secrets.PIPELINE_CSSMIN_BINARY
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
-
-MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
-
-JQUERY_URL = None
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -302,14 +215,25 @@ LOGIN_URL = '/login/'
 # The URL where requests are redirected after login when the contrib.auth.login view gets no next parameter.
 LOGIN_REDIRECT_URL = '/'
 
+# Django secret key
+SECRET_KEY = secrets.SECRET_KEY
+
+# If no MySQL server is available for testing, you might want to us sqlite. This
+# will cause certain tests depending on MySQL fail. Set this setting to True to
+# skip these tests when an sqlite backend is in use.
+SKIP_MYSQL_TESTS = True
+
+
+"""
+Third Party Apps Settings
+"""
+
 # Used by the authentication. Defines how many days an unactivated accounts will be stored in the database at the least.
 ACCOUNT_ACTIVATION_DAYS = 7
 
 # Registration is closed during development
 # REGISTRATION_OPEN = False
 
-# Django secret key
-SECRET_KEY = secrets.SECRET_KEY
 
 
 # Django-recaptcha
@@ -324,7 +248,73 @@ GOOGLE_SECRET = secrets.GOOGLE_SECRET
 
 DDF_DEFAULT_DATA_FIXTURE = 'Seasoning.utils.UserNamesOverwriter'
 
-# If no MySQL server is available for testing, you might want to us sqlite. This
-# will cause certain tests depending on MySQL fail. Set this setting to True to
-# skip these tests when an sqlite backend is in use.
-SKIP_MYSQL_TESTS = True
+
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+PIPELINE_CSS = {
+    'global': {
+        'source_filenames': {
+            'css/base/reset.scss',
+            'css/base/global.scss',
+            'css/base/skeleton.scss',
+            'css/base/base.scss',
+            'css/includes/*.scss',
+            'css/plugins/*.scss',
+        },
+        'output_filename': 'css/global.css',
+    },
+    'general': {
+        'source_filenames': {
+            'css/contribute/*.scss',
+            'css/general/*.scss',
+        },
+        'output_filename': 'css/general.css',
+    },
+    'authentication': {
+        'source_filenames': {
+            'css/authentication/*.scss',
+        },
+        'output_filename': 'css/authentication.css',
+    },
+    'ingredients': {
+        'source_filenames': {
+            'css/ingredients/*.scss',
+        },
+        'output_filename': 'css/ingredients.css',
+    },
+    'recipes': {
+        'source_filenames': {
+            'css/recipes/*.scss',
+        },
+        'output_filename': 'css/recipes.css',
+    },
+    'faq': {
+        'source_filenames': {
+            'css/faq/*.scss',
+        },
+        'output_filename': 'css/faq.css',
+    },
+    'news': {
+        'source_filenames': {
+            'css/news/*.scss',
+        },
+        'output_filename': 'css/news.css',
+    },
+}
+
+PIPELINE_COMPILERS = (
+  'pipeline.compilers.sass.SASSCompiler',
+)
+
+PIPELINE_SASS_BINARY = secrets.SASS_BINARY
+PIPELINE_SASS_ARGUMENTS = '--update --force --load-path %s/css/imports/' % STATIC_ROOT
+
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
+PIPELINE_CSSMIN_BINARY = secrets.PIPELINE_CSSMIN_BINARY
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
+
+MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
+
+JQUERY_URL = None
+

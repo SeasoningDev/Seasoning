@@ -1,9 +1,9 @@
-from django.test import TestCase
-from authentication.backends import RegistrationBackend
-from django.test.client import RequestFactory
-from authentication.models import User, RegistrationProfile
 import datetime
 from django.contrib.sessions.backends.db import SessionStore
+from django.test import TestCase
+from django.test.client import RequestFactory
+from authentication.backends import RegistrationBackend
+from authentication.models import User, RegistrationProfile
 
 class RegistrationBackendTestCase(TestCase):
     

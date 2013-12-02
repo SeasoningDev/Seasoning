@@ -1,9 +1,9 @@
 from django.contrib import admin
+from django.db import models
+from authentication.forms import ShownImageInput
 from ingredients.models import Country, Sea, Unit, Ingredient, TransportMethod,\
     Synonym, CanUseUnit, AvailableInCountry, AvailableInSea
 from ingredients.fields import LastOfMonthWidget, MonthWidget
-from django.db import models
-from authentication.forms import ShownImageInput
 
 class SynonymInline(admin.TabularInline):
     model = Synonym
