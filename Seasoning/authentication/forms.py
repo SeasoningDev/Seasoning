@@ -93,7 +93,7 @@ class RegistrationForm(forms.ModelForm):
     
     tos = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'required',
                                                                'tabindex': '8'}),
-                             label=mark_safe(_(u'I have read and agree to the <a target="_blank" href="{url}">Terms of Service</a>').format(url=reverse_lazy('general.views.static_page', args=('terms',)))),
+                             label=mark_safe(_(u'I have read and agree to the <a target="_blank" href="/terms/">Terms of Service</a>')),
                              error_messages={'required': _("You must agree to the terms to register")})
     
     def clean(self):
