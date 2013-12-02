@@ -14,7 +14,6 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 from authentication.models import User
 from captcha.fields import ReCaptchaField
-from django.core.urlresolvers import reverse_lazy
 
         
 class ShownImageInput(ClearableFileInput):

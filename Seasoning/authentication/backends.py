@@ -8,6 +8,7 @@ from django.contrib.sites.models import RequestSite
 from authentication import signals
 from authentication.forms import RegistrationForm
 from authentication.models import RegistrationProfile, User
+from django.core.urlresolvers import reverse_lazy
 
 
 class RegistrationBackend(object):
@@ -164,11 +165,11 @@ class OAuth2Backend(ModelBackend):
     
     @property
     def connect_url(self):
-        return '/auth/' + self.NAME + '/connect/'
+        return reverse_lazy('authentication.views.social_connect', args=(self.NAME,))
     
     @property
     def registration_url(self):
-        return '/auth/' + self.NAME + '/register/'
+        return reverse_lazy('authentication.views.social_register', args=(self.NAME,))
     
     def authenticate(self, **kwargs):
         if self.ID_FIELD is None:
