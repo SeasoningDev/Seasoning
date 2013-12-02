@@ -1,0 +1,43 @@
+#help-seasoning {
+  margin: 40px 0 20px; }
+
+#help-seasoning .help-type {
+  float: left;
+  width: 40%;
+  height: 440px;
+  margin-bottom: 30px;
+  background-color: #F7FCF7;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  transition: all 0.25s ease-in-out;
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out; }
+
+#help-seasoning .help-type:hover {
+  box-shadow: 0 0 5px black;
+  -webkit-box-shadow: 0 0 5px black;
+  -moz-box-shadow: 0 0 5px black;
+  border: 1px solid rgba(0, 0, 0, 0.5); }
+
+#help-seasoning .help-type.left {
+  margin-left: 7.5%;
+  margin-right: 5%; }
+
+#help-seasoning .help-type img {
+  margin: 0 auto;
+  width: 100%;
+  height: 250px;
+  border-top-right-radius: 14px;
+  border-top-left-radius: 14px;
+  -moz-border-radius-topright: 14px;
+  -moz-border-radius-topleft: 14px; }
+
+#help-seasoning .help-type .help-text {
+  padding: 10px; }
+
+#help-seasoning .help-type .help-text h3 {
+  border-bottom: 1px solid #333; }
+
+#help-seasoning .help-type .help-text p {
+  margin-bottom: 5px; }

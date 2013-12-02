@@ -1,0 +1,84 @@
+#seasoning-register {
+	width: 50%;
+	float: left;
+	border-right: 1px solid #DDD;
+	position: relative;
+}
+
+#seasoning-register input[type="text"], #seasoning-register input[type="password"] {
+	width: 300px;
+}
+
+#seasoning-register #terms-wrapper {
+	margin-top: 30px;
+}
+
+#seasoning-register #terms-wrapper input {
+	float: left;
+	width: 10px;
+	margin: 5px 5px 0 0;
+}
+
+#seasoning-register #terms-wrapper label {
+	width: 90%;
+	float: left;
+}
+
+#ui-datepicker-div {
+	width: 300px
+}
+
+#seasoning-register #registration-submit-button {
+	margin: auto;
+	width: 250px;
+	display: block;
+	clear: both;
+	text-align: center;
+}
+
+#social-register {
+	width: 45%;
+	float: right;
+	text-align: center;
+	margin-top: 20px;
+}
+
+#seasoning-register #register-button {
+	margin: 30px 0 0 -1px;
+	font-size: 20px;
+}
+
+#seasoning-register .errorlist {
+	color: red;
+	font-size: 12px;
+	margin: -15px 0 0 5px;
+	clear: both;
+}
+
+#seasoning-register.social {
+	border: none;
+}
+
+#seasoning-register.social #social-avatar {
+	margin-bottom: 20px;
+}
+
+#seasoning-register input[type="submit"] {
+	font-size: 20px;
+	margin: 30px 0 0 -1px;
+}
+
+#password-reset-login-form {
+	width: 100%;
+	text-align: center;
+	font-size: 16px;
+}
+
+#resend-activation-email-form {
+	margin-top: 30px;
+	max-width: 400px;
+}
+
+#resend-activation-email-form input[type=submit] {
+	margin-right: -2px;
+}

@@ -1,0 +1,92 @@
+{% extends "authentication/account_settings.html" %}
+
+{% block title %}Profiel verwijderen{% endblock %}
+
+{% block myaccount-active %}active{% endblock %}
+
+{% block extra_link %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.css" />
+<style>
+/*
+ * Tooltip styles
+ */
+.ui-tooltip {
+    position: absolute;
+}
+
+.ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: .75em;
+    color: #5B6553;
+}
+</style>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+$(function() {
+    
+    $("#id_delete_recipes").click(function() {
+        if ($(this).prop("checked")) {
+            $("#dontdeleteplox").show();
+            $("#youisawesome").hide();
+        } else {
+            $("#dontdeleteplox").hide();
+            $("#youisawesome").show();
+        }
+    })
+});
+</script>
+{% endblock %}
+
+{% block account_settings %}
+
+<form action="" method="post" enctype="multipart/form-data" id="account-delete-form">
+{% csrf_token %}
+
+<p>
+    Met dit formulier kan u aangeven dat u uw profiel wil verwijderen. Wanneer het formulier doorgestuurd is,
+    zal uw profiel inactief worden. Indien u zich binnen de 7 dagen opnieuw aanmeldt op Seasoning, zal het 
+    profiel opnieuw geactiveerd worden en blijven al uw gegevens bewaard.
+</p>
+<p>
+    Een profiel dat meer dan 7 dagen inactief is, zal onomkeerbeer uit onze databank verwijderd worden. Wij houden
+    hierna geen informatie meer bij over uw profiel.
+</p>
+<br />
+<p>
+    Vul in het onderstaande veld het woord 'DELETEME' (zonder aanhalingstekens) in om je profiel te verwijderen.
+</p>
+    
+<div class="field-wrapper tooltip-field">
+    {{ form.checkstring }}
+    
+</div>
+
+<p>
+    Duid onderstaande optie aan indien u ook al uw toegevoegde recepten van Seasoning wil verwijderen.
+    Recepten die toegevoegd werden door een gebruiker die zijn profiel verwijderd heeft, zullen als 
+    auteur 'Onbekend' krijgen.
+</p>
+    
+<div class="field-wrapper tooltip-field" style="position: relative;">
+    <span><strong>{{ form.delete_recipes.label }}</strong></span>
+    {{ form.delete_recipes }}
+    
+    <div id="dontdeleteplox" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" style="right: 0; top: 0; display: none;">
+        <div class="ui-tooltip-content">:(</div>
+    </div>
+    <div id="youisawesome" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" style="right: 0; top: 0; display: none;">
+        <div class="ui-tooltip-content">:D</div>
+    </div>
+</div>
+
+<div id="submit-button">
+    <input type="submit" value="Verwijder Profiel" />
+</div>
+</form>
+
+{% endblock %}
+
+{% block public_profile_active %}{% endblock %}
+{% block privacy_settings_active %}active{% endblock %}

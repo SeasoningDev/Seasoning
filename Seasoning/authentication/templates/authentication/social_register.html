@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Registreren{% endblock %}
+
+{% block myaccount-active %}active{% endblock %}
+
+{% block content %}
+<p>
+    Het wachtwoord veld is <strong>NIET VERPLICHT</strong>. Je moet dit veld enkel invullen indien je in de toekomst
+    om privacy redenen liever via Seasoning zelf aanmeldt in plaats van via {{ backend.name }}. Dit wachtwoord moet bijgevolg
+    niet overeenkomen met je {{ backend.name }} wachtwoord.
+</p>
+<div id="seasoning-register" class="social">
+<form method="post" action="{{ backend.registration_url }}">
+{% csrf_token %}
+
+<label for="id_givenname">Voornaam</label>
+<input id="id_givenname" type="text" name="givenname" maxlength="30" value="{{ givenname }}" disabled />
+
+<label for="id_givenname">Achternaam</label>
+<input id="id_surname" type="text" name="surname" maxlength="50" value="{{ surname }}" disabled />
+
+<label for="id_givenname">Emailadres</label>
+<input id="id_email" type="text" name="email" maxlength="255" value="{{ email }}" disabled />
+
+<label for="id_givenname">Avatar</label>
+<img id="social-avatar" src="{{ image }}" />
+
+<label for="id_givenname">Geboortedatum</label>
+<input id="id_date_of_birth" type="text" name="date_of_birth" value="{{ date_of_birth }}" disabled />
+
+<label for="id_givenname">{{ form.password.label }}</label>
+{{ form.password }}
+{{ form.password.errors }}
+
+<label for="id_givenname">{{ form.password2.label }}</label>
+{{ form.password2 }}
+{{ form.password2.errors }}
+{{ form.non_field_errors }}
+
+<div id="terms-wrapper">
+	{{ form.tos }}
+	<label for="id_givenname">{{ form.tos.label }}</label>
+	{{ form.tos.errors }}
+</div>
+
+<input type="hidden" value="{{ access_token }}" name="access_token">
+<input type="submit" value="Registreer Nu!" />
+</form>
+</div>
+{% endblock %}

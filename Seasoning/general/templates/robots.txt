@@ -1,0 +1,12 @@
+sitemap: https://www.seasoning.be/sitemap.xml
+
+User-agent: *
+Disallow: /register/
+Disallow: /activate/
+Disallow: /login/
+Disallow: /logout/
+Disallow: /password/
+Disallow: /profile/
+Disallow: /accounts/
+Disallow: /email/
+Disallow: /auth/

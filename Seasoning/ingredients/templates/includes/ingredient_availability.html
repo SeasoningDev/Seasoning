@@ -1,0 +1,44 @@
+{% if ingredient.type == 1 or ingredient.type == 2 %}
+<strong>Beschikbaarheidsdata:</strong>
+<div class="ingredient-availability">
+    <span class="month alpha">
+        Jan
+    </span><span class="month">
+        Feb
+    </span><span class="month">
+        Maa
+    </span><span class="month">
+        Apr
+    </span><span class="month">
+        Mei
+    </span><span class="month">
+        Jun
+    </span><span class="month">
+        Jul
+    </span><span class="month">
+        Aug
+    </span><span class="month">
+        Sep
+    </span><span class="month">
+        Okt
+    </span><span class="month">
+        Nov
+    </span><span class="month omega">
+        Dec
+    </span>
+    
+    <span class="number-of-groups" style="display:none;">{{ ingredient.get_available_ins|length }}</span>
+    <span class="available-in-preservability" style="display:none;">{{ ingredient.preservability }}</span>
+    {% for available_in in ingredient.get_available_ins %}
+    <div class="available-in" id="available-in-{{ available_in.location }}">
+        <span class="location-name">{{ available_in.location.name }}{% if available_in.production_type %} ({{ available_in.production_type }}){% endif %}</span>
+        <span class="availability-indicator" 
+              title="Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until}}. Hierbij wordt {{ ingredient.preservation_footprint }} kgCO2 per {{ ingredient.primary_unit.short_name }} per dag uitgestoten.<br />{% endif %}Voetafdruk: {{ available_in.footprint|add:ingredient.base_footprint|floatformat:-2 }} kgCO2 per {{ ingredient.primary_unit.short_name }}">
+            <span class="available-from">{{ available_in.date_from.month }}</span>
+            <span class="available-until">{{ available_in.date_until.month }}</span>
+        </span>
+    </div>
+    {% endfor %}
+</div>
+
+{% endif %}

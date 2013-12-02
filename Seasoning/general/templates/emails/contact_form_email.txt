@@ -1,0 +1,10 @@
+Er heeft zonet iemand het contactformulier verstuurd.
+
+Reden: {{ type }}
+
+Herkomst E-mailadres: {{ email }}
+
+Onderwerp: {{ subject }}
+
+Boodschap:
+{{ message }}

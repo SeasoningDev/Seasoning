@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; position: relative;">
+	<h1 style="border: none; margin: 20px 0 5px 0;">Welkom op Seasoning</h1>
+    <hr class="leaf-line" />
+</div>
+
+<div id="homepage-twitter-feed-wrapper">
+	<a class="twitter-timeline"  href="https://twitter.com/Seasoningbe"  data-widget-id="401823165782839296">Tweets van @Seasoningbe</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+
+</div>
+
+<div id="recipes-of-the-week">
+	<h2>Recepten van de week</h2>
+	<div class="recipe-of-the-week">
+		<img src="{{ STATIC_URL }}img/icons/vegan.png" class="veganism-icon" />
+		{% with recipe=recipes_otw.0 %}
+		{% include "includes/recipe_summary.html" %}
+		{% endwith %}		
+	</div>
+	<div class="recipe-of-the-week">
+		<img src="{{ STATIC_URL }}img/icons/vegetarian.png" class="veganism-icon" />
+		{% with recipe=recipes_otw.1 %}
+		{% include "includes/recipe_summary.html" %}
+		{% endwith %}	
+	</div>
+	<div class="recipe-of-the-week">
+		<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" class="veganism-icon" />
+		{% with recipe=recipes_otw.2 %}
+		{% include "includes/recipe_summary.html" %}
+		{% endwith %}	
+	</div>
+	<br style="clear: left;" />
+</div>
+
+<div id="quicknav">
+	<h2>Snelfuncties</h2>
+	
+	<form action="/recipes/" method="post">
+		{% csrf_token %}
+		<strong>Zoek recepten: </strong><input id="id_search_string" class="keywords-searchbar" type="text" name="search_string" />
+	</form>
+	<p>
+		<a href="/recipes/add/" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
+	</p>
+</div>
+
+    
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Donaties{% endblock %}
+
+{% block content %}
+
+<h1>Doneer</h1>
+
+<div id="wire-donate" class="donate-method">
+    <h3>Rechtstreekse overschrijving</h3>
+    <p>
+        Je kan een bedrag naar keuze overschrijven op de rekening van Seasoning:
+    </p>
+    <p id="account-nr">
+        000-00000000-00
+    </p>
+    <p>
+        Vergeet in dit geval zeker niet de naam te vermelden die u graag op de pagina met dankbetuigingen vermeld zou willen hebben!
+    </p>
+</div>
+
+<div id="paypal-donate" class="donate-method">
+    <h3>Paypal</h3>
+    <p>
+        We ondersteunen ook paypal donaties. Denk eraan dat Paypal bij elke transactie een klein commisie (ongeveer 3,4% van het totale bedrag) aanrekent.
+        Je kan onderstaande knop gebruiken om rechtstreeks naar Paypal doorgestuurd te worden:
+    </p>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick" />
+        <input type="hidden" name="hosted_button_id" value="DEK87BFQ64YY6" />
+        <input type="image" src="https://www.paypalobjects.com/nl_NL/BE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal, de veilige en complete manier van online betalen." />
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+    </form>
+</div>
+
+<br class="clear" />
+
+<h3>Wat gebeurt er met je geld?</h3>
+
+<p>
+   	Het gedoneerde geld wordt uitsluitend gebruikt om onze hosting- en domeinnaamkosten te dekken. Hieronder kan je onze jaarlijkse financiële verslagen downloaden wanneer deze uitkomen.
+</p>
+<ul style="margin-left: 20px;">
+	{% if financial_reports %}
+	{% for financial_report in financial_reports %}
+	<a href="{{ STATIC_URL }}docs/financial/{{ financial_report }}" />{{ financial_report }}</a>
+	{% endfor %}
+	{% else %}
+	<li>
+	    Er zijn nog geen financiële verslagen
+	</li>
+	{% endif %}
+</ul>
+{% endblock %}
+		

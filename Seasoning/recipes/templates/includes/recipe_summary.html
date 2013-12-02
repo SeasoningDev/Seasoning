@@ -1,0 +1,21 @@
+{% load ratings %}
+<a href="/recipes/{{ recipe.id }}/">
+	<span class="recipe-summary">
+	    <img alt="{{ recipe.name }}" src="{{ recipe.thumbnail.url }}" />
+	    <span class="recipe-title">
+	        <span title="Dit recept heeft een voetafdruk van {{ recipe.normalized_footprint|floatformat:2 }} kgCO2 per 4 porties" class="footprint">{{ recipe.normalized_footprint|floatformat:2 }}</span>
+	        <span class="title">
+	            <h3>
+	                {{ recipe.name|truncatechars:50 }}
+	            </h3>
+	        </span>
+	    </span>
+	    <span class="recipe-description">
+	        {{ recipe.description|truncatewords:10 }}
+	    </span>
+	    <span class="recipe-meta-inf">
+	        <span class="recipe-time">{{ recipe.total_time }} min</span>
+	        <span class="recipe-rating">{% rating_display_stars recipe.rating %}</span>
+	    </span>
+	</span>
+</a>

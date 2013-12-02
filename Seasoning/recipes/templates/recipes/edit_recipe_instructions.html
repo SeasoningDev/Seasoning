@@ -1,0 +1,53 @@
+{% extends "recipes/edit_recipe_base.html" %}
+
+{% block extra_script %}
+{{ block.super }}
+{{ wizard.form.media }}
+<script type="text/javascript">
+    
+    
+    $(document).ready(function() {
+		$(".spinner-wrapper input").spinner({
+			min: 0,
+		});
+    });
+    
+</script>
+{% endblock %}
+
+{% block recipe-form %}
+
+<p id="ingredients-intro">
+    Geef hier informatie over de bereiding van het recept
+</p>
+
+<p class="aligned">
+    <label>{{ wizard.form.active_time.label }}*</label>
+    <span class="spinner-wrapper">
+        {{ wizard.form.active_time }}
+    </span>
+    <span class="tooltip">{{ wizard.form.active_time.help_text }}</span>
+</p>
+{{ wizard.form.active_time.errors }}
+
+<p class="aligned">
+    <label>{{ wizard.form.passive_time.label }}*</label>
+    <span class="spinner-wrapper">
+        {{ wizard.form.passive_time }}
+    </span>
+    <span class="tooltip">{{ wizard.form.passive_time.help_text }}</span>
+</p>
+{{ wizard.form.passive_time.errors }}
+
+<p>
+    <label>{{ wizard.form.instructions.label }}*</label>
+    {{ wizard.form.instructions }}
+    <script>
+	    $(function() {
+			$('li.preview a').trigger('mouseup');
+		}); 
+    </script>
+</p>
+{{ wizard.form.instructions.errors }}
+
+{% endblock %}

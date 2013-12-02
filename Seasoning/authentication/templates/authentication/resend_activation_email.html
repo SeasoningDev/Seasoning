@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Activatie{% endblock %}
+
+{% block content %}
+
+<p>
+	Indien je na 15 minuten of langer nog geen activatie e-mail ontvangen hebt, kan je onderstaand
+	formulier gebruiken om een nieuw exemplaar te verzenden.
+</p>
+
+<form action="/activate/resend/" method="post" id="resend-activation-email-form">
+	{% csrf_token %}
+	
+	<div class="field-wrapper">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+		{{ form.email.errors }}
+	</div>
+	
+	<input type="submit" value="E-mail opnieuw verzenden" id="account-submit" />
+</form>
+
+{% endblock %}

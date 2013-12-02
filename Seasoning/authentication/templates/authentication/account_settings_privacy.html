@@ -1,0 +1,15 @@
+{% extends "authentication/account_settings.html" %}
+        {% block page_name %}Profiel Instellingen{% endblock %}
+
+{% block myaccount-active %}active{% endblock %}
+        
+        {% block account_settings %}
+        <form action="/account/delete/" method="get">
+            <div id="goto-account-delete">
+                <input type="submit" id="goto-account-delete-button" value="Verwijder mijn gegevens van Seasoning" />
+            </div>
+        </form>
+        {% endblock %}
+        
+        {% block public_profile_active %}{% endblock %}
+        {% block privacy_settings_active %}active{% endblock %}

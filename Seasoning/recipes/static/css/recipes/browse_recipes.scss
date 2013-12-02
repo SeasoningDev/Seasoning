@@ -1,0 +1,202 @@
+@import "variables";
+
+#recipe-search-container {
+  margin-bottom: 20px; }
+  
+ #recipe-search-container hr {
+  margin-bottom: 10px; }
+
+#basic-search {
+  padding-top: 20px;
+  position: relative;
+  width: 320px;
+  margin: auto; }
+
+form.keywords {
+  margin-bottom: 0; }
+
+#basic-search .keywords-searchbar {
+  width: 100%;
+  margin: 0; }
+
+#basic-search #keywords-submit {
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  padding: 0;
+  margin: 2px;
+  height: 26px;
+  width: 26px;
+  cursor: pointer;
+  text-decoration: none;
+  vertical-align: middle;
+  z-index: 3;
+  background: none;
+  background-image: url("/static/img/icons/search.png");
+  background-size: 26px 26px;
+  border: none; }
+
+#advanced-link {
+  position: absolute;
+  top: 85px;
+  font-size: 12px; }
+
+#advanced-search {
+  position: relative;
+  top: -10px;
+  width: 225px;
+  float: left;
+  border-right: 1px solid #DDDDDD;
+  background-color: white;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px 0 0 10px; }
+
+#advanced-search > div {
+  margin: 10px 0;
+  float: left;
+  width: 100%; }
+
+#advanced-search p {
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 14px;
+  border-bottom: 1px solid #DDDDDD;
+  font-weight: bold; }
+
+#advanced-search #sorting-options select {
+  width: 150px;
+  float: left;
+  margin: 0 10px 0 0; }
+
+#advanced-search #sorting-options .order-arrow {
+  display: inline-block; }
+
+#advanced-search #sorting-options .order-arrow img {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  height: 20px;
+  position: relative;
+  margin-right: 5px; }
+
+#advanced-search #sorting-options .order-arrow.active img {
+  opacity: 1;
+  filter: alpha(opacity=100); }
+
+#advanced-search #sorting-options ul {
+  display: none; }
+
+#advanced-search #veg-options {
+  clear: both; }
+
+#advanced-search #veg-options .veg-choice {
+  text-decoration: none; }
+
+#advanced-search #veg-options .veg-choice img {
+  width: 66px;
+  opacity: 0.4;
+  filter: alpha(opacity=40); }
+
+#advanced-search #veg-options .veg-choice.active img {
+  opacity: 1;
+  filter: alpha(opacity=100); }
+
+#advanced-search #veg-options input {
+  display: none; }
+
+#advanced-search #incl-ings a {
+  text-decoration: none; }
+
+#advanced-search #incl-ings .option {
+  font-size: 12px;
+  padding: 0;
+  border: 2px solid #BBB;
+  width: 80px;
+  display: inline-block;
+  text-align: center;
+  line-height: 15px;
+  margin-bottom: 10px; }
+
+#advanced-search #incl-ings .option.active {
+  background-color: #629b31;
+  background-color: rgba(98, 155, 49, 0.5); }
+
+#advanced-search #incl-ings .option.first {
+  -moz-border-radius-topleft: 4px;
+  border-top-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  border-bottom-left-radius: 4px; }
+
+#advanced-search #incl-ings .option.last {
+  -moz-border-radius-topright: 4px;
+  border-top-right-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  border-bottom-right-radius: 4px;
+  border-left: none; }
+
+#advanced-search #incl-ings ul {
+  display: none; }
+
+#advanced-search .ingredients-input {
+  width: 200px;
+  margin: 0 0 10px 0; }
+
+#advanced-search #included-ingredients a {
+  display: block;
+  margin-bottom: 5px;
+  text-decoration: none; }
+
+#advanced-search #excluded-ingredients a {
+  display: block;
+  margin-bottom: 5px;
+  text-decoration: none; }
+
+#advanced-search .filtered-ingredient {
+  background-color: #EAF2E9;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  padding: 4px 0 7px 6px;
+  width: 200px;
+  display: table-cell;
+  vertical-align: middle;
+  line-height: 10px;
+  border: 1px solid transparent;
+  transition: all 0.25s ease-in-out;
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  background-image: url("/static/img/icons/delete.png");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: 98% 0%; }
+
+#advanced-search .filtered-ingredient:hover {
+  box-shadow: 0 0 2px black;
+  -webkit-box-shadow: 0 0 2px black;
+  -moz-box-shadow: 0 0 2px black;
+  border: 1px solid rgba(0, 0, 0, 0.5); }
+
+#advanced-search #extra-info ul {
+  margin: 0 0 10px 5px; }
+
+#advanced-search #extra-info li {
+  margin: 0; }
+
+#advanced-search #extra-info label {
+  font-size: 11px;
+  font-weight: normal; }
+
+#browse-recipe-summaries-wrapper {
+  width: 720px;
+  float: right;
+  margin-top: -10px; }
+
+#browse-recipe-summaries-wrapper #search-result-count {
+  position: absolute;
+  right: 0;
+  top: 85px;
+  font-size: 12px; }
+
+#browse-recipe-summaries-wrapper p.sorry {
+  max-width: 500px;
+  margin: 30px auto;
+  text-align: center;
+  font-weight: bold; }

@@ -1,0 +1,54 @@
+@import "variables";
+
+.ingredient-summary {
+  float: left;
+  width: 220px;
+  margin: 10px;
+  background-color: #333333;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  transition: all 0.25s ease-in-out;
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out; }
+
+.ingredient-summary:hover {
+  box-shadow: 0 0 5px 2px black;
+  -webkit-box-shadow: 0 0 5px 2px black;
+  -moz-box-shadow: 0 0 5px 2px black; }
+
+.ingredient-summary img {
+  margin: 0 auto;
+  display: block;
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+  -moz-border-radius-topright: 15px;
+  -moz-border-radius-topleft: 15px; }
+
+.ingredient-summary .ingredient-title {
+  height: 45px;
+  display: block;
+  padding: 15px 10px 0;
+  position: relative;
+  color: white;
+  font-size: 21px;
+  text-align: center;
+  overflow: hidden; }
+
+#ingredient-summaries-wrapper {
+  width: 960px;
+  float: right;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  position: relative; }
+
+#ingredient-summaries-wrapper #search-result-count {
+  position: absolute;
+  right: 0;
+  top: -30px;
+  font-size: 12px; }
+
+#ingredient-summaries-wrapper p.sorry {
+  max-width: 500px;
+  margin: 30px auto;
+  text-align: center;
+  font-weight: bold; }

@@ -1,0 +1,15 @@
+{% load humanize %}
+Enkele ogenblikken geleden werd geprobeerd dit e-mailadres aan het profiel van {{ user.givenname }} {{ user.surname }} te koppelen op
+{{ site }}. 
+
+Indien u dit gedaan hebt, kan u onderstaande link gebruiken om het profiel te activeren:
+
+
+{{ site }}/accounts/change/{{ activation_key }}/
+
+Indien u dit niet gedaan hebt, kan u deze e-mail gewoon negeren. Het profiel zal dan aan het oorspronkelijke e-mailadres
+gekoppeld blijven.
+
+Met vriendelijke groeten,
+
+Het Seasoning Team

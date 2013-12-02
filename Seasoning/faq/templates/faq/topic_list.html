@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load markdown_filter %}
+
+{% block title %}Help{% endblock %}
+
+{% block content %}
+
+<h2>Help</h2>
+
+<a class="anchor-link" id="faq-index-anchor"></a>
+<div id="faq-index">
+	{% for topic in topics %}
+	<div class="index-topic-wrapper{% cycle " left" " right" %}">
+	    <a class="index-topic-name" href="#{{ topic.name }}"><strong>{{ topic }}</strong></a>
+	    {% for question in topic.questions.all %}
+	    <div class="index-topic-question">
+	        <a href="#{{ question.text }}">
+	           {{ question.text }}
+	        </a>
+	    </div>
+        {% endfor %}
+	</div>
+	{% endfor %}
+</div>
+
+<br class="clear" />
+
+<div id="faq-wrapper">
+	{% for topic in topics %}
+	<div class="faq-topic-wrapper">
+		<a class="anchor-link" id="{{ topic.name }}"> </a>
+		<h2>{{ topic.name }}</h2>
+		{% for question in topic.questions.all %}
+		<div class="faq-question-wrapper">
+			<div class="faq-question">
+				<a class="anchor-link" id="{{ question.text }}"> </a>
+                <strong>{{ question.text }}</strong> {% if user.is_staff %}<a href="/admin/faq/question/{{ question.id }}/">Aanpassen</a>{% endif %}
+				<a href="#faq-index-anchor" class="back-to-index-link">Terug naar het overzicht</a>
+			</div>
+			<div>
+				{{ question.answer|markdown_safe|safe }}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

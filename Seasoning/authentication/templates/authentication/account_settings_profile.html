@@ -1,0 +1,119 @@
+{% extends "authentication/account_settings.html" %}
+
+{% block extra_link %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.css" />
+<style>
+/*
+ * Tooltip styles
+ */
+.ui-tooltip {
+    position: absolute;
+}
+
+.ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: .75em;
+    color: #5B6553;
+}
+</style>
+{% endblock %}
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script>
+$(function() {
+	$('.tooltip-field input').each(function() {
+		$(this).tooltip({ 
+        	items: ".tooltip-field input", 
+        	content:  function() {
+            	return $(this).parent().children('.tooltip').text();
+        	},
+        	position: {
+        		of: $(this).parent(),
+            	my: "left top",
+            	at: "right+10 top+18"
+        	},
+        }).off("mouseover mouseout");
+    });
+    
+})
+</script>
+{% endblock %}
+
+{% block myaccount-active %}active{% endblock %}
+
+        {% block page_name %}Profiel Instellingen{% endblock %}
+        
+        {% block account_settings %}
+        <form action="" method="post" enctype="multipart/form-data" id="account-settings-form">
+        {% csrf_token %}
+        
+            <div class="field-wrapper tooltip-field">
+                <label for="id_givenname" id="givenname-label">Voornaam</label>
+                <label for="id_surname" id="surname-label">Naam</label>
+                {% if user.name_changed %}
+                <input id="id_surname" type="text" value="{{ user.surname }}" maxlength="50" disabled />
+                <input id="id_givenname" type="text" value="{{ user.givenname }}" maxlength="30" disabled />
+                {% else %}
+                {{ form.givenname }}
+                {{ form.surname }}
+                {% endif %}
+                <div class="tooltip">Opgelet, je kan je naam maar 1 keer veranderen!</div>
+                
+                {% if form.surname.errors or form.givenname.errors %}
+                <table id="name_errors">
+                    <tr>
+                        <td id="givenname_errors">       
+                            {{ form.givenname.errors }}
+                        </td>
+                        <td id="surname_errors">
+                            {{ form.surname.errors }}
+                        </td>
+                    </tr>
+                </table>
+                {% endif %}
+            </div>
+            
+            <br class="clear" />
+            
+            <div class="field-wrapper tooltip-field">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                <div class="tooltip">
+                    Wanneer je een nieuw email adres instelt, zal er naar dit adres een activatielink 
+                    verstuurd worden. Het nieuwe adres wordt pas actief wanneer deze link bezocht wordt.
+                </div>
+                
+                {{ form.email.errors }}
+            </div>
+            
+            <div class="field-wrapper">
+                <label>Geboortedatum</label>
+                <span id="user-birthday">{{ user.date_of_birth|date:"d E Y" }}</span>
+            </div>
+        
+            <div class="field-wrapper">
+                <label>Wachtwoord</label>
+                <p id="password_p">
+                    <span id="password_span">{% if user.password == "!" %}Geen wachtwoord ingesteld{% else %}***{% endif %}</span>
+                    <a href="/password/change/">(Wijzig)</a>
+                </p>
+                <br class="clear" />
+            </div>
+        
+            <div class="field-wrapper">
+                {{ form.avatar.label_tag }}
+                <img id="avatar_img" src="{{ MEDIA_URL }}{{ user.avatar }}" />
+                <input id="id_avatar" type="file" name="avatar">
+                
+                {% if form.avatar.errors %}        
+                    {{ form.avatar.errors }}
+                {% endif %}
+            </div>
+        
+        <input type="submit" value="Wijzig Profiel" />
+        </form>
+        {% endblock %}
+        
+        {% block public_profile_active %}{% endblock %}
+        {% block profile_settings_active %}active{% endblock %}

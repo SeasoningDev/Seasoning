@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block base_styles %}{% endblock %}
+
+{% block extra_link %}
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{{ STATIC_URL }}admin/css/base.css{% endblock %}" />
+{% block extrastyle %}{% endblock %}
+{% endblock %}
+
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/admin.js"></script>
+{% endblock %}
+
+{% block extra_head %}
+{% block extrahead %}{% endblock %}
+{% endblock %}
+
+
+{% block header-margin %}
+<div id="header-margin"> </div>
+{% endblock %}
+
+{% block content-wrapper %}
+
+{% block pretitle %}{% endblock %}
+
+{% block content_title %}
+
+{% if title %}<h1>{{ title }}</h1>{% endif %}
+
+{% endblock %}
+{% block content %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% endblock %}
+        	

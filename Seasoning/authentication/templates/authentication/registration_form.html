@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Registreren{% endblock %}
+
+{% block myaccount-active %}active{% endblock %}
+
+{% block extra_link %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.css" />
+<style>
+/*
+ * Tooltip styles
+ */
+.ui-tooltip {
+    position: absolute;
+}
+
+.ui-widget {
+    font-family: Verdana,Arial,sans-serif;
+    font-size: .75em;
+    color: #5B6553;
+}
+</style>
+{% endblock %}
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script>
+$(function() {
+    $(document).tooltip({ 
+        items: ".tooltip-field input", 
+        content:  function() {
+            return $(this).parent().children('.tooltip').text();
+        },
+        position: {
+            my: "left top",
+            at: "right+10 top-2"
+        },  
+    }).off("mouseover mouseout");
+    
+    $('#id_date_of_birth').datepicker({ showAnim: "fadeIn",
+                                        changeMonth: true,
+                                        changeYear: true,
+                                        maxDate: -365,
+                                        dateFormat: "dd-mm-yy",
+                                        yearRange: "-100:-5",
+                                        defaultDate: "01-01-2000",
+    });
+})
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Registreren</h2>
+<p>
+	Registreren op Seasoning hoeft slechts één keer en is heel eenvoudig. Je kan een persoonlijk profiel aanmaken via de verschillende portaalwebsites (Facebook en Google) of via Seasoning zelf.
+</p>
+
+<div id="seasoning-register">
+    <form action="/register/" method="post" id="registration-form">
+    	{% csrf_token %}
+      	
+    	<div class="field-wrapper tooltip-field">
+            {{ form.givenname.label_tag }}
+            {{ form.givenname }}
+            <div class="tooltip">{{ form.givenname.help_text }}</div>
+            
+            {% if form.givenname.errors %}        
+    			{{ form.givenname.errors }}	
+            {% endif %}
+    	</div>
+    	
+    	<div class="field-wrapper tooltip-field">
+            {{ form.surname.label_tag }}
+            {{ form.surname }}
+            <div class="tooltip">{{ form.surname.help_text }}</div>
+            
+            {% if form.surname.errors %}        
+    			{{ form.surname.errors }}
+            {% endif %}
+    	</div>
+    	
+    	<div class="field-wrapper tooltip-field">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            <div class="tooltip">{{ form.email.help_text }}</div>
+            
+            {% if form.email.errors %}        
+    			{{ form.email.errors }}	
+            {% endif %}
+    	</div>
+    	
+    	<div class="field-wrapper">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            
+            {% if form.password.errors %}        
+    			{{ form.password.errors }}	
+            {% endif %}
+    	</div>
+    	
+    	<div class="field-wrapper tooltip-field">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            <div class="tooltip">{{ form.password2.help_text }}</div>
+            
+            {% if form.password2.errors %}        
+    			{{ form.password2.errors }}	
+            {% endif %}
+            {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+            {% endif %}
+    	</div>
+    	
+    	<div class="field-wrapper tooltip-field">
+            {{ form.date_of_birth.label_tag }}
+            {{ form.date_of_birth }}
+            <div class="tooltip">{{ form.date_of_birth.help_text }}</div>
+            
+            {% if form.date_of_birth.errors %}        
+    			{{ form.date_of_birth.errors }}
+            {% endif %}
+    	</div>
+    	
+    	<div class="spacer"> </div>
+    	
+    	<div class="field-wrapper" id="captcha-wrapper">
+            {{ form.captcha }}
+    	</div>
+        {{ form.captcha.errors }}
+    	
+    	<div class="field-wrapper" id="terms-wrapper">
+            {{ form.tos }}
+            {{ form.tos.label_tag}}
+    	   
+    	   {% if form.tos.errors %}        
+                {{ form.tos.errors }}
+            {% endif %}
+            
+        </div>
+        
+        <input id="register-button" type="submit" value="Registreer Nu!" />
+    </form>
+</div>
+<div id="social-register">
+    {% include "includes/fb-button.html" with register=True %}
+    <br/>
+    {% include "includes/google-button.html" with register=True %}
+</div>
+{% endblock %}

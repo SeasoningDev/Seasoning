@@ -1,0 +1,298 @@
+#account-settings #account-image {
+	float: left;
+	margin-right: 20px;
+	border: 2px ridge #333;
+}
+
+#account-settings #account-image img {
+	width: 250px;
+	height: 250px;
+}
+
+#account-settings #givenname-label {
+	float: left;
+	margin-right: 20px;
+	width: 160px;
+}
+
+#account-settings #account-info {
+	width: 800px;
+}
+
+#account-settings #account-info #account-name {
+	font-weight: bold;
+	font-size: 16px;
+	display: block;
+	margin-bottom: 20px;
+}
+
+#account-settings #account-info .account-info-stat {
+	width: 140px;
+	float: left;
+	margin-top: 25px;
+	text-align: center;
+}
+
+#account-settings #account-info .account-info-stat strong {
+	height: 40px;
+	display: block;
+}
+
+#account-settings #account-info .account-info-stat-img {
+	height: 100px;
+	width: 100px;
+	display: block;
+	margin: 10px auto 0;
+}
+
+.account-info-stat-img #account-mean-rank-on {
+	background-image: url('/static/img/raty/star-on-big.png');
+	background-size: 100px 100px;
+	height: 100%;
+	float: left;
+}
+
+.account-info-stat-img #account-mean-rank-off {
+	background-image: url('/static/img/raty/star-off-big.png');
+	background-size: 100px 100px;
+	background-position: right;
+	height: 100%;
+	float: right;
+	height: 100%;
+}
+
+.account-info-stat-img#mean-footprint {
+	background-image: url('/static/img/icons/cloud.png');
+	background-size: 100px 80px;
+	background-repeat: no-repeat;
+	background-position: center 15px;
+	height: 100%;
+	position: relative;
+}
+
+.account-info-stat-img#mean-footprint #mean-footprint-text {
+	position: absolute;
+	top: 44px;
+	left: 0;
+	width: 100%;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#account-settings-container #account-recipes {
+	clear: both;
+	padding-top: 60px;
+}
+
+#account-recipes .title {
+	border-bottom: 2px solid #333;
+	margin-right: 258px;
+}
+
+#account-recipes #recipe-summaries-wrapper {
+	width: auto;
+	margin-right: 180px;
+	position: relative;
+}
+
+#account-recipes #search-result-count {
+	position: absolute;
+	top: -32px;
+	right: 78px;
+}
+
+#account-recipes .page-controls {
+	margin: 0 80px 20px 10px;
+}
+
+#account-recipes .page-controls.top {
+	display: none;
+}
+
+#account-settings-container {
+	position: relative;
+	min-height: 400px;
+}
+
+#account-settings-container #account-settings {
+	width: 65%;
+	margin: 0 20px 0 0;
+	float: left;
+}
+
+#account-settings #account-settings-form {
+	float: left;
+}
+
+#account-settings #id_givenname {
+	width: 150px;
+	margin-right: 20px;
+	float: left;
+}
+
+#account-settings #id_surname {
+	width: 200px;
+	float: left;
+}
+
+#account-settings #name_errors {
+	float: right;
+	clear: right;
+	width: 60%;
+}
+
+#name_errors #givenname_errors {
+	width: 50%;
+}
+
+#name_errors #surname_errors {
+	width: 49%;
+}
+
+#account-settings #id_email {
+	width: 380px;
+}
+
+#account-settings #user-birthday {
+	margin-bottom: 20px;
+	display: block;
+}
+
+#account-settings #password_p {
+	margin: 0 0 20px 0;
+	float: left;
+}
+
+#account-settings #password_p #password_span {
+	margin-right: 20px;
+}
+
+#account-settings img#avatar_img {
+	width: 240px;
+	margin-bottom: 10px;
+	display: block;
+}
+
+#account-settings input#id_avatar {
+	clear: left;
+	margin-bottom: 30px;
+	width: 300px;
+}
+
+#account-settings-container #account-settings-links {
+	width: 180px;
+	float: right;
+	border-left: 1px solid #DDD;
+	padding: 35px 0 0 10px;
+	position: absolute;
+	right: 0;
+	top: -20px;
+	bottom: 0;
+}
+
+#account-settings-links ul {
+	display: block;
+}
+
+#account-settings .social-connection {
+	margin-bottom: 20px;
+}
+
+#account-settings .social-connection img {
+	width: 100px;
+	float: left;
+	border-radius: 5px;
+	margin: 14px 0;
+	height: 34px;
+}
+
+#account-settings .social-connection p {
+	line-height: 20px;
+	border-radius: 5px;
+	margin: 10px 0 10px 110px;
+	padding: 10px 0;
+}
+
+#account-settings .social-connection p.active {
+	color: #629B31;
+}
+
+#account-settings-links ul {
+	margin: 0;
+	padding: 0;
+}
+
+#account-settings-links li {
+	list-style: none;
+	margin-bottom: 10px;
+}
+
+#account-settings-links li a {
+	color: #629B31;
+	text-decoration: none;
+}
+
+#account-settings-links li a:hover {
+	color: #4E7A28;
+}
+
+#account-settings-links li.active a {
+	font-weight: 600;
+}
+
+#account-settings #goto-account-delete {
+	width: 120%;
+	text-align: center;
+}
+
+#account-settings #goto-account-delete-button {
+	margin: 30px auto;
+	font-size: 17px;
+}
+
+#account-delete-form {
+	width: 720px;
+	display: block;
+}
+
+#account-delete-form .field-wrapper {
+	width: 30%;
+	margin: auto;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+#account-delete-form .field-wrapper input {
+	width: 100%;
+	float: none;
+}
+
+#account-delete-form #submit-button {
+	text-align: center;
+}
+
+#account-delete-form #submit-button input {
+	float: none;
+	font-size: 17px;
+}
+
+#social-account-summary {
+	background-color: #EAF2E9;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	clear: right;
+	float: left;
+	padding: 5px;
+}
+
+#social-account-summary img {
+	float: left;
+	height: 50px;
+}
+
+#social-account-summary span {
+	float: left;
+	margin-left: 10px;
+	font-weight: bold;
+}
