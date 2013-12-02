@@ -210,7 +210,7 @@ LOGGING = {
 }
 
 # The URL where requests are redirected for login, especially when using the login_required() decorator.
-LOGIN_URL = '/login/'
+LOGIN_URL = '/profile/login/'
 
 # The URL where requests are redirected after login when the contrib.auth.login view gets no next parameter.
 LOGIN_REDIRECT_URL = '/'
