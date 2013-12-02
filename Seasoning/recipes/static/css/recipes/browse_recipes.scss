@@ -19,23 +19,6 @@ form.keywords {
   width: 100%;
   margin: 0; }
 
-#basic-search #keywords-submit {
-  position: absolute;
-  bottom: 0;
-  right: -10px;
-  padding: 0;
-  margin: 2px;
-  height: 26px;
-  width: 26px;
-  cursor: pointer;
-  text-decoration: none;
-  vertical-align: middle;
-  z-index: 3;
-  background: none;
-  background-image: url("/static/img/icons/search.png");
-  background-size: 26px 26px;
-  border: none; }
-
 #advanced-link {
   position: absolute;
   top: 85px;
