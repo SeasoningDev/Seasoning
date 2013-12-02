@@ -17,8 +17,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DB_BACKUP_FILE = os.path.join(BASE_DIR, '../../seasoning_db.bak')
 
 ADMINS = (
-    ('Joep Driesen', 'joeper_100@hotmail.com'),
-    ('Bram Somers', 'somersbram@gmail.com'),
+    ('Joep Driesen', 'joep.driesen@seasoning.be'),
+    ('Bram Somers', 'bram.somers@seasoning.be'),
 )
 
 MANAGERS = ADMINS

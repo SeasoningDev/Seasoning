@@ -28,11 +28,11 @@
 </style>
 
 {% if register %}
-    <a id="google-button" href="/auth/google/register/">
+    <a id="google-button" href="{% 'authentication.views.social_register' 'google' %}">
         <img id="google-logo" src="{{ STATIC_URL }}img/social/google-logo.png" />Registreer via Google
     </a>
 {% else %}
-    <a id="google-button" href="/auth/google/{% if next %}?next={{ next }}{% endif %}">
+    <a id="google-button" href="{% 'authentication.views.social_auth' 'google' %}{% if next %}?next={{ next }}{% endif %}">
         <img id="google-logo" src="{{ STATIC_URL }}img/social/google-logo.png" />Aanmelden met Google
     </a>
 {% endif %}

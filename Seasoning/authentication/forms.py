@@ -14,6 +14,7 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 from authentication.models import User
 from captcha.fields import ReCaptchaField
+from django.core.urlresolvers import reverse
 
         
 class ShownImageInput(ClearableFileInput):
@@ -92,7 +93,7 @@ class RegistrationForm(forms.ModelForm):
     
     tos = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'required',
                                                                'tabindex': '8'}),
-                             label=mark_safe(_(u'I have read and agree to the <a target="_blank" href="/terms/">Terms of Service</a>')),
+                             label=mark_safe(_(u'I have read and agree to the <a target="_blank" href="{url}">Terms of Service</a>').format(url=reverse('static_page', 'terms'))),
                              error_messages={'required': _("You must agree to the terms to register")})
     
     def clean(self):
