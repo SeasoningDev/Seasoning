@@ -156,6 +156,16 @@
 	padding: 10px;
 }
 
+#basic-search {
+  padding-top: 20px;
+  position: relative;
+  width: 320px;
+  margin: auto; }
+
+#basic-search .keywords-searchbar {
+  width: 100%;
+  margin: 0; }
+
 #basic-search #keywords-submit {
   position: absolute;
   bottom: 0;
