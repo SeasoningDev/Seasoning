@@ -11,6 +11,7 @@ from authentication.backends import GoogleAuthBackend, FacebookAuthBackend
 from authentication.forms import SocialRegistrationForm
 from authentication.models import User
 from general.views import home
+from django.core.urlresolvers import reverse_lazy
 
 BACKENDS = {'google': GoogleAuthBackend,
             'fb': FacebookAuthBackend}
@@ -40,7 +41,7 @@ def social_auth(request, backend):
             messages.add_message(request, messages.INFO, _('Something went wrong. Check URL for error.'))
             return render(request, 'authentication/login.html')
             
-    redirect_uri = 'http://' + str(get_current_site(request)) + '/auth/' + backend.NAME + '/'
+    redirect_uri = 'http://%s%s' % (str(get_current_site(request)), reverse_lazy('authentication.views.social_connect', args=(backend.NAME,)))
     if code is None:
         # User has just click the 'Login with ...' button to start a social authentication.
         # Redirect him to the social network, so we may get an authorization code.
