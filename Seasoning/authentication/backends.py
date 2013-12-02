@@ -1,35 +1,13 @@
-"""
-Copyright 2012, 2013 Driesen Joep
-
-This file is part of Seasoning.
-
-Seasoning is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Seasoning is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
-    
-"""
+import datetime, urllib, urllib2
 from django.contrib.auth import login, load_backend
 from django.conf import settings
+from django.contrib.auth.backends import ModelBackend
+from django.utils import simplejson
+from django.core.exceptions import PermissionDenied
+from django.contrib.sites.models import RequestSite
 from authentication import signals
 from authentication.forms import RegistrationForm
 from authentication.models import RegistrationProfile, User
-from django.contrib.auth.backends import ModelBackend
-import urllib2
-from django.utils import simplejson
-from urllib2 import HTTPError
-import urllib
-import datetime
-from django.core.exceptions import PermissionDenied
-from django.contrib.sites.models import RequestSite
 
 
 class RegistrationBackend(object):
@@ -244,7 +222,7 @@ class OAuth2Backend(ModelBackend):
         try:
             user_info = urllib2.urlopen(self.USER_INFO_URL + '?access_token=' + access_token)
             return simplejson.loads(user_info.read())
-        except HTTPError:
+        except urllib2.HTTPError:
             return False
     
     def connect_user(self, user, social_id):
@@ -291,7 +269,7 @@ class GoogleAuthBackend(OAuth2Backend):
                 error = TypeError()
                 error.token_response = token_response.read()
                 raise error
-        except HTTPError:
+        except urllib2.HTTPError:
             return None
     
     def get_user_info(self, access_token):
@@ -334,7 +312,7 @@ class FacebookAuthBackend(OAuth2Backend):
             full_token_request_url = self.TOKEN_REQUEST_URL + '?' + '&'.join(params)
             fb_token_response = urllib2.urlopen(full_token_request_url).read()
             return fb_token_response.replace('access_token=', '')
-        except HTTPError:
+        except urllib2.HTTPError:
             return None
     
     def get_user_info(self, access_token):

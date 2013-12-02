@@ -1,12 +1,8 @@
-from django.test import TestCase
-from authentication.models import User, RegistrationProfile
 import authentication.forms
 import datetime
-import os
-from authentication.backends import RegistrationBackend
-from django.contrib.sites.models import Site
-from django import forms
+from django.test import TestCase
 from django_dynamic_fixture import G
+from authentication.models import User, RegistrationProfile
 
 class RegistrationFormTestCase(TestCase):
     

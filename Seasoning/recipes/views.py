@@ -1,61 +1,34 @@
-"""
-Copyright 2012, 2013 Driesen Joep
-
-This file is part of Seasoning.
-
-Seasoning is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Seasoning is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
-    
-"""
+import os
+import datetime
+import ingredients
 from django.shortcuts import render, redirect, get_object_or_404
-from recipes.models import Recipe, Vote, UsesIngredient, UnknownIngredient
-from recipes.forms import AddRecipeForm, UsesIngredientForm, SearchRecipeForm,\
-    IngredientInRecipeSearchForm, EditRecipeBasicInfoForm,\
-    EditRecipeIngredientsForm, EditRecipeInstructionsForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied,\
     ValidationError
 from django.contrib.auth.decorators import login_required
-from django.forms.models import inlineformset_factory
 from django.contrib import messages, comments
-from django.db.models import Q
-from ingredients.models import Ingredient
 from django.forms.formsets import formset_factory
 from django.contrib.comments.views.moderation import perform_delete
-from general.views import home
 from django.http.response import Http404, HttpResponse
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
-import json
-from django.core.serializers.json import DjangoJSONEncoder
-from recipes.forms import IngredientsFormSet
 from django.core.mail import send_mail
-import datetime
-import ingredients
 from django.db.models.aggregates import Max, Min
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.utils.decorators import method_decorator
 from django.core.files.storage import FileSystemStorage
-import os
 from django.conf import settings
 from django import forms
-from general.forms import FormContainer
 from django.contrib.formtools.wizard.forms import ManagementForm
-from ingredients.models import Unit
+from general.forms import FormContainer
+from ingredients.models import Ingredient, Unit
+from recipes.models import Recipe, Vote, UsesIngredient, UnknownIngredient
+from recipes.forms import SearchRecipeForm,\
+    IngredientInRecipeSearchForm, EditRecipeBasicInfoForm,\
+    EditRecipeIngredientsForm, EditRecipeInstructionsForm
 
 def browse_recipes(request):
     """

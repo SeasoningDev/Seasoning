@@ -11,14 +11,14 @@
 <p>
 	Er is zonet een e-mail verstuurd naar het door jou opgegeven e-mailadres met verdere
 	instructies om je profiel te activeren. Deze e-mail zou binnen de 15 minuten moeten
-	aankomen. Indien je de e-mail binnen het kwartier niet ontvangen hebt, kan je <a href="/activate/resend/">deze link</a>
+	aankomen. Indien je de e-mail binnen het kwartier niet ontvangen hebt, kan je <a href="{% url 'authentication.views.resend_activation_email' %}">deze link</a>
 	gebruiken om hem opnieuw te verzenden. Je zal deze link ook terugvinden indien je probeert aan te melden met je inactieve profiel.
 </p>
 
 <p>
 	Zolang je profiel niet geactiveerd is, kan je je spijtig genoeg nog niet aanmelden
-	op Seasoning. Terwijl je wacht, kan je echter wel al <a href="/recipes/">enkele
-	lekkere recepten zoeken</a>, of wat <a href="/about/">bijkomende informatie over Seasoning</a> lezen.
+	op Seasoning. Terwijl je wacht, kan je echter wel al <a href="{% url 'recipes.views.browse_recipes' %}">enkele
+	lekkere recepten zoeken</a>, of wat <a href="{% url 'general.views.static_page' 'about' %}">bijkomende informatie over Seasoning</a> lezen.
 </p>
 
 {% endblock %}

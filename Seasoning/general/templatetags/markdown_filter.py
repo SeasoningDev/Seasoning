@@ -1,5 +1,5 @@
-from django import template
 import markdown as markdown_lib
+from django import template
 from markdown.util import etree
 from markdown.inlinepatterns import Pattern
 from markdown.extensions import Extension

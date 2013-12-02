@@ -1,14 +1,10 @@
+import time
 from django.test import TestCase
-from recipes.models import Recipe, Vote, UsesIngredient, Cuisine
-from authentication.models import User
-from django.db.utils import IntegrityError
-from ingredients.models import Ingredient, Unit, CanUseUnit
 from django.core.exceptions import ValidationError
 from django_dynamic_fixture import G, N
-import time
-from django.conf import settings
-from django.utils.unittest.case import skipIf, skip
 from general.decorators import mysqldb_required
+from ingredients.models import Ingredient, Unit, CanUseUnit
+from recipes.models import Recipe, Vote, UsesIngredient, Cuisine
 
 class CuisineModelTestCase(TestCase):
     pass

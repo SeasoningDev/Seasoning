@@ -32,7 +32,7 @@ $(function() {
 		    Geavanceerd zoeken
 		</a>
 	    {{ search_form.advanced_search.as_hidden }}
-	    <a href="/recipes/add/" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
+	    <a href="{% url 'add_recipe' %}" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
 	    <hr>
 	    <div id="advanced-search">
 	        <div id="sorting-options">

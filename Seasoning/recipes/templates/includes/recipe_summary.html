@@ -1,5 +1,5 @@
 {% load ratings %}
-<a href="/recipes/{{ recipe.id }}/">
+<a href="{% url 'view_recipe' recipe.id %}">
 	<span class="recipe-summary">
 	    <img alt="{{ recipe.name }}" src="{{ recipe.thumbnail.url }}" />
 	    <span class="recipe-title">

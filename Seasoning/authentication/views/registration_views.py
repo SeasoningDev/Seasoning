@@ -1,12 +1,10 @@
-from django.http.response import Http404
-from general.views import home
 from django.contrib import messages
 from django.shortcuts import redirect, render, render_to_response
-from authentication.forms import ResendActivationEmailForm
 from django.contrib.sites.models import RequestSite
 from django.template.context import RequestContext
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from authentication.forms import ResendActivationEmailForm
+from general.views import home
 
 def register(request, backend, success_url=None, form_class=None,
              disallowed_url='registration_disallowed',

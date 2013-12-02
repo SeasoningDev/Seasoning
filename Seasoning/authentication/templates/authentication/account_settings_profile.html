@@ -96,7 +96,7 @@ $(function() {
                 <label>Wachtwoord</label>
                 <p id="password_p">
                     <span id="password_span">{% if user.password == "!" %}Geen wachtwoord ingesteld{% else %}***{% endif %}</span>
-                    <a href="/password/change/">(Wijzig)</a>
+                    <a href="{% url 'authentication.views.change_password' %}">(Wijzig)</a>
                 </p>
                 <br class="clear" />
             </div>

@@ -7,7 +7,7 @@
 {% block content %}
 
 <div id="seasoning-login">
-	<form action="/login/" method="post" class="login-form">
+	<form action="{% url 'authentication.views.login' %}" method="post" class="login-form">
 		{% csrf_token %}
 
 		{{ form.non_field_errors }}
@@ -27,7 +27,7 @@
 		<input type="hidden" name="next" value="{{ next }}" />
 		
 		<div id="extra-login-links">		    		
-			<a href="/password/reset/" id="forgotpw">Wachtwoord vergeten?</a>
+			<a href="{% url 'django.contrib.auth.views.password_reset' %}" id="forgotpw">Wachtwoord vergeten?</a>
 		</div>
 		
 		<input type="submit" value="Aanmelden" id="login-submit"/>

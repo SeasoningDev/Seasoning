@@ -1,47 +1,26 @@
-"""
-Copyright 2012, 2013 Driesen Joep
-
-This file is part of Seasoning.
-
-Seasoning is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Seasoning is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
-    
-"""
 from django.conf.urls import patterns, url
-from authentication.views import registration_complete, registration_closed,\
-    resend_activation_email, register, activate, change_email,\
-    change_password, login
 from authentication.backends import RegistrationBackend
 
 urlpatterns = patterns('',
     
     # Registration urls                   
-    url(r'^register/$', register, {'backend': RegistrationBackend},
+    url(r'^register/$', 'authentication.views.register', {'backend': RegistrationBackend},
         name='registration'),
-    url(r'^register/closed/$', registration_closed,
+    url(r'^register/closed/$', 'authentication.views.registration_closed',
         name='registration_disallowed'),
-    url(r'^register/complete/$', registration_complete,
+    url(r'^register/complete/$', 'authentication.views.registration_complete',
         name='registration_complete'),
     
     # Activation urls
-    url(r'^activate/resend/$', resend_activation_email,
+    url(r'^activate/resend/$', 'authentication.views.resend_activation_email',
         name='resend_activation_email'),
-    url(r'^activate/(?P<activation_key>\w+)/$', activate, {'backend': RegistrationBackend},
+    url(r'^activate/(?P<activation_key>\w+)/$', 'authentication.views.activate', {'backend': RegistrationBackend},
         name='registration_activate'),
     
     # Login urls
-    url(r'^login/$', login, name='login'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'authentication/logout.html'}),
+    url(r'^login/$', 'authentication.views.login', name='login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'authentication/logout.html'},
+        name='logout'),
     url(r'^password/reset/$', 'django.contrib.auth.views.password_reset', name='password_reset'),
     url(r'^password/reset/done/$', 'django.contrib.auth.views.password_reset_done', 
         {'template_name':'authentication/password_reset_done.html'},
@@ -55,15 +34,15 @@ urlpatterns = patterns('',
         name='password_reset_complete'),
     
     # Profile urls
-    url(r'^profile/$', 'authentication.views.account_settings', name='my_profile'),
-    url(r'^profile/(\d.*)/$', 'authentication.views.account_settings', name='user_profile'),
-    url(r'^account/settings/profile/$', 'authentication.views.account_settings_profile'),
-    url(r'^account/settings/social/$', 'authentication.views.account_settings_social'),
-    url(r'^account/settings/privacy/$', 'authentication.views.account_settings_privacy'),
-    url(r'^account/delete/$', 'authentication.views.account_delete'),
-    url(r'^password/change/$', change_password,
+    url(r'^$', 'authentication.views.account_settings', name='my_profile'),
+    url(r'^(\d.*)/$', 'authentication.views.account_settings', name='user_profile'),
+    url(r'^settings/$', 'authentication.views.account_settings_profile'),
+    url(r'^settings/social/$', 'authentication.views.account_settings_social'),
+    url(r'^settings/privacy/$', 'authentication.views.account_settings_privacy'),
+    url(r'^delete/$', 'authentication.views.account_delete'),
+    url(r'^password/change/$', 'authentication.views.change_password',
         name='password_change'),
-    url(r'^email/change/(?P<activation_key>\w+)/$', change_email),
+    url(r'^email/change/(?P<activation_key>\w+)/$', 'authentication.views.change_email'),
     
     # Social logins
     url(r'^auth/(.*)/register/', 'authentication.views.social_register'),

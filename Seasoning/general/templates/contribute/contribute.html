@@ -20,7 +20,7 @@
 </p>
 
 <div id="help-seasoning">
-    <a href="/recipes/add/">
+    <a href="{% url 'add_recipe' %}">
         <div class="help-type left">
             <img src="{{ STATIC_URL }}img/decoration/contrib1.jpg" />
             <div class="help-text">
@@ -48,7 +48,7 @@
 	    </div>
     </a>
     
-    <a href="/donate/">
+    <a href="{% url 'donate' %}">
         <div class="help-type left">
             <img src="{{ STATIC_URL }}img/decoration/contrib3.jpg" />
             <div class="help-text">
@@ -63,7 +63,7 @@
         </div>
     </a>
     
-    <a href="/contact/form/info">
+    <a href="{% url 'contact' 'info' %}">
         <div class="help-type right">
             <img src="{{ STATIC_URL }}img/decoration/contrib4.jpg" />
             <div class="help-text">

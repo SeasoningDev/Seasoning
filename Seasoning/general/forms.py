@@ -1,10 +1,10 @@
 from django import forms
-from captcha.fields import ReCaptchaField
 from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import BaseFormSet
 from django.utils.datastructures import SortedDict, MultiValueDict
 from django.utils.encoding import StrAndUnicode
 from django.utils.safestring import mark_safe
+from captcha.fields import ReCaptchaField
 
 class ContactForm(forms.Form):
     

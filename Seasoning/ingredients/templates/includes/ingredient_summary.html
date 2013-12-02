@@ -1,4 +1,4 @@
-<a href="/ingredients/{{ ingredient.id }}/">
+<a href="{% url 'view_ingredient' ingredient.id %}">
 	<span class="ingredient-summary">
 	    <img alt="{{ ingredient.name }}" src="{{ ingredient.thumbnail.url }}" />
 	    <span class="ingredient-title">

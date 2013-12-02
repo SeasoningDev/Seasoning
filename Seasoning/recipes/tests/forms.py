@@ -1,7 +1,4 @@
 from django.test import TestCase
-from django_dynamic_fixture import G
-from authentication.models import User
-from recipes.models import Cuisine
 
 class RecipeFormsTestCase(TestCase):
     

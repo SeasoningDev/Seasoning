@@ -1,6 +1,6 @@
-from news.models import NewsItem
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, get_object_or_404
+from news.models import NewsItem
 
 def browse_news(request):
     news_list = NewsItem.objects.filter(visible=True).order_by('-time_published')

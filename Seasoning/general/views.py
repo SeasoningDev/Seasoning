@@ -17,18 +17,18 @@ You should have received a copy of the GNU General Public License
 along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
     
 """
+import time
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.conf import settings
-import time
-import os
-from general.models import StaticPage
-from recipes.models import Recipe
 from django import forms
 from django.http.response import Http404
-from general.forms import ContactForm
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from general.forms import ContactForm
+from general.models import StaticPage
+from recipes.models import Recipe
 
 def home(request):
     if request.user.is_authenticated():
