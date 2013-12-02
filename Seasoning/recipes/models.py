@@ -34,7 +34,7 @@ class RecipeManager(models.Manager):
               courses=[], include_ingredients_operator='and', include_ingredient_names=[],
               exclude_ingredient_names=[]):
         
-        recipes_list = Recipe.objects
+        recipes_list = self
         
         name_query = models.Q(name__icontains=search_string)
             
@@ -76,6 +76,9 @@ class RecipeManager(models.Manager):
             recipes_list = recipes_list.order_by(sort_field)
         
         return recipes_list.distinct()
+    
+    def accepted(self):
+        return self.filter(accepted=True)
 
 class Recipe(models.Model):
     
