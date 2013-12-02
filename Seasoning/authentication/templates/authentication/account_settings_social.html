@@ -6,7 +6,7 @@
 
 {% block account_settings %}
 <div class="social-connection">
-    <img src="{{ STATIC_URL }}img/social/fb-logo-3.jpg" />
+    <img src="{{ STATIC_URL }}img/logos/fb-logo-3.jpg" />
     <p class="{% if user.facebook_id %}active{% endif %}">
         {% if user.facebook_id %}
         Dit profiel is gekoppeld met een Facebook account.<br />
@@ -21,7 +21,7 @@
 </div>
 
 <div class="social-connection">
-    <img src="{{ STATIC_URL }}img/social/google-logo-3.png" />
+    <img src="{{ STATIC_URL }}img/logos/google-logo-3.png" />
     <p class="{% if user.google_id %}active{% endif %}">
         {% if user.google_id %}
         Dit profiel is gekoppeld met een Google account. <br />
