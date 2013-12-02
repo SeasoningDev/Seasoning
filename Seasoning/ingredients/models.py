@@ -131,7 +131,7 @@ class Ingredient(models.Model):
     base_footprint = models.FloatField()
     
     image = ProcessedImageField(processors=[ResizeToFill(350, 350)], format='PNG', upload_to=get_image_filename, default='images/ingredients/no_image.png')
-    thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='PNG')
+    thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
     
     accepted = models.BooleanField(default=False)
     bramified = models.BooleanField(default=False)
