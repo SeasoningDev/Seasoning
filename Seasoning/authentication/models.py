@@ -129,11 +129,11 @@ class User(models.Model):
         # Get the log2(recipes_added_by_user) rounded down. This is the current
         # rank of the user. Minimum rank is 0, maximum rank is 8
         # x.bit_length() - 1 = log2(x) (except for x=0 -> x.bit_length() = 0)
-        rank_num = min(8, max(0, len(self.recipes.all()).bit_length() - 1))
+        rank_num = min(8, max(0, len(self.recipes.accepted()).bit_length() - 1))
         return self.RANKS[rank_num]
     
     def recipes_until_next_rank(self):
-        ao_recipes = len(self.recipes.all())
+        ao_recipes = len(self.recipes.accepted())
         current_rank = min(8, max(0, ao_recipes.bit_length() - 1))
         next_rank = current_rank + 1
         if next_rank >= 8:

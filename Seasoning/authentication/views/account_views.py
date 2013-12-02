@@ -24,16 +24,17 @@ def account_settings(request, user_id=None):
     try:
         if user_id is None or user_id == request.user.id:
             user = get_user_model().objects.prefetch_related('recipes').get(id=request.user.id)
+            recipes_list = user.recipes.all().order_by('-rating')
             viewing_self = True
         else:
             user = get_user_model().objects.prefetch_related('recipes').get(id=user_id)
+            recipes_list = user.recipes.accepted().order_by('-rating')
     except get_user_model().DoesNotExist:
         raise Http404
-    recipes_list = user.recipes.all().order_by('-rating')
     
     try:
-        averages = user.recipes.all().aggregate(Avg('footprint'), Avg('rating'))
-        most_used_veganism = max(user.recipes.values('veganism').annotate(dcount=Count('veganism')), key=lambda i: i['dcount'])['veganism']
+        averages = user.recipes.accepted().aggregate(Avg('footprint'), Avg('rating'))
+        most_used_veganism = max(user.recipes.accepted().values('veganism').annotate(dcount=Count('veganism')), key=lambda i: i['dcount'])['veganism']
     except ValueError:
         averages = {'footprint__avg': None,
                     'rating__avg': None}
