@@ -36,12 +36,12 @@ def social_auth(request, backend):
         if error_reason == backend.ACCESS_DENIED_STRING:
             # User denied us access to his profile...
             messages.add_message(request, messages.INFO, _('Could not access your ' + backend.name() + ' Information. Please try again.'))            
-            return redirect('/login/')
+            return redirect(reverse_lazy('login'))
         else:
             messages.add_message(request, messages.INFO, _('Something went wrong. Check URL for error.'))
             return render(request, 'authentication/login.html')
             
-    redirect_uri = 'http://%s%s' % (str(get_current_site(request)), reverse_lazy('authentication.views.social_connect', args=(backend.NAME,)))
+    redirect_uri = 'http://%s%s' % (str(get_current_site(request)), reverse_lazy('authentication.views.social_auth', args=(backend.NAME,)))
     if code is None:
         # User has just click the 'Login with ...' button to start a social authentication.
         # Redirect him to the social network, so we may get an authorization code.
@@ -59,7 +59,7 @@ def social_auth(request, backend):
                 user_info = backend.get_user_info(access_token)
             except PermissionDenied:
                 messages.add_message(request, messages.INFO, _('You cannot use this type of ' + backend.name() + ' account on Seasoning. Please try another...'))            
-                return redirect('/login/')
+                return redirect(reverse_lazy('login'))
             
             if user_info:
                 # We received a valid access token, and were able to exchange it for the necessary
@@ -91,7 +91,7 @@ def social_auth(request, backend):
     
     # The code or access token was not correct or we were unable to connect to the social network. Please try again later
     messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with ' + backend.name() + '. Please try again.'))
-    return redirect('/login/')
+    return redirect(reverse_lazy('login'))
 
 @login_required
 def social_connect(request, backend):
