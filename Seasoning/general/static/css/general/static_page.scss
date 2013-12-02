@@ -1,0 +1,26 @@
+.edit-static-page-link {
+	position: absolute;
+	right: 0;
+}
+
+#static-page-wrapper h1 {
+	border-bottom: 3px solid #333;
+}
+
+#static-page-wrapper h2 {
+	margin-bottom: 20px;
+}
+
+#static-page-wrapper ul, #faq-wrapper ul {
+	list-style: disc inside;
+	margin: -10px 0 0 10px;
+}
+
+#static-page-wrapper #last-line {
+	font-size: 12px;
+	line-height: 14px;
+}
+
+#static-page-wrapper #cb-img {
+	margin-bottom: 20px;
+}

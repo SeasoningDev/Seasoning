@@ -1,0 +1,97 @@
+{% extends "recipes/edit_recipe_base.html" %}
+
+{% block extra_script %}
+{{ block.super }}
+<script type="text/javascript">
+    
+    
+    $(document).ready(function() {
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+        
+                reader.onload = function (e) {
+                    
+                    $('#img-preview').attr('src', e.target.result);
+                }
+        
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function updateImage() {
+            $img = $("#img-preview")
+            if ($img.height() <= 0) {
+                $img.attr('src', "/static/img/no_image.png");
+            }
+        }
+        
+        updateImage();
+        
+        $("#id_basic_info-image").change(function() {
+            readURL(this);
+        });
+    });
+    
+</script>
+{% endblock %}
+
+{% block form-enctype %}multipart/form-data{% endblock %}
+
+{% block recipe-form %}
+
+<div id="left">
+    <p>
+        Vul hier de basisinformatie over het recept in. Alle velden met een asteriks (*) zijn verplicht.
+    </p>
+    
+    <p>
+        <label>{{ wizard.form.name.label }}*</label>
+        {{ wizard.form.name }}
+        <span class="tooltip">{{ wizard.form.name.help_text }}</span>
+    </p>
+    {{ wizard.form.name.errors }}
+    
+    <p class="aligned">
+        <label>{{ wizard.form.course.label }}*</label>
+        {{ wizard.form.course }}
+        <span class="tooltip">{{ wizard.form.course.help_text }}</span>
+    </p>
+    {{ wizard.form.course.errors }}
+    
+    <p class="aligned">
+        {{ wizard.form.cuisine.label_tag }}
+        {{ wizard.form.cuisine }}
+        <span class="tooltip">{{ wizard.form.cuisine.help_text }}</span>
+    </p>
+    {{ wizard.form.cuisine.errors }}
+    
+    <p>
+        <label>{{ wizard.form.description.label }}*</label>
+        {{ wizard.form.description }}
+        <span class="tooltip">{{ wizard.form.description.help_text }}</span>
+    </p>
+    {{ wizard.form.description.errors }}
+</div>
+<div id="right">
+    <p>
+        Hier kan je een afbeelding van je recept uploaded. Dit is niet verplicht. 
+    </p>
+    <p>
+        <label>Kies een afbeelding:</label>
+        <input id="id_basic_info-image" type="file" name="basic_info-image">
+        {{ wizard.form.image.errors }}
+    </p>
+    <br class="clear" />
+    <div class="img-frame">
+        {% if wizard.form.instance.image.url %}
+        <img id="img-preview" src="{{ wizard.form.instance.image.url }}" />
+        {% else %}
+        <img id="img-preview" src="{{ STATIC_URL }}img/no_image.png" />
+        {% endif %}
+    </div>
+</div>
+<br class="clear" />
+
+{% endblock %}

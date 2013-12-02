@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; position: relative;">
+	<h1 style="border: none; margin: 20px 0 5px 0;">Koken op het ritme van de seizoenen</h1>
+	<h5>Scroll naar beneden en kom meer te weten over Seasoning</h5>
+	<hr class="leaf-line" />
+</div>
+<div style="margin-top: 20px;">
+	<div>
+		<img src="/static/img/decoration/homepage1.jpg" style="width: 400px; float: left; margin-right: 40px;" />
+		<div style="padding-top: 30px;">
+			<h3>Wat is Seasoning?</h3>
+			<p>
+				Seasoning is een interactief platform om de duurzaamheid van recepten doorheen het jaar met elkaar te vergelijken. De 
+				voetafdruk van recepten wordt automatisch berekend en past zich aan naargelang het seizoen. <img src="{{ STATIC_URL }}img/decoration/arrow.png" style="position:absolute;" />
+			</p>
+			<p>
+				Geef smaak aan de seizoenen en hou op deze manier rekening met het milieu én je gezondheid.
+			</p>
+		</div>
+		<br class="clear" />
+	</div>
+	<div style="margin-top: 50px;">
+		<img src="/static/img/decoration/homepage2.png" style="width: 400px; float: right; margin-left: 40px; padding: 50px 0;" />
+        <div style="padding-top: 0px; text-align: left;">
+			<h3>Waarom?</h3>
+			<p>
+				De impact van ons eten op het milieu is niet te verwaarlozen. Steeds meer mensen beseffen dit en proberen 
+				bewuster om te gaan met hun voeding. Hierbij moet echter rekening gehouden worden met talloze factoren als:
+				<ul style="list-style: disc outside; margin: -10px 0 0 30px;">
+				    <li>Het seizoen</li>
+				    <li>De productiewijze</li>
+				    <li>De transportmethode</li>
+				    <li>De herkomst</li>
+				</ul>
+				Omdat dit niet altijd even eenvoudig is, probeert Seasoning deze informatie samen te vatten en je te helpen bij
+				het maken van een bewuste keuze.
+			</p>
+		</div>
+    </div>
+	<div style="margin-top: 50px;">
+        <img src="/static/img/decoration/homepage3.png" style="width: 440px; float: left; margin-right: 10px;" />
+        <div style="padding-top: 50px; text-align: left;">
+            <h3>Hoe werkt het?</h3>
+            <p>
+                Seasoning berekent voor elk recept een voetafdruk. Dit gebeurt aan 
+                de hand van de opgegeven hoeveelheden in de beschrijving van het recept en onze gegevens over
+                de gebruikte ingrediënten. Elke voetafdruk die je op Seasoning ziet, geeft het aantal kilogram CO2-uitstoot 
+                per 4 porties weer.
+            </p>
+            <p>
+                Deze voetafdruk kan je vervolgens gebruiken om recepten onderling te vergelijken en een duurzame
+                keuze te maken!
+            </p>
+            <p>
+                Als je graag wil weten hoe we juist te werk gaan bij deze berekening, kan je 
+                <a href="/about/">hier</a> meer lezen.
+            </p>
+		</div>
+		<br class="clear" />
+	</div>
+</div>
+
+<hr class="leaf-line" />
+
+<div style="padding-top: 0px; text-align: center;">
+             <h3>Maak je eigen profiel!</h3>
+            <p style="width: 60%; margin: 0 auto 20px;">
+            	Je kan nu al recepten en ingrediënten opzoeken en vergelijken, maar met je eigen profiel kan je
+            	ook je eigen recepten en afbeeldingen toevoegen, reageren op andere recepten en jouw voorkeuren bepalen.
+            </p>
+            <p>
+                Registreren op Seasoning gaat snel en is heel eenvoudig!
+            </p>
+            
+            <form action="/register/" method="get" style="text-align: center; margin-top: 40px;">
+                <input id="register-button" type="submit" value="Registreer Nu!" />
+            </form>
+        </div>
+    
+{% endblock %}

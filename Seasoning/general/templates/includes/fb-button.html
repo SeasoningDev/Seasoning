@@ -1,0 +1,40 @@
+<style>
+    #fb-button {
+        background-color: #3B5998;
+        color: #FFFFFF;
+        display: block;
+        width: 80%;
+        margin: auto;
+        padding: 5px;
+        text-decoration: none;
+        text-shadow: none;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: all 0.25s ease-in-out;
+        -webkit-transition: all 0.25s ease-in-out;
+        -moz-transition: all 0.25s ease-in-out;
+    }
+    
+    #fb-button:hover {
+        background-color: #2E4473;
+    }
+    
+    #fb-button #fb-logo {
+        float: left;
+        height: 20px;
+        margin: 0 8px 0 5px;
+    }
+    
+</style>
+
+{% if register %}
+    <a id="fb-button" href="/auth/fb/register/">
+        <img id="fb-logo" src="{{ STATIC_URL }}img/social/fb-logo.png" />Registreer via Facebook
+    </a>
+{% else %}
+    <a id="fb-button" href="/auth/fb/{% if next %}?next={{ next }}{% endif %}">
+        <img id="fb-logo" src="{{ STATIC_URL }}img/social/fb-logo.png" />Aanmelden met Facebook
+    </a>
+{% endif %}

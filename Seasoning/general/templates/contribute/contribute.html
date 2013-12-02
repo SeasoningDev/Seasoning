@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Bijdragen{% endblock %}
+
+{% block contribute-active %}active{% endblock %}
+
+{% block content %}
+
+<h2>Alle beetjes helpen! Behalve muggenbeetjes.</h2>
+
+<p>
+    Seasoning wordt ontwikkeld door vrijwilligers en is gebaseerd op Open Source Software. De 
+    website is bovendien volledig vrij van advertenties, en dat willen we graag zo houden. Het 
+    beheer van de website kost echter veel tijd, geld en vooral doorzettingsvermogen.
+</p>
+
+<p>
+	Deel je ook de visie van Seasoning en wil je mee het verschil maken? Steek dan gerust een 
+	handje toe!
+</p>
+
+<div id="help-seasoning">
+    <a href="/recipes/add/">
+        <div class="help-type left">
+            <img src="{{ STATIC_URL }}img/decoration/contrib1.jpg" />
+            <div class="help-text">
+    	        <h3>Voeg recepten toe</h3>
+    	        <p>
+    	            Door recepten toe te voegen, verhoog je de meerwaarde van Seasoning.  Zo 
+    	            worden meer mensen aangezet om de website te gebruiken en draag je zelf bij 
+    	            tot het vergroten van onze impact.
+    	        </p>
+    	    </div>
+        </div>
+    </a>
+    
+    <a href="https://www.facebook.com/seasoningbelgium" target="_blank">
+        <div class="help-type right">
+	        <img src="{{ STATIC_URL }}img/decoration/contrib2.jpg" />
+	        <div class="help-text">
+		        <h3>Vertel het voort</h3>
+	        	<p>
+		            Deel de website met je vrienden en familie, want enkel samen kunnen we gaan 
+		            voor een duurzame toekomst! Aarzel ook niet om Seasoning te vermelden op je 
+		            eigen website of informatieblad.
+		        </p>
+		    </div>
+	    </div>
+    </a>
+    
+    <a href="/donate/">
+        <div class="help-type left">
+            <img src="{{ STATIC_URL }}img/decoration/contrib3.jpg" />
+            <div class="help-text">
+    	        <h3>Doneer</h3>
+            	<p>
+    	            Een donatie helpt ons de kosten te drukken en Seasoning vrij te houden 
+    	            van advertenties. Alle beetjes helpen en worden sterk gewaardeerd. Bovendien 
+    	            gaan we volledig transparant te werk, waardoor je altijd kan zien waar je
+    	            geld voor gebruikt wordt!
+    	        </p>
+    	    </div>
+        </div>
+    </a>
+    
+    <a href="/contact/form/info">
+        <div class="help-type right">
+            <img src="{{ STATIC_URL }}img/decoration/contrib4.jpg" />
+            <div class="help-text">
+    	        <h3>Verbeter Seasoning</h3>
+            	<p>
+    	            Beschik je over foto's of informatie voor Seasoning? Weet je meer over de 
+    	            voetafdruk van bepaalde ingrediënten? Ben je misschien een fout 
+    	            op de website tegengekomen? Laat het ons dan hier weten!
+    	        </p>
+    	    </div>
+        </div>
+    </a>
+    
+    <br class="clear" />
+</div>
+
+{% endblock %}

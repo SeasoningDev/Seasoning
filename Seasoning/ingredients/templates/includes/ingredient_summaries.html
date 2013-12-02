@@ -1,0 +1,43 @@
+<span id="search-result-count">{{ ingredients.start_index }}-{{ ingredients.end_index }} van de {{ ingredients.paginator.count }} resultaten</span>
+
+{% if ingredients.has_previous or ingredients.has_next %}
+<div class="page-controls top">
+    {% if ingredients.has_previous %}
+    <a href="#" onclick="return update_page({{ ingredients.previous_page_number }})"><div class="page-control prev-page active"><img src="{{ STATIC_URL }}img/icons/left.png" />Vorige resultaten</div></a>
+    {% else %}
+    <div class="page-control prev-page"><img src="{{ STATIC_URL }}img/icons/left.png" />Vorige resultaten</div>
+    {% endif %}
+    
+    
+    {% if ingredients.has_next %}
+    <a href="#" onclick="return update_page({{ ingredients.next_page_number }})"><div class="page-control next-page active">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" /></div></a>
+    {% else %}
+    <div class="page-control next-page">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" /></div>
+    {% endif %}  
+</div>
+{% endif %}
+
+{% for ingredient in ingredients %}
+{% include "includes/ingredient_summary.html" %}
+{% empty %}
+<p class="sorry">
+    Sorry! Er werden geen recepten gevonden in onze databank die aan jouw criteria voldoen...
+</p>
+{% endfor %}
+
+{% if ingredients.has_previous or ingredients.has_next %}
+<div class="page-controls bottom">
+    {% if ingredients.has_previous %}
+    <a href="#" onclick="return update_page({{ ingredients.previous_page_number }})"><div class="page-control prev-page active"><img src="{{ STATIC_URL }}img/icons/left.png" />Vorige resultaten</div></a>
+    {% else %}
+    <div class="page-control prev-page"><img src="{{ STATIC_URL }}img/icons/left.png" />Vorige resultaten</div>
+    {% endif %}
+    
+    
+    {% if ingredients.has_next %}
+    <a href="#" onclick="return update_page({{ ingredients.next_page_number }})"><div class="page-control next-page active">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" /></div></a>
+    {% else %}
+    <div class="page-control next-page">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" /></div>
+    {% endif %}  
+</div>
+{% endif %}

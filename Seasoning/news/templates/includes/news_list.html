@@ -1,0 +1,11 @@
+{% load markdown_filter %}
+
+{% for news_item in news %}
+<div class="news-item-wrapper">
+	<div class="subject">{{ news_item.subject }}</div>
+	<div class="author">Gepost door <strong>{{ news_item.author.givenname }}</strong> op {{ news_item.time_published|date:"d E Y, H" }}u{{ news_item.time_published|date:"i" }}</div>
+	<img class="news-image{% cycle " left" " right" %}" src="{{ news_item.image.url }}" title="{{ news_item.image_source }}"  />
+	<div class="content">{{ news_item.content|markdown_safe|safe|truncatewords:100 }}</div>
+	<a href="/news/{{ news_item.id }}" class="read-more-link">Meer lezen</a>
+</div>
+{% endfor %}

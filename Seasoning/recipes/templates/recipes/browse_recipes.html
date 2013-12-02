@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Recepten{% endblock %}
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/forms.js"></script>
+<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
+<script src="{{ STATIC_URL }}js/paging.js"></script>
+<script>
+$(function() {
+	$("#id_search_string").focus();
+});
+</script>
+{% endblock %}
+
+{% block recipes-active %}active{% endblock %}
+
+{% block content %}
+<h2>Recepten zoeken</h2>
+
+<div id="recipe-search-container">
+	<form class="keywords" action="" method="post">
+	    {% csrf_token %}
+	    <div id="basic-search">
+	        {{ search_form.search_string }}
+		    <button id="keywords-submit" class="nochrome" type="submit">
+		        <span class="submit-icon"> </span>
+		    </button>
+		</div>
+		<a id="advanced-link" href="#">
+		    Geavanceerd zoeken
+		</a>
+	    {{ search_form.advanced_search.as_hidden }}
+	    <a href="/recipes/add/" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
+	    <hr>
+	    <div id="advanced-search">
+	        <div id="sorting-options">
+	            <p>
+	                Sorteren op:
+	            </p>
+	        	{{ search_form.sort_field }}
+	            <a class="order-arrow up{% if search_form.sort_order.0.is_checked %} active{% endif %}" href="#">
+	                <img src="{{ STATIC_URL }}img/icons/up.png" title="Sorteer in oplopende volgorde" />
+	            </a><a class="order-arrow down{% if search_form.sort_order.1.is_checked %} active{% endif %}" href="#">
+	                <img src="{{ STATIC_URL }}img/icons/down.png" title="Sorteer in aflopende volgorde" />
+	            </a>
+	            {{ search_form.sort_order }}
+	        </div>
+	    	<div id="veg-options">
+	    	    <p>
+	                Voedingswijze:
+	            </p>
+	            <a class="veg-choice active" href="#">
+	            	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Veganistische Gerechten" />
+	            	{{ search_form.ven }}
+	            </a><a class="veg-choice active" href="#">
+	                <img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Vegetarische Gerechten" />
+	                {{ search_form.veg }}
+	            </a><a class="veg-choice active" href="#">
+	            	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Niet-vegetarische Gerechten" />
+	            	{{ search_form.nveg }}
+	            </a>
+	        </div>
+	        <div id="incl-ings">
+	            <p>
+	                Dit wil ik erbij:
+	            </p>
+	            {{ include_ingredients_formset.management_form }}
+	            <a href="#"><span class="option and first{% if search_form.include_ingredients_operator.0.is_checked %} active{% endif %}">Allemaal</span></a><a href="#"><span class="option or last{% if search_form.include_ingredients_operator.1.is_checked %} active{% endif %}">Minstens 1</span></a>
+	            {{ search_form.include_ingredients_operator }}
+	            
+	            <input id="include-ingredients-input" class="ingredients-input autocomplete-ingredient" type="text" placeholder="Voer ingrediënten in" />
+	
+	            <div id="included-ingredients">
+	            </div>
+	            <span class="empty-form">
+	                {{ include_ingredients_formset.empty_form.name }}
+	            </span>
+	        </div>
+	        <div id="excl-ings">
+	            <p>
+	                Dit wil ik er niet bij:
+	            </p>
+	            {{ exclude_ingredients_formset.management_form }}
+	            <input id="exclude-ingredients-input" class="ingredients-input autocomplete-ingredient" type="text" placeholder="Voer ingrediënten in" />
+	
+	            <div id="excluded-ingredients">
+	            </div>
+	            <span class="empty-form">
+	                {{ exclude_ingredients_formset.empty_form.name }}
+	            </span>
+	        </div>
+	        <div id="extra-info">
+	            <p>
+	                Soort maaltijd:
+	            </p>
+	    	   {{ search_form.course }}
+	            <p>
+	                Soort keuken:
+	            </p>
+	            {{ search_form.cuisine }}
+	    	</div>
+	    </div>
+	</form>
+	
+	<div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
+	   {% include "includes/recipe_summaries.html" %}
+	</div>
+	
+	<br class="clear" />
+</div>
+
+{% endblock %}

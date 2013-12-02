@@ -1,0 +1,7 @@
+Gebruiker: {{ user.email }}
+
+Heeft zonet ingredienten aangevraagd:
+
+{{ request_string }}
+
+Veel plezier ermee!

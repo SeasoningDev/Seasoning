@@ -1,0 +1,8 @@
+{% load markdown_filter %}
+
+<div class="markdown-preview">
+	<h4>Voorbeeld:</h4>
+	<div class="markdown-container preview">
+	    {{ markdown_text|markdown|safe }}
+	</div>
+</div>

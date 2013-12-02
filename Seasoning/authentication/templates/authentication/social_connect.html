@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Sociale netwerken verbinden{% endblock %}
+
+{% block myaccount-active %}active{% endblock %}
+
+{% block content %}
+
+<p>
+    Indien je {{ backend.name }} wil gebruiken om aan te melden op je Seasoning profiel, moet je eerst beide
+    accounts verbinden. Je bent momenteel op {{ backend.name }} ingelogd met de volgende gegevens:    
+</p>
+<p id="social-account-summary">
+    <img id="social-img" src="{{ image }}">
+    <span id="social-name">{{ name }}<br>{{ email }}</span>
+</p>
+<br class="clear" />
+<p>
+    Wil je deze {{ backend.name }} account koppelen aan je Seasoning profiel?
+</p>
+<form action="{{ backend.connect_url }}" method="post">
+    {% csrf_token %}
+    
+    <input type="hidden" name="access-token" id="access-token" value="{{ access_token }}">
+    
+    <input type="submit" value="Account verbinden">
+
+</form>
+
+{% endblock %}

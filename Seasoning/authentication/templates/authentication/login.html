@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Aanmelden{% endblock %}
+
+{% block login-active %}active{% endblock %}
+
+{% block content %}
+
+<div id="seasoning-login">
+	<form action="/login/" method="post" class="login-form">
+		{% csrf_token %}
+
+		{{ form.non_field_errors }}
+		
+		<div class="field-wrapper">
+			{{ form.username.label_tag }}
+			{{ form.username }}
+			<div class="login-error">{{ form.username.errors }}</div>
+		</div>
+		
+		<div class="field-wrapper">
+			{{ form.password.label_tag }}
+			{{ form.password }}
+			<div class="login-error">{{ form.password.errors }}</div>
+		</div>
+		
+		<input type="hidden" name="next" value="{{ next }}" />
+		
+		<div id="extra-login-links">		    		
+			<a href="/password/reset/" id="forgotpw">Wachtwoord vergeten?</a>
+		</div>
+		
+		<input type="submit" value="Aanmelden" id="login-submit"/>
+	</form>
+
+	<script type="text/javascript">
+		document.getElementById('username').focus()
+	</script>
+</div>
+
+<div id="social-login">
+	{% include "includes/fb-button.html" %}
+	<br/>
+    {% include "includes/google-button.html" %}
+</div>
+
+<br class="clear" />
+
+<div id="login-page-register">
+    <h2>
+        Nog niet geregistreerd?
+    </h2>
+    <form action="/register/" method="get">
+        <input id="register-button" type="submit" value="Registreer Nu!" />
+    </form>
+</div>
+{% endblock %}

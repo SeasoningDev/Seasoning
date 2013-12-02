@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load ratings %}
+
+{% block title %}{% if viewing_other %}Publiek Profiel{% else %}Mijn Profiel{% endif %}{% endblock %}
+
+{% block myaccount-active %}{% if not viewing_other %}active{% endif %}{% endblock %}
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/recipe_summaries.js"></script>
+<script src="{{ STATIC_URL }}js/paging.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div id="account-settings-container">
+    <div id="account-settings">
+        {% block account_settings %}
+        <div id="account-image">
+            <img src="{{ MEDIA_URL }}{{ viewed_user.avatar }}">
+        </div>
+        
+        <div id="account-info">
+            <div id="account-name">{{ viewed_user.get_full_name }}</div>
+            <div id="account-rank">
+                <strong>Rang</strong>
+                <br />
+                {{ viewed_user.rank }}{% if not viewing_other %} ({{ viewed_user.recipes_until_next_rank }} recept(en) tot volgende rang){% endif %}
+            </div>
+	        
+	        <div class="account-info-stat" id="veganism">
+				<strong>Voorkeur</strong>
+            	{% if most_used_veganism == 2 %}
+            	<img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegan.png" title="Deze gebruiker heeft vooral veganistische recepten toegevoegd" />
+            	{% elif most_used_veganism == 1 %}
+	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Deze gebruiker heeft vooral vegetarische recepten toegevoegd" />
+	            {% elif most_used_veganism == 0 %}
+	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Deze gebruiker heeft vooral niet-vegetarische recepten toegevoegd" />
+	            {% else %}
+	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegan.png" title="Deze gebruiker heeft nog geen recepten toegevoegd" />
+	            {% endif %}
+	        </div>
+            
+           <div class="account-info-stat">
+	        	<strong>Gemiddelde<br />waardering</strong>
+	        	{% if average_rating %}
+	        	<span class="account-info-stat-img" title="De recepten toegevoegd door deze gebruiker hebben een gemiddelde waardering van {{ average_rating|floatformat:"-2" }} op 5">{% mean_rating average_rating %}</span>
+	        	{% else %}
+	        	<span class="account-info-stat-img" title="Deze gebruiker heeft nog geen recepten toegevoegd">{% mean_rating average_rating %}</span>
+	        	{% endif %}
+	        </div>
+			
+			 <div class="account-info-stat">
+            	<strong>Gemiddelde<br />voetafdruk</strong>
+	        	{% if average_fp %}
+            	<span id="mean-footprint" class="account-info-stat-img" title="De recepten toegevoegd door deze gebruiker hebben een gemiddelde voetafdruk van {{ average_fp|floatformat:"-2" }} kgCO2 per 4 porties"><span id="mean-footprint-text">{{ average_fp|floatformat:"-2" }}</span></span>
+	        	{% else %}
+            	<span id="mean-footprint" class="account-info-stat-img" title="Deze gebruiker heeft nog geen recepten toegevoegd"></span></span>
+	        	{% endif %}
+            </div>
+            
+        </div>
+    </div>
+        
+    
+    <div id="account-recipes">
+        <h3 class="title">Toegevoegde recepten:</h3> 
+        {% if not recipes %}
+        <p>
+            {% if viewing_other %}Deze gebruiker heeft{% else %}Je hebt{% endif %} nog geen recepten toegevoegd!
+        </p>
+        {% else %}    
+        <div id="recipe-summaries-wrapper" class="summaries-wrapper">
+           {% include "includes/recipe_summaries.html" %}
+        </div>
+        {% endif %}
+        {% endblock %}
+    </div>
+    
+    {% if not viewing_other %}
+    <div id="account-settings-links">
+    	<ul>
+    		<li class="{% block public_profile_active %}active{% endblock %}"><a href="/profile/">Publiek Profiel</a></li>
+            <li class="{% block profile_settings_active %}{% endblock %}"><a href="/account/settings/profile/">Profielinstellingen</a></li>
+            <li class="{% block social_settings_active %}{% endblock %}"><a href="/account/settings/social/">Sociale Netwerken</a></li>
+    		<li class="{% block privacy_settings_active %}{% endblock %}"><a href="/account/settings/privacy/">Privacyinstellingen</a></li>
+    	</ul>
+    </div>
+    {% endif %}
+    
+    <br class="clear" />
+</div>
+{% endblock %}

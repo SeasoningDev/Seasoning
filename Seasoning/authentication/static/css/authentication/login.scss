@@ -1,0 +1,43 @@
+#seasoning-login {
+	width: 50%;
+	float: left;
+	border-right: 1px solid #DDD;
+	position: relative;
+}
+
+#seasoning-login form {
+	margin-bottom: 0;
+}
+
+#seasoning-login input[type="text"], #seasoning-login input[type="password"] {
+	width: 60%;
+}
+
+#seasoning-login #extra-login-links a {
+	display: block;
+	font-size: .75em;
+	position: absolute;
+	left: 2px;
+	bottom: 62px;
+}
+
+#seasoning-login input[type="submit"] {
+	margin-top: 10px;
+}
+
+#social-login {
+	width: 45%;
+	float: right;
+	text-align: center;
+	margin-top: 25px;
+}
+
+#login-page-register {
+	text-align: center;
+	padding-top: 50px;
+}
+
+#login-page-register #register-button {
+	margin-top: 10px;
+	font-size: 20px;
+}

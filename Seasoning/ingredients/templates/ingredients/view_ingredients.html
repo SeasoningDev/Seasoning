@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Ingredienten{% endblock %}
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script src="{{ STATIC_URL }}js/paging.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("input.keywords-searchbar").each(function() {
+            $(this).autocomplete({
+                source: "/ingredients/ing_list/",
+                minLength: 2
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block ingredients-active %}active{% endblock %}
+
+{% block content %}
+
+<h2>Ingrediënten zoeken</h2>
+
+<div id="ingredient-search-container">
+	<p>
+		Hier kan je de uitgebreide ingrediëntendatabase van Seasoning raadplegen. Je kan met het onderstaande veld naar specifieke ingrediënten zoeken of gewoon
+		wat rondkijken. Als je op een ingrediënt klikt, verschijnt er meer informatie.
+	</p>
+	
+	<form id="browse-ingredients-form" target="" method="post">
+		{% csrf_token %}
+		
+		<div id="basic-search">
+			{{ form.name }}
+			<button id="keywords-submit" class="nochrome" type="submit">
+				<span class="submit-icon"> </span>
+			</button>
+		</div>
+	</form>
+	
+	<hr id="browse-ingredients-line" />
+	
+	
+	<div id="ingredient-summaries-wrapper" class="summaries-wrapper">
+	   {% include "includes/ingredient_summaries.html" %}
+	</div>
+
+</div>
+{% endblock %}

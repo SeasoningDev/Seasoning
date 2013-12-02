@@ -1,0 +1,181 @@
+{% load compressed %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+	<head>
+		<title>Seasoning | {% block title %}Home{% endblock %}</title>
+		
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="nl-be" />
+		<meta name="ROBOTS" content="ALL" />
+		<meta name="Copyright" content="Seasoning" />
+		<meta name="keywords" content="Seasoning, Duurzaam, Eten, Koken, Ecologisch, Seizoensgebonden, Voetafdruk" />
+		<meta name="description" content="Seasoning berekent automatisch de ecologische voetafdruk van jouw recepten. Vergelijk 
+										  jezelf met anderen en haal samen onze voetafdruk naar beneden!" />
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		{% block default_static_stuff %}
+        <link rel="icon" href="/static/img/logos/favicon.png" type="image/png" />
+		{% compressed_css 'global' %}
+        {% if 'authentication' in request.path %}
+        {% compressed_css 'authentication' %}
+        {% elif 'ingredients' in request.path %}
+        {% compressed_css 'ingredients' %}
+        {% elif 'recipes' in request.path %}
+        {% compressed_css 'recipes' %}
+        {% elif 'faq' in request.path %}
+        {% compressed_css 'faq' %}
+        {% elif 'news' in request.path %}
+        {% compressed_css 'news' %}
+        {% else %}
+        {% compressed_css 'general' %}
+        {% endif %}
+		{% block extra_link %}{% endblock %}
+		
+		<script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>
+		<script src="{{ STATIC_URL }}js/base.js" type="text/javascript"></script>
+		{% endblock %}
+		
+		{% block extra_script %}{% endblock %}
+		
+		{% block extra_head %}{% endblock %}
+		<script>
+			function setHeader() {
+			    if ($(this).width() >= 750) {
+                    $("#header").css("top",Math.max(-160, -$(this).scrollTop()));
+    			} else {
+    			    $("#header").css("top", 0);
+    			}
+			};
+			
+			$(window).scroll(setHeader);
+			$(window).resize(setHeader);
+		</script>
+	</head>
+	
+	<body class="{% block bodyclass %}{% endblock %}">
+        
+        {% block body-hook %}{% endblock %}
+        
+	    <div id="header">
+	        <div id="header-container" class="container">
+	            <div id="logo">
+                    <a href="/"><img src="{{ STATIC_URL }}img/logos/header2.png" /></a>
+                </div>
+                {% if user.is_staff %}
+                <a href="/admin/" style="position:absolute;top:0;right:0;">Admin Pages</a>
+                <a href="/admin/ingredients/list/" style="position:absolute;top:20px;right:0;">Ingredient List</a>
+                <a href="/backup/" style="position:absolute;top:40px;right:0;">Backup Database</a>
+                <a href="/upload/img/" style="position:absolute;top:60px;right:0;">Upload Image</a>
+                {% endif %}
+                <span id="grass-end-left"> </span>
+                <span id="grass"> </span>
+                <span id="grass-end-right"> </span>
+                <div id="nav-container">
+                    <a href="/recipes/"><div class="{% block recipes-active %}{% endblock %} navlink three columns alpha omega">RECEPTEN</div></a>
+                    <a href="/ingredients/"><div class="{% block ingredients-active %}{% endblock %} navlink three columns alpha omega">INGREDIËNTEN</div></a>
+                    <a href="/news/"><div class="{% block news-active %}{% endblock %} navlink three columns alpha omega">NIEUWS</div></a>
+                    <a href="/contribute/"><div class="{% block contribute-active %}{% endblock %} navlink three columns alpha omega">BIJDRAGEN</div></a>
+                    {% if user.is_authenticated %}
+                    <a href="/profile/"><div class="{% block myaccount-active %}{% endblock %} navlink three columns alpha omega">MIJN PROFIEL</div></a>
+                    <a href="/logout/"><div class="navlink three columns alpha omega">AFMELDEN</div></a>
+                    {% else %}
+                    <a href="/register/"><div class="{% block register-active %}{% endblock %} navlink three columns alpha omega">REGISTREREN</div></a>
+                    <a href="/login/"><div class="{% block login-active %}{% endblock %} navlink three columns alpha omega">AANMELDEN</div></a>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div id="content">
+        	{% block header-margin %}
+        	<div id="header-margin"> </div>
+        	{% endblock %}
+        	
+        	<div id="content-container" class="container">
+                {% block messages %}
+            	{% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        {{ message }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endblock %}
+                {% block content-wrapper %}
+                {% block content %}{% endblock %}
+                {% endblock %}
+			</div>
+			<div class="push"> </div>
+		</div>
+        
+        <div id="footer">
+			<div id="footer-container" class="container">
+			    <div id="cc-license" class="small-screen-hidden">
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.nl" target="_blank">
+                        <img alt="Creative Commons Licentie" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
+                    </a>
+                </div>
+                <div id="footer-links" class="small-screen-hidden">
+                    <ul>
+                        <li class="first">
+                            <a href="/about/">Over Seasoning</a>
+                        </li>
+                        <li>
+                            <a href="/contact/">Contact</a>
+                        </li>
+                        <li>
+                            <a href="/thanks/">Dankbetuigingen</a>
+                        </li>
+                        <li>
+                            <a href="/faq/">Help</a>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <a href="/terms/">Voorwaarden</a>
+                        </li>
+                        <li>
+                            <a href="/privacypolicy/">Privacybeleid</a>
+                        </li>
+                        <li>
+                            <a href="/sitemap/">Sitemap</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="social-icons" class="">
+                    <a href="#" id="bookmark-link"><img src="/static/img/icons/favorite-us.png" class="social-logo" alt="Voeg Seasoning toe aan je Favorieten!" /></a>
+                    <a href="http://www.facebook.com/Seasoningbelgium" target="_blank"><img src="/static/img/logos/fb-logo-2.png" class="social-logo" alt="De Facebookpagina van Seasoning" /></a>
+                    <a href="http://www.twitter.com/Seasoningbe" target="_blank"><img src="/static/img/logos/tw-logo.png" class="social-logo" alt="De Twitterpagina van Seasoning" /></a>
+                </div>
+                <div id="footer-links-responsive">
+				    <div class="two columns omega">
+    				    <a href="/about/">Over Seasoning</a>
+    				</div>
+        			<div class="two columns alpha omega">
+        				<a href="/contact/">Contact</a>
+        			</div>
+        			<div class="two columns alpha omega">
+        				<a href="/help/">Help</a>
+        			</div>
+        			<div class="two columns alpha omega">
+        				<a href="/help/">Dankbetuigingen</a>
+        			</div>
+        			<div class="two columns alpha omega">
+        				<a href="/terms/">Voorwaarden</a>
+        			</div>
+        			<div class="two columns alpha omega">
+        				<a href="/privacypolicy/">Privacybeleid</a>
+        			</div>
+        			<div class="two columns alpha">
+        				<a href="/sitemap.xml">Sitemap</a>
+        			</div>
+                </div>
+   			</div>
+		</div>
+	</body>
+</html>

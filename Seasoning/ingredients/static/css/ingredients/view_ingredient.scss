@@ -1,0 +1,64 @@
+@import "variables";
+
+h1.ingredient-title {
+	border-bottom: 2px solid $dark-border-color;
+}
+
+h1.ingredient-title a {
+	font-size: 15px;
+	float: right;
+	line-height: 20px;
+	margin-top: 15px;
+}
+
+h1 #ingredient-synonyms {
+  font-size: 18px; }
+
+#ingredient-image {
+  float: right;
+  width: 40%;
+  margin: 0 0 20px 20px;
+  border: 2px ridge #333; }
+
+.ingredient-availability {
+  position: relative;
+  margin-bottom: 30px; }
+
+.ingredient-availability .month {
+  display: inline-block;
+  width: 65px;
+  text-align: center;
+  border-left: 1px solid #DDD;
+  margin-bottom: 10px;
+  bottom: 0;
+  height: 100%; }
+
+.ingredient-availability .month.alpha {
+  margin-left: 160px;
+  border-left: none; }
+
+.ingredient-availability .country-name {
+  width: 55px; }
+
+.ingredient-availability .available-in {
+  position: absolute;
+  width: 100%; }
+
+.ingredient-availability .availability-indicator {
+  position: absolute;
+  height: 20px;
+  background-size: 18px 18px;
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  box-shadow: inset 0px 2px 8px rgba(255, 255, 255, 0.5), inset -1px -1px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  background-color: #629B31;
+  z-index: 100; }
+
+.ingredient-availability .availability-indicator.preservability {
+  background-color: #E3E848;
+  z-index: 80; }

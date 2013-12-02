@@ -1,0 +1,38 @@
+<style>
+    #google-button {
+        background-color: #F5F5F5;
+        color: #333333;
+        display: block;
+        width: 80%;
+        margin: auto;
+        padding: 5px;
+        text-decoration: none;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: all 0.25s ease-in-out;
+        -webkit-transition: all 0.25s ease-in-out;
+        -moz-transition: all 0.25s ease-in-out;
+    }
+    
+    #google-button:hover {
+        background-color: #DBDBDB
+    }
+    
+    #google-button #google-logo {
+        float: left;
+        height: 20px;
+        margin-left: 5px;
+    }
+</style>
+
+{% if register %}
+    <a id="google-button" href="/auth/google/register/">
+        <img id="google-logo" src="{{ STATIC_URL }}img/social/google-logo.png" />Registreer via Google
+    </a>
+{% else %}
+    <a id="google-button" href="/auth/google/{% if next %}?next={{ next }}{% endif %}">
+        <img id="google-logo" src="{{ STATIC_URL }}img/social/google-logo.png" />Aanmelden met Google
+    </a>
+{% endif %}

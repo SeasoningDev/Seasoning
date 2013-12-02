@@ -1,0 +1,12 @@
+{% load humanize %}
+Dit e-mail adres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op {{ site }}. Indien u 
+dit gedaan hebt, kan u onderstaande url gebruiken om het profiel te activeren:
+
+
+{{ site }}/activate/{{ activation_key }}/
+
+Indien u geen profiel aangemaakt hebt op {{ site }}, kan u deze e-mail gewoon negeren.
+
+Met vriendelijke groeten,
+
+Het Seasoning Team
