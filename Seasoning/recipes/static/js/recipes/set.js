@@ -40,7 +40,11 @@ mySettings = {
         	while ((last_line >= 0) && (lines[last_line] == "")) {
         		last_line--;
         	}
-        	last_line_whitespace = lines[last_line].match(/^\ */);
+        	if ((last_line >= 0)) {
+        		last_line_whitespace = lines[last_line].match(/^\ */);
+        	} else {
+        		last_line_whitespace = "";
+        	}
         	this_line_whitespace = lines[search_line].match(/^\ */);
         	if ((last_line_whitespace >= this_line_whitespace) && (last_line >= 0) && (match = lines[last_line].match(/^\ *\d+\.\ /))) {
         		num = parseInt(match[0].match(/\d+/));
