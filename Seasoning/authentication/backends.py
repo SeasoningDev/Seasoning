@@ -165,11 +165,11 @@ class OAuth2Backend(ModelBackend):
     
     @property
     def connect_url(self):
-        return reverse_lazy('authentication.views.social_connect', args=(self.NAME,))
+        return str(reverse_lazy('authentication.views.social_connect', args=(self.NAME,)))
     
     @property
     def registration_url(self):
-        return reverse_lazy('authentication.views.social_register', args=(self.NAME,))
+        return str(reverse_lazy('authentication.views.social_register', args=(self.NAME,)))
     
     def authenticate(self, **kwargs):
         if self.ID_FIELD is None:
