@@ -7,7 +7,7 @@
 {% block content %}
 
 <div id="seasoning-login">
-	<form action="{% url 'authentication.views.login' %}" method="post" class="login-form">
+	<form action="{% url 'login' %}" method="post" class="login-form">
 		{% csrf_token %}
 
 		{{ form.non_field_errors }}
@@ -50,7 +50,7 @@
     <h2>
         Nog niet geregistreerd?
     </h2>
-    <form action="/register/" method="get">
+    <form action="{% url 'registration' %}" method="get">
         <input id="register-button" type="submit" value="Registreer Nu!" />
     </form>
 </div>
