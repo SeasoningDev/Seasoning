@@ -34,10 +34,9 @@ def account_settings(request, user_id=None):
     
     try:
         averages = user.recipes.accepted().aggregate(Avg('footprint'), Avg('rating'))
+        averages['footprint__avg'] = 4*averages['footprint__avg']
         most_used_veganism = max(user.recipes.accepted().values('veganism').annotate(dcount=Count('veganism')), key=lambda i: i['dcount'])['veganism']
-    except ValueError:
-        averages = {'footprint__avg': None,
-                    'rating__avg': None}
+    except (ValueError, TypeError):
         most_used_veganism = None
     
     # Split the result by 9
@@ -57,7 +56,7 @@ def account_settings(request, user_id=None):
     return render(request, 'authentication/account_settings.html', {'viewed_user': user,
                                                                     'viewing_other': not viewing_self,
                                                                     'recipes': recipes,
-                                                                    'average_fp': 4*averages['footprint__avg'],
+                                                                    'average_fp': averages['footprint__avg'],
                                                                     'average_rating': averages['rating__avg'],
                                                                     'most_used_veganism': most_used_veganism})
 

@@ -1,10 +1,18 @@
 # Django settings for Seasoning project.
 import os
+import sys
 from Seasoning import secrets
 
 # Debug settings
 DEBUG = secrets.DEBUG
 TEMPLATE_DEBUG = secrets.DEBUG
+# Determine if we are running in the test environment.
+TEST = False
+manage_command = filter(lambda x: x.find('manage.py') != -1, sys.argv)
+if len(manage_command) != 0:
+    command = sys.argv.index(manage_command[0]) + 1
+    if command < len(sys.argv):
+        TEST = sys.argv[command] == "test"
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -251,6 +259,8 @@ DDF_DEFAULT_DATA_FIXTURE = 'Seasoning.utils.UserNamesOverwriter'
 
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+if TEST:
+    STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage'
 
 PIPELINE_CSS = {
     'global': {
