@@ -1,5 +1,13 @@
 @import "variables";
-		
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+       -o-border-radius: $radius;
+          border-radius: $radius;
+}
+
 	#header {
 		width: 100%;
 		background-color: $green-main;
@@ -127,17 +135,23 @@
 	
 	#footer-container a {
 		color: white;
-		font-size: 0.7em;
+		font-size: 0.8em;
 		text-decoration: none;
 	}
-	
-	#footer-container #cc-license {
-		float: left;
-		width: 180px;
-	}
+  
+  #footer-container #github-logo {
+    background-color: white;
+    @include border-radius(3px);
+    border: 2px solid #000;
+  }
+  
+  #footer-container #cc-license {
+    float: left;
+    width: 180px;
+  }
 	
 	#footer-container #cc-license img {
-		margin: 10px 0 0;
+		margin: 10px 3px 0;
 	}
 	
 	#footer-container #footer-links {
@@ -170,7 +184,7 @@
 	#footer-container #social-icons img {
 		width: 30px;
 	 	border-radius: 5px;
-	 	margin: 10px 0 0;
+	 	margin: 10px 3px 0;
 	}
 	
 	#footer-container #footer-links-responsive {
