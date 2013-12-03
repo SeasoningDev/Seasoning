@@ -38,7 +38,6 @@ class UsesIngredientModelTestCase(TestCase):
     def setUp(self):
         G(Cuisine, name='Andere')
     
-    @mysqldb_required
     def test_clean(self):
         cuu = G(CanUseUnit)
         cuu.ingredient.accepted = True
@@ -51,7 +50,6 @@ class UsesIngredientModelTestCase(TestCase):
         ui = N(UsesIngredient, ingredient=cuu.ingredient, unit=cuu.unit)
         self.assertEqual(ui.clean(), ui)
     
-    @mysqldb_required
     def test_save(self):
         ing = G(Ingredient, type=Ingredient.BASIC, base_footprint=50, accepted=True)
         cuu = G(CanUseUnit, ingredient=ing, conversion_factor=1)
@@ -59,12 +57,15 @@ class UsesIngredientModelTestCase(TestCase):
         uses = G(UsesIngredient, recipe=rec, ingredient=ing, unit=cuu.unit, amount=1)
         
         self.assertEqual(uses.footprint, 50)
+        self.assertEqual(uses.recipe.footprint, 0)
+        
+        uses.recipe.save()
         self.assertEqual(uses.recipe.footprint, 50)
         
         ing.base_footprint = 5
         ing.save()
-        uses.save()
         
+        uses = UsesIngredient.objects.get(pk=uses.pk)
         self.assertEqual(uses.footprint, 5)
         self.assertEqual(uses.recipe.footprint, 5)
 
@@ -73,7 +74,6 @@ class RecipeModelTestCase(TestCase):
     def setUp(self):
         G(Cuisine, name='Andere')
     
-    @mysqldb_required
     def test_save(self):
         recipe = G(Recipe, footprint=10, portions=1)
         self.assertEqual(recipe.footprint, 0)
@@ -87,7 +87,6 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(recipe.footprint, 50)
         self.assertEqual(recipe.veganism, Ingredient.VEGETARIAN)
     
-    @mysqldb_required
     def test_total_footprint(self):
         recipe = G(Recipe, portions=5)
         self.assertEqual(recipe.total_footprint(), 0)
@@ -98,7 +97,6 @@ class RecipeModelTestCase(TestCase):
         recipe.save()
         self.assertEqual(recipe.total_footprint(), 50)
     
-    @mysqldb_required
     def test_vote(self):
         recipe = G(Recipe)
         
@@ -116,21 +114,17 @@ class RecipeModelTestCase(TestCase):
         
         
     
-    @mysqldb_required
     def test_unvote(self):
         recipe = G(Recipe)
         recipe.vote(recipe.author, 5)
         recipe.unvote(recipe.author)
         self.assertRaises(Vote.DoesNotExist, lambda: Vote.objects.get(recipe=recipe, user=recipe.author))
     
-    @mysqldb_required
     def test_calculate_and_set_rating(self):
         recipe = G(Recipe)
-        G(Vote, score=2)
-        G(Vote, score=4)
-        
-        self.assertEqual(recipe.rating, None)
-        recipe.calculate_and_set_rating()
+        G(Vote, score=2, recipe=recipe)
+        self.assertEqual(recipe.rating, 2)
+        G(Vote, score=4, recipe=recipe)
         self.assertEqual(recipe.rating, 3)
 
 #class RecipeModelsTestCase(TestCase):
