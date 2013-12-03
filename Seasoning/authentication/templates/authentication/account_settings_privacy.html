@@ -4,7 +4,7 @@
 {% block myaccount-active %}active{% endblock %}
         
         {% block account_settings %}
-        <form action="/account/delete/" method="get">
+        <form action="{% url 'delete_profile' %}" method="get">
             <div id="goto-account-delete">
                 <input type="submit" id="goto-account-delete-button" value="Verwijder mijn gegevens van Seasoning" />
             </div>
