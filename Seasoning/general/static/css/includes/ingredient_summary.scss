@@ -22,7 +22,9 @@
   border-top-right-radius: 15px;
   border-top-left-radius: 15px;
   -moz-border-radius-topright: 15px;
-  -moz-border-radius-topleft: 15px; }
+  -moz-border-radius-topleft: 15px;
+  width: 220px;
+  height: 220px; }
 
 .ingredient-summary .ingredient-title {
   height: 45px;
@@ -44,7 +46,13 @@
 #ingredient-summaries-wrapper #search-result-count {
   position: absolute;
   right: 0;
-  top: -30px;
+  top: -21px;
+  font-size: 12px; }
+
+#browse-recipe-summaries-wrapper #search-result-count {
+  position: absolute;
+  right: 0;
+  top: 85px;
   font-size: 12px; }
 
 #ingredient-summaries-wrapper p.sorry {

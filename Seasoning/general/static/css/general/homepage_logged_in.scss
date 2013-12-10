@@ -16,6 +16,7 @@
 }
 
 #quicknav {
+	min-height: 150px;
 	margin: 30px 0 50px;
 }
 
@@ -29,8 +30,12 @@
 	margin-left: 30px;
 }
 
+#quicknav #add-button-wrapper {
+	margin-right: 270px;
+	text-align: center;
+}
+
 #quicknav .add-button {
 	display: inline-block;
 	position: inherit;
-	margin: auto;
 }

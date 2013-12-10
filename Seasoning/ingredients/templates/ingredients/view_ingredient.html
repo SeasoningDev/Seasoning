@@ -23,9 +23,6 @@
     <strong>Categorie:</strong> {{ ingredient.get_category_display }}
 </p>
 <p>
-    <strong>Veganisme:</strong> {{ ingredient.get_veganism_display }}
-</p>
-<p>
     <strong>Voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
 </p>
 <p>
@@ -33,11 +30,9 @@
     {{ ingredient.description|markdown_safe|safe }}
 </p>
 
-<br class="clear" />
-
 {% if ingredient.conservation_tip %}
 <p>
-    <strong>Bewaringstip:</strong><br />
+    <strong>Bewaring:</strong><br />
     {{ ingredient.conservation_tip|markdown_safe|safe }}
 </p>
 {% endif %}
@@ -51,7 +46,7 @@
 
 {% if ingredient.properties %}
 <p>
-    <strong>Speciale Eigenschappen:</strong><br />
+    <strong>Eigenschappen:</strong><br />
     {{ ingredient.properties|markdown_safe|safe }}
 </p>
 {% endif %}

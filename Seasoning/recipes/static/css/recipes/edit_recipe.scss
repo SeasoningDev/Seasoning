@@ -6,6 +6,10 @@ $indicator-height: 30px;
   margin-bottom: 50px;
 }
 
+#edit-recipe #primary-explanation {
+	margin-bottom: 20px;
+}
+
 #edit-recipe #steps-indicator {
   border-bottom: 1px solid $dark-border-color;
   height: $indicator-height;

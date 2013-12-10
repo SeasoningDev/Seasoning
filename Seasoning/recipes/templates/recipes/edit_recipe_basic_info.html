@@ -76,7 +76,7 @@
 </div>
 <div id="right">
     <p>
-        Hier kan je een afbeelding van je recept uploaded. Dit is niet verplicht. 
+        Hier kan je een afbeelding van je recept uploaden. 
     </p>
     <p>
         <label>Kies een afbeelding:</label>
@@ -87,8 +87,6 @@
     <div class="img-frame">
         {% if wizard.form.instance.image.url %}
         <img id="img-preview" src="{{ wizard.form.instance.image.url }}" />
-        {% else %}
-        <img id="img-preview" src="{{ STATIC_URL }}img/no_image.png" />
         {% endif %}
     </div>
 </div>

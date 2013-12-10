@@ -13,7 +13,7 @@
 
 </div>
 
-{% if recipes_otw.length >= 3 %}
+{% if recipes_otw.2 %}
 <div id="recipes-of-the-week">
 	<h2>Recepten van de week</h2>
 	<div class="recipe-of-the-week">
@@ -39,16 +39,16 @@
 {% endif %}
 
 <div id="quicknav">
-	<h2>Snelfuncties</h2>
-	
 	<form action="{% url 'browse_recipes' %}" method="post">
 		{% csrf_token %}
 		<strong>Zoek recepten: </strong><input id="id_search_string" class="keywords-searchbar" type="text" name="search_string" />
 	</form>
-	<p>
+	<p id="add-button-wrapper">
 		<a href="{% url 'add_recipe' %}" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
 	</p>
 </div>
+
+<br class="clear" />
 
     
 {% endblock %}
