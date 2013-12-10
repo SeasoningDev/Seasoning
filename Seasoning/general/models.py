@@ -24,15 +24,15 @@ class RecipeOfTheWeek(models.Model):
     class Meta:
         db_table = 'rotw'
     
-    recipe = models.ForeignKey(Recipe)
+    recipe = models.ForeignKey(Recipe, limit_choices_to={'accepted': True})
     veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, default=Ingredient.VEGAN, unique=True)
     
     last_updated = models.DateField(auto_now=True)
     
     def __unicode__(self):
-        return _('%s is the %s recipe of the week.') % (self.recipe.name, self.veganism.get_display_name())
+        return _('%s is the %s recipe of the week.') % (self.recipe.name, self.get_veganism_display())
     
     def clean(self):
         if not self.recipe.veganism == self.veganism:
-            raise ValidationError(_('The given recipe is not %s.') % self.veganism.get_display_name())
+            raise ValidationError(_('The given recipe is not %s.') % self.get_veganism_display())
         
