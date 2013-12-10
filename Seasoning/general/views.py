@@ -27,13 +27,14 @@ from django.http.response import Http404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from general.forms import ContactForm
-from general.models import StaticPage
-from recipes.models import Recipe
+from general.models import StaticPage, RecipeOfTheWeek
 
 def home(request):
     if request.user.is_authenticated():
-        recipes_otw = Recipe.objects.all()[:3]
-        return render(request, 'homepage_logged_in.html', {'recipes_otw': recipes_otw})
+        recipes_otw = RecipeOfTheWeek.objects.all().order_by('veganism')
+        return render(request, 'homepage_logged_in.html', {'ven_recipe_otw': recipes_otw[1],
+                                                           'veg_recipe_otw': recipes_otw[2],
+                                                           'nveg_recipe_otw': recipes_otw[0]})
     return render(request, 'homepage_not_logged_in.html')
 
 def contribute(request):

@@ -13,24 +13,24 @@
 
 </div>
 
-{% if recipes_otw.length >= 3 %}
+{% if ven_recipe_otw and veg_recipe_otw and nveg_recipe_otw %}
 <div id="recipes-of-the-week">
 	<h2>Recepten van de week</h2>
 	<div class="recipe-of-the-week">
 		<img src="{{ STATIC_URL }}img/icons/vegan.png" class="veganism-icon" />
-		{% with recipe=recipes_otw.0 %}
+		{% with recipe=ven_recipe_otw %}
 		{% include "includes/recipe_summary.html" %}
 		{% endwith %}		
 	</div>
 	<div class="recipe-of-the-week">
 		<img src="{{ STATIC_URL }}img/icons/vegetarian.png" class="veganism-icon" />
-		{% with recipe=recipes_otw.1 %}
+		{% with recipe=veg_recipe_otw %}
 		{% include "includes/recipe_summary.html" %}
 		{% endwith %}	
 	</div>
 	<div class="recipe-of-the-week">
 		<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" class="veganism-icon" />
-		{% with recipe=recipes_otw.2 %}
+		{% with recipe=nveg_recipe_otw %}
 		{% include "includes/recipe_summary.html" %}
 		{% endwith %}	
 	</div>
