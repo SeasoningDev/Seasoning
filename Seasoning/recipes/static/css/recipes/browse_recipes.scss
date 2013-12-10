@@ -160,12 +160,13 @@ form.keywords {
 #browse-recipe-summaries-wrapper {
   width: 720px;
   float: right;
-  margin-top: -10px; }
+  margin-top: -10px;
+  position: relative; }
 
 #browse-recipe-summaries-wrapper #search-result-count {
   position: absolute;
   right: 0;
-  top: 85px;
+  top: -21px;
   font-size: 12px; }
 
 #browse-recipe-summaries-wrapper p.sorry {

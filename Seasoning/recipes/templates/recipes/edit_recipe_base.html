@@ -52,8 +52,8 @@
 	<h2>Recept {% if new_recipe %}Toevoegen{% else %}Aanpassen{% endif %}</h2>
 	
 	<form id="edit-recipe-form" action="" method="post" enctype="{% block form-enctype %}application/x-www-form-urlencoded{% endblock %}">
-        <p>
-    	    Met onderstaande formulieren kan je je eigen recepten aan de databank van Seasoning toevoegen. 
+        <p id="primary-explanation">
+    	    Met onderstaande formulieren kan je je eigen recepten aan Seasoning toevoegen. 
     	</p>
     	
     	<div id="steps-indicator">

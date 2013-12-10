@@ -411,9 +411,10 @@ h1 #recipe-actions {
 
 #comment-list .comment {
   padding-top: 10px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #D5EBC1;
-  transition: all .5s ease-out; }
+  padding-bottom: 20px;
+  border-bottom: 1px solid #EEE;
+  transition: all .5s ease-out;
+  margin-bottom: 10px; }
 
 #comment-list .comment:hover {
   background-color: rgba(118, 186, 59, 0.1);

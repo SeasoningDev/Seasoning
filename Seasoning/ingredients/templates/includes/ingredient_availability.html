@@ -33,7 +33,7 @@
     <div class="available-in" id="available-in-{{ available_in.location }}">
         <span class="location-name">{{ available_in.location.name }}{% if available_in.production_type %} ({{ available_in.production_type }}){% endif %}</span>
         <span class="availability-indicator" 
-              title="Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until}}. Hierbij wordt {{ ingredient.preservation_footprint }} kgCO2 per {{ ingredient.primary_unit.short_name }} per dag uitgestoten.<br />{% endif %}Voetafdruk: {{ available_in.footprint|add:ingredient.base_footprint|floatformat:-2 }} kgCO2 per {{ ingredient.primary_unit.short_name }}">
+              title="Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until}}.<br />{% endif %}Voetafdruk: {{ available_in.footprint|add:ingredient.base_footprint|floatformat:-2 }} kgCO2 per {{ ingredient.primary_unit.short_name }}">
             <span class="available-from">{{ available_in.date_from.month }}</span>
             <span class="available-until">{{ available_in.date_until.month }}</span>
         </span>
