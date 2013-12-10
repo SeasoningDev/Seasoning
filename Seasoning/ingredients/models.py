@@ -123,7 +123,7 @@ class Ingredient(models.Model):
     properties = models.TextField(blank=True)
     source = models.TextField(blank=True)
     
-    # Following ingredients are only used for Seasonal Ingredients
+    # Following fields are only used for Seasonal Ingredients
     # The amount of days an ingredient can be preserved
     preservability = models.IntegerField(default=0)
     preservation_footprint = models.FloatField(default=0)
@@ -132,6 +132,7 @@ class Ingredient(models.Model):
     
     image = ProcessedImageField(processors=[ResizeToFill(350, 350)], format='PNG', upload_to=get_image_filename, default='images/ingredients/no_image.png')
     thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
+    image_source = models.TextField(blank=True)
     
     accepted = models.BooleanField(default=False)
     bramified = models.BooleanField(default=False)
