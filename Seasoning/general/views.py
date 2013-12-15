@@ -31,7 +31,7 @@ from general.models import StaticPage, RecipeOfTheWeek
 
 def home(request):
     if request.user.is_authenticated():
-        recipes_otw = RecipeOfTheWeek.objects.all().order_by('veganism')
+        recipes_otw = RecipeOfTheWeek.objects.select_related('recipe').all().order_by('veganism')
         try:
             return render(request, 'homepage_logged_in.html', {'ven_recipe_otw': recipes_otw[1].recipe,
                                                                'veg_recipe_otw': recipes_otw[2].recipe,
