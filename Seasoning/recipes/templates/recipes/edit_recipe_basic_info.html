@@ -20,15 +20,6 @@
             }
         }
         
-        function updateImage() {
-            $img = $("#img-preview")
-            if ($img.height() <= 0) {
-                $img.attr('src', "/static/img/no_image.png");
-            }
-        }
-        
-        updateImage();
-        
         $("#id_basic_info-image").change(function() {
             readURL(this);
         });
@@ -85,9 +76,7 @@
     </p>
     <br class="clear" />
     <div class="img-frame">
-        {% if wizard.form.instance.image.url %}
-        <img id="img-preview" src="{{ wizard.form.instance.image.url }}" />
-        {% endif %}
+        <img id="img-preview" src="{% if wizard.form.instance.image != wizard.form.instance.default_image_location %}{{ wizard.form.instance.image.url }}{% endif %}" />
     </div>
 </div>
 <br class="clear" />

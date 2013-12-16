@@ -156,6 +156,9 @@ class Ingredient(models.Model):
     def months_preservable(self):
         return self.preservability // 30
     
+    def preservation_footprint_monthly(self):
+        return self.preservation_footprint * 30
+    
     def get_available_ins(self):
         """
         Returns a queryset for all the available in objects belonging to this ingredient
@@ -164,9 +167,9 @@ class Ingredient(models.Model):
         if self.type == Ingredient.BASIC:
             raise self.BasicIngredientException
         elif self.type == Ingredient.SEASONAL:
-            return self.available_in_country.all()
+            return self.available_in_country.all().order_by('footprint')
         elif self.type == Ingredient.SEASONAL_SEA:
-            return self.available_in_sea.all()
+            return self.available_in_sea.all().order_by('footprint')
     
     def get_active_available_ins(self, date=None):
         """
