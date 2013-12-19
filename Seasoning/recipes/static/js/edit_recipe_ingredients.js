@@ -89,12 +89,17 @@ function fix_ingredient_list() {
         }
     });
     
-	// Change a group name when the user presses enter while editing it
-	$("#sortable-ingredients .group input").pressEnter(function() {
-		$(this).blur();
-    });
+	$("#sortable-ingredients .group input").each(function() {
+		// Change a group name when the user presses enter while editing it
+		$(this).pressEnter(function() {
+			$(this).blur();
+		});
+		// When a group name has changed, fix the ingredient list
+		$(this).unbind('blur');
+		$(this).blur(fix_ingredient_list);
+		
+	});
     
-	// When a group name has changed, fix the ingredient list
 	$("#sortable-ingredients .group input").blur(function() {
 		fix_ingredient_list();
     });
@@ -112,11 +117,14 @@ function fix_ingredient_list() {
     });
     
 	// Add delete functionality to group forms 
-	$("#sortable-ingredients .group .delete-button").click(function() {
-		$(this).parents("li").remove();
-		fix_ingredient_list();
-		return false;
-    });
+	$("#sortable-ingredients .group .delete-button").each(function() {
+		$(this).unbind('click');
+		$(this).click(function() {
+			$(this).parents("li").remove();
+			fix_ingredient_list();
+			return false;
+	    });
+	});
     
 	// Add autocomplete functionality to ingredient forms
 	$("input.keywords-searchbar").each(function() {
@@ -124,6 +132,7 @@ function fix_ingredient_list() {
 			source: "/ingredients/ing_list/",
 			minLength: 2
         });
+		$(this).unbind('blur');
 		$(this).blur(function() {
 	    	$.ajax({
 	    		url: '/recipes/ingunits/',
@@ -143,7 +152,7 @@ function fix_ingredient_list() {
 	    				option_string = option_string + ">" + val + "</option>";
 	    				$(option_string).appendTo($options);
 	    			});
-	    		} 
+	    		}
 		    });
 		})
     });

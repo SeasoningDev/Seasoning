@@ -98,7 +98,8 @@ $.fn.formset = function(args) {
  */
 $.fn.pressEnter = function(fn) {
 
-    return this.each(function() {  
+    return this.each(function() {
+    	$(this).unbind('enterPress');
         $(this).bind('enterPress', fn);
         $(this).keydown(function(e) {
             if(e.keyCode == 13)
