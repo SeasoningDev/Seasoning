@@ -13,10 +13,7 @@ mySettings = {
     		type: "POST",
     		data: {data : text},
     		success: function(data) {
-    			if (markdown_preview.length > 0) {
-    	    		markdown_preview.remove();
-    	    	}	
-    			$(data).insertAfter($('div.markdown'));
+    			$('#markdown-preview').html(data);
     		} 
 	    });
     },

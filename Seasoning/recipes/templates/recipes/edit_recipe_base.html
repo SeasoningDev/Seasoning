@@ -31,13 +31,18 @@
         });
         
         var action_is_post = false;
+        var data_changed = false;
         
         $('input[type="submit"]').click(function() {
         	action_is_post = true;
         });
+        
+        $('input, select, textarea').focus(function() {
+        	data_changed = true;
+        });
     
 	    window.onbeforeunload = function(e) {
-	    	if (!action_is_post)
+	    	if (!action_is_post && data_changed)
 		  		return 'Dialog text here.';
 		};
     })
