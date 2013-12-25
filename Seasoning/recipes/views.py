@@ -464,7 +464,7 @@ def get_recipe_footprint_evolution(request):
                 dates = [datetime.date(day=1, month=month, year=ingredients.models.AvailableIn.BASE_YEAR) for month in range(1, 13)]
                 for uses in usess:
                     for i in range(12):
-                        footprints[i] += uses.normalized_footprint(uses.ingredient.footprint(date=dates[i]))
+                        footprints[i] += uses._calculate_footprint(uses.ingredient.footprint(date=dates[i]))
                 footprints = [float('%.2f' % (4*footprint/recipe.portions)) for footprint in footprints]
                 footprints.append(footprints[-1])
                 footprints.insert(0, footprints[0])
