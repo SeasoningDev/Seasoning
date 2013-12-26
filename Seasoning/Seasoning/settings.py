@@ -345,7 +345,10 @@ DEBUG_TOOLBAR_PANELS = (
 )
 
 def show_toolbar(request):
-    return True
+    if request.user.is_staff():
+        return True
+    return False
+
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': show_toolbar
 }
