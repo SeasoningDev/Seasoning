@@ -28,6 +28,8 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from general.forms import ContactForm
 from general.models import StaticPage, RecipeOfTheWeek
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 def home(request):
     if request.user.is_authenticated():
@@ -92,6 +94,8 @@ def contact_form(request, contact_type):
             send_mail('Contact met Seasoning.be', message_text_feedback, 
                       'noreply@seasoning.be',
                       [email], fail_silently=True)
+            
+            messages.add_message(request, messages.INFO, _('Your contact form was submitted succesfully.'))
             
             return redirect('/')
     else:
