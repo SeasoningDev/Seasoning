@@ -34,5 +34,4 @@ class RecipeOfTheWeek(models.Model):
     
     def clean(self):
         if not self.recipe.veganism == self.veganism:
-            raise ValidationError(_('The given recipe is not {recipe_veganism}.').format(recipe_veganism=self.get_veganism_display())
-        
+            raise ValidationError(_('The given recipe is not {recipe_veganism}.').format(recipe_veganism=self.get_veganism_display()))
