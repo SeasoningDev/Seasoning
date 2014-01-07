@@ -22,7 +22,7 @@ class ShownImageInput(ClearableFileInput):
     the file input field
     
     """
-    initial_text = _(' ')
+    initial_text = ' '
     
     def render(self, name, value, attrs=None):
         substitutions = {
