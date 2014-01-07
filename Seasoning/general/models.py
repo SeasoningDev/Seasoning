@@ -2,6 +2,7 @@ from django.db import models
 from recipes.models import Recipe
 from ingredients.models import Ingredient
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 class StaticPage(models.Model):
     
