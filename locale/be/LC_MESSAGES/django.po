@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"Report-Msgid-Bugs-To: bram.somers@seasoning.be\n"
-"POT-Creation-Date: 2014-01-07 14:29+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-07 16:52+0100\n"
 "PO-Revision-Date: 2014-01-07 14:46+0100\n"
 "Last-Translator: Joep Driesen <joep.driesen@seasoning.be>\n"
 "Language-Team: Dutch <LL@li.org>\n"
@@ -169,18 +169,19 @@ msgstr ""
 msgid "You already have an account!"
 msgstr ""
 
-#: Seasoning/authentication/views/registration_views.py:151
+#: Seasoning/authentication/views/registration_views.py:152
 msgid ""
 "A new activation email has been sent to {email_address}. This email should "
+"arrive within 15 minutes. Please be sure to check your Spam/Junk folder."
 msgstr ""
 
-#: Seasoning/authentication/views/registration_views.py:191
+#: Seasoning/authentication/views/registration_views.py:190
 msgid "Your account has been successfully activated. Have fun!"
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:38
 #: Seasoning/authentication/views/social_auth_views.py:139
-msgid "Could not access your "
+msgid "Could not access your {social_network} Information. Please try again."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:41
@@ -189,56 +190,93 @@ msgid "Something went wrong. Check URL for error."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:61
-#: Seasoning/authentication/views/social_auth_views.py:208
-#: Seasoning/authentication/views/social_auth_views.py:265
-msgid "You cannot use this type of "
+msgid ""
+"You cannot use this type of {social_network} account on Seasoning. Please "
+"try another..."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:80
-msgid "The email corresponding to your "
+msgid ""
+"The email corresponding to your {social_network} account is already in use "
+"on Seasoning. "
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:89
-#: Seasoning/authentication/views/social_auth_views.py:121
-msgid "Your "
+msgid ""
+"Your {social_network} account has not been connected to Seasoning yet. "
+"Please take a minute to register."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:93
 #: Seasoning/authentication/views/social_auth_views.py:125
 #: Seasoning/authentication/views/social_auth_views.py:172
 #: Seasoning/authentication/views/social_auth_views.py:294
-msgid "An error occurred while checking your identity with "
+msgid ""
+"An error occurred while checking your identity with {social_network}. Please "
+"try again."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:110
 #: Seasoning/authentication/views/social_auth_views.py:161
-msgid "You cannot connect this type of "
+msgid ""
+"You cannot connect this type of {social_network} account to your Seasoning "
+"account. Please try another..."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:118
-msgid "This "
+msgid "This {social_network} account is already connected to another account."
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:121
+msgid ""
+"Your {social_network} account has been successfully connected to your "
+"Seasoning account!"
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:183
-msgid "You can only disconnect your "
+msgid ""
+"You can only disconnect your {social_network} account if your password has "
+"been set."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:186
-msgid "Your Seasoning account has been disconnected from your "
+msgid ""
+"Your Seasoning account has been disconnected from your {social_network} "
+"account."
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:208
+#: Seasoning/authentication/views/social_auth_views.py:265
+msgid ""
+"You cannot use this type of {social_network} account to register on "
+"Seasoning. Please try another..."
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:214
 #: Seasoning/authentication/views/social_auth_views.py:271
-msgid "A user has already registered with your "
+msgid ""
+"A user has already registered with your {social_network} account. If this is "
+"you, please log in, otherwise, contact an administrator"
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:221
-#: Seasoning/authentication/views/social_auth_views.py:278
-msgid "A user has already registered on Seasoning with the email in your "
+msgid ""
+"A user has already registered on Seasoning with the email in your "
+"{social_network}. If this is your account, would you like to connect it to "
+"your {social_network}account?"
 msgstr ""
 
 #: Seasoning/authentication/views/social_auth_views.py:238
-msgid "You have successfully registered your "
+msgid ""
+"You have successfully registered your {social_network} account on Seasoning. "
+"Have fun!"
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:278
+msgid ""
+"A user has already registered on Seasoning with the email in your "
+"{social_network}. If this is your account, please log in to connect it to "
+"your {social_network} account?"
 msgstr ""
 
 #: Seasoning/faq/models.py:9
@@ -281,11 +319,11 @@ msgstr ""
 msgid "topic"
 msgstr ""
 
-#: Seasoning/general/models.py:32
+#: Seasoning/general/models.py:33
 msgid "{recipe_name} is the {recipe_veganism} recipe of the week."
 msgstr ""
 
-#: Seasoning/general/models.py:36
+#: Seasoning/general/models.py:37
 msgid "The given recipe is not {recipe_veganism}."
 msgstr ""
 
