@@ -148,9 +148,9 @@ def resend_activation_email(request):
             # given email
             form.cleaned_data['email'].send_activation_email(site)
             
-            messages.add_message(request, messages.INFO, _('A new activation email has been sent to %s. This email should '
+            messages.add_message(request, messages.INFO, _('A new activation email has been sent to {email_address}. This email should '
                                                            'arrive within 15 minutes. Please be sure to check your Spam/Junk '
-                                                           'folder.'))
+                                                           'folder.')).format(email_address=form.cleaned_data['email'])
             return redirect(home)
         
     else:
