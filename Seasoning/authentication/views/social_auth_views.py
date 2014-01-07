@@ -35,7 +35,7 @@ def social_auth(request, backend):
         error_reason = request.GET.get(backend.ERROR_REASON_PARAM, '')
         if error_reason == backend.ACCESS_DENIED_STRING:
             # User denied us access to his profile...
-            messages.add_message(request, messages.INFO, _('Could not access your ' + backend.name() + ' Information. Please try again.'))            
+            messages.add_message(request, messages.INFO, _('Could not access your {social_network} Information. Please try again.').format(social_network=backend.name()))            
             return redirect(reverse_lazy('login'))
         else:
             messages.add_message(request, messages.INFO, _('Something went wrong. Check URL for error.'))
@@ -58,7 +58,7 @@ def social_auth(request, backend):
             try:
                 user_info = backend.get_user_info(access_token)
             except PermissionDenied:
-                messages.add_message(request, messages.INFO, _('You cannot use this type of ' + backend.name() + ' account on Seasoning. Please try another...'))            
+                messages.add_message(request, messages.INFO, _('You cannot use this type of {social_network} account on Seasoning. Please try another...').format(social_network=backend.name()))            
                 return redirect(reverse_lazy('login'))
             
             if user_info:
@@ -77,20 +77,20 @@ def social_auth(request, backend):
                     user = User.objects.get(email=user_info['email'])
                     # A user with the given email has been found. Prompt the user to
                     # connect his social network account to his Seasoning account
-                    messages.add_message(request, messages.INFO, _('The email corresponding to your ' + backend.name() + ' account is already in use on Seasoning. '
-                                                                   'If this account belongs to you, please log in to connect it to your ' + backend.name() + ' account, '
-                                                                   'otherwise, please contact an administrator.'))
+                    messages.add_message(request, messages.INFO, _('The email corresponding to your {social_network} account is already in use on Seasoning. '
+                                                                   'If this account belongs to you, please log in to connect it to your {social_network} account, '
+                                                                   'otherwise, please contact an administrator.').format(social_network=backend.name()))
                     # The user is probably not logged in at this point, so he will be asked to log
                     # in first before connecting his social network account to his Seasoning account.
                     return redirect(backend.connect_url)
                 except User.DoesNotExist:
                     # A user with the given email was not found. Prompt the user to register
                     # at Seasoning using his social network account
-                    messages.add_message(request, messages.INFO, _('Your ' + backend.name() + ' account has not been connected to Seasoning yet. Please take a minute to register.'))
+                    messages.add_message(request, messages.INFO, _('Your {social_network} account has not been connected to Seasoning yet. Please take a minute to register.'))
                     return redirect(backend.registration_url)
     
     # The code or access token was not correct or we were unable to connect to the social network. Please try again later
-    messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with ' + backend.name() + '. Please try again.'))
+    messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with {social_network}. Please try again.').format(social_network=backend.name()))
     return redirect(reverse_lazy('login'))
 
 @login_required
@@ -107,7 +107,7 @@ def social_connect(request, backend):
             try:
                 user_info = backend.get_user_info(access_token)
             except PermissionDenied:
-                messages.add_message(request, messages.INFO, _('You cannot connect this type of ' + backend.name() + ' account to your Seasoning account. Please try another...'))            
+                messages.add_message(request, messages.INFO, _('You cannot connect this type of {social_network} account to your Seasoning account. Please try another...').format(social_network=backend.name()))            
                 return redirect('/login/')
             if user_info:
                 # Access token was valid and we have received the users' info
@@ -115,14 +115,14 @@ def social_connect(request, backend):
                 user = authenticate(**{backend.ID_FIELD: user_info['id']})
                 if user:
                     # User already has an account on Seasoning, so we can't connect it to another one
-                    messages.add_message(request, messages.INFO, _('This ' + backend.name() + ' account is already connected to another account.'))
+                    messages.add_message(request, messages.INFO, _('This {social_network} account is already connected to another account.').format(social_network=backend.name()))
                 else:
                     backend.connect_user(request.user, user_info['id'])
-                    messages.add_message(request, messages.INFO, _('Your ' + backend.name() + ' account has been successfully connected to your Seasoning account!'))
+                    messages.add_message(request, messages.INFO, _('Your {social_network} account has been successfully connected to your Seasoning account!').format(social_network=backend.name()))
                     return redirect(home)
             else:
                 # Invalid access token or something else went wrong
-                messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with ' + backend.name() + '. Please try again.'))
+                messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with {social_network}. Please try again.').format(social_network=backend.name()))
     
     # User wants to connect his social account to his Seasoning account. Get the neccessary information
     # He either did something wrong while posting his response, or has not had the change to post it yet.
@@ -136,7 +136,7 @@ def social_connect(request, backend):
         error_reason = request.GET.get(backend.ERROR_REASON_PARAM, '')
         if error_reason == backend.ACCESS_DENIED_STRING:
             # User denied us access to his profile...
-            messages.add_message(request, messages.INFO, _('Could not access your ' + backend.name() + ' Information. Please try again.'))            
+            messages.add_message(request, messages.INFO, _('Could not access your {social_network} Information. Please try again.').format(social_network=backend.name()))            
             return redirect('/account/settings/social/')
         else:
             messages.add_message(request, messages.INFO, _('Something went wrong. Check URL for error.'))
@@ -158,7 +158,7 @@ def social_connect(request, backend):
             try:
                 user_info = backend.get_user_info(access_token)
             except PermissionDenied:
-                messages.add_message(request, messages.INFO, _('You cannot connect this type of ' + backend.name() + ' account to your Seasoning account. Please try another...'))            
+                messages.add_message(request, messages.INFO, _('You cannot connect this type of {social_network} account to your Seasoning account. Please try another...').format(social_network=backend.name()))            
                 return redirect('/login/')
             
             if user_info:
@@ -169,7 +169,7 @@ def social_connect(request, backend):
                 context.update(user_info)
                 return render(request, 'authentication/social_connect.html', context)
         
-        messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with ' + backend.name() + '. Please try again.'))
+        messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with {social_network}. Please try again.').format(social_network=backend.name()))
         return redirect('/profile/')
     
 @login_required
@@ -180,10 +180,10 @@ def social_disconnect(request, backend):
     if request.user.password == '!' and not (request.user.google_id and request.user.facebook_id):
         # The user does not have both social account connected, and has not set his password. If he disconnects this
         # social network, he will not be able to log in
-        messages.add_message(request, messages.INFO, _('You can only disconnect your ' + backend.name() + ' account if your password has been set.'))
+        messages.add_message(request, messages.INFO, _('You can only disconnect your {social_network} account if your password has been set.').format(social_network=backend.name()))
     else:
         backend.disconnect_user(request.user)
-        messages.add_message(request, messages.INFO, _('Your Seasoning account has been disconnected from your ' + backend.name() + ' account.'))
+        messages.add_message(request, messages.INFO, _('Your Seasoning account has been disconnected from your {social_network} account.').format(social_network=backend.name()))
     return redirect('/profile/')
 
 
@@ -205,20 +205,20 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
                 try:
                     user_info = backend.get_user_info(access_token)
                 except PermissionDenied:
-                    messages.add_message(request, messages.INFO, _('You cannot use this type of ' + backend.name() + ' account to register on Seasoning. Please try another...'))            
+                    messages.add_message(request, messages.INFO, _('You cannot use this type of {social_network} account to register on Seasoning. Please try another...').format(social_network=backend.name()))            
                     return redirect('/register/')
                 if user_info:
                     try:
                         # Check if a user with this social id already exists
                         User.objects.get(**{backend.ID_FIELD: user_info['id']})
-                        messages.add_message(request, messages.INFO, _('A user has already registered with your ' + backend.name() + ' account. If this is you, please log in, otherwise, contact an administrator'))
+                        messages.add_message(request, messages.INFO, _('A user has already registered with your {social_network} account. If this is you, please log in, otherwise, contact an administrator').format(social_network=backend.name()))
                         return redirect('/login/')
                     except User.DoesNotExist:
                         pass
                     try:
                         # Check if a user with this Facebook email is already registered
                         User.objects.get(email=user_info['email'])
-                        messages.add_message(request, messages.INFO, _('A user has already registered on Seasoning with the email in your ' + backend.name() + '. If this is your account, would you like to connect it to your ' + backend.name() + 'account?'))
+                        messages.add_message(request, messages.INFO, _('A user has already registered on Seasoning with the email in your {social_network}. If this is your account, would you like to connect it to your {social_network}account?').format(social_network=backend.name()))
                         return redirect(backend.connect_url)
                     except User.DoesNotExist:
                         # A user with this Google email does not exist, so we will register a new one
@@ -235,7 +235,7 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
                     # And log him in, because we don't need to validate his information
                     user = authenticate(**{backend.ID_FIELD: user_info['id']})
                     auth_login(request, user)
-                    messages.add_message(request, messages.INFO, _('You have successfully registered your ' + backend.name() + ' account on Seasoning. Have fun!'))            
+                    messages.add_message(request, messages.INFO, _('You have successfully registered your {social_network} account on Seasoning. Have fun!').format(social_network=backend.name()))            
                     return redirect(home)
                 # If we're here, we had a faulty access token. Set the access token to None so as not to get caught in the if condition below and display the error
                 # message as expected
@@ -262,20 +262,20 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
         try:
             user_info = backend.get_user_info(access_token)
         except PermissionDenied:
-            messages.add_message(request, messages.INFO, _('You cannot use this type of ' + backend.name() + ' account to register on Seasoning. Please try another...'))            
+            messages.add_message(request, messages.INFO, _('You cannot use this type of {social_network} account to register on Seasoning. Please try another...').format(social_network=backend.name()))            
             return redirect('/register/')
         
         try:
             # Check if a user with this social id already exists
             User.objects.get(**{backend.ID_FIELD: user_info['id']})
-            messages.add_message(request, messages.INFO, _('A user has already registered with your ' + backend.name() + ' account. If this is you, please log in, otherwise, contact an administrator'))
+            messages.add_message(request, messages.INFO, _('A user has already registered with your {social_network} account. If this is you, please log in, otherwise, contact an administrator').format(social_network=backend.name()))
             return redirect('/login/')
         except User.DoesNotExist:
             pass
         try:
             # Check if a user with this Facebook email is already registered
             User.objects.get(email=user_info['email'])
-            messages.add_message(request, messages.INFO, _('A user has already registered on Seasoning with the email in your ' + backend.name() + '. If this is your account, please log in to connect it to your ' + backend.name() + ' account?'))
+            messages.add_message(request, messages.INFO, _('A user has already registered on Seasoning with the email in your {social_network}. If this is your account, please log in to connect it to your {social_network} account?').format(social_network=backend.name()))
             return redirect(backend.connect_url)
         except User.DoesNotExist:
             # A user with this Google email does not exist, so we will register a new one
@@ -291,5 +291,5 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
             return render(request, 'authentication/social_register.html', context)
                     
     # If we're here, something above must have gone wrong...
-    messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with ' + backend.name() + '. Please try again.'))
+    messages.add_message(request, messages.INFO, _('An error occurred while checking your identity with {social_network}. Please try again.').format(social_network=backend.name()))
     return redirect(backend.registration_url)
