@@ -30,7 +30,7 @@
     
     <span class="number-of-groups" style="display:none;">{{ ingredient.get_available_ins|length }}</span>
     <span class="available-in-preservability" style="display:none;">{{ ingredient.preservability }}</span>
-    {% for available_in in ingredient.get_available_ins %}
+    {% for available_in in ingredient.get_available_ins_sorted %}
     <div class="available-in" id="available-in-{{ available_in.location }}">
         <span class="location-name">{{ available_in.location.name }}{% if available_in.production_type %} ({{ available_in.production_type }}){% endif %}</span>
         <span class="availability-indicator" 

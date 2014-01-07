@@ -44,7 +44,8 @@ def view_ingredient(request, ingredient_id):
     try:
         ingredient = Ingredient.objects.get(pk=ingredient_id)
     except Ingredient.DoesNotExist:
-        raise Http404    
+        raise Http404
+    
     return render(request, 'ingredients/view_ingredient.html', {'ingredient': ingredient})
 
 
