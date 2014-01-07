@@ -2,7 +2,6 @@ from django.db import models
 from recipes.models import Recipe
 from ingredients.models import Ingredient
 from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ValidationError
 
 class StaticPage(models.Model):
     
@@ -30,9 +29,9 @@ class RecipeOfTheWeek(models.Model):
     last_updated = models.DateField(auto_now=True)
     
     def __unicode__(self):
-        return _('%s is the %s recipe of the week.') % (self.recipe.name, self.get_veganism_display())
+        return _('{recipe_name} is the {recipe_veganism} recipe of the week.').format(recipe_name=self.recipe.name, recipe_veganism=self.get_veganism_display())
     
     def clean(self):
         if not self.recipe.veganism == self.veganism:
-            raise ValidationError(_('The given recipe is not %s.') % self.get_veganism_display())
+            raise ValidationError(_('The given recipe is not {recipe_veganism}.').format(recipe_veganism=self.get_veganism_display())
         
