@@ -167,9 +167,12 @@ class Ingredient(models.Model):
         if self.type == Ingredient.BASIC:
             raise self.BasicIngredientException
         elif self.type == Ingredient.SEASONAL:
-            return self.available_in_country.all().order_by('footprint')
+            return self.available_in_country.all()
         elif self.type == Ingredient.SEASONAL_SEA:
-            return self.available_in_sea.all().order_by('footprint')
+            return self.available_in_sea.all()
+    
+    def get_available_ins_sorted(self):
+        return self.get_available_ins().order_by('footprint')
     
     def get_active_available_ins(self, date=None):
         """
@@ -470,7 +473,11 @@ class AvailableIn(models.Model):
             date = date.replace(year=self.BASE_YEAR)
         
         if date < self.date_from:
-            date = date.replace(year=self.BASE_YEAR + 1)
+            try:
+                date = date.replace(year=self.BASE_YEAR + 1)
+            except ValueError:
+                # This probably means we hit 29th feb.
+                date = date.replace(day=date.day-1, year=self.BASE_YEAR + 1)
             
         if self.date_from <= self.date_until:
             # 2000      from          until  2001
