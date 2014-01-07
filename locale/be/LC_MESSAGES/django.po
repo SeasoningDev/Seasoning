@@ -1,0 +1,353 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-07 14:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: Seasoning/authentication/forms.py:63 Seasoning/authentication/models.py:77
+msgid ""
+"30 characters or fewer, only letters allowed. Your name will be used to "
+"identify you on Seasoning."
+msgstr ""
+
+#: Seasoning/authentication/forms.py:68 Seasoning/authentication/models.py:82
+msgid ""
+"50 characters or fewer, only letters allowed Your name will be used to "
+"identify you on Seasoning."
+msgstr ""
+
+#: Seasoning/authentication/forms.py:72
+msgid ""
+"Your email will never be sold or shared. It will not be shown on the site, "
+"unless you enable this option.<br/>An email will be sent to this email "
+"address to verify your account. You will not receive any further emails from "
+"Seasoning."
+msgstr ""
+
+#: Seasoning/authentication/forms.py:81 Seasoning/authentication/forms.py:125
+msgid "Password (again)"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:82
+msgid "Please enter the same password as above for verification purposes."
+msgstr ""
+
+#: Seasoning/authentication/forms.py:86
+msgid ""
+"Your birthday will be used for age validation and possible some anonymous "
+"statistics about the users of Seasoning."
+msgstr ""
+
+#: Seasoning/authentication/forms.py:91 Seasoning/general/forms.py:16
+msgid "You must enter the correct ReCaptcha characters"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:95
+msgid ""
+"I have read and agree to the <a target=\"_blank\" href=\"/terms/\">Terms of "
+"Service</a>"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:96 Seasoning/authentication/forms.py:129
+msgid "You must agree to the terms to register"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:109 Seasoning/authentication/forms.py:142
+msgid "The two password fields didn't match."
+msgstr ""
+
+#: Seasoning/authentication/forms.py:123
+msgid "Password"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:128
+msgid "I have read and agree to the Terms of Service"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:159 Seasoning/authentication/forms.py:160
+msgid "Please enter a valid email address"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:167
+msgid "The given email address was not found"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:170
+msgid ""
+"The account corresponding to this email address has already been activated"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:174
+msgid ""
+"The account corresponding to this email address has expired due to prolonged "
+"inactivity"
+msgstr ""
+
+#: Seasoning/authentication/forms.py:188
+msgid ""
+"This account has not been activated yet, so you may not log in at this time. "
+"If you haven't received an activation email for 15 minutes after "
+"registering, you can use <a href=\"/activate/resend/\">this form</a> to "
+"resend an activation email."
+msgstr ""
+
+#: Seasoning/authentication/models.py:70
+msgid "email address"
+msgstr ""
+
+#: Seasoning/authentication/models.py:76
+msgid "given name"
+msgstr ""
+
+#: Seasoning/authentication/models.py:79
+msgid "Enter a valid Given Name."
+msgstr ""
+
+#: Seasoning/authentication/models.py:81
+msgid "surname"
+msgstr ""
+
+#: Seasoning/authentication/models.py:84
+msgid "Enter a valid Surname."
+msgstr ""
+
+#: Seasoning/authentication/models.py:89
+msgid "password"
+msgstr ""
+
+#: Seasoning/authentication/models.py:100
+msgid "date joined"
+msgstr ""
+
+#: Seasoning/authentication/models.py:101
+msgid "last login"
+msgstr ""
+
+#: Seasoning/authentication/models.py:434
+#: Seasoning/authentication/models.py:596
+msgid "activation key"
+msgstr ""
+
+#: Seasoning/authentication/models.py:440
+msgid "registration profile"
+msgstr ""
+
+#: Seasoning/authentication/models.py:441
+msgid "registration profiles"
+msgstr ""
+
+#: Seasoning/authentication/views/account_views.py:85
+msgid ""
+"An email has been sent to the new email address provided by you. Please "
+"follow the instructions "
+msgstr ""
+
+#: Seasoning/authentication/views/account_views.py:121
+msgid "Your email address has been successfully changed."
+msgstr ""
+
+#: Seasoning/authentication/views/account_views.py:141
+msgid "Your password has been successfully changed."
+msgstr ""
+
+#: Seasoning/authentication/views/registration_views.py:93
+msgid "You already have an account!"
+msgstr ""
+
+#: Seasoning/authentication/views/registration_views.py:151
+msgid ""
+"A new activation email has been sent to {email_address}. This email should "
+msgstr ""
+
+#: Seasoning/authentication/views/registration_views.py:191
+msgid "Your account has been successfully activated. Have fun!"
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:38
+#: Seasoning/authentication/views/social_auth_views.py:139
+msgid "Could not access your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:41
+#: Seasoning/authentication/views/social_auth_views.py:142
+msgid "Something went wrong. Check URL for error."
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:61
+#: Seasoning/authentication/views/social_auth_views.py:208
+#: Seasoning/authentication/views/social_auth_views.py:265
+msgid "You cannot use this type of "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:80
+msgid "The email corresponding to your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:89
+#: Seasoning/authentication/views/social_auth_views.py:121
+msgid "Your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:93
+#: Seasoning/authentication/views/social_auth_views.py:125
+#: Seasoning/authentication/views/social_auth_views.py:172
+#: Seasoning/authentication/views/social_auth_views.py:294
+msgid "An error occurred while checking your identity with "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:110
+#: Seasoning/authentication/views/social_auth_views.py:161
+msgid "You cannot connect this type of "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:118
+msgid "This "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:183
+msgid "You can only disconnect your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:186
+msgid "Your Seasoning account has been disconnected from your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:214
+#: Seasoning/authentication/views/social_auth_views.py:271
+msgid "A user has already registered with your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:221
+#: Seasoning/authentication/views/social_auth_views.py:278
+msgid "A user has already registered on Seasoning with the email in your "
+msgstr ""
+
+#: Seasoning/authentication/views/social_auth_views.py:238
+msgid "You have successfully registered your "
+msgstr ""
+
+#: Seasoning/faq/models.py:9
+msgid "Topic"
+msgstr ""
+
+#: Seasoning/faq/models.py:10
+msgid "Topics"
+msgstr ""
+
+#: Seasoning/faq/models.py:12
+msgid "name"
+msgstr ""
+
+#: Seasoning/faq/models.py:19
+msgid "Frequent asked question"
+msgstr ""
+
+#: Seasoning/faq/models.py:20
+msgid "Frequently asked questions"
+msgstr ""
+
+#: Seasoning/faq/models.py:22
+msgid "question"
+msgstr ""
+
+#: Seasoning/faq/models.py:22
+msgid "The actual question itself."
+msgstr ""
+
+#: Seasoning/faq/models.py:23
+msgid "answer"
+msgstr ""
+
+#: Seasoning/faq/models.py:23
+msgid "The answer text."
+msgstr ""
+
+#: Seasoning/faq/models.py:24
+msgid "topic"
+msgstr ""
+
+#: Seasoning/general/models.py:32
+msgid "{recipe_name} is the {recipe_veganism} recipe of the week."
+msgstr ""
+
+#: Seasoning/general/models.py:36
+msgid "The given recipe is not {recipe_veganism}."
+msgstr ""
+
+#: Seasoning/general/views.py:98
+msgid "Your contact form was submitted succesfully."
+msgstr ""
+
+#: Seasoning/ingredients/models.py:291
+msgid ""
+"This ingredient is not always available somewhere, and should not be "
+"accepted."
+msgstr ""
+
+#: Seasoning/news/models.py:24
+msgid "An image of this news item."
+msgstr ""
+
+#: Seasoning/recipes/models.py:103
+msgid "The names of the recipe."
+msgstr ""
+
+#: Seasoning/recipes/models.py:108
+msgid "The type of course this recipe will provide."
+msgstr ""
+
+#: Seasoning/recipes/models.py:110
+msgid "The type of cuisine this recipe represents."
+msgstr ""
+
+#: Seasoning/recipes/models.py:112
+msgid "A few sentences describing the recipe (Maximum 140 characters)."
+msgstr ""
+
+#: Seasoning/recipes/models.py:113
+msgid ""
+"The average amount of people that can be fed by this recipe using the given "
+"amounts of ingredients."
+msgstr ""
+
+#: Seasoning/recipes/models.py:115
+msgid ""
+"The time needed to prepare this recipe where you are actually doing "
+"something."
+msgstr ""
+
+#: Seasoning/recipes/models.py:116
+msgid ""
+"The time needed to prepare this recipe where you can do something else (e.g. "
+"water is boiling)"
+msgstr ""
+
+#: Seasoning/recipes/models.py:123
+msgid ""
+"Extra info about the ingredients or needed tools (e.g. \"You will need a "
+"mixer for this recipe\" or \"Use big potatoes\")"
+msgstr ""
+
+#: Seasoning/recipes/models.py:124
+msgid "Detailed instructions for preparing this recipe."
+msgstr ""
+
+#: Seasoning/recipes/models.py:128
+msgid ""
+"An image of this recipe. Please do not use copyrighted images, these will be "
+"removed as quick as possible."
+msgstr ""
