@@ -17,47 +17,49 @@
     {% if user.is_staff %}<a href="/admin/ingredients/ingredient/{{ ingredient.id }}/">Aanpassen</a>{% endif %}
 </h1>
 
-<img id="ingredient-image" src="{{ ingredient.image.url }}">
-
-<p>
-    <strong>Categorie:</strong> {{ ingredient.get_category_display }}
-</p>
-<p>
-    <strong>Voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
-</p>
-<p>
-    <strong>Beschrijving:</strong><br />
-    {{ ingredient.description|markdown_safe|safe }}
-</p>
-
-{% if ingredient.conservation_tip %}
-<p>
-    <strong>Bewaring:</strong><br />
-    {{ ingredient.conservation_tip|markdown_safe|safe }}
-</p>
-{% endif %}
-
-{% if ingredient.preparation_tip %}
-<p>
-    <strong>Bereidingstip:</strong><br />
-    {{ ingredient.preparation_tip|markdown_safe|safe }}
-</p>
-{% endif %}
-
-{% if ingredient.properties %}
-<p>
-    <strong>Eigenschappen:</strong><br />
-    {{ ingredient.properties|markdown_safe|safe }}
-</p>
-{% endif %}
-
-
-    
-{% include "includes/ingredient_availability.html" %}
-
-<div>
-    <strong>Bronnen:</strong>
-    {{ ingredient.source|linebreaks }}
+<div id="ingredient-wrapper">
+	<img id="ingredient-image" src="{{ ingredient.image.url }}">
+	
+	<p>
+	    <strong>Categorie:</strong> {{ ingredient.get_category_display }}
+	</p>
+	<p>
+	    <strong>Voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
+	</p>
+	<p>
+	    <strong>Beschrijving:</strong><br />
+	    {{ ingredient.description|markdown_safe|safe }}
+	</p>
+	
+	{% if ingredient.conservation_tip %}
+	<p>
+	    <strong>Bewaring:</strong><br />
+	    {{ ingredient.conservation_tip|markdown_safe|safe }}
+	</p>
+	{% endif %}
+	
+	{% if ingredient.preparation_tip %}
+	<p>
+	    <strong>Bereidingstip:</strong><br />
+	    {{ ingredient.preparation_tip|markdown_safe|safe }}
+	</p>
+	{% endif %}
+	
+	{% if ingredient.properties %}
+	<p>
+	    <strong>Eigenschappen:</strong><br />
+	    {{ ingredient.properties|markdown_safe|safe }}
+	</p>
+	{% endif %}
+	
+	
+	    
+	{% include "includes/ingredient_availability.html" %}
+	
+	<div>
+	    <strong>Bronnen:</strong>
+	    {{ ingredient.source|linebreaks }}
+	</div>
 </div>
 
 {% endblock %}
