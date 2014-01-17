@@ -81,13 +81,14 @@
   display: block;
   top: -45px;
   right: 10px;
-  height: 48px;
-  width: 75px;
-  padding: 26px 0 0 25px;
+  height: 46px;
+  width: 100px;
+  padding: 28px 0 0 0;
   font-size: 20px;
   font-weight: 10;
   background-image: url("/static/img/icons/cloud.png");
-  background-size: 100px 74px; }
+  background-size: 100px 74px; 
+  text-align: center; }
 
 .recipe-title .title {
   margin-top: 10px; }
