@@ -35,8 +35,8 @@ def home(request):
     if request.user.is_authenticated():
         recipes_otw = RecipeOfTheWeek.objects.select_related('recipe').all().order_by('veganism')
         try:
-            return render(request, 'homepage_logged_in.html', {'ven_recipe_otw': recipes_otw[1].recipe,
-                                                               'veg_recipe_otw': recipes_otw[2].recipe,
+            return render(request, 'homepage_logged_in.html', {'ven_recipe_otw': recipes_otw[2].recipe,
+                                                               'veg_recipe_otw': recipes_otw[1].recipe,
                                                                'nveg_recipe_otw': recipes_otw[0].recipe})
         except IndexError:
             return render(request, 'homepage_logged_in.html')
