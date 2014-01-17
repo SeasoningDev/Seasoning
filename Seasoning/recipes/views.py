@@ -321,6 +321,8 @@ class EditRecipeWizard(SessionWizardView):
         # recipe has not been saved yet
         self.instance.save()
         
+        done_message = 'Je nieuwe recept werd met succes toegevoegd!'
+        
         # Check if the ingredients form is present
         for form in form_list:
             if hasattr(form, 'forms') and 'ingredients' in form.forms:
@@ -354,6 +356,8 @@ class EditRecipeWizard(SessionWizardView):
                                                                                                                           'request_string': request_string}), 
                                   self.request.user.email,
                                   ['info@seasoning.be'], fail_silently=True)
+                        
+                        done_message += '\nOmdat je ingrediënten hebt aangevraagd zal je recept echter pas zichtbaar zijn voor andere gebruikers wanneer deze ingredïenten aan de databank toegevoegd zijn.'
             
                     ing_form.save()
                         
