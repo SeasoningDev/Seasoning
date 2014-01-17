@@ -12,7 +12,7 @@ $(document).ready(function() {
 		if ($("#advanced-search").is(":visible")) {
 			// Hide
 			$("#advanced-search").slideUp(1000, function() {
-				$("#advanced-link").text("Geavanceerd Zoeken");
+				$("#advanced-link").text("Geavanceerd zoeken");
 				$("#browse-recipe-summaries-wrapper").css("width", "960px");
 				$("#id_advanced_search").val("False");
 			});
