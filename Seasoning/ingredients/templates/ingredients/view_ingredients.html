@@ -29,7 +29,7 @@
 		wat rondkijken. Als je op een ingrediënt klikt, verschijnt er meer informatie.
 	</p>
 	
-	<form id="browse-ingredients-form" target="" method="post">
+	<form id="{{ search_form_id }}" target="" method="post">
 		{% csrf_token %}
 		
 		<div id="basic-search">

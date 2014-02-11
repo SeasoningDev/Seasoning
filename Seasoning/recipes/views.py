@@ -82,13 +82,17 @@ def browse_recipes(request):
     except EmptyPage:
         recipes = paginator.page(paginator.num_pages)
     
+    search_form_id = 'recipe-search-form'
+    
     if request.method == 'POST' and request.is_ajax():
-        return render(request, 'includes/recipe_summaries.html', {'recipes': recipes})
+        return render(request, 'includes/recipe_summaries.html', {'recipes': recipes,
+                                                                  'search_form_id': search_form_id})
         
     return render(request, 'recipes/browse_recipes.html', {'search_form': search_form,
                                                            'include_ingredients_formset': include_ingredients_formset,
                                                            'exclude_ingredients_formset': exclude_ingredients_formset,
-                                                           'recipes': recipes})
+                                                           'recipes': recipes,
+                                                           'search_form_id': search_form_id})
 
 def view_recipe(request, recipe_id):
     

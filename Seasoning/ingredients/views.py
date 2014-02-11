@@ -32,13 +32,17 @@ def view_ingredients(request):
     except EmptyPage:
         ingredients = paginator.page(paginator.num_pages)
     
+    search_form_id = 'browse-ingredients-form'
+    
     if request.method == 'POST' and request.is_ajax():
-        return render(request, 'includes/ingredient_summaries.html', {'ingredients': ingredients})
+        return render(request, 'includes/ingredient_summaries.html', {'ingredients': ingredients,
+                                                                      'search_form_id': search_form_id})
     
     # TODO: ajax aanpassen voor ingredients
     
     return render(request, 'ingredients/view_ingredients.html', {'form': search_form,
-                                                                 'ingredients': ingredients})
+                                                                 'ingredients': ingredients,
+                                                                 'search_form_id': search_form_id})
     
 def view_ingredient(request, ingredient_id):
     try:
