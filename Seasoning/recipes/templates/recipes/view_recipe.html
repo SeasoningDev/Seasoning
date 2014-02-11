@@ -97,7 +97,7 @@
         $('#rating-display').raty({
             path: '{{ STATIC_URL }}img/raty',
             width: 220,{% if recipe.rating %}
-            score: {{ recipe.rating }},{% endif %}
+            score: {{ recipe.rating|floatformat:0 }},{% endif %}
             readOnly: true,
             noRatedMsg: "Nog geen ratings voor dit recept!",
             starOn: 'star-on-med.png',
