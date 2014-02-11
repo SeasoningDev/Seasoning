@@ -322,7 +322,10 @@ class EditRecipeWizard(SessionWizardView):
         # recipe has not been saved yet
         self.instance.save()
         
-        done_message = 'Je nieuwe recept werd met succes toegevoegd!'
+        if new_recipe:
+            done_message = 'Je nieuwe recept werd met succes toegevoegd!'
+        else:
+            done_message = 'Je recept werd met succes aangepast!'
         
         # Check if the ingredients form is present
         for form in form_list:
@@ -366,10 +369,7 @@ class EditRecipeWizard(SessionWizardView):
                     recipe = Recipe.objects.select_related().prefetch_related('uses__unit').get(pk=self.instance.pk)
                     recipe.save()
         
-        if new_recipe:
-            messages.add_message(self.request, messages.INFO, 'Je nieuwe recept werd met succes toegevoegd!')
-        else:
-            messages.add_message(self.request, messages.INFO, 'Je nieuwe recept werd met succes aangepast!')
+        messages.add_message(self.request, messages.INFO, done_message)
         return redirect('/recipes/%d/' % self.instance.id)
 
 @login_required
