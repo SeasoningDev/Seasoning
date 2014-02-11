@@ -5,8 +5,11 @@
 * @param page
 *  If present, the given page of results is shown
 *  If not, the first page of results is shown
+* @param form_id
+*  If a form needs to be posted during the page update,
+*  this is its id.
 */
-function update_page(page) {
+function update_page(page, form_id) {
    var url;
    if (page) {
        url = window.location + "?page=" + page;
@@ -14,7 +17,7 @@ function update_page(page) {
        url = window.location;
    }
    
-   if ($("form").length == 0) {
+   if (!form_id) {
        // No Form present
        $.ajax({
            type : "GET",
@@ -25,10 +28,10 @@ function update_page(page) {
            }
        });
    } else {
-       $.ajax({
+	   $.ajax({
            type : "POST",
            url : url,
-           data : $("form").serialize(),
+           data : $('#' + form_id).serialize(),
            success : function(data) {
                // The url returns full html
                $(".summaries-wrapper").html(data);

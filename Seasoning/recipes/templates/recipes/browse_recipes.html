@@ -20,7 +20,7 @@ $(function() {
 <h2>Recepten zoeken</h2>
 
 <div id="recipe-search-container">
-	<form class="keywords" action="" method="post">
+	<form id="{{ search_form_id }}" class="keywords" action="" method="post">
 	    {% csrf_token %}
 	    <div id="basic-search">
 	        {{ search_form.search_string }}
