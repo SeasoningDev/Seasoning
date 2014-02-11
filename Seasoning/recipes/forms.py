@@ -53,6 +53,12 @@ class EditRecipeIngredientInfoForm(forms.ModelForm):
         }
     
     request_unknown_ingredients = forms.BooleanField(required=False)
+    
+class MultipleSeparatorsFloatField(forms.FloatField):
+    
+    def to_python(self, value):
+        value = value.replace(',', '.')
+        return forms.FloatField.to_python(self, value)
 
 class UsesIngredientForm(forms.ModelForm):    
     class Meta:
@@ -60,7 +66,7 @@ class UsesIngredientForm(forms.ModelForm):
 
     ingredient = AutoCompleteSelectIngredientField()
     group = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput(attrs={'class': 'group'}))
-    amount = forms.FloatField(widget=forms.TextInput(attrs={'class': 'amount'}))
+    amount = MultipleSeparatorsFloatField(widget=forms.TextInput(attrs={'class': 'amount'}))
     
     def __init__(self, *args, **kwargs):
         form = super(UsesIngredientForm, self).__init__(*args, **kwargs)
