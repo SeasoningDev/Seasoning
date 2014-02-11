@@ -430,7 +430,7 @@
         <div id="basic-info">
             <div id="vague-description">
                 <strong>Categorie</strong><br />
-                {% if recipe.cuisine %}{{ recipe.cuisine }} {% endif %}{{ recipe.get_course_display }}
+                {% if recipe.cuisine %}{{ recipe.cuisine }}{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} {% endif %}{{ recipe.get_course_display|lower }}
                 
                 <div id="veganism">
                     <img src="{{ STATIC_URL }}img/icons/vegan.png" {% if not recipe.veganism == 2 %}class="not-this"{% else %}title="Dit is een veganistisch recept"{% endif %} />

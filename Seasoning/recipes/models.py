@@ -29,8 +29,8 @@ class Cuisine(models.Model):
 
 class RecipeManager(models.Manager):
     
-    def query(self, search_string='', advanced_search=False, sort_field='', 
-              sort_order='', ven=True, veg=True, nveg=True, cuisines=[], 
+    def query(self, search_string='', advanced_search=False, sort_field='time_added', 
+              sort_order='-', ven=True, veg=True, nveg=True, cuisines=[], 
               courses=[], include_ingredients_operator='and', include_ingredient_names=[],
               exclude_ingredient_names=[]):
         
@@ -97,7 +97,7 @@ class Recipe(models.Model):
                (SALAD,u'Salade'),
                (SIDE_DISH,u'Bijgerecht'),
                (SOUP,u'Soep'),
-               (MARINADE_AND_SAUCE,u'Marinades en Sauzen'))
+               (MARINADE_AND_SAUCE,u'Marinades en sauzen'))
     
     name = models.CharField(max_length=100,
                             help_text=_('The names of the recipe.'))
