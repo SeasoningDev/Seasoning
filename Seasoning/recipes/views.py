@@ -318,6 +318,7 @@ class EditRecipeWizard(SessionWizardView):
     def done(self, form_list, **kwargs):
         if not self.instance.author:
             self.instance.author = self.request.user
+            new_recipe = True
         # recipe has not been saved yet
         self.instance.save()
         
@@ -365,7 +366,10 @@ class EditRecipeWizard(SessionWizardView):
                     recipe = Recipe.objects.select_related().prefetch_related('uses__unit').get(pk=self.instance.pk)
                     recipe.save()
         
-        messages.add_message(self.request, messages.INFO, 'Je nieuwe recept werd met succes toegevoegd!')
+        if new_recipe:
+            messages.add_message(self.request, messages.INFO, 'Je nieuwe recept werd met succes toegevoegd!')
+        else:
+            messages.add_message(self.request, messages.INFO, 'Je nieuwe recept werd met succes aangepast!')
         return redirect('/recipes/%d/' % self.instance.id)
 
 @login_required
