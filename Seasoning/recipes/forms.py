@@ -177,9 +177,9 @@ class EditRecipeInstructionsForm(forms.ModelForm):
 
 class SearchRecipeForm(forms.Form):
     
-    SORT_CHOICES = (('name', 'Naam'), ('footprint', 'Voetafdruk'),
-                    ('active_time', 'Actieve Kooktijd'), ('tot_time', 'Totale Kooktijd'),
-                    ('rating', 'Waardering'), ('time_added', 'Laatst toegevoegd'))
+    SORT_CHOICES = (('active_time', 'Actieve Kooktijd'), ('time_added', 'Laatst toegevoegd'), 
+                    ('name', 'Naam'), ('tot_time', 'Totale Kooktijd'), ('footprint', 'Voetafdruk'),                    
+                    ('rating', 'Waardering'))
     SORT_ORDER_CHOICES = (('', 'Van Laag naar Hoog'), ('-', 'Van Hoog naar Laag'))
     OPERATOR_CHOICES = (('and', 'Allemaal'), ('or', 'Minstens 1'))
     
@@ -188,8 +188,8 @@ class SearchRecipeForm(forms.Form):
     
     advanced_search = forms.BooleanField(initial=True, required=False)
     
-    sort_field = forms.ChoiceField(choices=SORT_CHOICES)
-    sort_order = forms.ChoiceField(widget=RadioSelect, choices=SORT_ORDER_CHOICES, required=False)
+    sort_field = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[1][0])
+    sort_order = forms.ChoiceField(widget=RadioSelect, choices=SORT_ORDER_CHOICES, required=False, initial=SORT_ORDER_CHOICES[1][0])
     
     ven = forms.BooleanField(initial=True, required=False, label='Veganistisch')
     veg = forms.BooleanField(initial=True, required=False, label='Vegetarisch')
