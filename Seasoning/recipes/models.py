@@ -53,12 +53,15 @@ class RecipeManager(models.Manager):
             # Filter for included en excluded ingredients
             if include_ingredients_operator == 'and':
                 for ingredient_name in include_ingredient_names:
-                    recipes_list = recipes_list.filter(ingredients__name__icontains=ingredient_name)
+                    ing_filter = models.Q(ingredients__name__icontains=ingredient_name) | models.Q(ingredients__synonyms__name__icontains=ingredient_name)
+                    recipes_list = recipes_list.filter(ing_filter)
             elif include_ingredients_operator == 'or':
                 for ingredient_name in include_ingredient_names:
-                    incl_ingredient_filter = incl_ingredient_filter | models.Q(ingredients__name__icontains=ingredient_name)            
+                    ing_filter = models.Q(ingredients__name__icontains=ingredient_name) | models.Q(ingredients__synonyms__name__icontains=ingredient_name)
+                    incl_ingredient_filter = incl_ingredient_filter | models.Q(ing_filter)            
             for ingredient_name in exclude_ingredient_names:
                 recipes_list = recipes_list.exclude(ingredients__name__icontains=ingredient_name)
+                recipes_list = recipes_list.exclude(ingredients__synonyms__name__icontains=ingredient_name)
             
             if cuisines:
                 additional_filters = additional_filters & models.Q(cuisine__in=cuisines)

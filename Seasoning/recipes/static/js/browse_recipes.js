@@ -38,7 +38,7 @@ $(document).ready(function() {
 				$("#id_sort_order_1").click();
 			}
 		}
-		update_page();
+		update_recipe_page();
 		return false;
 	});
 
@@ -55,7 +55,7 @@ $(document).ready(function() {
 				$(this).addClass("active");
 				$(this).children("input").prop('checked', true);
 			}
-			update_page();
+			update_recipe_page();
 			return false;
 		});
 	});
@@ -72,7 +72,7 @@ $(document).ready(function() {
 				$("#id_include_ingredients_operator_1").click();
 			}
 		}
-		update_page();
+		update_recipe_page();
 		return false;
 	});
 
@@ -98,12 +98,12 @@ $(document).ready(function() {
 			new_ing.click(function() {
 				new_form.remove();
 				$(this).remove();
-				update_page();
+				update_recipe_page();
 				return false;
 			});
 			$("#included-ingredients").append(new_ing);
 			$(this).val("");
-			update_page();
+			update_recipe_page();
 		}
 	});
 	
@@ -129,19 +129,19 @@ $(document).ready(function() {
 			new_ing.click(function() {
 				new_form.remove();
 				$(this).remove();
-				update_page();
+				update_recipe_page();
 				return false;
 			});
 			$("#excluded-ingredients").append(new_ing);
 			$(this).val("");
-			update_page();
+			update_recipe_page();
 		}
 	});
 	
 	// Update recipe list on filter change
-	$("#id_sort_field").change(update_page);
-	$("input[name='cuisine']").change(update_page);
-	$("input[name='course']").change(update_page);
+	$("#id_sort_field").change(update_recipe_page);
+	$("input[name='cuisine']").change(update_recipe_page);
+	$("input[name='course']").change(update_recipe_page);
 	
 	/**
 	 * Update the recipe list when the user types a search query
@@ -152,7 +152,7 @@ $(document).ready(function() {
 	// Start the timer when more than 3 chars have been typed
 	$("#id_search_string").keyup(function() {
 		if ($(this).val().length >= 3) {
-			timer = setTimeout(update_page, 1000);
+			timer = setTimeout(update_recipe_page, 1000);
 		}
 	});
 	// Stop the timer when a new char is being typed
@@ -162,8 +162,12 @@ $(document).ready(function() {
 	
 	// Force a search by pressing the Return key when typing a query
 	$("#id_search_string").pressEnter(function() {
-		update_page;
+		update_recipe_page;
 		// Stop the timer when a search is being forced
 		timer = clearTimeout(timer);
 	});
+	
+	function update_recipe_page() {
+		update_page(0, "recipe-search-form");
+	}
 });
