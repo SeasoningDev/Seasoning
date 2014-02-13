@@ -13,7 +13,7 @@ from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
 
 
-def get_image_filename(instance, old_filename):
+def get_image_filename(instance=None, old_filename=None):
     """
     Get a new filename for a user image
     
