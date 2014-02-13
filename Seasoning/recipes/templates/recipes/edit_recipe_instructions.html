@@ -8,7 +8,10 @@
     
     $(document).ready(function() {
 		$(".spinner-wrapper input").spinner({
-			min: 0,
+			min: 0,          
+		    spin: function(e,ui){
+		        $(this).keydown();
+		    },
 		});
     });
     

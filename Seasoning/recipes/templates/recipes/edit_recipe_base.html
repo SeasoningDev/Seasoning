@@ -36,8 +36,12 @@
         $('input[type="submit"]').click(function() {
         	action_is_post = true;
         });
+		
+        $('#edit-recipe-form input, #edit-recipe-form textarea').keydown(function() {
+        	data_changed = true;
+        });
         
-        $('input, select, textarea').focus(function() {
+        $('#edit-recipe-form select').focus(function() {
         	data_changed = true;
         });
     
