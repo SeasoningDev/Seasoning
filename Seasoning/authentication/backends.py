@@ -337,7 +337,7 @@ class FacebookAuthBackend(OAuth2Backend):
                     'surname': fb_info['last_name'],
                     'email': fb_info['email'],
                     'date_of_birth': date_of_birth,
-                    'image': 'https://graph.facebook.com/' + fb_info['id'] + '/picture'}
+                    'image': 'https://graph.facebook.com/' + fb_info['id'] + '/picture?width=1000'}
         except KeyError:
             raise PermissionDenied
     
