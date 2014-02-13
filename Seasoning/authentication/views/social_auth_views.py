@@ -142,7 +142,7 @@ def social_connect(request, backend):
             messages.add_message(request, messages.INFO, _('Something went wrong. Check URL for error.'))
             return render(request, 'authentication/login.html')
             
-    redirect_uri = 'http://' + str(get_current_site(request)) + backend.connect_url
+    redirect_uri = 'https://' + str(get_current_site(request)) + backend.connect_url
     if code is None:
         # Redirect User to the social network, so we may get an authorization code.
         return redirect(backend.get_auth_code_url(redirect_uri=redirect_uri, 
@@ -244,7 +244,7 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
         # User wants to register using his social account
         code = request.GET.get('code', None)
         
-        redirect_uri = 'http://' + str(get_current_site(request)) + backend.registration_url
+        redirect_uri = 'https://' + str(get_current_site(request)) + backend.registration_url
         if code is None:
             # User has just click the 'Register with ...' button to start a social registration.
             # Redirect him to the social network, so we may get an authorization code.
