@@ -9,7 +9,7 @@ from authentication import signals
 from authentication.forms import RegistrationForm
 from authentication.models import RegistrationProfile, User
 from django.core.urlresolvers import reverse_lazy
-from Seasoning import authentication
+import authentication
 from django.core.files.base import ContentFile
 
 
