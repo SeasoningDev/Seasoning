@@ -231,7 +231,7 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
                     password = form.cleaned_data['password'] or None
                     user = backend.register(request, social_id=user_info['id'], givenname=user_info['givenname'], 
                                             surname=user_info['surname'], email=user_info['email'], 
-                                            date_of_birth=user_info['date_of_birth'], password=password)
+                                            date_of_birth=user_info['date_of_birth'], password=password, avatar=user_info['image'])
                     # And log him in, because we don't need to validate his information
                     user = authenticate(**{backend.ID_FIELD: user_info['id']})
                     auth_login(request, user)

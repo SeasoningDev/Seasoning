@@ -9,6 +9,8 @@ from authentication import signals
 from authentication.forms import RegistrationForm
 from authentication.models import RegistrationProfile, User
 from django.core.urlresolvers import reverse_lazy
+from Seasoning import authentication
+from django.core.files.base import ContentFile
 
 
 class RegistrationBackend(object):
@@ -197,11 +199,17 @@ class OAuth2Backend(ModelBackend):
         """
         return getattr(settings, 'REGISTRATION_OPEN', True)
 
-    def register(self, request, social_id, givenname, surname, email, date_of_birth, password=None):
+    def register(self, request, social_id, givenname, surname, email, date_of_birth, password=None, avatar=None):
         if self.ID_FIELD is None:
             raise NotImplementedError
         new_user = User.objects.create_user(givenname, surname, email, date_of_birth, password)
         setattr(new_user, self.ID_FIELD, social_id)
+        
+        if avatar is not None:
+            avatar_url = avatar
+            filename = authentication.models.get_image_filename()
+            content = ContentFile(urllib2.urlopen(avatar_url).read())
+            new_user.avatar.save(filename, content, save=True)
         new_user.save()
         
         signals.user_registered.send(sender=self.__class__,
