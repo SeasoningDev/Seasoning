@@ -17,19 +17,19 @@
 <div id="recipes-of-the-week">
 	<h2>Recepten van de week</h2>
 	<div class="recipe-of-the-week">
-		<img src="{{ STATIC_URL }}img/icons/vegan.png" class="veganism-icon" />
+		<img src="{{ STATIC_URL }}img/icons/vegan.png" class="veganism-icon" title="Veganistisch recept van de week" />
 		{% with recipe=ven_recipe_otw %}
 		{% include "includes/recipe_summary.html" %}
 		{% endwith %}		
 	</div>
 	<div class="recipe-of-the-week">
-		<img src="{{ STATIC_URL }}img/icons/vegetarian.png" class="veganism-icon" />
+		<img src="{{ STATIC_URL }}img/icons/vegetarian.png" class="veganism-icon" title="Vegetarisch recept van de week" />
 		{% with recipe=veg_recipe_otw %}
 		{% include "includes/recipe_summary.html" %}
 		{% endwith %}	
 	</div>
 	<div class="recipe-of-the-week">
-		<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" class="veganism-icon" />
+		<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" class="veganism-icon" title="Niet-vegetarisch recept van de week" />
 		{% with recipe=nveg_recipe_otw %}
 		{% include "includes/recipe_summary.html" %}
 		{% endwith %}	
