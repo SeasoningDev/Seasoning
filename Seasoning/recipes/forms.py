@@ -177,7 +177,7 @@ class EditRecipeInstructionsForm(forms.ModelForm):
 
 class SearchRecipeForm(forms.Form):
     
-    SORT_CHOICES = (('active_time', 'Actieve Kooktijd'), ('time_added', 'Laatst toegevoegd'), 
+    SORT_CHOICES = (('active_time', 'Actieve Kooktijd'), ('time_added', 'Datum toegevoegd'), 
                     ('name', 'Naam'), ('tot_time', 'Totale Kooktijd'), ('footprint', 'Voetafdruk'),                    
                     ('rating', 'Waardering'))
     SORT_ORDER_CHOICES = (('', 'Van Laag naar Hoog'), ('-', 'Van Hoog naar Laag'))
