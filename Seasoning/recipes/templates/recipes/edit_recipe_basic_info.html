@@ -76,7 +76,9 @@
     </p>
     <br class="clear" />
     <div class="img-frame">
-        <img id="img-preview" src="{% if wizard.form.instance.image != wizard.form.instance.default_image_location %}{{ wizard.form.instance.image.url }}{% endif %}" />
+    	{% if wizard.form.instance.image != wizard.form.instance.default_image_location %}
+        <img id="img-preview" src="{{ wizard.form.instance.image.url }}" />
+        {% endif %}
     </div>
 </div>
 <br class="clear" />
