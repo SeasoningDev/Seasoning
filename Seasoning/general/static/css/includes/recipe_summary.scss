@@ -76,18 +76,27 @@
   border-top: 1px solid #DDD;
   border-bottom: 1px solid #DDD; }
 
-.recipe-title .footprint {
+.footprint-cloud {
   position: absolute;
   display: block;
-  top: -45px;
+  top: -44px;
   right: 10px;
-  height: 46px;
+  height: 74px;
   width: 100px;
-  padding: 28px 0 0 0;
-  font-size: 20px;
-  font-weight: 10;
+  padding: 0 0 0 0;
   background-image: url("/static/img/icons/cloud.png");
-  background-size: 100px 74px; 
+  background-size: 100px 73px;
+  background-repeat: no-repeat;
+  background-position: center top; }
+
+.footprint-cloud .footprint-cloud-text {
+  position: absolute;
+  top: 29px;
+  left: 0;
+  width: 100%;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: bold;
   text-align: center; }
 
 .recipe-title .title {
