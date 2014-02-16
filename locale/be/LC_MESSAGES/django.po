@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-01-07 16:52+0100\n"
-"PO-Revision-Date: 2014-01-07 14:46+0100\n"
-"Last-Translator: Joep Driesen <joep.driesen@seasoning.be>\n"
+"PO-Revision-Date: 2014-01-08 11:11+0100\n"
+"Last-Translator: Bram Somers <bram.somers@seasoning.be>\n"
 "Language-Team: Dutch <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,12 +24,16 @@ msgid ""
 "30 characters or fewer, only letters allowed. Your name will be used to "
 "identify you on Seasoning."
 msgstr ""
+"Gebruik maximaal 30 lettertekens. Je naam zal gebruikt worden om je te "
+"identificeren op Seasoning."
 
 #: Seasoning/authentication/forms.py:68 Seasoning/authentication/models.py:82
 msgid ""
 "50 characters or fewer, only letters allowed Your name will be used to "
 "identify you on Seasoning."
 msgstr ""
+"Gebruik maximaal 50 lettertekens. Je naam zal gebruikt worden om je te "
+"identificeren op Seasoning."
 
 #: Seasoning/authentication/forms.py:72
 msgid ""
@@ -38,65 +42,87 @@ msgid ""
 "address to verify your account. You will not receive any further emails from "
 "Seasoning."
 msgstr ""
+"Je e-mailadres zal nooit verkocht of doorgegeven worden aan derden. Het zal "
+"niet op Seasoning getoond worden, tenzij je deze optie activeert.<br/>Er zal "
+"eenmalig een e-mail gestuurd worden om je account te verifiëren. Je zal geen "
+"verdere e-mails van Seasoning ontvangen."
+
 
 #: Seasoning/authentication/forms.py:81 Seasoning/authentication/forms.py:125
 msgid "Password (again)"
 msgstr ""
+"Wachtwoord (nogmaals)"
 
 #: Seasoning/authentication/forms.py:82
 msgid "Please enter the same password as above for verification purposes."
 msgstr ""
+"Gelieve nogmaals het gekozen wachtwoord in te geven ter verificatie."
 
 #: Seasoning/authentication/forms.py:86
 msgid ""
 "Your birthday will be used for age validation and possible some anonymous "
 "statistics about the users of Seasoning."
 msgstr ""
+"Je geboortedatum zal gebruikt worden om je leeftijd te controleren. Hij wordt "
+"mogelijk gebruikt in anonieme gebruikersstatistieken van Seasoning."
 
 #: Seasoning/authentication/forms.py:91 Seasoning/general/forms.py:16
-msgid "You must enter the correct ReCaptcha characters"
+msgid "You must enter the correct ReCaptcha characters."
 msgstr ""
+"Vul de correcte tekens van de ReCapcha in."
 
 #: Seasoning/authentication/forms.py:95
 msgid ""
 "I have read and agree to the <a target=\"_blank\" href=\"/terms/\">Terms of "
 "Service</a>"
 msgstr ""
+"Ik verklaar kennis te hebben genomen van de <a target=\"_blank\" href=\"/terms/\">Algemene Voorwaarden</a> "
+"en hiermee akkoord te gaan."
 
 #: Seasoning/authentication/forms.py:96 Seasoning/authentication/forms.py:129
 msgid "You must agree to the terms to register"
 msgstr ""
+"Je dient te bevestigen dat je de Algemene Voorwaarden gelezen en goegekeurd hebt."
 
 #: Seasoning/authentication/forms.py:109 Seasoning/authentication/forms.py:142
 msgid "The two password fields didn't match."
 msgstr ""
+"De ingevoerde wachtwoorden komen niet overeen."
 
 #: Seasoning/authentication/forms.py:123
 msgid "Password"
 msgstr ""
+"Wachtwoord"
 
 #: Seasoning/authentication/forms.py:128
 msgid "I have read and agree to the Terms of Service"
 msgstr ""
+"Ik verklaar kennis te hebben genomen van de Algemene Voorwaarden en hiermee "
+"akkoord te gaan"
 
 #: Seasoning/authentication/forms.py:159 Seasoning/authentication/forms.py:160
 msgid "Please enter a valid email address"
 msgstr ""
+"Gelieve een geldig e-mailadres op te geven"
 
 #: Seasoning/authentication/forms.py:167
 msgid "The given email address was not found"
 msgstr ""
+"Het opgegeven e-mailadres werd niet teruggevonden"
 
 #: Seasoning/authentication/forms.py:170
 msgid ""
 "The account corresponding to this email address has already been activated"
 msgstr ""
+"Het aan dit e-mailadres verbonden account werd reeds geactiveerd"
 
 #: Seasoning/authentication/forms.py:174
 msgid ""
 "The account corresponding to this email address has expired due to prolonged "
 "inactivity"
 msgstr ""
+"Het aan dit e-mailadres verbonden account is verlopen wegens langdurige "
+"inactiviteit"
 
 #: Seasoning/authentication/forms.py:188
 msgid ""
@@ -105,107 +131,140 @@ msgid ""
 "registering, you can use <a href=\"/activate/resend/\">this form</a> to "
 "resend an activation email."
 msgstr ""
+"Dit account werd nog niet geactiveerd, waardoor aanmelden momenteel niet "
+"mogelijk is. Indien je 15 minuten na je registratie nog geen activatiemail "
+"ontvangen hebt, kan je <a href=\"/activate/resend/\">dit formulier</a> gebruiken "
+"om een nieuwe activatiemail te versturen." 
 
 #: Seasoning/authentication/models.py:70
 msgid "email address"
 msgstr ""
+"e-mailadres"
 
 #: Seasoning/authentication/models.py:76
 msgid "given name"
 msgstr ""
+"voornaam"
 
 #: Seasoning/authentication/models.py:79
 msgid "Enter a valid Given Name."
 msgstr ""
+"Geef een geldige voornaam op."
 
 #: Seasoning/authentication/models.py:81
 msgid "surname"
 msgstr ""
+"Achternaam"
 
 #: Seasoning/authentication/models.py:84
 msgid "Enter a valid Surname."
 msgstr ""
+"Geef een geldige achternaam op."
 
 #: Seasoning/authentication/models.py:89
 msgid "password"
 msgstr ""
+"wachtwoord"
 
 #: Seasoning/authentication/models.py:100
 msgid "date joined"
 msgstr ""
+"datum registratie"
 
 #: Seasoning/authentication/models.py:101
 msgid "last login"
 msgstr ""
+"laatste aanmelding"
 
 #: Seasoning/authentication/models.py:434
 #: Seasoning/authentication/models.py:596
 msgid "activation key"
 msgstr ""
+"activeringssleutel"
 
 #: Seasoning/authentication/models.py:440
 msgid "registration profile"
 msgstr ""
+"registratie profiel"
 
 #: Seasoning/authentication/models.py:441
 msgid "registration profiles"
 msgstr ""
+"registratie profielen"
 
 #: Seasoning/authentication/views/account_views.py:85
 msgid ""
 "An email has been sent to the new email address provided by you. Please "
 "follow the instructions "
 msgstr ""
+"Er werd een e-mail verstuurd naar het aangepaste e-mailadres. Gelieve de "
+"instructies te volgen "
 
 #: Seasoning/authentication/views/account_views.py:121
 msgid "Your email address has been successfully changed."
 msgstr ""
+"Je e-mailadres werd succesvol aangepast."
 
 #: Seasoning/authentication/views/account_views.py:141
 msgid "Your password has been successfully changed."
 msgstr ""
+"Je wachtwoord werd succesvol aangepast."
 
 #: Seasoning/authentication/views/registration_views.py:93
 msgid "You already have an account!"
 msgstr ""
+"Je hebt reeds een account!"
 
 #: Seasoning/authentication/views/registration_views.py:152
 msgid ""
 "A new activation email has been sent to {email_address}. This email should "
 "arrive within 15 minutes. Please be sure to check your Spam/Junk folder."
 msgstr ""
+"Er werd een nieuwe activatiemail gestuurd naar {email_address}. Deze e-mail "
+"zou binnen een tijdspanne van 15 minuten moeten aankomen. Vergeet niet na "
+"te gaan of de e-mail in je junkmail beland is."
 
 #: Seasoning/authentication/views/registration_views.py:190
 msgid "Your account has been successfully activated. Have fun!"
 msgstr ""
+"Je account werd succesvol geactiveerd. Veel plezier!"
 
 #: Seasoning/authentication/views/social_auth_views.py:38
 #: Seasoning/authentication/views/social_auth_views.py:139
 msgid "Could not access your {social_network} Information. Please try again."
 msgstr ""
+"Seasoning kreeg geen toegang tot je {social_network} informatie. Gelieve "
+"opnieuw te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:41
 #: Seasoning/authentication/views/social_auth_views.py:142
 msgid "Something went wrong. Check URL for error."
 msgstr ""
+"Er ging iets mis. Kijk de URL na."
 
 #: Seasoning/authentication/views/social_auth_views.py:61
 msgid ""
 "You cannot use this type of {social_network} account on Seasoning. Please "
 "try another..."
 msgstr ""
+"Dit type {social_network} account kan niet gebruikt worden op Seasoning "
+"Gelieve een andere mogelijkheid te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:80
 msgid ""
 "The email corresponding to your {social_network} account is already in use "
 "on Seasoning. "
 msgstr ""
+"Het e-mailadres verbonden aan je {social_network} account is reeds in gebruik " 
+"op Seasoning."
 
 #: Seasoning/authentication/views/social_auth_views.py:89
 msgid ""
 "Your {social_network} account has not been connected to Seasoning yet. "
 "Please take a minute to register."
 msgstr ""
+"Je {social_network} account is nog niet verbonden met Seasoning."
+"Gelieve eerst te registreren."
 
 #: Seasoning/authentication/views/social_auth_views.py:93
 #: Seasoning/authentication/views/social_auth_views.py:125
@@ -215,6 +274,8 @@ msgid ""
 "An error occurred while checking your identity with {social_network}. Please "
 "try again."
 msgstr ""
+"Er is een fout opgetreden tijdens het aftoetsen van je gegevens met " 
+"{social_network}. Gelieve opnieuw te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:110
 #: Seasoning/authentication/views/social_auth_views.py:161
@@ -222,28 +283,35 @@ msgid ""
 "You cannot connect this type of {social_network} account to your Seasoning "
 "account. Please try another..."
 msgstr ""
+"Dit type {social_network} account kan niet verbonden worden met je Seasoning "
+"account. Gelieve een andere mogelijkheid te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:118
 msgid "This {social_network} account is already connected to another account."
 msgstr ""
+"Dit {social_network} account is reeds verbonden met een ander account."
 
 #: Seasoning/authentication/views/social_auth_views.py:121
 msgid ""
 "Your {social_network} account has been successfully connected to your "
 "Seasoning account!"
 msgstr ""
+"Je {social_network} account werd succesvol verbonden met je Seasoning account!"
 
 #: Seasoning/authentication/views/social_auth_views.py:183
 msgid ""
 "You can only disconnect your {social_network} account if your password has "
 "been set."
 msgstr ""
+"Je kan je {social_network} account enkel loskoppelen als je een wachtwoord "
+"hebt ingesteld."
 
 #: Seasoning/authentication/views/social_auth_views.py:186
 msgid ""
 "Your Seasoning account has been disconnected from your {social_network} "
 "account."
 msgstr ""
+"Je Seasoning account werd losgekoppeld van je {social_network} account."
 
 #: Seasoning/authentication/views/social_auth_views.py:208
 #: Seasoning/authentication/views/social_auth_views.py:265
@@ -251,6 +319,8 @@ msgid ""
 "You cannot use this type of {social_network} account to register on "
 "Seasoning. Please try another..."
 msgstr ""
+"Dit type {social_network} account kan niet gebruikt worden om te registreren
+"op Seasoning. Gelieve een andere mogelijkheid te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:214
 #: Seasoning/authentication/views/social_auth_views.py:271
@@ -258,6 +328,9 @@ msgid ""
 "A user has already registered with your {social_network} account. If this is "
 "you, please log in, otherwise, contact an administrator"
 msgstr ""
+"Er is reeds een gebruiker geregistreerd met je {social_network} account. Ben "
+"je dit zelf, gelieve dan in te loggen. Ben je dit niet? Neem dan contact op "
+"met een beheerder."
 
 #: Seasoning/authentication/views/social_auth_views.py:221
 msgid ""
@@ -265,31 +338,42 @@ msgid ""
 "{social_network}. If this is your account, would you like to connect it to "
 "your {social_network}account?"
 msgstr ""
+"Er is reeds een gebruiker geregistreerd op Seasoning met het e-mailadres op "
+"je {social_network}. Indien dit jouw account is, zou je het graag willen "
+"verbinden met je {social_network} account?"
 
 #: Seasoning/authentication/views/social_auth_views.py:238
 msgid ""
 "You have successfully registered your {social_network} account on Seasoning. "
 "Have fun!"
 msgstr ""
+"Je hebt je {social_network} account succesvol geregistreerd op Seasoning. "
+"Veel plezier!"
 
 #: Seasoning/authentication/views/social_auth_views.py:278
 msgid ""
 "A user has already registered on Seasoning with the email in your "
 "{social_network}. If this is your account, please log in to connect it to "
-"your {social_network} account?"
+"your {social_network} account."
 msgstr ""
+"Er is reeds een gebruiker geregistreerd op Seasoning met het e-mailadres op "
+"je {social_network}. Indien dit jouw account is, gelieve aan te melden om "
+"het te verbinden met je {social_network} account."
 
 #: Seasoning/faq/models.py:9
 msgid "Topic"
 msgstr ""
+"Onderwerp"
 
 #: Seasoning/faq/models.py:10
 msgid "Topics"
 msgstr ""
+"Onderwerpen"
 
 #: Seasoning/faq/models.py:12
 msgid "name"
 msgstr ""
+"naam"
 
 #: Seasoning/faq/models.py:19
 msgid "Frequent asked question"
@@ -298,102 +382,121 @@ msgstr ""
 #: Seasoning/faq/models.py:20
 msgid "Frequently asked questions"
 msgstr ""
+"Veel gestelde vragen"
 
 #: Seasoning/faq/models.py:22
 msgid "question"
 msgstr ""
+"vraag"
 
 #: Seasoning/faq/models.py:22
 msgid "The actual question itself."
 msgstr ""
+"De eigenlijke vraag"
 
 #: Seasoning/faq/models.py:23
 msgid "answer"
 msgstr ""
+"antwoord"
 
 #: Seasoning/faq/models.py:23
 msgid "The answer text."
 msgstr ""
+"De antwoordtekst"
 
 #: Seasoning/faq/models.py:24
 msgid "topic"
 msgstr ""
+"onderwerp"
 
 #: Seasoning/general/models.py:33
 msgid "{recipe_name} is the {recipe_veganism} recipe of the week."
 msgstr ""
+"{recipe_name} is het {recipe_veganism} recept van de week."
 
 #: Seasoning/general/models.py:37
 msgid "The given recipe is not {recipe_veganism}."
 msgstr ""
+"Het recept is niet {recipe_veganism}."
 
 #: Seasoning/general/views.py:98
 msgid "Your contact form was submitted succesfully."
 msgstr ""
+"Je contactformulier werd succesvol ingediend."
 
 #: Seasoning/ingredients/models.py:291
 msgid ""
 "This ingredient is not always available somewhere, and should not be "
 "accepted."
 msgstr ""
+"Dit ingrediënt is niet altijd ergens beschikbaar en zou niet geaccepteerd "
+"mogen worden."
 
 #: Seasoning/news/models.py:24
 msgid "An image of this news item."
 msgstr ""
+"Een afbeelding van dit nieuwsbericht."
 
 #: Seasoning/recipes/models.py:103
 msgid "The names of the recipe."
 msgstr ""
+"De naam van het recept."
 
 #: Seasoning/recipes/models.py:108
 msgid "The type of course this recipe will provide."
 msgstr ""
+"De soort maaltijd van het recept."
 
 #: Seasoning/recipes/models.py:110
 msgid "The type of cuisine this recipe represents."
 msgstr ""
+"De keuken waarin dit recept gebruikt wordt."
 
 #: Seasoning/recipes/models.py:112
 msgid "A few sentences describing the recipe (Maximum 140 characters)."
 msgstr ""
+"Een korte beschrijving van het recept (maximaal 140 tekens)."
 
 #: Seasoning/recipes/models.py:113
 msgid ""
 "The average amount of people that can be fed by this recipe using the given "
 "amounts of ingredients."
 msgstr ""
+"Het gemiddeld aantal porties dat voorzien kan worden met de opgegeven "
+"hoeveelheden."
 
 #: Seasoning/recipes/models.py:115
 msgid ""
 "The time needed to prepare this recipe where you are actually doing "
 "something."
 msgstr ""
+"De tijd die je actief besteed aan de bereiding van het recept."
 
 #: Seasoning/recipes/models.py:116
 msgid ""
 "The time needed to prepare this recipe where you can do something else (e.g. "
 "water is boiling)"
 msgstr ""
+"De tijd die nodig is voor de bereiding van het recept, terwijl je iets anders "
+"kan doen (bv. tijdens het koken van aardappelen)."
 
 #: Seasoning/recipes/models.py:123
 msgid ""
 "Extra info about the ingredients or needed tools (e.g. \"You will need a "
 "mixer for this recipe\" or \"Use big potatoes\")"
 msgstr ""
+"Extra informatie over de ingrediënten of andere benodigdheden (bv. "je hebt "
+"een mixer nodig voor dit recept" of "gebruik grote aardappelen")."
 
 #: Seasoning/recipes/models.py:124
 msgid "Detailed instructions for preparing this recipe."
 msgstr ""
+"Gedetailleerde instructies voor de bereiding van het recept."
 
 #: Seasoning/recipes/models.py:128
 msgid ""
 "An image of this recipe. Please do not use copyrighted images, these will be "
 "removed as quick as possible."
 msgstr ""
-
-msgid ""
-"Please enter a correct %(username)s and password. Note that both fields may "
-"be case-sensitive."
-msgstr ""
-"Voer een correcte %(username)s en wachtwoord in. Let op "
-"dat beide velden hoofdlettergevoelig zijn."
+"Een afbeelding van dit recept. Gelieve geen beschermde afbeeldingen te gebruiken. "
+"Deze zullen zo snel mogelijk verwijderd worden."
