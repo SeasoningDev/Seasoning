@@ -322,8 +322,8 @@ PIPELINE_COMPILERS = (
 PIPELINE_SASS_BINARY = secrets.SASS_BINARY
 PIPELINE_SASS_ARGUMENTS = '--update --force --load-path %s/css/imports/' % STATIC_ROOT
 
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
-PIPELINE_CSSMIN_BINARY = secrets.PIPELINE_CSSMIN_BINARY
+# PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
+# PIPELINE_CSSMIN_BINARY = secrets.PIPELINE_CSSMIN_BINARY
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
 
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
