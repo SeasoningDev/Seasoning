@@ -4,17 +4,9 @@
 {{ block.super }}
 {{ wizard.form.media }}
 <script type="text/javascript">
+    
+    
     $(document).ready(function() {
-        
-        $(".spinner-wrapper").tooltip({
-            items: "span",
-    		tooltipClass:'tooltip',
-            content: function() {
-                return $(this).parent().next(".tooltip").text();
-            },
-            position:  {my: "left+40 top", at: "right top"}
-        });
-        
 		$(".spinner-wrapper input").spinner({
 			min: 0,          
 		    spin: function(e,ui){
@@ -24,11 +16,6 @@
     });
     
 </script>
-<style>
-div.ui-tooltip {
-    max-width: 500px;
-}
-</style>
 {% endblock %}
 
 {% block recipe-form %}

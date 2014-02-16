@@ -22,6 +22,14 @@
             position:  {my: "left top+15", at: "left bottom"}
         }).off("mouseover mouseout");
         
+        $(".spinner-wrapper").tooltip({
+            items: "span",
+            content: function() {
+                return $(this).parent().next(".tooltip").text();
+            },
+            position:  {my: "left+15 top", at: "right top"}
+        });
+        
         var action_is_post = false;
         var data_changed = false;
         
