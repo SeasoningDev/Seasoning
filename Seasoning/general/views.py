@@ -30,6 +30,7 @@ from general.forms import ContactForm
 from general.models import StaticPage, RecipeOfTheWeek
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from ingredients.models import Ingredient
 
 def home(request):
     if request.user.is_authenticated():
