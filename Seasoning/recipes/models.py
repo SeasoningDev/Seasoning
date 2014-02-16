@@ -182,6 +182,17 @@ class Recipe(models.Model):
                 
         return super(Recipe, self).save(*args, **kwargs)
     
+    def quicksave(self, *args, **kwargs):
+        """
+        Saves this recipe without recalculating parameters such as footprint and veganism. 
+        Only use if you know what you are doing
+        
+        """
+        if not self.save_allowed:
+            raise PermissionDenied('Saving this object has been disallowed')
+        return super(Recipe, self).save(*args, **kwargs)
+        
+    
     def total_footprint(self):
         return self.footprint * self.portions
     
@@ -210,7 +221,7 @@ class Recipe(models.Model):
         aggregate = self.votes.all().aggregate(models.Count('score'), models.Avg('score'))
         self.rating = aggregate['score__avg']
         self.number_of_votes = aggregate['score__count']
-        self.save()
+        self.quicksave()
 
 class UsesIngredient(models.Model):
     

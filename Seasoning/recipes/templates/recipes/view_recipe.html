@@ -2,6 +2,7 @@
 {% load comments %}
 {% load markdown_filter %}
 {% load compressed %}
+{% load ratings %}
 
 {% block title %}{{ recipe.name }}{% endblock %}
 
@@ -94,38 +95,32 @@
             }
         });
         
-        $('#rating-display').raty({
-            path: '{{ STATIC_URL }}img/raty',
-            width: 220,{% if recipe.rating %}
-            score: {{ recipe.rating|floatformat:0 }},{% endif %}
-            readOnly: true,
-            noRatedMsg: "Nog geen ratings voor dit recept!",
-            starOn: 'star-on-med.png',
-            starOff: 'star-off-med.png',
-            starHalf: 'star-half-med.png',
-            hints: ['Dit recept heeft een gemiddelde score van {{ recipe.rating|floatformat:-2 }} op 5',
-                    'Dit recept heeft een gemiddelde score van {{ recipe.rating|floatformat:-2 }} op 5',
-                    'Dit recept heeft een gemiddelde score van {{ recipe.rating|floatformat:-2 }} op 5',
-                    'Dit recept heeft een gemiddelde score van {{ recipe.rating|floatformat:-2 }} op 5',
-                    'Dit recept heeft een gemiddelde score van {{ recipe.rating|floatformat:-2 }} op 5',],
-        });
-        
         $('#user-rating-display').raty({
             path: '{{ STATIC_URL }}img/raty',
             width: 110,
+            hints: [null, null, null, null, null],
+            cancel: true,
+            cancelPlace: 'right',
+            cancelHint: 'Verwijder mijn waardering van dit recept',
             {% if user_vote %}score: {{ user_vote.score }},{% endif %}
             click: function(score, evt) {
-                $("#rating-loader").show();
-                $.post('/recipes/vote/',
-                       {'recipe': {{ recipe.id }},
-                        'score': score})
-                .done(function(data) {
-                    var new_rating_info = $.parseJSON(data);
-                    $('#rating-display').raty('set', {score: parseFloat(new_rating_info['new_rating'])});
-                    $('#total-rating').text(parseFloat(new_rating_info['new_rating']).toFixed(1));
-                    $('#total-votes').text(parseInt(new_rating_info['new_novotes']));
-                    $('#rating-loader').hide();
-                });
+            	if (score === null) {
+            		$("#user-rating .ajax-loader").show();
+	                $.get('/recipes/removevote/{{ recipe.id }}/')
+	                .done(function(data) {
+	                	$("#below-recipe-name .recipe-rating").html(data);
+	                	$("#user-rating .ajax-loader").hide();
+	                });
+	            } else {
+	                $("#user-rating .ajax-loader").show();
+	                $.post('/recipes/vote/',
+	                       {'recipe': {{ recipe.id }},
+	                        'score': score})
+	                .done(function(data) {
+	                	$("#below-recipe-name .recipe-rating").html(data);
+	                	$("#user-rating .ajax-loader").hide();
+	                });
+	            }
             },
         });
         
@@ -357,7 +352,7 @@
         <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
     </div>
     
-    <div id="rating-display"> </div>
+    <span class="recipe-rating">{% rating_display_stars recipe.rating recipe.number_of_votes %}</span>
     
     <br class="clear" />
 </div>
@@ -376,9 +371,9 @@
                 <strong>Jouw waardering</strong>
                 <div id="user-rating">
                     {% if user.is_authenticated %}
-                    <div id="user-rating-display"> </div>
+                    <div id="user-rating-display"> </div> {% include "includes/ajax-loader.html" %}
                     {% else %}
-                    <a href="{% url 'login' %}">Meld je aan</a> om een rating aan dit recept te geven
+                    <a href="{% url 'login' %}?next={% url 'view_recipe' recipe.id %}">Meld je aan</a> om een rating aan dit recept te geven
                     {% endif %}
                 </div>
             </div>

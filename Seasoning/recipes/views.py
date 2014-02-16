@@ -29,6 +29,7 @@ from recipes.models import Recipe, Vote, UsesIngredient, UnknownIngredient
 from recipes.forms import SearchRecipeForm,\
     IngredientInRecipeSearchForm, EditRecipeBasicInfoForm,\
     EditRecipeIngredientsForm, EditRecipeInstructionsForm
+from general.templatetags.ratings import rating_display_stars
 
 def browse_recipes(request):
     """
@@ -418,18 +419,20 @@ def vote(request):
             except Recipe.DoesNotExist:
                 raise Http404
             recipe.vote(user=request.user, score=int(score))
-            data = simplejson.dumps({'new_rating': recipe.rating,
-                                     'new_novotes': recipe.number_of_votes})
+            recipe = Recipe.objects.get(pk=recipe_id)
+            data = rating_display_stars(recipe.rating, recipe.number_of_votes)
             return HttpResponse(data)
         
     raise PermissionDenied
     
 
-@csrf_exempt
 @login_required
 def remove_vote(request, recipe_id):
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     recipe.unvote(user=request.user)
+    recipe = Recipe.objects.get(pk=recipe_id)
+    data = rating_display_stars(recipe.rating, recipe.number_of_votes)
+    return HttpResponse(data)
 
 @csrf_exempt
 def get_recipe_portions(request):

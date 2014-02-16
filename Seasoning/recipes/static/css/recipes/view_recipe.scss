@@ -24,11 +24,19 @@ h1 #recipe-actions {
 #below-recipe-name #add-info {
   float: left; }
 
-#below-recipe-name #rating-display {
+#below-recipe-name .recipe-rating {
   float: right; }
 
-#below-recipe-name #rating-display img {
-  height: 38px; }
+#below-recipe-name .recipe-rating .star-rating-wrapper {
+  width: 220px; }
+
+#below-recipe-name .recipe-rating .star-rating {
+  height: 40px;
+  background-image: url("/static/img/raty/star-on-med.png"); }
+
+#below-recipe-name .recipe-rating .star-rating-not {
+  height: 38px;
+  background-image: url("/static/img/raty/star-off-med.png"); }
 
 #add-info #time-added {
   font-size: .75em; }
@@ -99,17 +107,23 @@ h1 #recipe-actions {
 #img-and-basic-user-options > div {
   margin: 10px 0 0 2.5%; }
 
-#rating #current-rating {
-  margin: 10px 0 0 10px; }
-
-#current-rating #rating-display {
-  float: left; }
-
 #rating #user-rating {
-  margin: 10px 0 0 10px; }
+  margin: 10px 0 0 10px;
+  height: 22px;
+  position: relative; }
 
 #user-rating #user-rating-display {
   display: inline; }
+
+#user-rating #user-rating-display .raty-cancel {
+  margin-left: 10px; }
+  
+#user-rating .ajax-loader {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  display: none;
+}
 
 #time-needed .timebar {
   width: 95%;
