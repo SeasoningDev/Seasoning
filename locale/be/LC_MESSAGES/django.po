@@ -44,7 +44,7 @@ msgid ""
 msgstr ""
 "Je e-mailadres zal nooit verkocht of doorgegeven worden aan derden. Het zal "
 "niet op Seasoning getoond worden, tenzij je deze optie activeert.<br/>Er zal "
-"eenmalig een e-mail gestuurd worden om je account te verifiëren. Je zal geen "
+"eenmalig een e-mail gestuurd worden om je account te verifiÃ«ren. Je zal geen "
 "verdere e-mails van Seasoning ontvangen."
 
 
@@ -319,7 +319,7 @@ msgid ""
 "You cannot use this type of {social_network} account to register on "
 "Seasoning. Please try another..."
 msgstr ""
-"Dit type {social_network} account kan niet gebruikt worden om te registreren
+"Dit type {social_network} account kan niet gebruikt worden om te registreren "
 "op Seasoning. Gelieve een andere mogelijkheid te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:214
@@ -429,7 +429,7 @@ msgid ""
 "This ingredient is not always available somewhere, and should not be "
 "accepted."
 msgstr ""
-"Dit ingrediënt is niet altijd ergens beschikbaar en zou niet geaccepteerd "
+"Dit ingrediÃ«nt is niet altijd ergens beschikbaar en zou niet geaccepteerd "
 "mogen worden."
 
 #: Seasoning/news/models.py:24
@@ -485,8 +485,8 @@ msgid ""
 "Extra info about the ingredients or needed tools (e.g. \"You will need a "
 "mixer for this recipe\" or \"Use big potatoes\")"
 msgstr ""
-"Extra informatie over de ingrediënten of andere benodigdheden (bv. "je hebt "
-"een mixer nodig voor dit recept" of "gebruik grote aardappelen")."
+"Extra informatie over de ingrediÃ«nten of andere benodigdheden (bv. \"je hebt "
+"een mixer nodig voor dit recept\" of \"gebruik grote aardappelen\")."
 
 #: Seasoning/recipes/models.py:124
 msgid "Detailed instructions for preparing this recipe."
