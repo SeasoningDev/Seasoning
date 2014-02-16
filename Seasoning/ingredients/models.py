@@ -296,6 +296,13 @@ class Ingredient(models.Model):
             self.preservation_footprint = 0
         saved = super(Ingredient, self).save()
         
+        try:
+            availableins = self.get_available_ins()
+            for availablein in availableins:
+                availablein.save()
+        except self.BasicIngredientException:
+            pass
+        
         # Update all recipes using this ingredient
         uses = recipes.models.UsesIngredient.objects.filter(ingredient=self)
         if len(uses) > 0 and len(uses) < 100:
@@ -303,7 +310,6 @@ class Ingredient(models.Model):
             # avoid overloading the server
             for uses_ingredient in uses:
                 uses_ingredient.save(update_recipe=True)
-        
         return saved
 
 class Synonym(models.Model):
