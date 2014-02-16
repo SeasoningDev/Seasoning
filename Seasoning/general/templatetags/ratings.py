@@ -5,11 +5,11 @@ from recipes.models import Recipe
 register = template.Library()
 
 @register.simple_tag
-def rating_display_stars(rating):
+def rating_display_stars(rating, novotes):
     if rating is None:
         return ''
     width_percentage = int((rating/5.0)*100)
-    return '<span class="star-rating-wrapper" title="Dit recept heeft een score van %d/5"><span class="star-rating-not" style="width:%d%%"></span><span class="star-rating" style="width:%d%%"></span></span>' % (rating, 100-width_percentage, width_percentage)
+    return '<span class="star-rating-wrapper" title="Dit recept heeft een score van %.3g op 5 (%d waarderingen)"><span class="star-rating" style="width:%d%%"></span><span class="star-rating-not" style="width:%d%%"></span></span>' % (rating, novotes, width_percentage, 100-width_percentage)
 
 @register.simple_tag
 def mean_rating(rating):

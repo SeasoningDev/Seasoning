@@ -129,15 +129,15 @@
 
 .star-rating-wrapper .star-rating-not {
   background-image: url("/static/img/raty/star-off.png");
-  background-position: left;
-  height: 16px;
-  float: left; }
-
-.star-rating-wrapper .star-rating {
-  background-image: url("/static/img/raty/star-on.png");
   background-position: right;
   height: 16px;
   float: right; }
+
+.star-rating-wrapper .star-rating {
+  background-image: url("/static/img/raty/star-on.png");
+  background-position: left;
+  height: 16px;
+  float: left; }
 
 .no-rating-wrapper {
   font-size: 8px; }
