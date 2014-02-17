@@ -188,9 +188,9 @@
     }
     
     function adjust_footprint_percentages() {
-        var total_footprint = parseFloat($('#recipe-footprint').text());
+        var total_footprint = parseFloat($('#recipe-footprint').text().replace(',', '.'));
         $('.ingredient').each(function() {
-            var footprint = parseFloat($(this).find('.footprint-number').text());
+            var footprint = parseFloat($(this).find('.footprint-number').text().replace(',', '.'));
             var percentage = (footprint/total_footprint)*100;
             $(this).find('.percentage-number').text(parseInt(percentage) + '%');
             $(this).find('.footprint-fill').animate({
