@@ -85,7 +85,7 @@ def social_auth(request, backend):
                 except User.DoesNotExist:
                     # A user with the given email was not found. Prompt the user to register
                     # at Seasoning using his social network account
-                    messages.add_message(request, messages.INFO, _('Your {social_network} account has not been connected to Seasoning yet. Please take a minute to register.').format(social_network=backend.name())
+                    messages.add_message(request, messages.INFO, _('Your {social_network} account has not been connected to Seasoning yet. Please take a minute to register.').format(social_network=backend.name()))
                     return redirect(backend.registration_url)
     
     # The code or access token was not correct or we were unable to connect to the social network. Please try again later
