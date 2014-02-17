@@ -8,9 +8,10 @@ from captcha.fields import ReCaptchaField
 
 class ContactForm(forms.Form):
     
-    subject = forms.CharField()
-    your_email = forms.EmailField()
-    message = forms.CharField(widget=forms.Textarea)
+    subject = forms.CharField(label=_("Subject"))
+    your_email = forms.EmailField(label=_("Email"))
+    message = forms.CharField(widget=forms.Textarea,
+                              label=_("Message"))
                              
     captcha = ReCaptchaField(attrs={'theme': 'red'},
                              error_messages = {'required': _("You must enter the correct ReCaptcha characters")})
