@@ -5,6 +5,7 @@ import recipes
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import date as _date
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import ResizeToFill, SmartResize
 
@@ -459,10 +460,10 @@ class AvailableIn(models.Model):
         return date
         
     def month_from(self):
-        return self.date_from.strftime('%B')
+        return _date(self.date_from, 'F')
     
     def month_until(self):
-        return self.date_until.strftime('%B')
+        return _date(self.date_until, 'F')
     
     def extended_month_until(self, date_until_extension=None):
         return self.extended_date_until(date_until_extension).strftime('%B')
