@@ -31,6 +31,7 @@ from general.models import StaticPage, RecipeOfTheWeek
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from ingredients.models import Ingredient
+import re
 
 def home(request):
     if request.user.is_authenticated():
@@ -48,7 +49,11 @@ def contribute(request):
 
 def donate(request):
     financial_reports_dir = '%s/docs/financial' % settings.STATIC_ROOT
-    financial_reports = os.listdir(financial_reports_dir)
+    files = os.listdir(financial_reports_dir)
+    financial_reports = []
+    for thisfile in files:
+        if re.match(r'^[^\.]*\.pdf$', thisfile):
+            financial_reports.append(thisfile)
     return render(request, 'contribute/donate.html', {'financial_reports': financial_reports})
 
 def donate_success(request):
