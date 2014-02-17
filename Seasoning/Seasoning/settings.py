@@ -19,7 +19,7 @@ if len(manage_command) != 0:
 ALLOWED_HOSTS = ['localhost', 'www.seasoning.be', 'seasoning.be']
 
 # The directory containing the source code
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # The file to which the database backed up should be written
 DB_BACKUP_FILE = os.path.join(BASE_DIR, '../../seasoning_db.bak')
