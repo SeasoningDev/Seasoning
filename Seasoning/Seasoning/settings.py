@@ -18,7 +18,7 @@ if len(manage_command) != 0:
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['localhost', 'www.seasoning.be', 'seasoning.be']
 
-# The directory containing this file
+# The directory containing the source code
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # The file to which the database backed up should be written
