@@ -13,7 +13,7 @@
         
                 reader.onload = function (e) {
                     
-                    $('#img-preview').attr('src', e.target.result);
+                    $('.img-frame').html('<img id="img-preview" src="' + e.target.result + '">');
                 }
         
                 reader.readAsDataURL(input.files[0]);
