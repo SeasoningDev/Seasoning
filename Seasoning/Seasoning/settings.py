@@ -67,8 +67,7 @@ LANGUAGES = (('nl', 'Dutch'),)
 LANGUAGE_CODE = 'nl-be'
 
 LOCALE_PATHS = (
-    BASE_DIR + '/locale',
-    'C:\\Users\\Joep\\Eclipse\\Seasoning\\Seasoning\\locale',
+    os.path.join(BASE_DIR, 'locale'),
 )
 
 SITE_ID = secrets.SITE_ID
