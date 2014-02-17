@@ -93,7 +93,8 @@ class RegistrationForm(forms.ModelForm):
                              
     captcha = ReCaptchaField(attrs={'theme': 'red',
                                     'tabindex': 7},
-                             error_messages = {'required': _("You must enter the correct ReCaptcha characters")})
+                             error_messages = {'required': _("You must enter the correct ReCaptcha characters"),
+                                               'captcha_invalid': _("Incorrect, please try again.")})
     
     tos = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'required',
                                                                'tabindex': '8'}),
