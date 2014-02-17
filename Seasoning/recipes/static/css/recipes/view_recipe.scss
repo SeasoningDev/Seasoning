@@ -190,8 +190,11 @@ h1 #recipe-actions {
 
 .timebar span {
   position: absolute;
-  right: -2%;
-  top: 20px; }
+  right: 0;
+  top: 20px;
+  width: 100%;
+  min-width: 50px;
+  text-align: center; }
 
 #portions {
   position: relative; }

@@ -108,8 +108,8 @@ def view_recipe(request, recipe_id):
             pass
     
     total_time = recipe.active_time + recipe.passive_time
-    active_time_perc = (float(recipe.active_time) / total_time) * 100
-    passive_time_perc = 100 - active_time_perc
+    active_time_perc = str((float(recipe.active_time) / total_time) * 100).replace(',', '.')
+    passive_time_perc = str(100 - (float(recipe.active_time) / total_time) * 100).replace(',', '.')
     
     comments = Comment.objects.filter(content_type=ContentType.objects.get_for_model(Recipe), object_pk=recipe.id, is_removed=False, is_public=True).select_related('user')
     
