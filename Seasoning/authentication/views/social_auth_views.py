@@ -77,16 +77,15 @@ def social_auth(request, backend):
                     user = User.objects.get(email=user_info['email'])
                     # A user with the given email has been found. Prompt the user to
                     # connect his social network account to his Seasoning account
-                    messages.add_message(request, messages.INFO, _('The email corresponding to your {social_network} account is already in use on Seasoning. '
-                                                                   'If this account belongs to you, please log in to connect it to your {social_network} account, '
-                                                                   'otherwise, please contact an administrator.').format(social_network=backend.name()))
+                    messages.add_message(request, messages.INFO, 
+                        _('The email corresponding to your {social_network} account is already in use on Seasoning. If this account belongs to you, please log in to connect it to your {social_network} account, otherwise, please contact an administrator.').format(social_network=backend.name()))
                     # The user is probably not logged in at this point, so he will be asked to log
                     # in first before connecting his social network account to his Seasoning account.
                     return redirect(backend.connect_url)
                 except User.DoesNotExist:
                     # A user with the given email was not found. Prompt the user to register
                     # at Seasoning using his social network account
-                    messages.add_message(request, messages.INFO, _('Your {social_network} account has not been connected to Seasoning yet. Please take a minute to register.'))
+                    messages.add_message(request, messages.INFO, _('Your {social_network} account has not been connected to Seasoning yet. Please take a minute to register.').format(social_network=backend.name())
                     return redirect(backend.registration_url)
     
     # The code or access token was not correct or we were unable to connect to the social network. Please try again later
