@@ -66,6 +66,10 @@ LANGUAGES = (('nl', 'Dutch'),)
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'nl-be'
 
+LOCALE_PATHS = (
+    BASE_DIR + '/locale',
+)
+
 SITE_ID = secrets.SITE_ID
 
 # If you set this to False, Django will make some optimizations so as not
