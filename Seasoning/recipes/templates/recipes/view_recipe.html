@@ -380,9 +380,11 @@
             
             <div id="time-needed">
                 <strong>Bereidingstijd</strong>
-                <div class="timebar">
-                    <div class="timebar-active" style="width: {{ active_time_perc }}%"><span class="time-label">{% if recipe.active_time != total_time %}{{ recipe.active_time }} min{% endif %}</span></div>
+                <div class="timebar" title="Dit recept duurt ongeveer {{ total_time }} min om klaar te maken (waarvan je {{ recipe.active_time }} min actief bezig zal zijn)">
+                    <div class="timebar-active" style="width: {{ active_time_perc }}%"><span class="time-label">{{ recipe.active_time }} min</span></div>
+                    {% if recipe.passive_time > 0 %}
                     <div class="timebar-passive" style="width: {{ passive_time_perc }}%"><span class="time-label">{{ total_time }} min</span></div>
+                    {% endif %}
                 </div>
             </div>
             
