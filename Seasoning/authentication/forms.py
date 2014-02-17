@@ -60,21 +60,25 @@ class RegistrationForm(forms.ModelForm):
     
     givenname = forms.CharField(max_length=30,
                                 widget=forms.TextInput(attrs={'tabindex':'1'}),
+                                label=_("Givenname"),
                                 help_text=_('30 characters or fewer, only letters allowed. '
                                             'Your name will be used to identify you on Seasoning.'))
     
     surname = forms.CharField(max_length=50,
                               widget=forms.TextInput(attrs={'tabindex':'2'}),
+                              label=_("Surname"),
                               help_text=_('50 characters or fewer, only letters allowed '
                                           'Your name will be used to identify you on Seasoning.'))
     
     email = forms.EmailField(widget=forms.TextInput(attrs={'tabindex':'3'}),
+                             label=_("Email"),
                              help_text=_('Your email will never be sold or shared. It will not be shown on the site, unless you enable this '
                                          'option.<br/>An email will be sent to this email address to verify your account. You will not '
                                          'receive any further emails from Seasoning.'))
     
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'required',
-                                                                 'tabindex': '4'}, render_value=False))
+                                                                 'tabindex': '4'}, render_value=False),
+                               label=_("Password"),)
     
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'required',
                                                                   'tabindex': '5'}, render_value=False),
@@ -82,6 +86,7 @@ class RegistrationForm(forms.ModelForm):
                                 help_text=_('Please enter the same password as above for verification purposes.'))
     
     date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'tabindex':'6'}),
+                                    label=_("Date of birth"),
                                     input_formats=['%d-%m-%Y', '%Y-%m-%d', '%d/%m/%Y'],
                                     help_text=_('Your birthday will be used for age validation and possible some anonymous statistics about the '
                                                 'users of Seasoning.'))
@@ -155,7 +160,7 @@ class ResendActivationEmailForm(forms.Form):
     cleaned email field will contain the registration profile of the account.
     
     """    
-    email = forms.EmailField(label="E-mail", max_length=75, required=False,
+    email = forms.EmailField(label=_("Email"), max_length=75, required=False,
                              error_messages = {'invalid': _("Please enter a valid email address"),
                                                'required': _("Please enter a valid email address")})
     

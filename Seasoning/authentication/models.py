@@ -67,18 +67,18 @@ class User(models.Model):
     objects = UserManager()
     
     email = models.EmailField(
-        verbose_name=_(_('email address')),
+        verbose_name=_("Email"),
         max_length=255,
         unique=True,
         db_index=True,
     )
     
-    givenname = models.CharField(_('given name'), max_length=30,
+    givenname = models.CharField(_("Givenname"), max_length=30,
                                 help_text=_('30 characters or fewer, only letters allowed. '
                                             'Your name will be used to identify you on Seasoning.'),
                                 validators=[validators.RegexValidator(re.compile('[a-zA-Z -]{2,}'), _('Enter a valid Given Name.'), 'invalid')])
     
-    surname = models.CharField(_('surname'), max_length=50,
+    surname = models.CharField(_('Surname'), max_length=50,
                                 help_text=_('50 characters or fewer, only letters allowed '
                                             'Your name will be used to identify you on Seasoning.'),
                                 validators=[validators.RegexValidator(re.compile('[a-zA-Z -]{2,}'), _('Enter a valid Surname.'), 'invalid')])
@@ -86,7 +86,7 @@ class User(models.Model):
     # Field to check if user has changed his name (name can only be changed once to avoid abuse)
     name_changed = models.BooleanField(default=False, editable=False)
     
-    password = models.CharField(_('password'), max_length=128, null=True)
+    password = models.CharField(_('Password'), max_length=128, null=True)
     
     avatar = ProcessedImageField([ResizeToFill(250, 250)], format='PNG', \
                                   upload_to=get_image_filename, default='images/users/no_image.png')
