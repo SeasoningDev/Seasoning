@@ -16,7 +16,7 @@ class Topic(models.Model):
 
 class Question(models.Model):
     class Meta:
-        verbose_name = _("Frequent asked question")
+        verbose_name = _("Frequently asked question")
         verbose_name_plural = _("Frequently asked questions")
 
     text = models.TextField(_('question'), help_text=_('The actual question itself.'))
