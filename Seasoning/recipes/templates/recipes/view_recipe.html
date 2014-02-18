@@ -364,9 +364,9 @@
     <div id="first-information">
         <div id="img-and-basic-user-options">
             <img id="recipe-img" src="{{ recipe.thumbnail.url }}"/>
-            <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.normalized_footprint|floatformat:2 }} kgCO2 per 4 porties">
+            <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
 		       	<span class="footprint-cloud-text">
-		       		{{ recipe.normalized_footprint|floatformat:-2 }}
+		       		{{ recipe.total_footprint|floatformat:-2 }}
 		       	</span>
 		    </span>
 	        
