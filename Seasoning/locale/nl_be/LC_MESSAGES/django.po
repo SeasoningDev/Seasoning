@@ -86,7 +86,7 @@ msgstr ""
 
 #: Seasoning/authentication/forms.py:96 Seasoning/general/forms.py:16
 msgid "You must enter the correct ReCaptcha characters"
-msgstr "Vul de correcte tekens van de ReCapcha in."
+msgstr "Vul de correcte tekens van de ReCaptcha in."
 
 #: Seasoning/authentication/forms.py:97
 msgid "Incorrect, please try again."
