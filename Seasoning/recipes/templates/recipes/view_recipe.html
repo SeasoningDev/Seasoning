@@ -137,7 +137,7 @@
                     $('#instructions-warning').slideUp('1000');
                 }
                 var parsed_data = $.parseJSON(data);
-                $('.footprint-cloud-text').text(parsed_data['new_footprint'].toFixed(2));
+                $('.footprint-cloud-text').text(parsed_data['new_footprint'].toFixed(2).toString().replace('.', ','));
                 $('#ingredients').html(parsed_data['ingredient_list']);
                 adjust_footprint_percentages();
                 fix_moreinfo_links();
