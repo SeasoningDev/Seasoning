@@ -126,9 +126,10 @@
         
         $('#custom-portions-input').change(function() {
             $('#ingredients-loader').show();
+            var new_portions = $('#custom-portions-input').val();
             $.post('/recipes/portions/',
                    {'recipe': {{ recipe.id }},
-                    'portions': $('#custom-portions-input').val()})
+                    'portions': new_portions})
             .done(function(data) {
                 if ($('#custom-portions-input').val() != {{ recipe.portions }}) {
                     $('#instructions-warning').slideDown('1000');
@@ -136,7 +137,7 @@
                     $('#instructions-warning').slideUp('1000');
                 }
                 var parsed_data = $.parseJSON(data);
-                $('#recipe-footprint').text(parsed_data['new_footprint'].toFixed(2));
+                $('.footprint-cloud-text').text(parsed_data['new_footprint'].toFixed(2));
                 $('#ingredients').html(parsed_data['ingredient_list']);
                 adjust_footprint_percentages();
                 fix_moreinfo_links();
@@ -188,7 +189,7 @@
     }
     
     function adjust_footprint_percentages() {
-        var total_footprint = parseFloat($('#recipe-footprint').text().replace(',', '.'));
+        var total_footprint = parseFloat($('.footprint-cloud-text').text().replace(',', '.'));
         $('.ingredient').each(function() {
             var footprint = parseFloat($(this).find('.footprint-number').text().replace(',', '.'));
             var percentage = (footprint/total_footprint)*100;
@@ -363,10 +364,12 @@
     <div id="first-information">
         <div id="img-and-basic-user-options">
             <img id="recipe-img" src="{{ recipe.thumbnail.url }}"/>
-            <span id="recipe-footprint-wrapper">
-                <span id="recipe-footprint" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:-2 }} kgCO2 per {{ recipe.portions }} porties">{{ recipe.total_footprint|floatformat:-2 }}</span>
-            </span>
-            
+            <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.normalized_footprint|floatformat:2 }} kgCO2 per 4 porties">
+		       	<span class="footprint-cloud-text">
+		       		{{ recipe.normalized_footprint|floatformat:-2 }}
+		       	</span>
+		    </span>
+	        
             <div id="rating">
                 <strong>Jouw waardering</strong>
                 <div id="user-rating">
