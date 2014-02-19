@@ -365,4 +365,6 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': 'Seasoning.settings.show_toolbar'
 }
 
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
 
