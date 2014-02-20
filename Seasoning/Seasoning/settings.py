@@ -178,7 +178,7 @@ INSTALLED_APPS = (
     'imagekit',
     'pipeline',
     'markitup',
-    'debug_toolbar',
+    'debug_toolbar.apps.DebugToolbarConfig',
 )
 
 AUTH_USER_MODEL = 'authentication.User'
