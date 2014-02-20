@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include
+from django.conf.urls import patterns, include, url
 from general.sitemaps import GeneralViewsSitemap, StaticViewSitemap
 from ingredients.sitemaps import IngredientViewsSitemap
 from news.sitemaps import NewsViewsSitemap
@@ -42,3 +42,7 @@ if settings.DEBUG:
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
             {'document_root': settings.MEDIA_ROOT}),
    )
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
