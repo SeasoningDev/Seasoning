@@ -30,6 +30,12 @@ from recipes.forms import SearchRecipeForm,\
     IngredientInRecipeSearchForm, EditRecipeBasicInfoForm,\
     EditRecipeIngredientsForm, EditRecipeInstructionsForm
 from general.templatetags.ratings import rating_display_stars
+from django.contrib.comments.signals import comment_was_posted
+
+# Inform user when posting a comment was succesfull
+def comment_posted_message(sender, comment=None, request=None, **kwargs):
+    messages.add_message( request, messages.SUCCESS, 'Uw reactie werd succesvol toegevoegd.' )
+comment_was_posted.connect(comment_posted_message)
 
 def browse_recipes(request):
     """
