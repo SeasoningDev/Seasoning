@@ -32,7 +32,7 @@ msgstr ""
 
 #: authentication/forms.py:66
 msgid "This field is required."
-msgstr ""
+msgstr "Dit veld is verplicht."
 
 #: authentication/forms.py:70 authentication/models.py:81
 msgid "Surname"
@@ -388,11 +388,11 @@ msgstr "onderwerp"
 
 #: general/forms.py:11
 msgid "Subject"
-msgstr ""
+msgstr "Onderwerp"
 
 #: general/forms.py:14
 msgid "Message"
-msgstr ""
+msgstr "Boodschap"
 
 #: general/models.py:33
 msgid "{recipe_name} is the {recipe_veganism} recipe of the week."
@@ -429,7 +429,7 @@ msgstr "naam"
 
 #: recipes/models.py:110
 msgid "Course"
-msgstr ""
+msgstr "Maaltijdsoort"
 
 #: recipes/models.py:111
 msgid "The type of course this recipe will provide."
@@ -437,16 +437,15 @@ msgstr "De soort maaltijd van het recept."
 
 #: recipes/models.py:112
 msgid "Cuisine"
-msgstr ""
+msgstr "Keuken"
 
 #: recipes/models.py:113
 msgid "The type of cuisine this recipe represents."
 msgstr "De keuken waarin dit recept gebruikt wordt."
 
 #: recipes/models.py:114
-#, fuzzy
 msgid "Description"
-msgstr "vraag"
+msgstr "Beschrijving"
 
 #: recipes/models.py:115
 msgid "A few sentences describing the recipe (Maximum 140 characters)."
@@ -462,7 +461,7 @@ msgstr ""
 
 #: recipes/models.py:117
 msgid "Portions"
-msgstr ""
+msgstr "Porties"
 
 #: recipes/models.py:118
 msgid ""
@@ -472,7 +471,7 @@ msgstr "De tijd die je actief besteed aan de bereiding van het recept."
 
 #: recipes/models.py:118
 msgid "Active time"
-msgstr ""
+msgstr "Actieve tijd"
 
 #: recipes/models.py:119
 msgid ""
@@ -484,11 +483,11 @@ msgstr ""
 
 #: recipes/models.py:120
 msgid "Passive time"
-msgstr ""
+msgstr "Passieve tijd"
 
 #: recipes/models.py:126
 msgid "Extra info"
-msgstr ""
+msgstr "Extra informatie"
 
 #: recipes/models.py:127
 msgid ""
@@ -504,7 +503,7 @@ msgstr "Gedetailleerde instructies voor de bereiding van het recept."
 
 #: recipes/models.py:128
 msgid "Instructions"
-msgstr ""
+msgstr "Instructies"
 
 #: recipes/models.py:132
 msgid ""
