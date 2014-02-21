@@ -109,7 +109,7 @@ class Recipe(models.Model):
     
     course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
-    cuisine = models.ForeignKey(_('Cuisine'), Cuisine, db_column='cuisine', null=True, blank=True,
+    cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine', null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
     description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)],
                                    help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
