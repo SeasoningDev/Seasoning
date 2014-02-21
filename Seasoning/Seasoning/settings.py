@@ -44,6 +44,7 @@ DATABASES = {
 }
 
 # Email configuration
+EMAIL_BACKEND = secrets.EMAIL_BACKEND
 EMAIL_HOST = secrets.EMAIL_HOST
 EMAIL_PORT = secrets.EMAIL_PORT
 EMAIL_HOST_USER = secrets.EMAIL_HOST_USER
