@@ -102,30 +102,30 @@ class Recipe(models.Model):
                (SOUP,u'Soep'),
                (MARINADE_AND_SAUCE,u'Marinades en sauzen'))
     
-    name = models.CharField(max_length=100,
-                            help_text=_('The names of the recipe.'), label=_('Name'))
+    name = models.CharField(_('Name'), max_length=100,
+                            help_text=_('The names of the recipe.'))
     author = models.ForeignKey(User, related_name='recipes', editable=False, null=True)
     time_added = models.DateTimeField(auto_now_add=True, editable=False)
     
-    course = models.PositiveSmallIntegerField(choices=COURSES, label=_('Course'),
+    course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
-    cuisine = models.ForeignKey(Cuisine, db_column='cuisine', null=True, blank=True, label=_('Cuisine'),
+    cuisine = models.ForeignKey(_('Cuisine'), Cuisine, db_column='cuisine', null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
-    description = models.TextField(validators=[MaxLengthValidator(140)], label=_('Description'),
+    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)],
                                    help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
-    portions = models.PositiveIntegerField(help_text=_('The average amount of people that can be fed by this recipe '
-                                                       'using the given amounts of ingredients.'), label=_('Portions'))
-    active_time = models.IntegerField(help_text=_('The time needed to prepare this recipe where you are actually doing something.'), label=_('Active time'))
-    passive_time = models.IntegerField(help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
-                                       default=0, label=_('Passive time'))
+    portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
+                                                       'using the given amounts of ingredients.'))
+    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
+    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
+                                       default=0)
     
     rating = models.FloatField(null=True, blank=True, default=None, editable=False)
     number_of_votes = models.PositiveIntegerField(default=0, editable=False)
     
     ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
-    extra_info = models.TextField(default='', blank=True, label=_('Extra info'),
+    extra_info = models.TextField(_('Extra info'), default='', blank=True,
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
-    instructions = models.TextField(help_text=_('Detailed instructions for preparing this recipe.'), label=_('Instructions'))
+    instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'))
     
     default_image_location = 'images/ingredients/no_image.png'
     image = ProcessedImageField(format='PNG', upload_to=get_image_filename, default=default_image_location,
