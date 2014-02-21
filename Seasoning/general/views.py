@@ -92,11 +92,12 @@ def contact_form(request, contact_type):
             
             message_text_to_us = render_to_string('emails/contact_form_email.txt',
                                                   ctx_dict)
-            message_text_feedback = render_to_string('emails/contact_form_autoreply.txt')
+            message_text_feedback = render_to_string('emails/contact_form_autoreply.txt',
+                                                     ctx_dict)
     
             send_mail('Contact van gebruiker: %s' % subject, message_text_to_us, 
                       email,
-                      [TYPES[contact_type]['email']], fail_silently=True)
+                      ['contact@seasoning.be'], fail_silently=True)
             send_mail('Contact met Seasoning.be', message_text_feedback, 
                       'noreply@seasoning.be',
                       [email], fail_silently=True)
