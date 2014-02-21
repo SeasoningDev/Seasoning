@@ -232,7 +232,6 @@ msgstr ""
 "Gelieve een andere mogelijkheid te proberen."
 
 #: Seasoning/authentication/views/social_auth_views.py:81
-#, fuzzy
 msgid ""
 "The email corresponding to your {social_network} account is already in use "
 "on Seasoning. If this account belongs to you, please log in to connect it to "

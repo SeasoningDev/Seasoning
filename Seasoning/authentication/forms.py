@@ -62,7 +62,8 @@ class RegistrationForm(forms.ModelForm):
                                 widget=forms.TextInput(attrs={'tabindex':'1'}),
                                 label=_("Givenname"),
                                 help_text=_('30 characters or fewer, only letters allowed. '
-                                            'Your name will be used to identify you on Seasoning.'))
+                                            'Your name will be used to identify you on Seasoning.'),
+                                error_messages={'required': _('This field is required.')})
     
     surname = forms.CharField(max_length=50,
                               widget=forms.TextInput(attrs={'tabindex':'2'}),
