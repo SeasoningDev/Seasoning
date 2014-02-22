@@ -80,7 +80,7 @@ def contact_form(request, contact_type):
             if request.user.is_authenticated():
                 email = request.user.email
             else:
-                email = form.fields['your_email']
+                email = form.cleaned_data['your_email']
             
             ctx_dict = {'type': TYPES[contact_type]['title'],
                         'email': email,
@@ -96,8 +96,8 @@ def contact_form(request, contact_type):
                                                      ctx_dict)
     
             send_mail('Contact van gebruiker: %s' % subject, message_text_to_us, 
-                      email,
-                      ['contact@seasoning.be'], fail_silently=True)
+                      'contact@seasoning.be',
+                      [TYPES[contact_type]['email']], fail_silently=True)
             send_mail('Contact met Seasoning.be', message_text_feedback, 
                       'noreply@seasoning.be',
                       [email], fail_silently=True)
