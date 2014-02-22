@@ -23,6 +23,11 @@ function loadMoreNews() {
 }
 
 function bindScroll() {
+	var x1 = $(window).scrollTop();
+	var x2 = 2*$(window).height();
+	
+	var x3 = $("#news-list-wrapper").offset().top;
+	var x4 = $("#news-list-wrapper").height();
 	if ($(window).scrollTop() + 2*$(window).height() > $("#news-list-wrapper").offset().top + $("#news-list-wrapper").height()) {
 		$(window).unbind('scroll', bindScroll);
 		loadMoreNews();
@@ -33,7 +38,10 @@ function bindScroll() {
 
 
 $(function() {
-	$(window).scroll(bindScroll);
+	if ($(".news-item-wrapper").length > 0) {
+		$(window).scroll(bindScroll);
+		bindScroll();
+	}
 });
 </script>
 {% endblock %}
@@ -57,12 +65,22 @@ $(function() {
 <div id="news-list-wrapper">
 	{% include "includes/news_list.html" %}
     
+    {% if news.object_list %}
     <div id="loading-news">
     	Ouder nieuws wordt geladen...
+    	<div style="margin: 10px 320px 0 0">
     	{% include "includes/big-ajax-loader.html" %}
+    	</div>
     	<br /><br />
-    	<br class="clear" />
+    	<br class="left" />
     </div>
+    {% else %}
+    <div id="loading-news">
+    	Er werd geen nieuws gevonden...
+    	<br /><br />
+    	<br class="left" />
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}
