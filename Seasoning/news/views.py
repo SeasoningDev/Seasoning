@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, get_object_or_404
 from news.models import NewsItem
+from django.http.response import Http404
 
 def browse_news(request):
     news_list = NewsItem.objects.filter(visible=True).order_by('-time_published')
@@ -15,8 +16,8 @@ def browse_news(request):
         news = paginator.page(1)
     except EmptyPage:
         # Raise error because no more news is availble
-        raise 
-    
+        raise Http404 
+      
     if request.is_ajax():
         return render(request, 'includes/news_list.html', {'news': news})
         
