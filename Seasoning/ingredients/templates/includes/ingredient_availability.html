@@ -34,7 +34,7 @@
     <div class="available-in" id="available-in-{{ available_in.location }}">
         <span class="location-name">{{ available_in.location.name }}{% if available_in.production_type %} ({{ available_in.production_type }}){% endif %}</span>
         <span class="availability-indicator" 
-              title="Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until}}.<br />{% endif %}Voetafdruk: {{ available_in.footprint|floatformat:"-4" }} kgCO2 per {{ ingredient.primary_unit.short_name }}{% if ingredient.preservability > 0 and ingredient.preservation_footprint > 0 %} (+ {{ ingredient.preservation_footprint_monthly|floatformat:"-4" }} per maand in bewaring.{% endif %})">
+              title="Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until|lower }}.<br />{% endif %}Voetafdruk: {{ available_in.footprint|floatformat:"-4" }} kgCO2 per {{ ingredient.primary_unit.short_name }}{% if ingredient.preservability > 0 and ingredient.preservation_footprint > 0 %} (+ {{ ingredient.preservation_footprint_monthly|floatformat:"-4" }} per maand in bewaring.{% endif %})">
             <span class="available-from">{{ available_in.date_from.month }}</span>
             <span class="available-until">{{ available_in.date_until.month }}</span>
         </span>
