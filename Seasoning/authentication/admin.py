@@ -4,7 +4,7 @@ from authentication.models import User, NewEmail, RegistrationProfile
 
 class UserAdmin(admin.ModelAdmin):
     model = User
-    readonly_fields = ('first',)
+    readonly_fields = ('facebook_id', 'google_id')
     
     
 admin.site.register(User, UserAdmin)
