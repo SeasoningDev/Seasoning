@@ -83,8 +83,8 @@
 		line-height: 50px;
 		color: #F4FAEF;
 		transition: background .8s ease;
-		-webkit-transition: all 0.8s ease-in-out;
-		-moz-transition: all 0.8s ease-in-out;
+		-webkit-transition: background 0.8s ease-in-out;
+		-moz-transition: background 0.8s ease-in-out;
 	}
 	
 	#nav-container .navlink:hover {
