@@ -6,6 +6,7 @@ class UsesIngredientInline(admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [ UsesIngredientInline, ]
+    search_fields = ['name']
     
     # Make sure the recipe object gets saved again after the usesingredient objects are saved
     temp_obj = None

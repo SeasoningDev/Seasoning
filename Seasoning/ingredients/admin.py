@@ -48,6 +48,7 @@ class IngredientAdmin(admin.ModelAdmin):
                 CanUseUnitInline,
                 AvailableInCountryInline,
                 AvailableInSeaInline ]
+    search_fields = ['name']
     
     formfield_overrides = {
         models.ImageField: {'widget': ShownImageInput}}
