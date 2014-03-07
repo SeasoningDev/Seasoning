@@ -97,7 +97,7 @@ def contact_form(request, contact_type):
     
             send_mail('Contact van gebruiker: %s' % subject, message_text_to_us, 
                       'contact@seasoning.be',
-                      [TYPES[contact_type]['email']], fail_silently=True)
+                      [TYPES[contact_type]['email']], fail_silently=False)
             send_mail('Contact met Seasoning.be', message_text_feedback, 
                       'noreply@seasoning.be',
                       [email], fail_silently=True)
