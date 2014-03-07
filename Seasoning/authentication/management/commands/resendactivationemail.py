@@ -5,8 +5,8 @@ reason.
 
 """
 from django.core.management.base import BaseCommand, CommandError
-from registration.models import RegistrationProfile
 from django.contrib.sites.models import Site
+from authentication.models import RegistrationProfile
 
 
 class Command(BaseCommand):
