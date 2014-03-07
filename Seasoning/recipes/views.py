@@ -375,7 +375,7 @@ class EditRecipeWizard(SessionWizardView):
                                   self.request.user.email,
                                   ['info@seasoning.be'], fail_silently=True)
                         
-                        done_message += '\nOmdat je ingredienten hebt aangevraagd zal je recept echter pas zichtbaar zijn voor andere gebruikers wanneer deze ingredienten aan de databank toegevoegd zijn.'
+                        done_message += '\nOmdat je ingredienten hebt aangevraagd, zal je recept echter pas zichtbaar zijn voor andere gebruikers wanneer deze ingredienten aan de databank toegevoegd zijn.'
             
                     ing_form.save()
                         

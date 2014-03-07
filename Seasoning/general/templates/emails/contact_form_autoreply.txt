@@ -1,7 +1,5 @@
 U hebt zonet een contactformulier verstuurd op Seasoning met de volgende gegevens:
 
-Type contact: {{ type }}
-
 Onderwerp: {{ subject }}
 
 Boodschap:
