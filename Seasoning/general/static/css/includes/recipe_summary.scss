@@ -103,7 +103,9 @@
   margin-top: 10px; }
 
 .recipe-title .title h3 {
-  color: #333; }
+  color: #333;
+  height: 65px;
+  overflow: hidden; }
 
 .recipe-description {
   display: block;
