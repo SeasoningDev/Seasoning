@@ -152,7 +152,7 @@ $(document).ready(function() {
 	// Start the timer when more than 3 chars have been typed
 	$("#id_search_string").keyup(function() {
 		if ($(this).val().length >= 3) {
-			timer = setTimeout(update_recipe_page, 1000);
+			timer = setTimeout(update_recipe_page, 100);
 		}
 	});
 	// Stop the timer when a new char is being typed
@@ -168,6 +168,8 @@ $(document).ready(function() {
 	});
 	
 	function update_recipe_page() {
-		update_page(0, "recipe-search-form");
+		update_page(0, "recipe-search-form", "#browse-recipes-loader");
 	}
+	
+	update_recipe_page();
 });

@@ -76,7 +76,7 @@ def browse_recipes(request):
         search_form = SearchRecipeForm()
         include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
         exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
-        recipes_list = Recipe.objects.query()
+        recipes_list = [None]
     
     # Split the result by 12
     paginator = Paginator(recipes_list, 12)
