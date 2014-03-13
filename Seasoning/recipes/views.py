@@ -333,6 +333,8 @@ class EditRecipeWizard(SessionWizardView):
         if not self.instance.author:
             self.instance.author = self.request.user
             new_recipe = True
+        else:
+            new_recipe = False
         # recipe has not been saved yet
         self.instance.save()
         
