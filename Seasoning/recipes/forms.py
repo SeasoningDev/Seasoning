@@ -137,7 +137,7 @@ class IngredientsFormSet(BaseInlineFormSet):
             self.unknown_ingredients = unknown_ingredients
             if self.unknown_ingredients_allowed:
                 return self
-            raise ValidationError('Unknown ingredients found')
+            raise ValidationError(_('Unknown ingredients found'))
         
         # Check that at least one form has been completed.
         completed = 0
