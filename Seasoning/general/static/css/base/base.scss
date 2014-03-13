@@ -81,10 +81,14 @@
 		height: 50px;
 		text-align: center;
 		line-height: 50px;
-		color: #F4FAEF;
 		transition: background .8s ease;
 		-webkit-transition: background 0.8s ease-in-out;
 		-moz-transition: background 0.8s ease-in-out;
+	}
+	
+	#nav-container .navlink a {
+		color: #F4FAEF;
+		text-decoration: none;
 	}
 	
 	#nav-container .navlink:hover {

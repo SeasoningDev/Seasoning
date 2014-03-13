@@ -13,7 +13,7 @@
 		<meta name="description" content="Seasoning berekent automatisch de ecologische voetafdruk van jouw recepten. Vergelijk 
 										  jezelf met anderen en haal samen onze voetafdruk naar beneden!" />
 		
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 		
 		{% block default_static_stuff %}
         <link rel="icon" href="{{ STATIC_URL }}img/logos/favicon.png" type="image/png" />
@@ -40,7 +40,7 @@
 		{% block extra_script %}{% endblock %}
 		
 		{% block extra_head %}{% endblock %}
-		<script>
+		<script type="text/javascript">
 			function setHeader() {
 			    if ($(this).width() >= 750) {
                     $("#header").css("top",Math.max(-160, -$(this).scrollTop()));
@@ -61,7 +61,7 @@
 	    <div id="header">
 	        <div id="header-container" class="container">
 	            <div id="logo">
-                    <a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/logos/header2.png" /></a>
+                    <a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/logos/header2.png" alt="Terug naar de homepage"/></a>
                 </div>
                 {% if user.is_staff %}
                 <a href="/admin/" style="position:absolute;top:0;right:0;">Admin Pages</a>
@@ -74,16 +74,16 @@
                 <span id="grass"> </span>
                 <span id="grass-end-right"> </span>
                 <div id="nav-container">
-                    <a href="{% url 'browse_recipes' %}"><div class="{% block recipes-active %}{% endblock %} navlink three columns alpha omega">RECEPTEN</div></a>
-                    <a href="{% url 'view_ingredients' %}"><div class="{% block ingredients-active %}{% endblock %} navlink three columns alpha omega">INGREDIËNTEN</div></a>
-                    <a href="{% url 'browse_news' %}"><div class="{% block news-active %}{% endblock %} navlink three columns alpha omega">NIEUWS</div></a>
-                    <a href="{% url 'contribute' %}"><div class="{% block contribute-active %}{% endblock %} navlink three columns alpha omega">BIJDRAGEN</div></a>
+                    <div class="{% block recipes-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'browse_recipes' %}">RECEPTEN</a></div>
+                    <div class="{% block ingredients-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'view_ingredients' %}">INGREDIËNTEN</a></div>
+                    <div class="{% block news-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'browse_news' %}">NIEUWS</a></div>
+                    <div class="{% block contribute-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'contribute' %}">BIJDRAGEN</a></div>
                     {% if user.is_authenticated %}
-                    <a href="{% url 'my_profile' %}"><div class="{% block myaccount-active %}{% endblock %} navlink three columns alpha omega">MIJN PROFIEL</div></a>
-                    <a href="{% url 'logout' %}"><div class="navlink three columns alpha omega">AFMELDEN</div></a>
+                    <div class="{% block myaccount-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'my_profile' %}">MIJN PROFIEL</a></div>
+                    <div class="navlink three columns alpha omega"><a href="{% url 'logout' %}">AFMELDEN</a></div>
                     {% else %}
-                    <a href="{% url 'registration' %}"><div class="{% block register-active %}{% endblock %} navlink three columns alpha omega">REGISTREREN</div></a>
-                    <a href="{% url 'login' %}"><div class="{% block login-active %}{% endblock %} navlink three columns alpha omega">AANMELDEN</div></a>
+                    <div class="{% block register-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'registration' %}">REGISTREREN</a></div>
+                    <div class="{% block login-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'login' %}">AANMELDEN</a></div>
                     {% endif %}                    
                 </div>
             </div>
