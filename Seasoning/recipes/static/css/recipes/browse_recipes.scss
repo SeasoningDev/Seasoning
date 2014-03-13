@@ -12,6 +12,13 @@ form.keywords {
 #add-recipe-button {
   margin-top: 9px;
 }
+  
+#browse-recipes-loader {
+	position: absolute;
+	right: -45px;
+	bottom: 25px;
+	display: none;
+}
 
 #advanced-link {
   position: absolute;

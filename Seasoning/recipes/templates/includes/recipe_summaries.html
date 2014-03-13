@@ -17,6 +17,7 @@
 </div>
 {% endif %}
 
+{% if not recipes.0 == None %}
 {% for recipe in recipes %}
 {% include "includes/recipe_summary.html" %}
 {% empty %}
@@ -24,6 +25,7 @@
     Sorry! Er werden geen recepten gevonden in onze databank die aan jouw criteria voldoen...
 </p>
 {% endfor %}
+{% endif %}
 
 {% if recipes.has_previous or recipes.has_next %}
 <div class="page-controls bottom">

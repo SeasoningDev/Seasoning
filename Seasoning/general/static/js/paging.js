@@ -9,7 +9,11 @@
 *  If a form needs to be posted during the page update,
 *  this is its id.
 */
-function update_page(page, form_id) {
+function update_page(page, form_id, loader_id) {
+	if (loader_id) {
+		$(loader_id).show();
+	}
+	
    var url;
    if (page) {
        url = window.location + "?page=" + page;
@@ -36,9 +40,12 @@ function update_page(page, form_id) {
                // The url returns full html
                $(".summaries-wrapper").html(data);
            }
+       }).done(function() {
+    	   $(loader_id).hide();
        });
    }
    if ($(document).scrollTop() > $(".summaries-wrapper").offset().top - 80)
 	   $('html,body').animate({scrollTop: $(".summaries-wrapper").offset().top - 80},'slow');
+   
    return false;
 };

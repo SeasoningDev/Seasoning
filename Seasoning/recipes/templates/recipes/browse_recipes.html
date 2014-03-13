@@ -27,6 +27,10 @@ $(function() {
 		    <button id="keywords-submit" class="nochrome" type="submit">
 		        <span class="submit-icon"> </span>
 		    </button>
+	
+			<span id="browse-recipes-loader">
+				{% include "includes/ajax-loader.html" %}
+			</span>
 		</div>
 		<a id="advanced-link" href="#">
 		    Niet-geavanceerd zoeken
