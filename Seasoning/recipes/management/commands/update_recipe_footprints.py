@@ -1,8 +1,8 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import NoArgsCommand
 from ingredients.models import Ingredient
 from recipes.models import Recipe, UsesIngredient
 
-class Command(BaseCommand):
+class Command(NoArgsCommand):
     def handle(self):
         """
         Recalculate the footprint of all usesingredients that use a seasonal ingredient. Then
