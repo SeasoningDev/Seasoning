@@ -2,7 +2,7 @@ from django.core.management.base import NoArgsCommand
 from ingredients.models import CanUseUnit
 
 class Command(NoArgsCommand):
-    def handle_noargs(self):
+    def handle_noargs(self, **options):
         """
         This command is only here for the transition of the old useable_units system to the new one
         

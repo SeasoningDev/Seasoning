@@ -3,7 +3,7 @@ from ingredients.models import Ingredient
 from recipes.models import Recipe, UsesIngredient
 
 class Command(NoArgsCommand):
-    def handle_noargs(self):
+    def handle_noargs(self, **options):
         """
         Recalculate the footprint of all usesingredients that use a seasonal ingredient. Then
         recalculate the footprint of every recipe.
