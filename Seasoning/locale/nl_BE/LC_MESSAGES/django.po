@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-21 19:46+0300\n"
+"POT-Creation-Date: 2014-03-14 01:00+0100\n"
 "PO-Revision-Date: 2014-02-17 16:43+0100\n"
 "Last-Translator: Bram Somers <bram.somers@seasoning.be>\n"
 "Language-Team: Dutch <LL@li.org>\n"
@@ -402,7 +402,7 @@ msgstr "{recipe_name} is het {recipe_veganism} recept van de week."
 msgid "The given recipe is not {recipe_veganism}."
 msgstr "Het recept is niet {recipe_veganism}."
 
-#: general/views.py:104
+#: general/views.py:105
 msgid "Your contact form was submitted succesfully."
 msgstr "Je contactformulier werd succesvol ingediend."
 
@@ -418,14 +418,17 @@ msgstr ""
 msgid "An image of this news item."
 msgstr "Een afbeelding van dit nieuwsbericht."
 
+#: recipes/forms.py:140
+msgid "Unknown ingredients found"
+msgstr "Sommige ingredienten werden niet teruggevonden."
+
+#: recipes/models.py:105
+msgid "Name"
+msgstr "naam"
+
 #: recipes/models.py:106
 msgid "The names of the recipe."
 msgstr "De naam van het recept."
-
-#: recipes/models.py:106
-#, fuzzy
-msgid "Name"
-msgstr "naam"
 
 #: recipes/models.py:110
 msgid "Course"
@@ -452,6 +455,10 @@ msgid "A few sentences describing the recipe (Maximum 140 characters)."
 msgstr "Een korte beschrijving van het recept (maximaal 140 tekens)."
 
 #: recipes/models.py:116
+msgid "Portions"
+msgstr "Porties"
+
+#: recipes/models.py:116
 msgid ""
 "The average amount of people that can be fed by this recipe using the given "
 "amounts of ingredients."
@@ -459,9 +466,9 @@ msgstr ""
 "Het gemiddeld aantal porties dat voorzien kan worden met de opgegeven "
 "hoeveelheden."
 
-#: recipes/models.py:117
-msgid "Portions"
-msgstr "Porties"
+#: recipes/models.py:118
+msgid "Active time"
+msgstr "Actieve tijd"
 
 #: recipes/models.py:118
 msgid ""
@@ -469,9 +476,9 @@ msgid ""
 "something."
 msgstr "De tijd die je actief besteed aan de bereiding van het recept."
 
-#: recipes/models.py:118
-msgid "Active time"
-msgstr "Actieve tijd"
+#: recipes/models.py:119
+msgid "Passive time"
+msgstr "Passieve tijd"
 
 #: recipes/models.py:119
 msgid ""
@@ -480,10 +487,6 @@ msgid ""
 msgstr ""
 "De tijd die nodig is voor de bereiding van het recept, terwijl je iets "
 "anders kan doen (bv. tijdens het koken van aardappelen)."
-
-#: recipes/models.py:120
-msgid "Passive time"
-msgstr "Passieve tijd"
 
 #: recipes/models.py:126
 msgid "Extra info"
@@ -498,12 +501,12 @@ msgstr ""
 "een mixer nodig voor dit recept\" of \"gebruik grote aardappelen\")."
 
 #: recipes/models.py:128
-msgid "Detailed instructions for preparing this recipe."
-msgstr "Gedetailleerde instructies voor de bereiding van het recept."
-
-#: recipes/models.py:128
 msgid "Instructions"
 msgstr "Instructies"
+
+#: recipes/models.py:128
+msgid "Detailed instructions for preparing this recipe."
+msgstr "Gedetailleerde instructies voor de bereiding van het recept."
 
 #: recipes/models.py:132
 msgid ""
