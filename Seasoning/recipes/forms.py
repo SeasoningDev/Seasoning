@@ -8,6 +8,7 @@ from general.forms import FormContainer
 from markitup.widgets import MarkItUpWidget
 from ingredients.fields import AutoCompleteSelectIngredientField
 from recipes.models import Recipe, UsesIngredient, Cuisine
+from django.utils.translation import ugettext_lazy as _
 
 class AddRecipeForm(forms.ModelForm):
     
