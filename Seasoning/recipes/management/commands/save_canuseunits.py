@@ -1,7 +1,7 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import NoArgsCommand
 from ingredients.models import CanUseUnit
 
-class Command(BaseCommand):
+class Command(NoArgsCommand):
     def handle(self):
         """
         This command is only here for the transition of the old useable_units system to the new one
