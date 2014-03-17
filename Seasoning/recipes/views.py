@@ -374,7 +374,7 @@ class EditRecipeWizard(SessionWizardView):
                         # Send mail
                         send_mail('Aanvraag voor Ingredienten', render_to_string('emails/request_ingredients_email.txt', {'user': self.request.user,
                                                                                                                           'request_string': request_string}), 
-                                  self.request.user.email,
+                                  'ingredientenaanvraag@seasoning.be',
                                   ['info@seasoning.be'], fail_silently=True)
                         
                         done_message += '\nOmdat je ingredienten hebt aangevraagd, zal je recept echter pas zichtbaar zijn voor andere gebruikers wanneer deze ingredienten aan de databank toegevoegd zijn.'
