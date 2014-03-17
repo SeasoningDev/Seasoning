@@ -210,6 +210,7 @@ class OAuth2Backend(ModelBackend):
             filename = authentication.models.get_image_filename()
             content = ContentFile(urllib2.urlopen(avatar_url).read())
             new_user.avatar.save(filename, content, save=True)
+        new_user.activated = True
         new_user.save()
         
         signals.user_registered.send(sender=self.__class__,
