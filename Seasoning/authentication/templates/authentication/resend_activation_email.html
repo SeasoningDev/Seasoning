@@ -9,7 +9,7 @@
 	formulier gebruiken om een nieuw exemplaar te verzenden.
 </p>
 
-<form action="/activate/resend/" method="post" id="resend-activation-email-form">
+<form action="{% url 'resend_activation_email' %}" method="post" id="resend-activation-email-form">
 	{% csrf_token %}
 	
 	<div class="field-wrapper">

@@ -3,7 +3,7 @@ Dit e-mail adres is enkele ogenblikken geleden gebruikt om een profiel aan te ma
 dit gedaan hebt, kan u onderstaande url gebruiken om het profiel te activeren:
 
 
-{{ site }}/activate/{{ activation_key }}/
+https://{{ site }}{% url 'registration_activate' activation_key=activation_key %}
 
 Indien u geen profiel aangemaakt hebt op {{ site }}, kan u deze e-mail gewoon negeren.
 

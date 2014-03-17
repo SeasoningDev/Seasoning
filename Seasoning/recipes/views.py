@@ -211,8 +211,8 @@ class EditRecipeWizard(SessionWizardView):
                 self.instance = Recipe.objects.select_related().prefetch_related('uses__unit').get(pk=self.kwargs['recipe_id'])
             except Recipe.DoesNotExist:
                 raise Http404
-            if (not self.request.user == self.instance.author_id) and not self.request.user.is_staff:
-                raise PermissionDenied
+            if (self.request.user.id != self.instance.author_id) and not self.request.user.is_staff:
+                raise PermissionDenied()
         else:
             self.instance = Recipe()
         return SessionWizardView.dispatch(self, *args, **kwargs)
