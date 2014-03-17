@@ -6,7 +6,7 @@ Seasoning.
 <br /><br />
 Indien u dit gedaan hebt, kan u onderstaande link gebruiken om het profiel te activeren:
 <br /><br />
-<a href="https://{{ site }}/activate/{{ activation_key }}/">https://{{ site }}/accounts/activate/{{ activation_key }}/</a>
+<a href="https://{{ site }}{% url 'registration_activate' activation_key=activation_key %}">https://{{ site }}{% url 'registration_activate' activation_key=activation_key %}</a>
 <br /><br />
 Indien u geen profiel geregistreerd hebt bij Seasoning, kan u deze e-mail gewoon negeren.
 <br /><br />
