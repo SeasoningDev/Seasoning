@@ -1,5 +1,5 @@
 {% load humanize %}
-Dit e-mail adres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op {{ site }}. Indien u 
+Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op {{ site }}. Indien u 
 dit gedaan hebt, kan u onderstaande url gebruiken om het profiel te activeren:
 
 
