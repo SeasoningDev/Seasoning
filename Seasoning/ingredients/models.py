@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import date as _date
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import ResizeToFill, SmartResize
+from general import validate_image_size
 
 def get_image_filename(instance, old_filename):
     """
@@ -131,7 +132,8 @@ class Ingredient(models.Model):
     
     base_footprint = models.FloatField()
     
-    image = ProcessedImageField(processors=[ResizeToFill(350, 350)], format='PNG', upload_to=get_image_filename, default='images/ingredients/no_image.png')
+    image = ProcessedImageField(processors=[ResizeToFill(350, 350)], format='PNG', upload_to=get_image_filename, 
+                                validators=[validate_image_size], default='images/ingredients/no_image.png')
     thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
     image_source = models.TextField(blank=True)
     
