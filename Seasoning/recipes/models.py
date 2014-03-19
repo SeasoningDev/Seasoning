@@ -169,6 +169,9 @@ class Recipe(models.Model):
         total_footprint = 0
         self.accepted = True
         for uses in self.uses.all():
+            # Update the footprint of the usesingredients
+            uses.save()
+                
             # Add the footprint for this used ingredient to the total
             total_footprint += uses.footprint
             
