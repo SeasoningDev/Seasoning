@@ -10,9 +10,7 @@ class Command(NoArgsCommand):
         
         """
         for uses_ingredient in UsesIngredient.objects.filter(ingredient__type__in=[Ingredient.SEASONAL, Ingredient.SEASONAL_SEA]):
-            print uses_ingredient
             uses_ingredient.save()
             
         for recipe in Recipe.objects.all():
-            print recipe
             recipe.save()
