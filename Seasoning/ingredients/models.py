@@ -15,7 +15,8 @@ def get_image_filename(instance, old_filename):
     Return a new unique filename for an ingredient image
     
     """
-    filename = str(time.time()) + '.png'
+    extension = old_filename.split('.')[-1]
+    filename = '%s.%s' % (str(time.time()), extension)
     return 'images/ingredients/' + filename
 
 class Unit(models.Model):
@@ -132,7 +133,7 @@ class Ingredient(models.Model):
     
     base_footprint = models.FloatField()
     
-    image = ProcessedImageField(processors=[ResizeToFill(350, 350)], format='PNG', upload_to=get_image_filename, 
+    image = ProcessedImageField(processors=[ResizeToFill(350, 350)], upload_to=get_image_filename, 
                                 validators=[validate_image_size], default='images/ingredients/no_image.png')
     thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
     image_source = models.TextField(blank=True)
