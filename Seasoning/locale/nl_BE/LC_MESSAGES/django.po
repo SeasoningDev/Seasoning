@@ -18,6 +18,13 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: forms.py:9
+msgid ""
+"Please enter the correct %(username)s and password for a staff account. Note "
+"that both fields may be case-sensitive."
+msgstr ""
+"Deze combinatie van e-mailadres en wachtwoord is niet correct. Probeer nog een keer."
+
 #: authentication/forms.py:63 authentication/models.py:76
 msgid "Givenname"
 msgstr "Voornaam"
