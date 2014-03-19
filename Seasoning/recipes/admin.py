@@ -3,6 +3,7 @@ from recipes.models import Recipe, Cuisine, UsesIngredient, UnknownIngredient
 
 class UsesIngredientInline(admin.TabularInline):
     model = UsesIngredient
+    readonly_fields=('footprint',)
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [ UsesIngredientInline, ]

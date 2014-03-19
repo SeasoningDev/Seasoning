@@ -104,11 +104,10 @@ $(function() {
             <div class="field-wrapper">
                 {{ form.avatar.label_tag }}
                 <img id="avatar_img" src="{{ MEDIA_URL }}{{ user.avatar }}" />
-                <input id="id_avatar" type="file" name="avatar">
-                
                 {% if form.avatar.errors %}        
                     {{ form.avatar.errors }}
                 {% endif %}
+                <input id="id_avatar" type="file" name="avatar">
             </div>
         
         <input type="submit" value="Wijzig Profiel" />
