@@ -335,7 +335,7 @@
 </div>-->
 <div id="zoomed-recipe-image-container">
     <div id="page-darkener"> </div>
-    <img src="{{ MEDIA_URL }}{{ recipe.image }}" style="position: absolute; margin: auto; top: 0; left: 0; bottom: 0; right: 0; max-width: 100%; max-height: 100%;" />
+    <img id="zoomed-recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
 </div>
 {% endblock %}
 
