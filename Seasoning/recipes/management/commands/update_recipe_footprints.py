@@ -10,9 +10,6 @@ class Command(NoArgsCommand):
         
         """
         for uses_ingredient in UsesIngredient.objects.filter(ingredient__type__in=[Ingredient.SEASONAL, Ingredient.SEASONAL_SEA]):
-            if uses_ingredient.id == 352:
-                print 'Ingredient footprint: %s' % uses_ingredient.ingredient.footprint()
-                print 'UsesIngredient footprint: %s' % uses_ingredient._calculate_footprint(uses_ingredient.ingredient.footprint())
             uses_ingredient.save()
             
         for recipe in Recipe.objects.all():
