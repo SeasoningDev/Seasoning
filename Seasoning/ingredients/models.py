@@ -217,8 +217,6 @@ class Ingredient(models.Model):
         
         smallest_footprint = None
         for available_in in self.get_active_available_ins(date):
-            if self.name == 'Rode kool':
-                x =1
             if not available_in.is_active(date_until_extension=0):
                 # This means this available in is currently under preservation
                 footprint = available_in.footprint + available_in.days_apart()*self.preservation_footprint
