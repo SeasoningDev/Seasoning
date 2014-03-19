@@ -14,7 +14,8 @@ from ingredients.models import Ingredient, Unit
 from general import validate_image_size
 
 def get_image_filename(instance, old_filename):
-    filename = str(time.time()) + '.png'
+    extension = old_filename.split('.')[-1]
+    filename = '%s.%s' % (str(time.time()), extension)
     return 'images/recipes/' + filename
 
 class Cuisine(models.Model):
