@@ -231,6 +231,7 @@ class EditRecipeWizard(SessionWizardView):
         # form. (This makes stepping back a lot easier).
         wizard_goto_step = self.request.POST.get('wizard_goto_step', None)
         wizard_finish = self.request.POST.get('wizard_finish', None)
+        
         if wizard_goto_step and wizard_goto_step in self.get_form_list():
             self.storage.current_step = wizard_goto_step
             form = self.get_form(
