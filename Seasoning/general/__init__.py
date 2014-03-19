@@ -6,4 +6,4 @@ def validate_image_size(fieldfile_obj):
     file_size = fieldfile_obj.file.size
     size_limit = settings.MAX_UPLOAD_SIZE
     if file_size > size_limit:
-            raise ValidationError(_('Max file size is %sMB') % str(size_limit/(1024*1024)))
+        raise ValidationError(_('Max file size is %sMB') % str(size_limit/(1024*1024)))
