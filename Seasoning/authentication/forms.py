@@ -196,6 +196,8 @@ class CheckActiveAuthenticationForm(AuthenticationForm):
                                                       'this time. If you haven\'t received an activation email for 15 minutes '
                                                       'after registering, you can use <a href=\"/activate/resend/\">this form</a> '
                                                       'to resend an activation email.'))
+        self.error_messages['invalid_login'] = _("Override: Please enter a correct %(username)s and password. "
+                                                 "Note that both fields may be case-sensitive."),
         
 class AccountSettingsForm(ModelForm):
     """
