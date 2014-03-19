@@ -196,8 +196,16 @@ class CheckActiveAuthenticationForm(AuthenticationForm):
                                                       'this time. If you haven\'t received an activation email for 15 minutes '
                                                       'after registering, you can use <a href=\"/activate/resend/\">this form</a> '
                                                       'to resend an activation email.'))
-        self.error_messages['invalid_login'] = _("Override: Please enter a correct email address and password. "
-                                                 "Note that both fields may be case-sensitive."),
+        self.error_messages['invalid_login_override'] = _("Override: Please enter a correct email address and password. "
+                                                          "Note that both fields may be case-sensitive."),
+
+    def clean(self):
+        try:
+            super(CheckActiveAuthenticationForm, self).clean()
+        except forms.ValidationError as e:
+            if self.error_messages['invalid_login'] in e.messages:
+                raise forms.ValidationError(self.error_messages['invalid_login_override'])
+            raise e
         
 class AccountSettingsForm(ModelForm):
     """
