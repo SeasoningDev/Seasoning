@@ -163,14 +163,17 @@ class Recipe(models.Model):
         if not self.save_allowed:
             raise PermissionDenied('Saving this object has been disallowed')
         
+        update_usess = kwargs.pop('update_usess', True)
+        
         self.footprint = 0
         self.veganism = Ingredient.VEGAN
         
         total_footprint = 0
         self.accepted = True
         for uses in self.uses.all():
-            # Update the footprint of the usesingredients
-            uses.save()
+            if update_usess:
+                # Update the footprint of the usesingredients
+                uses.save()
                 
             # Add the footprint for this used ingredient to the total
             total_footprint += uses.footprint

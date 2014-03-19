@@ -13,4 +13,4 @@ class Command(NoArgsCommand):
             uses_ingredient.save()
             
         for recipe in Recipe.objects.all():
-            recipe.save()
+            recipe.save(update_usess=False)
