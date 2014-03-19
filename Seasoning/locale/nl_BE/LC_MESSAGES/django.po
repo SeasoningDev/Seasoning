@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-19 02:34+0100\n"
+"POT-Creation-Date: 2014-03-19 14:02+0100\n"
 "PO-Revision-Date: 2014-02-17 16:43+0100\n"
 "Last-Translator: Bram Somers <bram.somers@seasoning.be>\n"
 "Language-Team: Dutch <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: authentication/forms.py:63 authentication/models.py:76
+#: authentication/forms.py:63 authentication/models.py:77
 msgid "Givenname"
 msgstr "Voornaam"
 
-#: authentication/forms.py:64 authentication/models.py:77
+#: authentication/forms.py:64 authentication/models.py:78
 msgid ""
 "30 characters or fewer, only letters allowed. Your name will be used to "
 "identify you on Seasoning."
@@ -34,11 +34,11 @@ msgstr ""
 msgid "This field is required."
 msgstr "Dit veld is verplicht."
 
-#: authentication/forms.py:70 authentication/models.py:81
+#: authentication/forms.py:70 authentication/models.py:82
 msgid "Surname"
 msgstr "Achternaam"
 
-#: authentication/forms.py:71 authentication/models.py:82
+#: authentication/forms.py:71 authentication/models.py:83
 msgid ""
 "50 characters or fewer, only letters allowed Your name will be used to "
 "identify you on Seasoning."
@@ -47,7 +47,7 @@ msgstr ""
 "identificeren op Seasoning."
 
 #: authentication/forms.py:75 authentication/forms.py:165
-#: authentication/models.py:70 general/forms.py:12
+#: authentication/models.py:71 general/forms.py:12
 msgid "Email"
 msgstr "E-mailadres"
 
@@ -64,7 +64,7 @@ msgstr ""
 "verdere e-mails van Seasoning ontvangen."
 
 #: authentication/forms.py:82 authentication/forms.py:130
-#: authentication/models.py:89
+#: authentication/models.py:90
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -161,31 +161,31 @@ msgstr ""
 "Deze combinatie van e-mailadres en wachtwoord is niet correct. Probeer nog "
 "een keer."
 
-#: authentication/models.py:79
+#: authentication/models.py:80
 msgid "Enter a valid Given Name."
 msgstr "Geef een geldige voornaam op."
 
-#: authentication/models.py:84
+#: authentication/models.py:85
 msgid "Enter a valid Surname."
 msgstr "Geef een geldige achternaam op."
 
-#: authentication/models.py:100
+#: authentication/models.py:101
 msgid "date joined"
 msgstr "datum registratie"
 
-#: authentication/models.py:101
+#: authentication/models.py:102
 msgid "last login"
 msgstr "laatste aanmelding"
 
-#: authentication/models.py:434 authentication/models.py:596
+#: authentication/models.py:435 authentication/models.py:597
 msgid "activation key"
 msgstr "activeringssleutel"
 
-#: authentication/models.py:440
+#: authentication/models.py:441
 msgid "registration profile"
 msgstr "registratie profiel"
 
-#: authentication/models.py:441
+#: authentication/models.py:442
 msgid "registration profiles"
 msgstr "registratie profielen"
 
@@ -394,6 +394,11 @@ msgstr "De antwoordtekst"
 msgid "topic"
 msgstr "onderwerp"
 
+#: general/__init__.py:9
+#, python-format
+msgid "Max file size is %sMB"
+msgstr "De maximale grootte voor een afbeelding is %sMB."
+
 #: general/forms.py:11
 msgid "Subject"
 msgstr "Onderwerp"
@@ -410,11 +415,11 @@ msgstr "{recipe_name} is het {recipe_veganism} recept van de week."
 msgid "The given recipe is not {recipe_veganism}."
 msgstr "Het recept is niet {recipe_veganism}."
 
-#: general/views.py:105
+#: general/views.py:107
 msgid "Your contact form was submitted succesfully."
 msgstr "Je contactformulier werd succesvol ingediend."
 
-#: ingredients/models.py:292
+#: ingredients/models.py:294
 msgid ""
 "This ingredient is not always available somewhere, and should not be "
 "accepted."
@@ -430,43 +435,43 @@ msgstr "Een afbeelding van dit nieuwsbericht."
 msgid "Unknown ingredients found"
 msgstr "Sommige ingredienten werden niet teruggevonden."
 
-#: recipes/models.py:105
+#: recipes/models.py:106
 msgid "Name"
 msgstr "naam"
 
-#: recipes/models.py:106
+#: recipes/models.py:107
 msgid "The names of the recipe."
 msgstr "De naam van het recept."
 
-#: recipes/models.py:110
+#: recipes/models.py:111
 msgid "Course"
 msgstr "Maaltijdsoort"
 
-#: recipes/models.py:111
+#: recipes/models.py:112
 msgid "The type of course this recipe will provide."
 msgstr "De soort maaltijd van het recept."
 
-#: recipes/models.py:112
+#: recipes/models.py:113
 msgid "Cuisine"
 msgstr "Keuken"
 
-#: recipes/models.py:113
+#: recipes/models.py:114
 msgid "The type of cuisine this recipe represents."
 msgstr "De keuken waarin dit recept gebruikt wordt."
 
-#: recipes/models.py:114
+#: recipes/models.py:115
 msgid "Description"
 msgstr "Beschrijving"
 
-#: recipes/models.py:115
+#: recipes/models.py:116
 msgid "A few sentences describing the recipe (Maximum 140 characters)."
 msgstr "Een korte beschrijving van het recept (maximaal 140 tekens)."
 
-#: recipes/models.py:116
+#: recipes/models.py:117
 msgid "Portions"
 msgstr "Porties"
 
-#: recipes/models.py:116
+#: recipes/models.py:117
 msgid ""
 "The average amount of people that can be fed by this recipe using the given "
 "amounts of ingredients."
@@ -474,21 +479,21 @@ msgstr ""
 "Het gemiddeld aantal porties dat voorzien kan worden met de opgegeven "
 "hoeveelheden."
 
-#: recipes/models.py:118
+#: recipes/models.py:119
 msgid "Active time"
 msgstr "Actieve tijd"
 
-#: recipes/models.py:118
+#: recipes/models.py:119
 msgid ""
 "The time needed to prepare this recipe where you are actually doing "
 "something."
 msgstr "De tijd die je actief besteed aan de bereiding van het recept."
 
-#: recipes/models.py:119
+#: recipes/models.py:120
 msgid "Passive time"
 msgstr "Passieve tijd"
 
-#: recipes/models.py:119
+#: recipes/models.py:120
 msgid ""
 "The time needed to prepare this recipe where you can do something else (e.g. "
 "water is boiling)"
@@ -496,11 +501,11 @@ msgstr ""
 "De tijd die nodig is voor de bereiding van het recept, terwijl je iets "
 "anders kan doen (bv. tijdens het koken van aardappelen)."
 
-#: recipes/models.py:126
+#: recipes/models.py:127
 msgid "Extra info"
 msgstr "Extra informatie"
 
-#: recipes/models.py:127
+#: recipes/models.py:128
 msgid ""
 "Extra info about the ingredients or needed tools (e.g. \"You will need a "
 "mixer for this recipe\" or \"Use big potatoes\")"
@@ -508,15 +513,15 @@ msgstr ""
 "Extra informatie over de ingrediënten of andere benodigdheden (bv. \"je hebt "
 "een mixer nodig voor dit recept\" of \"gebruik grote aardappelen\")."
 
-#: recipes/models.py:128
+#: recipes/models.py:129
 msgid "Instructions"
 msgstr "Instructies"
 
-#: recipes/models.py:128
+#: recipes/models.py:129
 msgid "Detailed instructions for preparing this recipe."
 msgstr "Gedetailleerde instructies voor de bereiding van het recept."
 
-#: recipes/models.py:132
+#: recipes/models.py:133
 msgid ""
 "An image of this recipe. Please do not use copyrighted images, these will be "
 "removed as quick as possible."
