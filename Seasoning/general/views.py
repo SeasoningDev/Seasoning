@@ -87,15 +87,17 @@ def contact_form(request, contact_type):
                         'subject': form.cleaned_data['subject'],
                         'message': form.cleaned_data['message']}
             
+            subject_text_to_us = render_to_string('emails/contact_form_subject.txt',
+                                                  ctx_dict)
             # Email subject *must not* contain newlines
-            subject = ''.join(form.cleaned_data['subject'])
+            subject_text_to_us = ''.join(subject_text_to_us.splitlines())
             
             message_text_to_us = render_to_string('emails/contact_form_email.txt',
                                                   ctx_dict)
             message_text_feedback = render_to_string('emails/contact_form_autoreply.txt',
                                                      ctx_dict)
     
-            send_mail('Contact van gebruiker: %s' % subject, message_text_to_us, 
+            send_mail(subject_text_to_us, message_text_to_us, 
                       'contact@seasoning.be',
                       [TYPES[contact_type]['email']], fail_silently=False)
             send_mail('Contact met Seasoning.be', message_text_feedback, 
