@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
+from general import validate_image_size
 
 
 def get_image_filename(instance=None, old_filename=None):
@@ -89,7 +90,7 @@ class User(models.Model):
     password = models.CharField(_('Password'), max_length=128, null=True)
     
     avatar = ProcessedImageField([ResizeToFill(250, 250)], format='PNG', \
-                                  upload_to=get_image_filename, default='images/users/no_image.png')
+                                  upload_to=get_image_filename, default='images/users/no_image.png', validators=[validate_image_size])
     
     date_of_birth = models.DateField()
         

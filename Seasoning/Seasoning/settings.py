@@ -241,6 +241,8 @@ SECRET_KEY = secrets.SECRET_KEY
 # skip these tests when an sqlite backend is in use.
 SKIP_MYSQL_TESTS = True
 
+MAX_UPLOAD_SIZE = 4*1024*1024
+
 
 """
 Third Party Apps Settings
