@@ -1,9 +1,9 @@
 U hebt zonet een contactformulier verstuurd op Seasoning met de volgende gegevens:
 
-Onderwerp: {{ subject }}
+Onderwerp: {{ subject|safe }}
 
 Boodschap:
-{{ message }}
+{{ message|safe }}
 
 
 
