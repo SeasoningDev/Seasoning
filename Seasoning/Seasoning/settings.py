@@ -281,6 +281,7 @@ PIPELINE_CSS = {
             'css/base/global.scss',
             'css/base/skeleton.scss',
             'css/base/base.scss',
+            'css/base/forms.scss',
             'css/includes/*.scss',
             'css/plugins/*.scss',
         },

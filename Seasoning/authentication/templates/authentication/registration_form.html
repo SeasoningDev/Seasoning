@@ -6,20 +6,6 @@
 
 {% block extra_link %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.css" />
-<style>
-/*
- * Tooltip styles
- */
-.ui-tooltip {
-    position: absolute;
-}
-
-.ui-widget {
-    font-family: Verdana,Arial,sans-serif;
-    font-size: .75em;
-    color: #5B6553;
-}
-</style>
 {% endblock %}
 
 {% block extra_script %}
@@ -34,7 +20,8 @@ $(function() {
         position: {
             my: "left top",
             at: "right+10 top-2"
-        },  
+        },
+        tooltipClass: "form-tooltip",
     }).off("mouseover mouseout");
     
     $('#id_date_of_birth').datepicker({ showAnim: "fadeIn",
@@ -58,8 +45,14 @@ $(function() {
 <div id="seasoning-register">
     <form action="/profile/register/" method="post" id="registration-form">
     	{% csrf_token %}
+    	
+    	{% if form.errors %}
+    		<div class="form-errors-notice">
+    			Er is een probleem opgetreden bij het versturen van het registratieformulier. Gelieve onderstaande fouten te verbeteren.
+    		</div>
+    	{% endif %}
       	
-    	<div class="field-wrapper tooltip-field">
+    	<div class="field-wrapper tooltip-field{% if form.givenname.errors %} field-with-error{% endif %}">
             {{ form.givenname.label_tag }}
             {{ form.givenname }}
             <div class="tooltip">{{ form.givenname.help_text }}</div>
@@ -69,7 +62,7 @@ $(function() {
             {% endif %}
     	</div>
     	
-    	<div class="field-wrapper tooltip-field">
+    	<div class="field-wrapper tooltip-field{% if form.surname.errors %} field-with-error{% endif %}">
             {{ form.surname.label_tag }}
             {{ form.surname }}
             <div class="tooltip">{{ form.surname.help_text }}</div>
@@ -79,7 +72,7 @@ $(function() {
             {% endif %}
     	</div>
     	
-    	<div class="field-wrapper tooltip-field">
+    	<div class="field-wrapper tooltip-field{% if form.email.errors %} field-with-error{% endif %}">
             {{ form.email.label_tag }}
             {{ form.email }}
             <div class="tooltip">{{ form.email.help_text }}</div>
@@ -89,7 +82,7 @@ $(function() {
             {% endif %}
     	</div>
     	
-    	<div class="field-wrapper">
+    	<div class="field-wrapper{% if form.password.errors %} field-with-error{% endif %}">
             {{ form.password.label_tag }}
             {{ form.password }}
             
@@ -98,7 +91,7 @@ $(function() {
             {% endif %}
     	</div>
     	
-    	<div class="field-wrapper tooltip-field">
+    	<div class="field-wrapper tooltip-field{% if form.password2.errors %} field-with-error{% endif %}">
             {{ form.password2.label_tag }}
             {{ form.password2 }}
             <div class="tooltip">{{ form.password2.help_text }}</div>
@@ -111,7 +104,7 @@ $(function() {
             {% endif %}
     	</div>
     	
-    	<div class="field-wrapper tooltip-field">
+    	<div class="field-wrapper tooltip-field{% if form.date_of_birth.errors %} field-with-error{% endif %}">
             {{ form.date_of_birth.label_tag }}
             {{ form.date_of_birth }}
             <div class="tooltip">{{ form.date_of_birth.help_text }}</div>
@@ -121,14 +114,14 @@ $(function() {
             {% endif %}
     	</div>
     	
-    	<div class="spacer"> </div>
-    	
-    	<div class="field-wrapper" id="captcha-wrapper">
-            {{ form.captcha }}
+    	<div class="field-wrapper captcha-wrapper{% if form.captcha.errors %} field-with-error{% endif %}" id="captcha-wrapper">
+            <div id="captcha-height-reserver">
+            	{{ form.captcha }}
+            </div>
+            {{ form.captcha.errors }}
     	</div>
-        {{ form.captcha.errors }}
     	
-    	<div class="field-wrapper" id="terms-wrapper">
+    	<div class="field-wrapper{% if form.tos.errors %} field-with-error{% endif %}" id="terms-wrapper">
             {{ form.tos }}
             {{ form.tos.label_tag}}
     	   

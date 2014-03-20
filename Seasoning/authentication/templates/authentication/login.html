@@ -10,25 +10,24 @@
 	<form action="{% url 'login' %}" method="post" class="login-form">
 		{% csrf_token %}
 
-		{{ form.non_field_errors }}
+		<div class="non-field-errors">
+			{{ form.non_field_errors }}
+		</div>
 		
-		<div class="field-wrapper">
+		<div class="field-wrapper{% if form.username.errors %} field-with-error{% endif %}">
 			{{ form.username.label_tag }}
 			{{ form.username }}
 			<div class="login-error">{{ form.username.errors }}</div>
 		</div>
 		
-		<div class="field-wrapper">
+		<div class="field-wrapper{% if form.password.errors %} field-with-error{% endif %}">
 			{{ form.password.label_tag }}
 			{{ form.password }}
+			<a class="under-field-link" href="{% url 'django.contrib.auth.views.password_reset' %}" id="forgotpw">Wachtwoord vergeten?</a>
 			<div class="login-error">{{ form.password.errors }}</div>
 		</div>
 		
 		<input type="hidden" name="next" value="{{ next }}" />
-		
-		<div id="extra-login-links">		    		
-			<a href="{% url 'django.contrib.auth.views.password_reset' %}" id="forgotpw">Wachtwoord vergeten?</a>
-		</div>
 		
 		<input type="submit" value="Aanmelden" id="login-submit"/>
 	</form>

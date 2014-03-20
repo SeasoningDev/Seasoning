@@ -102,36 +102,8 @@
     width: 100%;  
   }
   
-  #captcha-wrapper {
-    margin: 10px 0;
-    height: 150px;
-    width: 318px;
-    position: relative;
-  }
-  
-  #captcha-wrapper #recaptcha_area {
-    margin: auto;
-  }
-  
-  #captcha-wrapper input#recaptcha_response_field {
-    width: auto;
-    display: inline;
-  }
-  
-  #captcha-wrapper .errorlist {
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-  }
   .empty-form, .tooltip {
   display: none;
-}
-
-.errorlist {
-  color: red;
-  font-size: 12px;
-  margin: 0;
-  clear: both;
 }
 
 .markdown-container h4 {

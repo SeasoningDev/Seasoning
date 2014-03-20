@@ -9,30 +9,51 @@
 <div id="contact-form">
     <form action="" method="post">
         {% csrf_token %}
-        {% if not user.is_authenticated %}
         
-        {% endif %}
-        
-        <label>{{ form.subject.label }}</label>
-        {{ form.subject }}
-        {{ form.subject.errors }}
-        
-        <label>{{ form.message.label }}</label>
-        {{ form.message }}
-        {{ form.message.errors }}
-        
-        {% if not user.is_authenticated %}
-        <label>{{ form.your_email.label }}</label>
-        <div>
-        We hebben jouw e-mailadres nodig om je terug te kunnen contacteren.
-        </div>
-        {{ form.your_email }}
-        {{ form.your_email.errors }}
-        
-        <div id="captcha-wrapper">
-    	    {{ form.captcha }}
+        {% if form.errors %}
+    		<div class="form-errors-notice">
+    			Er is een probleem opgetreden bij het versturen van het contactformulier. Gelieve onderstaande fouten te verbeteren.
+    		</div>
+    	{% endif %}
+      	
+    	<div class="field-wrapper tooltip-field{% if form.subject.errors %} field-with-error{% endif %}">
+            {{ form.subject.label_tag }}
+            {{ form.subject }}
+            <div class="tooltip">{{ form.subject.help_text }}</div>
+            
+            {% if form.subject.errors %}        
+    			{{ form.subject.errors }}	
+            {% endif %}
     	</div>
-        {{ form.captcha.errors }}
+        
+        <div class="field-wrapper tooltip-field{% if form.message.errors %} field-with-error{% endif %}">
+            {{ form.message.label_tag }}
+            {{ form.message }}
+            <div class="tooltip">{{ form.message.help_text }}</div>
+            
+            {% if form.message.errors %}        
+    			{{ form.message.errors }}	
+            {% endif %}
+    	</div>
+        
+        {% if not user.is_authenticated %}        
+        <div class="field-wrapper tooltip-field{% if form.your_email.errors %} field-with-error{% endif %}">
+            {{ form.your_email.label_tag }}
+            {{ form.your_email }}
+			<span class="under-field-link">We hebben je e-mailadres nodig om je terug te kunnen contacteren.</span>
+            <div class="tooltip">{{ form.your_email.help_text }}</div>
+            
+            {% if form.your_email.errors %}        
+    			{{ form.your_email.errors }}	
+            {% endif %}
+    	</div>
+    	
+    	<div class="field-wrapper captcha-wrapper{% if form.captcha.errors %} field-with-error{% endif %}" id="captcha-wrapper">
+            <div id="captcha-height-reserver">
+            	{{ form.captcha }}
+            </div>
+            {{ form.captcha.errors }}
+    	</div>
         {% endif %}
         
         <br class="clear" />
