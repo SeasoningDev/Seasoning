@@ -29,9 +29,6 @@ urlpatterns = patterns('',
     # TEST VIEWS
     url(r'^500/$', 'general.views.test_500'),
     
-    # Google verification file
-    (r'^google99ea56259237cc2a\.html$', lambda r: HttpResponse("google-site-verification: google99ea56259237cc2a.html", mimetype="text/plain")),
-    
     # Catch all - Check if we have a static page with this url
     url(r'^(.*)/$', 'general.views.static_page', name='static_page')
     
