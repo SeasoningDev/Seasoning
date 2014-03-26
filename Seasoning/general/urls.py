@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from django.views.generic.base import TemplateView
+from django.http.response import HttpResponse
 
 admin.autodiscover()
 
@@ -29,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^500/$', 'general.views.test_500'),
     
     # Google verification file
-    url(r'^google99ea56259237cc2a.html$', TemplateView.as_view(template_name='misc/google99ea56259237cc2a.html', content_type='text/plain')),
+    (r'^google99ea56259237cc2a\.html$', lambda r: HttpResponse("google-site-verification: google99ea56259237cc2a.html", mimetype="text/plain")),
     
     # Catch all - Check if we have a static page with this url
     url(r'^(.*)/$', 'general.views.static_page', name='static_page')
