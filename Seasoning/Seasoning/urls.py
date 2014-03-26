@@ -3,6 +3,7 @@ from general.sitemaps import GeneralViewsSitemap, StaticViewSitemap
 from ingredients.sitemaps import IngredientViewsSitemap
 from news.sitemaps import NewsViewsSitemap
 from recipes.sitemaps import RecipeViewsSitemap
+from django.http.response import HttpResponse
 
 sitemaps = {
     'general': GeneralViewsSitemap,
@@ -13,6 +14,10 @@ sitemaps = {
 }
 
 urlpatterns = patterns('',
+    
+    # Google verification file
+    (r'^google99ea56259237cc2a\.html$', lambda r: HttpResponse("google-site-verification: google99ea56259237cc2a.html", mimetype="text/plain")),
+    
     # Core pages
     (r'^ingredients/', include('ingredients.urls')),
     (r'^recipes/', include('recipes.urls')),
