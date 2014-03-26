@@ -15,9 +15,6 @@ sitemaps = {
 
 urlpatterns = patterns('',
     
-    # Google verification file
-    (r'^google99ea56259237cc2a\.html/$', lambda r: HttpResponse("google-site-verification: google99ea56259237cc2a.html", mimetype="text/plain")),
-    
     # Core pages
     (r'^ingredients/', include('ingredients.urls')),
     (r'^recipes/', include('recipes.urls')),
