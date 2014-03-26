@@ -23,10 +23,13 @@ urlpatterns = patterns('',
     url(r'^contact/form/(.*)/', 'general.views.contact_form', name='contact'),
     
     # ROBOTS
-    (r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+    (r'^robots\.txt$', TemplateView.as_view(template_name='misc/robots.txt', content_type='text/plain')),
     
     # TEST VIEWS
     url(r'^500/$', 'general.views.test_500'),
+    
+    # Google verification file
+    url(r'^google99ea56259237cc2a.html$', TemplateView.as_view(template_name='misc/google99ea56259237cc2a.html', content_type='text/plain')),
     
     # Catch all - Check if we have a static page with this url
     url(r'^(.*)/$', 'general.views.static_page', name='static_page')
