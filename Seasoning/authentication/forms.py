@@ -14,6 +14,7 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 from authentication.models import User
 from captcha.fields import ReCaptchaField
+from django.core.urlresolvers import reverse
 
         
 class ShownImageInput(ClearableFileInput):
@@ -194,8 +195,8 @@ class CheckActiveAuthenticationForm(AuthenticationForm):
         super(CheckActiveAuthenticationForm, self).__init__(*args, **kwargs)
         self.error_messages['inactive'] = mark_safe(_('This account has not been activated yet, so you may not log in at '
                                                       'this time. If you haven\'t received an activation email for 15 minutes '
-                                                      'after registering, you can use <a href=\"/activate/resend/\">this form</a> '
-                                                      'to resend an activation email.'))
+                                                      'after registering, you can use <a href=\"%s\">this form</a> '
+                                                      'to resend an activation email.') % reverse('resend_activation_email'))
         self.error_messages['invalid_login_override'] = _("Override: Please enter a correct email address and password. "
                                                           "Note that both fields may be case-sensitive.")
 
