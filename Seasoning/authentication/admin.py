@@ -6,7 +6,7 @@ class UserAdmin(admin.ModelAdmin):
     model = User
     readonly_fields = ('facebook_id', 'google_id')
     search_fields = ['givenname', 'surname']
-    list_display = ('__unicode__', 'email', 'date_joined', 'last_login')
+    list_display = ('__unicode__', 'email', 'date_joined', 'last_login', 'is_active')
     
     
 admin.site.register(User, UserAdmin)
