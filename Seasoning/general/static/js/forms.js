@@ -84,7 +84,7 @@ $.fn.formset = function(args) {
 		// Make sure the total-forms attribute has the correct value after refreshing
 		$(this).find('#id_' + prefix + '-TOTAL_FORMS').val($(this).find('.' + prefix + '-form').not('.empty').length)
 		
-		var button = $('<a href="#" id="' + prefix + '-addbtn"><img src="/static/img/icons/add.png"></a>')
+		var button = $('<a href="#" id="' + prefix + '-addbtn"><img src="/static/img/icons/add.png" alt="Formulier toevoegen" /></a>')
 		button.click(function(event) {
 			add_form(prefix, args['newforms_callback']);
 			return false;

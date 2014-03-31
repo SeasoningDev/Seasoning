@@ -37,7 +37,7 @@ class ShownImageInput(ClearableFileInput):
 
         if value and hasattr(value, "url"):
             template = self.template_with_initial
-            substitutions['initial'] = format_html('<img src="{0}">',
+            substitutions['initial'] = format_html('<img src="{0}" alt="" />',
                                                    value.url)
 
         return mark_safe(template % substitutions)

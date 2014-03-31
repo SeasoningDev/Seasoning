@@ -45,9 +45,9 @@ $(function() {
 	            </p>
 	        	{{ search_form.sort_field }}
 	            <a class="order-arrow up{% if search_form.sort_order.0.is_checked %} active{% endif %}" href="#">
-	                <img src="{{ STATIC_URL }}img/icons/up.png" title="Sorteer in oplopende volgorde" />
+	                <img src="{{ STATIC_URL }}img/icons/up.png" title="Sorteer in oplopende volgorde" alt="Sorteer in oplopende volgorde" />
 	            </a><a class="order-arrow down{% if search_form.sort_order.1.is_checked %} active{% endif %}" href="#">
-	                <img src="{{ STATIC_URL }}img/icons/down.png" title="Sorteer in aflopende volgorde" />
+	                <img src="{{ STATIC_URL }}img/icons/down.png" title="Sorteer in aflopende volgorde" alt="Sorteer in aflopende volgorde" />
 	            </a>
 	            {{ search_form.sort_order }}
 	        </div>
@@ -56,13 +56,13 @@ $(function() {
 	                Voedingswijze:
 	            </p>
 	            <a class="veg-choice active" href="#">
-	            	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Veganistische gerechten" />
+	            	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Veganistische gerechten" alt="Veganistische gerechten" />
 	            	{{ search_form.ven }}
 	            </a><a class="veg-choice active" href="#">
-	                <img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Vegetarische gerechten" />
+	                <img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Vegetarische gerechten" alt="Vegetarische gerechten" />
 	                {{ search_form.veg }}
 	            </a><a class="veg-choice active" href="#">
-	            	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Niet-vegetarische gerechten" />
+	            	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Niet-vegetarische gerechten" alt="Niet-vegetarische gerechten" />
 	            	{{ search_form.nveg }}
 	            </a>
 	        </div>
