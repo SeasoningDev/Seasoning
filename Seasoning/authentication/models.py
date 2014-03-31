@@ -12,7 +12,6 @@ from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
 from general import validate_image_size
-from django.core.urlresolvers import reverse
 
 
 def get_image_filename(instance=None, old_filename=None):
@@ -75,7 +74,7 @@ class User(models.Model):
         unique=True,
         db_index=True,
         error_messages={'unique': 'Er bestaat al een gebruiker met dit e-mailadres. Vermoed je dat iemand tracht misbruik te '
-                                  'maken van jouw e-mailadres, neem dan contact met ons op via <a href="%s">dit formulier</a>.' % reverse('contact', args='abuse')}
+                                  'maken van jouw e-mailadres, neem dan contact met ons op via <a href="/contact/form/abuse/">dit formulier</a>.'},
     )
     
     givenname = models.CharField(_("Givenname"), max_length=30,
