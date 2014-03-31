@@ -26,7 +26,6 @@ DB_BACKUP_FILE = os.path.join(BASE_DIR, '../../seasoning_db.bak')
 
 ADMINS = (
     ('Joep Driesen', 'joep.driesen@seasoning.be'),
-    ('Bram Somers', 'bram.somers@seasoning.be'),
 )
 
 MANAGERS = ADMINS
@@ -189,6 +188,8 @@ AUTHENTICATION_BACKENDS = (
     'authentication.backends.GoogleAuthBackend',
     'authentication.backends.FacebookAuthBackend',
 )
+
+SERVER_EMAIL = 'server@seasoning.be'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
