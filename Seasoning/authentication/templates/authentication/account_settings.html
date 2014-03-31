@@ -15,7 +15,7 @@
     <div id="account-settings">
         {% block account_settings %}
         <div id="account-image">
-            <img src="{{ MEDIA_URL }}{{ viewed_user.avatar }}">
+            <img src="{{ MEDIA_URL }}{{ viewed_user.avatar }}" alt="De avatar van {{ user.fullname }}">
         </div>
         
         <div id="account-info">
@@ -29,13 +29,13 @@
 	        <div class="account-info-stat" id="veganism">
 				<strong>Voorkeur</strong>
             	{% if most_used_veganism == 2 %}
-            	<img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegan.png" title="Deze gebruiker heeft vooral veganistische recepten toegevoegd" />
+            	<img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegan.png" title="Deze gebruiker heeft vooral veganistische recepten toegevoegd" alt="Deze gebruiker heeft vooral veganistische recepten toegevoegd" />
             	{% elif most_used_veganism == 1 %}
-	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Deze gebruiker heeft vooral vegetarische recepten toegevoegd" />
+	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Deze gebruiker heeft vooral vegetarische recepten toegevoegd" alt="Deze gebruiker heeft vooral vegetarische recepten toegevoegd" />
 	            {% elif most_used_veganism == 0 %}
-	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Deze gebruiker heeft vooral niet-vegetarische recepten toegevoegd" />
+	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Deze gebruiker heeft vooral vegetarische recepten toegevoegd" alt="Deze gebruiker heeft vooral vegetarische recepten toegevoegd" />
 	            {% else %}
-	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegan.png" title="Deze gebruiker heeft nog geen recepten toegevoegd" />
+	            <img class="account-info-stat-img" src="{{ STATIC_URL }}img/icons/vegan.png" title="Deze gebruiker heeft nog geen recepten toegevoegd" alt="Deze gebruiker heeft nog geen recepten toegevoegd" />
 	            {% endif %}
 	        </div>
             

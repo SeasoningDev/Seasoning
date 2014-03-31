@@ -103,7 +103,7 @@ $(function() {
         
             <div class="field-wrapper">
                 {{ form.avatar.label_tag }}
-                <img id="avatar_img" src="{{ MEDIA_URL }}{{ user.avatar }}" />
+                <img id="avatar_img" src="{{ MEDIA_URL }}{{ user.avatar }}" alt="Jouw avatar" />
                 {% if form.avatar.errors %}        
                     {{ form.avatar.errors }}
                 {% endif %}

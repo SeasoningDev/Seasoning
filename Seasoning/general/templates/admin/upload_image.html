@@ -15,7 +15,7 @@
 
 {% for image in images %}
 <p>{{ image }}:</p>
-<img src="{{ STATIC_URL }}img/static/{{ image }}" />
+<img src="{{ STATIC_URL }}img/static/{{ image }}" alt="{{ image }}"/>
 {% endfor %}
 
 {% endblock %}

@@ -335,7 +335,7 @@
 </div>-->
 <div id="zoomed-recipe-image-container">
     <div id="page-darkener"> </div>
-    <img id="zoomed-recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" />
+    <img id="zoomed-recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" alt="" />
 </div>
 {% endblock %}
 
@@ -344,8 +344,8 @@
     {{ recipe.name }}
     <div id="recipe-actions">
         {% if recipe.author == user or user.is_staff %}
-        <a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" /></a>
-        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" /></a>
+        <a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
+        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
         {% endif %}
     </div>
 </h1>
@@ -367,7 +367,7 @@
     
     <div id="first-information">
         <div id="img-and-basic-user-options">
-            <img id="recipe-img" src="{{ recipe.thumbnail.url }}"/>
+            <img id="recipe-img" src="{{ recipe.thumbnail.url }}" alt="" />
             <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
 		       	<span class="footprint-cloud-text">
 		       		{{ recipe.total_footprint|floatformat:-2 }}
@@ -437,9 +437,9 @@
                 {% if recipe.cuisine %}{{ recipe.cuisine }}{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} {% endif %}{{ recipe.get_course_display|lower }}
                 
                 <div id="veganism">
-                    <img src="{{ STATIC_URL }}img/icons/vegan.png" {% if not recipe.veganism == 2 %}class="not-this"{% else %}title="Dit is een veganistisch recept"{% endif %} />
-                    <img src="{{ STATIC_URL }}img/icons/vegetarian.png" {% if not recipe.veganism == 1 %}class="not-this"{% else %}title="Dit is een vegetarisch recept"{% endif %} />
-                    <img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" {% if not recipe.veganism == 0 %}class="not-this"{% else %}title="Dit is een niet-vegetarisch recept"{% endif %} />
+                    <img src="{{ STATIC_URL }}img/icons/vegan.png" {% if not recipe.veganism == 2 %}class="not-this"{% else %}title="Dit is een veganistisch recept"{% endif %} alt="" />
+                    <img src="{{ STATIC_URL }}img/icons/vegetarian.png" {% if not recipe.veganism == 1 %}class="not-this"{% else %}title="Dit is een vegetarisch recept"{% endif %} alt="" />
+                    <img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" {% if not recipe.veganism == 0 %}class="not-this"{% else %}title="Dit is een niet-vegetarisch recept"{% endif %} alt="" />
                 </div>
             </div>
             

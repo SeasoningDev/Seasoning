@@ -31,10 +31,10 @@
 
 {% if register %}
     <a id="fb-button" href="{% url 'authentication.views.social_register' 'fb' %}">
-        <img id="fb-logo" src="{{ STATIC_URL }}img/logos/fb-logo.png" />Registreer via Facebook
+        <img id="fb-logo" src="{{ STATIC_URL }}img/logos/fb-logo.png" alt="" />Registreer via Facebook
     </a>
 {% else %}
     <a id="fb-button" href="{% url 'authentication.views.social_auth' 'fb' %}{% if next %}?next={{ next }}{% endif %}">
-        <img id="fb-logo" src="{{ STATIC_URL }}img/logos/fb-logo.png" />Aanmelden met Facebook
+        <img id="fb-logo" src="{{ STATIC_URL }}img/logos/fb-logo.png" alt="" />Aanmelden met Facebook
     </a>
 {% endif %}
