@@ -208,7 +208,7 @@ class OAuth2Backend(ModelBackend):
         if avatar is not None:
             avatar_url = avatar
             content = ContentFile(urllib2.urlopen(avatar_url).read())
-            filename = authentication.models.get_image_filename(content.name)
+            filename = authentication.models.get_image_filename('random.jpg')
             new_user.avatar.save(filename, content, save=True)
         new_user.activated = True
         new_user.save()
