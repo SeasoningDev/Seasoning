@@ -118,8 +118,7 @@ class Recipe(models.Model):
     portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
     active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
-    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
-                                       default=0)
+    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
     
     rating = models.FloatField(null=True, blank=True, default=None, editable=False)
     number_of_votes = models.PositiveIntegerField(default=0, editable=False)
