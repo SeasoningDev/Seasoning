@@ -105,7 +105,7 @@ def view_recipe(request, recipe_id):
     
     try:
         recipe = Recipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
-    except Recipe.DoesNotExists:
+    except Recipe.DoesNotExist:
         raise Http404
     usess = UsesIngredient.objects.select_related('ingredient', 'unit').filter(recipe=recipe).order_by('-group', 'ingredient__name')
     
