@@ -202,6 +202,7 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
             if access_token:
                 # We also need to check if the additional information provided by the user is valid
                 try:
+                    raw_user_info = backend.get_unparsed_user_info(access_token)
                     user_info = backend.get_user_info(access_token)
                 except PermissionDenied:
                     messages.add_message(request, messages.INFO, _('You cannot use this type of {social_network} account to register on Seasoning. Please try another...').format(social_network=backend.name()))            
