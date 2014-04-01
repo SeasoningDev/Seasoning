@@ -62,21 +62,17 @@ class RegistrationForm(forms.ModelForm):
     givenname = forms.CharField(max_length=30,
                                 widget=forms.TextInput(attrs={'tabindex':'1'}),
                                 label=_("Givenname"),
-                                help_text=_('30 characters or fewer, only letters allowed. '
-                                            'Your name will be used to identify you on Seasoning.'),
+                                help_text=_('30 characters or fewer, only letters allowed.'),
                                 error_messages={'required': _('This field is required.')})
     
     surname = forms.CharField(max_length=50,
                               widget=forms.TextInput(attrs={'tabindex':'2'}),
                               label=_("Surname"),
-                              help_text=_('50 characters or fewer, only letters allowed '
-                                          'Your name will be used to identify you on Seasoning.'))
+                              help_text=_('50 characters or fewer, only letters allowed.'))
     
     email = forms.EmailField(widget=forms.TextInput(attrs={'tabindex':'3'}),
                              label=_("Email"),
-                             help_text=_('Your email will never be sold or shared. It will not be shown on the site, unless you enable this '
-                                         'option.<br/>An email will be sent to this email address to verify your account. You will not '
-                                         'receive any further emails from Seasoning.'))
+                             help_text=_('Your email will never be sold or shared.<br/>An email will be sent to this email address to verify your account.'))
     
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'required',
                                                                  'tabindex': '4'}, render_value=False),
@@ -89,9 +85,7 @@ class RegistrationForm(forms.ModelForm):
     
     date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'tabindex':'6'}),
                                     label=_("Date of birth"),
-                                    input_formats=['%d-%m-%Y', '%Y-%m-%d', '%d/%m/%Y'],
-                                    help_text=_('Your birthday will be used for age validation and possible some anonymous statistics about the '
-                                                'users of Seasoning.'))
+                                    input_formats=['%d-%m-%Y', '%Y-%m-%d', '%d/%m/%Y'])
                              
     captcha = ReCaptchaField(attrs={'theme': 'red',
                                     'tabindex': 7},
