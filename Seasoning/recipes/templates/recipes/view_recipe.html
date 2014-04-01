@@ -500,60 +500,62 @@
     </div>
 </div>
 
-<div id="give-comment">
-    <h3>Geef een reactie op dit recept:</h3>
-    {% if user.is_authenticated %}
-        <div id="new-comment" class="comment">
-            <div class="commenter-img">
-                <img src="{{ MEDIA_URL }}{{ user.avatar }}" alt="De avatar van {{ user.get_full_name }}"/>
-            </div>
-            <div class="comment-content">
-                <div class="commenter"><a href="{% url 'user_profile' user.id %}">{{ user.get_full_name }}</a> zegt:</div>
-                <div class="comment-body">
-                    {% get_comment_form for recipe as form %}
-                    <form action="{% comment_form_target %}" method="POST">
-                        {% csrf_token %}
-                        {{ form.comment }}
-                        {{ form.honeypot }}
-                        {{ form.content_type }}
-                        {{ form.object_pk }}
-                        {{ form.timestamp }}
-                        {{ form.security_hash }}
-                        <input type="hidden" name="next" value="{{ request.path }}" />
-                        <input type="submit" value="Voeg Reactie Toe" id="id_submit" />
-                    </form>
-                </div>
-            </div>
-            <br class="clear" />
-        </div>
-        
-        <br class="clear" />
-    {% else %}
-        <p><a href="{% url 'login' %}?next={{ request.path  }}">Meld je aan</a> om een reactie te geven.</p>
-    {% endif %}
-</div>
-<h3>Reacties op dit recept:</h3>
-<div id="comment-list">
-    {% for comment in comments %}
-    <div id="comment-{{ forloop.counter }}" class="comment">
-        <div class="commenter-img">
-            <img src="{{ MEDIA_URL }}{{ comment.user.avatar }}" alt="De avatar van {{ comment.user.get_full_name }}"/>
-        </div>
-        <div class="comment-content">
-            <div class="commenter"><a href="{% url 'user_profile' comment.user.id %}">{{ comment.user.get_full_name }}</a> zegt:</div>
-            <div class="comment-submit-date"><a href="#comment-{{ forloop.counter }}">{{ comment.submit_date|date:"j F Y, G" }}u{{ comment.submit_date|date:"i" }}</a></div>
-            {% if comment.user == user %}<div class="comment-delete"><a href="{% url 'delete_comment' recipe.id comment.id %}">Verwijder Reactie</a></div>{% endif %}
-            <div class="comment-body">
-                {{ comment.comment }}
-            </div>
-        </div>
-        <br class="clear" />
-    </div>
-    {% empty %}
-    <div id="no-comments">
-        Dit recept heeft nog geen reacties gekregen...
-    </div>
-    {% endfor %}
+<div id="comment-section">
+	<div id="give-comment">
+	    <h3>Geef een reactie op dit recept:</h3>
+	    {% if user.is_authenticated %}
+	        <div id="new-comment" class="comment">
+	            <div class="commenter-img">
+	                <img src="{{ MEDIA_URL }}{{ user.avatar }}" alt="De avatar van {{ user.get_full_name }}"/>
+	            </div>
+	            <div class="comment-content">
+	                <div class="commenter"><a href="{% url 'user_profile' user.id %}">{{ user.get_full_name }}</a> zegt:</div>
+	                <div class="comment-body">
+	                    {% get_comment_form for recipe as form %}
+	                    <form action="{% comment_form_target %}" method="POST">
+	                        {% csrf_token %}
+	                        {{ form.comment }}
+	                        {{ form.honeypot }}
+	                        {{ form.content_type }}
+	                        {{ form.object_pk }}
+	                        {{ form.timestamp }}
+	                        {{ form.security_hash }}
+	                        <input type="hidden" name="next" value="{{ request.path }}" />
+	                        <input type="submit" value="Voeg Reactie Toe" id="id_submit" />
+	                    </form>
+	                </div>
+	            </div>
+	            <br class="clear" />
+	        </div>
+	        
+	        <br class="clear" />
+	    {% else %}
+	        <p><a href="{% url 'login' %}?next={{ request.path  }}">Meld je aan</a> om een reactie te geven.</p>
+	    {% endif %}
+	</div>
+	<h3>Reacties op dit recept:</h3>
+	<div id="comment-list">
+	    {% for comment in comments %}
+	    <div id="comment-{{ forloop.counter }}" class="comment">
+	        <div class="commenter-img">
+	            <img src="{{ MEDIA_URL }}{{ comment.user.avatar }}" alt="De avatar van {{ comment.user.get_full_name }}"/>
+	        </div>
+	        <div class="comment-content">
+	            <div class="commenter"><a href="{% url 'user_profile' comment.user.id %}">{{ comment.user.get_full_name }}</a> zegt:</div>
+	            <div class="comment-submit-date"><a href="#comment-{{ forloop.counter }}">{{ comment.submit_date|date:"j F Y, G" }}u{{ comment.submit_date|date:"i" }}</a></div>
+	            {% if comment.user == user %}<div class="comment-delete"><a href="{% url 'delete_comment' recipe.id comment.id %}">Verwijder Reactie</a></div>{% endif %}
+	            <div class="comment-body">
+	                {{ comment.comment }}
+	            </div>
+	        </div>
+	        <br class="clear" />
+	    </div>
+	    {% empty %}
+	    <div id="no-comments">
+	        Dit recept heeft nog geen reacties gekregen...
+	    </div>
+	    {% endfor %}
+	</div>
 </div>
 
 {% endblock %}

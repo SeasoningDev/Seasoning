@@ -277,7 +277,7 @@ if TEST:
 
 PIPELINE_CSS = {
     'global': {
-        'source_filenames': {
+        'source_filenames': (
             'css/base/reset.scss',
             'css/base/global.scss',
             'css/base/skeleton.scss',
@@ -285,44 +285,47 @@ PIPELINE_CSS = {
             'css/base/forms.scss',
             'css/includes/*.scss',
             'css/plugins/*.scss',
-        },
+        ),
         'output_filename': 'css/global.css',
     },
     'general': {
-        'source_filenames': {
+        'source_filenames': (
             'css/contribute/*.scss',
             'css/general/*.scss',
-        },
+        ),
         'output_filename': 'css/general.css',
     },
     'authentication': {
-        'source_filenames': {
+        'source_filenames': (
             'css/authentication/*.scss',
-        },
+        ),
         'output_filename': 'css/authentication.css',
     },
     'ingredients': {
-        'source_filenames': {
+        'source_filenames': (
             'css/ingredients/*.scss',
-        },
+        ),
         'output_filename': 'css/ingredients.css',
     },
     'recipes': {
-        'source_filenames': {
-            'css/recipes/*.scss',
-        },
+        'source_filenames': (
+            'css/recipes/browse_recipes.scss',
+            'css/recipes/edit_recipe.scss',
+            'css/recipes/view_recipe.scss',
+            'css/recipes/print_recipe.scss',
+        ),
         'output_filename': 'css/recipes.css',
     },
     'faq': {
-        'source_filenames': {
+        'source_filenames': (
             'css/faq/*.scss',
-        },
+        ),
         'output_filename': 'css/faq.css',
     },
     'news': {
-        'source_filenames': {
+        'source_filenames': (
             'css/news/*.scss',
-        },
+        ),
         'output_filename': 'css/news.css',
     },
 }
