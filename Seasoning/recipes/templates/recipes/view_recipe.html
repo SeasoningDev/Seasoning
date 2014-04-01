@@ -252,24 +252,12 @@
         relchart = new Highcharts.Chart({
             chart: {
                 renderTo: 'recipe-fprel-chart',
-                type: 'spline',
+                type: 'line',
             },
             title: {
                 text: 'Voetafdruk relatief t.o.v. andere recepten',
                 style: {
                     color: '#333'
-                }
-            },
-            plotOptions: {
-                spline: {
-                  marker: {
-                      enabled: false,
-                      states: {
-                          hover: {
-                              enabled: false
-                          }
-                      }
-                  },
                 }
             },
             legend: {

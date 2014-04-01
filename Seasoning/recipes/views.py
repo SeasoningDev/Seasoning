@@ -517,7 +517,7 @@ def get_relative_footprint(request):
                 bounds = Recipe.objects.aggregate(Max('footprint'), Min('footprint'))
                 min_fp = 4*bounds['footprint__min']
                 max_fp = 4*bounds['footprint__max']
-                interval_count = 10
+                interval_count = 20
                 interval_length = (max_fp-min_fp)/interval_count
                 recipes = Recipe.objects.values('footprint', 'course', 'veganism').all().order_by('footprint')
                 
