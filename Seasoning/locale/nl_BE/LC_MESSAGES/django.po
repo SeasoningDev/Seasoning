@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-19 14:02+0100\n"
+"POT-Creation-Date: 2014-04-01 12:05+0200\n"
 "PO-Revision-Date: 2014-02-17 16:43+0100\n"
 "Last-Translator: Bram Somers <bram.somers@seasoning.be>\n"
 "Language-Team: Dutch <LL@li.org>\n"
@@ -18,85 +18,68 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: authentication/forms.py:63 authentication/models.py:77
+#: authentication/forms.py:64 authentication/models.py:80
 msgid "Givenname"
 msgstr "Voornaam"
 
-#: authentication/forms.py:64 authentication/models.py:78
-msgid ""
-"30 characters or fewer, only letters allowed. Your name will be used to "
-"identify you on Seasoning."
+#: authentication/forms.py:65
+msgid "30 characters or fewer, only letters allowed."
 msgstr ""
-"Gebruik maximaal 30 lettertekens. Je naam zal gebruikt worden om je te "
-"identificeren op Seasoning."
+"Gebruik maximaal 30 lettertekens."
 
 #: authentication/forms.py:66
 msgid "This field is required."
 msgstr "Dit veld is verplicht."
 
-#: authentication/forms.py:70 authentication/models.py:82
+#: authentication/forms.py:70 authentication/models.py:85
 msgid "Surname"
 msgstr "Achternaam"
 
-#: authentication/forms.py:71 authentication/models.py:83
-msgid ""
-"50 characters or fewer, only letters allowed Your name will be used to "
-"identify you on Seasoning."
+#: authentication/forms.py:71
+msgid "50 characters or fewer, only letters allowed."
 msgstr ""
-"Gebruik maximaal 50 lettertekens. Je naam zal gebruikt worden om je te "
-"identificeren op Seasoning."
+"Gebruik maximaal 50 lettertekens."
 
-#: authentication/forms.py:75 authentication/forms.py:165
-#: authentication/models.py:71 general/forms.py:12
+#: authentication/forms.py:74 authentication/forms.py:160
+#: authentication/models.py:72 general/forms.py:12
 msgid "Email"
 msgstr "E-mailadres"
 
-#: authentication/forms.py:76
+#: authentication/forms.py:75
 msgid ""
-"Your email will never be sold or shared. It will not be shown on the site, "
-"unless you enable this option.<br/>An email will be sent to this email "
-"address to verify your account. You will not receive any further emails from "
-"Seasoning."
+"Your email will never be sold or shared.<br/>An email will be sent to this "
+"email address to verify your account."
 msgstr ""
-"Je e-mailadres zal nooit verkocht of doorgegeven worden aan derden. Het zal "
-"niet op Seasoning getoond worden, tenzij je deze optie activeert.<br/>Er zal "
-"eenmalig een e-mail gestuurd worden om je account te verifiëren. Je zal geen "
-"verdere e-mails van Seasoning ontvangen."
+"Er zal eenmalig een e-mail gestuurd worden om je account te verifieren. Je "
+"gegevens zullen niet gebruikt worden voor commerciele doeleinden en worden "
+"niet doorgegeven aan derden."
 
-#: authentication/forms.py:82 authentication/forms.py:130
-#: authentication/models.py:90
+#: authentication/forms.py:79 authentication/forms.py:125
+#: authentication/models.py:93
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: authentication/forms.py:86 authentication/forms.py:132
+#: authentication/forms.py:83 authentication/forms.py:127
 msgid "Password (again)"
 msgstr "Wachtwoord (nogmaals)"
 
-#: authentication/forms.py:87
+#: authentication/forms.py:84
 msgid "Please enter the same password as above for verification purposes."
 msgstr "Gelieve nogmaals het gekozen wachtwoord in te geven ter verificatie."
 
-#: authentication/forms.py:90
+#: authentication/forms.py:87
 msgid "Date of birth"
 msgstr "Geboortedatum"
 
-#: authentication/forms.py:92
-msgid ""
-"Your birthday will be used for age validation and possible some anonymous "
-"statistics about the users of Seasoning."
-msgstr ""
-"Je geboortedatum zal gebruikt worden om je leeftijd te controleren. Hij "
-"wordt mogelijk gebruikt in anonieme gebruikersstatistieken van Seasoning."
-
-#: authentication/forms.py:97 general/forms.py:17
+#: authentication/forms.py:92 general/forms.py:17
 msgid "You must enter the correct ReCaptcha characters"
 msgstr "Vul de correcte tekens van de ReCaptcha in."
 
-#: authentication/forms.py:98
+#: authentication/forms.py:93
 msgid "Incorrect, please try again."
 msgstr "De opgegeven Captcha was fout, probeer het opnieuw aub."
 
-#: authentication/forms.py:102
+#: authentication/forms.py:97
 msgid ""
 "I have read and agree to the <a target=\"_blank\" href=\"/terms/\">Terms of "
 "Service</a>"
@@ -104,36 +87,36 @@ msgstr ""
 "Ik verklaar kennis te hebben genomen van de <a target=\"_blank\" href=\"/"
 "terms/\">Algemene Voorwaarden</a> en hiermee akkoord te gaan."
 
-#: authentication/forms.py:103 authentication/forms.py:136
+#: authentication/forms.py:98 authentication/forms.py:131
 msgid "You must agree to the terms to register"
 msgstr ""
 "Je dient te bevestigen dat je de Algemene Voorwaarden gelezen en goegekeurd "
 "hebt."
 
-#: authentication/forms.py:116 authentication/forms.py:149
+#: authentication/forms.py:111 authentication/forms.py:144
 msgid "The two password fields didn't match."
 msgstr "De ingevoerde wachtwoorden komen niet overeen."
 
-#: authentication/forms.py:135
+#: authentication/forms.py:130
 msgid "I have read and agree to the Terms of Service"
 msgstr ""
 "Ik verklaar kennis te hebben genomen van de Algemene Voorwaarden en hiermee "
 "akkoord te gaan"
 
-#: authentication/forms.py:166 authentication/forms.py:167
+#: authentication/forms.py:161 authentication/forms.py:162
 msgid "Please enter a valid email address"
 msgstr "Gelieve een geldig e-mailadres op te geven"
 
-#: authentication/forms.py:174
+#: authentication/forms.py:169
 msgid "The given email address was not found"
 msgstr "Het opgegeven e-mailadres werd niet teruggevonden"
 
-#: authentication/forms.py:177
+#: authentication/forms.py:172
 msgid ""
 "The account corresponding to this email address has already been activated"
 msgstr "Het aan dit e-mailadres verbonden account werd reeds geactiveerd"
 
-#: authentication/forms.py:181
+#: authentication/forms.py:176
 msgid ""
 "The account corresponding to this email address has expired due to prolonged "
 "inactivity"
@@ -141,19 +124,20 @@ msgstr ""
 "Het aan dit e-mailadres verbonden account is verlopen wegens langdurige "
 "inactiviteit"
 
-#: authentication/forms.py:195
+#: authentication/forms.py:190
+#, python-format
 msgid ""
 "This account has not been activated yet, so you may not log in at this time. "
 "If you haven't received an activation email for 15 minutes after "
-"registering, you can use <a href=\"/activate/resend/\">this form</a> to "
-"resend an activation email."
+"registering, you can use <a href=\"%s\">this form</a> to resend an "
+"activation email."
 msgstr ""
 "Dit account werd nog niet geactiveerd, waardoor aanmelden momenteel niet "
 "mogelijk is. Indien je 15 minuten na je registratie nog geen activatiemail "
-"ontvangen hebt, kan je <a href=\"/activate/resend/\">dit formulier</a> "
+"ontvangen hebt, kan je <a href=\"%s\">dit formulier</a> "
 "gebruiken om een nieuwe activatiemail te versturen."
 
-#: authentication/forms.py:199
+#: authentication/forms.py:194
 msgid ""
 "Override: Please enter a correct email address and password. Note that both "
 "fields may be case-sensitive."
@@ -161,31 +145,47 @@ msgstr ""
 "Deze combinatie van e-mailadres en wachtwoord is niet correct. Probeer nog "
 "een keer."
 
-#: authentication/models.py:80
+#: authentication/models.py:81
+msgid ""
+"30 characters or fewer, only letters allowed. Your name will be used to "
+"identify you on Seasoning."
+msgstr ""
+"Gebruik maximaal 30 lettertekens. Je naam zal gebruikt worden om je te "
+"identificeren op Seasoning."
+
+#: authentication/models.py:83
 msgid "Enter a valid Given Name."
 msgstr "Geef een geldige voornaam op."
 
-#: authentication/models.py:85
+#: authentication/models.py:86
+msgid ""
+"50 characters or fewer, only letters allowed Your name will be used to "
+"identify you on Seasoning."
+msgstr ""
+"Gebruik maximaal 50 lettertekens. Je naam zal gebruikt worden om je te "
+"identificeren op Seasoning."
+
+#: authentication/models.py:88
 msgid "Enter a valid Surname."
 msgstr "Geef een geldige achternaam op."
 
-#: authentication/models.py:101
+#: authentication/models.py:104
 msgid "date joined"
 msgstr "datum registratie"
 
-#: authentication/models.py:102
+#: authentication/models.py:105
 msgid "last login"
 msgstr "laatste aanmelding"
 
-#: authentication/models.py:435 authentication/models.py:597
+#: authentication/models.py:438 authentication/models.py:600
 msgid "activation key"
 msgstr "activeringssleutel"
 
-#: authentication/models.py:441
+#: authentication/models.py:444
 msgid "registration profile"
 msgstr "registratie profiel"
 
-#: authentication/models.py:442
+#: authentication/models.py:445
 msgid "registration profiles"
 msgstr "registratie profielen"
 
@@ -394,7 +394,7 @@ msgstr "De antwoordtekst"
 msgid "topic"
 msgstr "onderwerp"
 
-#: general/__init__.py:9
+#: general/__init__.py:12
 #, python-format
 msgid "Max file size is %sMB"
 msgstr "De maximale grootte voor een afbeelding is %sMB."
@@ -419,7 +419,7 @@ msgstr "Het recept is niet {recipe_veganism}."
 msgid "Your contact form was submitted succesfully."
 msgstr "Je contactformulier werd succesvol ingediend."
 
-#: ingredients/models.py:294
+#: ingredients/models.py:293
 msgid ""
 "This ingredient is not always available somewhere, and should not be "
 "accepted."
@@ -435,43 +435,43 @@ msgstr "Een afbeelding van dit nieuwsbericht."
 msgid "Unknown ingredients found"
 msgstr "Sommige ingredienten werden niet teruggevonden."
 
-#: recipes/models.py:106
+#: recipes/models.py:107
 msgid "Name"
 msgstr "naam"
 
-#: recipes/models.py:107
+#: recipes/models.py:108
 msgid "The names of the recipe."
 msgstr "De naam van het recept."
 
-#: recipes/models.py:111
-msgid "Course"
-msgstr "Maaltijdsoort"
-
 #: recipes/models.py:112
+msgid "Course"
+msgstr "Type Maaltijd"
+
+#: recipes/models.py:113
 msgid "The type of course this recipe will provide."
 msgstr "De soort maaltijd van het recept."
 
-#: recipes/models.py:113
+#: recipes/models.py:114
 msgid "Cuisine"
 msgstr "Keuken"
 
-#: recipes/models.py:114
+#: recipes/models.py:115
 msgid "The type of cuisine this recipe represents."
 msgstr "De keuken waarin dit recept gebruikt wordt."
 
-#: recipes/models.py:115
+#: recipes/models.py:116
 msgid "Description"
 msgstr "Beschrijving"
 
-#: recipes/models.py:116
+#: recipes/models.py:117
 msgid "A few sentences describing the recipe (Maximum 140 characters)."
 msgstr "Een korte beschrijving van het recept (maximaal 140 tekens)."
 
-#: recipes/models.py:117
+#: recipes/models.py:118
 msgid "Portions"
 msgstr "Porties"
 
-#: recipes/models.py:117
+#: recipes/models.py:118
 msgid ""
 "The average amount of people that can be fed by this recipe using the given "
 "amounts of ingredients."
@@ -479,27 +479,27 @@ msgstr ""
 "Het gemiddeld aantal porties dat voorzien kan worden met de opgegeven "
 "hoeveelheden."
 
-#: recipes/models.py:119
+#: recipes/models.py:120
 msgid "Active time"
 msgstr "Actieve tijd"
 
-#: recipes/models.py:119
+#: recipes/models.py:120
 msgid ""
 "The time needed to prepare this recipe where you are actually doing "
 "something."
-msgstr "De tijd die je actief besteed aan de bereiding van het recept."
+msgstr "Het aantal minuten dat je actief besteedt aan de bereiding van het recept."
 
-#: recipes/models.py:120
+#: recipes/models.py:121
 msgid "Passive time"
 msgstr "Passieve tijd"
 
-#: recipes/models.py:120
+#: recipes/models.py:121
 msgid ""
 "The time needed to prepare this recipe where you can do something else (e.g. "
 "water is boiling)"
 msgstr ""
-"De tijd die nodig is voor de bereiding van het recept, terwijl je iets "
-"anders kan doen (bv. tijdens het koken van aardappelen)."
+"Het aantal minuten dat je niet actief besteedt aan de bereiding van het recept "
+"en je dus iets anders kan doen (bv. tijdens het koken van aardappelen)."
 
 #: recipes/models.py:127
 msgid "Extra info"
