@@ -257,7 +257,7 @@ class GoogleAuthBackend(OAuth2Backend):
     USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo'
     APP_ID = settings.GOOGLE_APP_ID
     APP_SECRET = settings.GOOGLE_SECRET
-    SCOPE = 'https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile'
+    SCOPE = 'profile+email'
     ERROR_REASON_PARAM = 'error'
     ACCESS_DENIED_STRING = 'access_denied'
     
