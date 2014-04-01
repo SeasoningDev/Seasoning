@@ -170,7 +170,7 @@ class EditRecipeInstructionsForm(forms.ModelForm):
         model = Recipe
         fields = ['active_time', 'passive_time', 'instructions']
     
-    instructions = forms.CharField(widget=MarkItUpWidget(markitup_set='js/recipes'))
+    instructions = forms.CharField(label=_('Instructions'), widget=MarkItUpWidget(markitup_set='js/recipes'))
     
     def save(self):
         super(EditRecipeInstructionsForm, self).save()
