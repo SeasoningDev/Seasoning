@@ -294,7 +294,7 @@ class GoogleAuthBackend(OAuth2Backend):
                 'surname': google_info['family_name'],
                 'email': google_info['email'],
                 'date_of_birth': date_of_birth,
-                'image': 'http://profiles.google.com/s2/photos/profile/' + google_info['id'] + '?sz=100'}
+                'image': google_info['picture']}
     
     
 class FacebookAuthBackend(OAuth2Backend):
