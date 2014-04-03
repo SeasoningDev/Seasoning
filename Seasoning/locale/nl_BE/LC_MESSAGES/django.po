@@ -239,7 +239,7 @@ msgid ""
 "You cannot use this type of {social_network} account on Seasoning. Please "
 "try another..."
 msgstr ""
-"Dit type {social_network} account kan niet gebruikt worden op Seasoning "
+"Dit type {social_network} account kan niet gebruikt worden op Seasoning. "
 "Gelieve een andere mogelijkheid te proberen."
 
 #: authentication/views/social_auth_views.py:81
