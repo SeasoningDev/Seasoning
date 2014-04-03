@@ -32,6 +32,13 @@
 		padding: 20px 0;
 	}
 	
+	#header-container #logo a {
+		width: 336px;
+		height: 116px;
+		display: block;
+		background-image: url('/static/img/logos/header2.png');
+	}
+	
 	#header-container #grass-end-left {
 		position: absolute;
 		bottom: 50px;
@@ -68,6 +75,10 @@
 	  	
 	  	opacity: 0.3; 
 	  	filter: alpha(opacity=30);
+	}
+	
+	#header-container #show-nav-button {
+		display: none;
 	}
 	
 	#header-container #nav-container {

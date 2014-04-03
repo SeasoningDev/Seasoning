@@ -1,0 +1,63 @@
+#header {
+	height: 50px;
+	-webkit-transition: height 0.5s;
+	transition: height 0.5s;
+}
+
+#header.active {
+	height: 350px;
+}
+
+#header #header-container {
+	margin: 0;
+	width: 100%;
+}
+
+#header-container #logo {
+	margin: 0;
+	padding: 2px 0 0 0;
+}
+	
+#header-container #logo a {
+	width: 182px;
+	height: 50px;
+	display: block;
+	background-image: url('/static/img/logos/mobile_header.png');
+}
+
+#header-container #admin-links {
+	display: none;
+}
+
+#header-container span {
+	display: none;
+}
+
+#header-container #show-nav-button {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	display: block;
+}
+
+#header-container #nav-container {
+	top: 50px;
+	bottom: auto;
+	width: 100%;
+	height: 0;
+	overflow: hidden;
+	-webkit-transition: height 0.5s;
+	transition: height 0.5s;
+}
+
+#header-container #nav-container.active {
+	height: auto;
+}
+
+#nav-container div {
+	width: 100%;
+}
+
+#header-margin {
+	padding-top: 50px;
+}

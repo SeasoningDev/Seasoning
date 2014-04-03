@@ -18,6 +18,7 @@
 		{% block default_static_stuff %}
         <link rel="icon" href="{{ STATIC_URL }}img/logos/favicon.png" type="image/png" />
 		{% compressed_css 'global' %}
+		{% compressed_css 'mobile' %}
         {% if 'profile' in request.path %}
         {% compressed_css 'authentication' %}
         {% elif 'ingredients' in request.path %}
@@ -32,6 +33,7 @@
         {% compressed_css 'general' %}
         {% endif %}
 		{% block extra_link %}{% endblock %}
+		
 		
 		<script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>
 		<script src="{{ STATIC_URL }}js/base.js" type="text/javascript"></script>
@@ -61,18 +63,21 @@
 	    <div id="header">
 	        <div id="header-container" class="container">
 	            <div id="logo">
-                    <a href="{% url 'home' %}"><img src="{{ STATIC_URL }}img/logos/header2.png" alt="Terug naar de homepage"/></a>
+                    <a href="{% url 'home' %}"></a>
                 </div>
                 {% if user.is_staff %}
-                <a href="/admin/" style="position:absolute;top:0;right:0;">Admin Pages</a>
-                <a href="/admin/ingredients/list/" style="position:absolute;top:20px;right:0;">Ingredient List</a>
-                <a href="/backup/" style="position:absolute;top:40px;right:0;">Backup Database</a>
-                <a href="/upload/img/" style="position:absolute;top:60px;right:0;">Upload Image</a>
-                <a href="https://github.com/SeasoningDev/Seasoning/issues/new" style="position:absolute;top:80px;right:0;">Bug report</a>
+                <div id="admin-links">
+	                <a href="/admin/" style="position:absolute;top:0;right:0;">Admin Pages</a>
+	                <a href="/admin/ingredients/list/" style="position:absolute;top:20px;right:0;">Ingredient List</a>
+	                <a href="/backup/" style="position:absolute;top:40px;right:0;">Backup Database</a>
+	                <a href="/upload/img/" style="position:absolute;top:60px;right:0;">Upload Image</a>
+	                <a href="https://github.com/SeasoningDev/Seasoning/issues/new" style="position:absolute;top:80px;right:0;">Bug report</a>
+                </div>
                 {% endif %}
                 <span id="grass-end-left"> </span>
                 <span id="grass"> </span>
                 <span id="grass-end-right"> </span>
+                <a href="#" onclick="$('#header, #nav-container').toggleClass('active'); return false;"><img id="show-nav-button" src="{{ STATIC_URL }}img/icons/shownav.png" /></a>
                 <div id="nav-container">
                     <div class="{% block recipes-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'browse_recipes' %}">RECEPTEN</a></div>
                     <div class="{% block ingredients-active %}{% endblock %} navlink three columns alpha omega"><a href="{% url 'view_ingredients' %}">INGREDIËNTEN</a></div>
