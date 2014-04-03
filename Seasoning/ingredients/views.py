@@ -46,7 +46,7 @@ def view_ingredients(request):
     
 def view_ingredient(request, ingredient_id):
     try:
-        ingredient = Ingredient.objects.get(pk=ingredient_id)
+        ingredient = Ingredient.objects.get(pk=ingredient_id, accepted=True)
     except Ingredient.DoesNotExist:
         raise Http404
     
