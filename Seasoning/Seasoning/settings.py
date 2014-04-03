@@ -288,6 +288,15 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/global.css',
     },
+    'mobile': {
+        'source_filenames': (
+            'css/base/mobile.scss',
+        ),
+        'output_filename': 'css/mobile.css',
+        'extra_context': {
+            'media': 'all and (max-width: 767px)'
+        }
+    },
     'general': {
         'source_filenames': (
             'css/contribute/*.scss',
