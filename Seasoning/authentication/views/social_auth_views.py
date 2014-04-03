@@ -11,7 +11,7 @@ from authentication.backends import GoogleAuthBackend, FacebookAuthBackend
 from authentication.forms import SocialRegistrationForm
 from authentication.models import User
 from general.views import home
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 
 BACKENDS = {'google': GoogleAuthBackend,
             'fb': FacebookAuthBackend}
@@ -262,13 +262,13 @@ def social_register(request, backend, disallowed_url='registration_disallowed'):
             user_info = backend.get_user_info(access_token)
         except PermissionDenied:
             messages.add_message(request, messages.INFO, _('You cannot use this type of {social_network} account to register on Seasoning. Please try another...').format(social_network=backend.name()))            
-            return redirect('/register/')
+            return redirect(reverse('registration'))
         
         try:
             # Check if a user with this social id already exists
             User.objects.get(**{backend.ID_FIELD: user_info['id']})
             messages.add_message(request, messages.INFO, _('A user has already registered with your {social_network} account. If this is you, please log in, otherwise, contact an administrator').format(social_network=backend.name()))
-            return redirect('/login/')
+            return redirect(reverse('login'))
         except User.DoesNotExist:
             pass
         try:
