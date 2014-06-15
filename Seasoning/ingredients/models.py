@@ -240,21 +240,29 @@ class Ingredient(models.Model):
         except self.BasicIngredientException:
             return True
         
+        # All dates before this date (in the base year) the ingredient is sure to be available
         current_date = datetime.date(AvailableIn.BASE_YEAR, 1, 1)
         
         while available_ins:
             before_loop_date = current_date
+            
+            # Find an available in that is currently active
             for avail in available_ins:
+                # Found an active available in
                 if avail.is_active(current_date, date_until_extension=self.preservability):
+                    
+                    # The end date of this available in with preservability
                     extended_until_date = avail.extended_date_until(date_until_extension=self.preservability)
-                    if current_date < extended_until_date:
-                        current_date = extended_until_date + datetime.timedelta(days=1)
-                        if current_date.year > extended_until_date.year:
-                            # We've wrapped around
-                            return True                        
-                    else:
-                        # the availability wrapped around the year => we're finished
+                    print(extended_until_date)
+                    if extended_until_date <= current_date:
+                        # The availability wrapped around the year => we're finished
                         return True
+                    
+                    else:
+                        if current_date.year < extended_until_date.year:
+                            # We've wrapped around
+                            return True    
+                    
             if before_loop_date == current_date:
                 # This loop did nothing
                 return False        
@@ -455,9 +463,14 @@ class AvailableIn(models.Model):
             date_until_extension = self.ingredient.preservability
         date = self.date_until + datetime.timedelta(days=date_until_extension)
         if date.year > self.BASE_YEAR:
-            date = date.replace(year=self.BASE_YEAR)
-            if date > self.date_from:
-                return self.date_from
+            tmp_date = date.replace(year=self.BASE_YEAR)
+            if tmp_date > self.date_from:
+                return self.date_from - datetime.timedelta(days=1)
+            return date
+        
+        if self.date_until < self.date_from:
+            date = date.replace(year=self.BASE_YEAR + 1)
+            
         return date
         
     def month_from(self):
