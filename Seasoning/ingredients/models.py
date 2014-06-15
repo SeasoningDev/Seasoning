@@ -480,7 +480,7 @@ class AvailableIn(models.Model):
         return _date(self.date_until, 'F')
     
     def extended_month_until(self, date_until_extension=None):
-        return self.extended_date_until(date_until_extension).strftime('%B')
+        return _date(self.extended_date_until(date_until_extension), 'F')
     
     def is_active(self, date=None, date_until_extension=0):
         """
