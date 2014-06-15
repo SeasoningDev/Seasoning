@@ -18,7 +18,7 @@
 </h1>
 
 <div id="ingredient-wrapper">
-	<img id="ingredient-image" src="{{ ingredient.image.url }}" alt="" />
+	<img id="ingredient-image" src="{{ ingredient.image.url }}" alt="" title="{{ ingredient.image_source }}" />
 	
 	<p>
 	    <strong>Categorie:</strong> {{ ingredient.get_category_display }}
