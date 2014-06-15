@@ -257,7 +257,7 @@ msgid ""
 "Your {social_network} account has not been connected to Seasoning yet. "
 "Please take a minute to register."
 msgstr ""
-"Je {social_network} account is nog niet verbonden met Seasoning.Gelieve "
+"Je {social_network} account is nog niet verbonden met Seasoning. Gelieve "
 "eerst te registreren."
 
 #: authentication/views/social_auth_views.py:92
