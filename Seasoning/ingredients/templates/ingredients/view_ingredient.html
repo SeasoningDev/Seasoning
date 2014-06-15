@@ -24,7 +24,7 @@
 	    <strong>Categorie:</strong> {{ ingredient.get_category_display }}
 	</p>
 	<p>
-	    <strong>Voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
+	    <strong>Huidige voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
 	</p>
 	<p>
 	    <strong>Beschrijving:</strong><br />
@@ -58,7 +58,7 @@
 	</div>
 	
 	<div>
-	    <strong>Bronnen:</strong>
+	    <strong>Bronnen:</strong><br />
 	    {{ ingredient.source|linebreaks }}
 	</div>
 </div>
