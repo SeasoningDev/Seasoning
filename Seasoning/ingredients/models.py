@@ -474,7 +474,7 @@ class AvailableIn(models.Model):
                 try:
                     date = date.replace(day=ok_day, year=self.BASE_YEAR + 1)
                     break
-                expect ValueError:
+                except ValueError:
                     ok_day -= 1
             
         return date
