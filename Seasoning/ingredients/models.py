@@ -469,7 +469,13 @@ class AvailableIn(models.Model):
             return date
         
         if self.date_until < self.date_from:
-            date = date.replace(year=self.BASE_YEAR + 1)
+            ok_day = date.day
+            while True:
+                try:
+                    date = date.replace(day=ok_day, year=self.BASE_YEAR + 1)
+                    break
+                expect ValueError:
+                    ok_day -= 1
             
         return date
         
