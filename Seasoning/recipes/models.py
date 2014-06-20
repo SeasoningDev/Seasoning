@@ -132,6 +132,7 @@ class Recipe(models.Model):
     image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
     thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='PNG')
+    small_image = ImageSpecField([SmartResize(310, 310)], image_field='image', format='PNG')
     
     # Derived Parameters
     # Footprint per portion
