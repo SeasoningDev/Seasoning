@@ -253,7 +253,9 @@ class Ingredient(models.Model):
                     
                     # The end date of this available in with preservability
                     extended_until_date = avail.extended_date_until(date_until_extension=self.preservability)
-                    print(extended_until_date)
+                    # Add a day to include dates that end the day before the start date => these are valid as well
+                    extended_until_date += datetime.timedelta(days=1)
+                    
                     if extended_until_date <= current_date:
                         # The availability wrapped around the year => we're finished
                         return True
