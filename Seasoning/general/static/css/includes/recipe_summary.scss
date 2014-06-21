@@ -40,14 +40,18 @@
   margin: 2px 5px 0 0;
   float: left; }
 
+.recipe-summary-link {
+	display: inline-block;
+	text-decoration: none;
+	margin: 10px 18px 10px 0;
+}
+
 .recipe-summary {
   width: 216px;
-  margin: 10px;
   border: 1px solid transparent;
   transition: all 0.25s ease-in-out;
   -webkit-transition: all 0.25s ease-in-out;
   -moz-transition: all 0.25s ease-in-out;
-  float: left;
   border-radius: 16px;
   -moz-border-radius: 16px;
   border: 1px solid #DDD; }
@@ -112,7 +116,8 @@
   height: 55px;
   font-size: 11px;
   line-height: 18px;
-  padding: 5px 10px; }
+  padding: 5px 10px; 
+  overflow: hidden; }
 
 .recipe-meta-inf {
   display: block;

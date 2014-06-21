@@ -230,3 +230,35 @@
 		-ms-box-sizing: border-box;
 		box-sizing: border-box;
 	}
+	
+	.responsive-clear {
+		display: block;
+    	height: 0;
+    	overflow: hidden;
+    	visibility: hidden;
+    	width: 0;
+	}
+	
+	
+	
+@media only screen and (max-width: 767px) {
+	
+	#footer {
+		height: 230px;
+	}
+	
+	#footer-links ul li {
+		display: block;
+		margin-bottom: 5px;
+	}
+	
+	#cc-license {
+		display: none;
+	}
+	
+	#footer-container #social-icons {
+		float: none;
+		margin: auto;
+		padding-top: 180px;
+	}
+}

@@ -13,12 +13,10 @@ $(document).ready(function() {
 			// Hide
 			$("#advanced-search").slideUp(1000, function() {
 				$("#advanced-link").text("Geavanceerd zoeken");
-				$("#browse-recipe-summaries-wrapper").css("width", "960px");
 				$("#id_advanced_search").val("False");
 			});
 		} else {
 			// Show
-			$("#browse-recipe-summaries-wrapper").css("width", "720px");
 			$("#advanced-search").slideDown(1000);
 			$("#advanced-link").text("Niet-geavanceerd zoeken");
 			$("#id_advanced_search").val("True");
