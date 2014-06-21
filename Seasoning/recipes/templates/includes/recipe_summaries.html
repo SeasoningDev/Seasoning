@@ -1,6 +1,6 @@
 <span id="search-result-count">{{ recipes.start_index }}-{{ recipes.end_index }} van de {{ recipes.paginator.count }} resultaten</span>
-
 {% if recipes.has_previous or recipes.has_next %}
+<!-- 
 <div class="page-controls top">
     {% if recipes.has_previous %}
     <a href="#" onclick="return update_page({{ recipes.previous_page_number }}{% if search_form_id %}, '{{ search_form_id }}'{% endif %})"><div class="page-control prev-page active"><img src="{{ STATIC_URL }}img/icons/left.png" alt="" />Vorige resultaten</div></a>
@@ -14,7 +14,7 @@
     {% else %}
     <div class="page-control next-page">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" alt="" /></div>
     {% endif %}  
-</div>
+</div>-->
 {% endif %}
 
 {% if not recipes.0 == None %}

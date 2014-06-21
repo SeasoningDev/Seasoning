@@ -30,3 +30,18 @@
 	margin-top: 10px;
 	font-size: 20px;
 }
+
+@media only screen and (max-width: 767px) {
+	
+	#seasoning-login {
+		margin: 20px auto;
+		float: none;
+		border: none;
+		width: 100%;
+	}
+	
+	#social-login {
+		width: 100%;
+		float: none;
+	}
+}

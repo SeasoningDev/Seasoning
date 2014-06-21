@@ -39,3 +39,92 @@
 	display: inline-block;
 	position: inherit;
 }
+
+#info-img-container-2, 
+#info-img-container-3 {
+	margin-top: 50px;
+}
+
+.info-img {
+	width: 440px;
+	margin: 0 40px;
+}
+
+#info-img-container-2 .info-img {
+	padding-top: 50px;
+}
+
+#homepage-bottom-p {
+	width: 60%; 
+	margin: 0 auto 20px;
+}
+
+@media only screen and (max-width: 767px) {
+
+	#info-img-container-2, 
+	#info-img-container-3 {
+		margin-top: 0;
+	}
+	
+	.info-img {
+		width: 100%;
+		margin: 0 0 20px 0;
+	}
+
+	#info-img-container-2 .info-img {
+		padding-top: 10px;
+	}
+	
+	#arrow-img-1 {
+		height: 120px;
+	}
+	
+	#info-img-container-3 .info-img {
+		padding: 0 0 20px 30px;
+	}
+	
+	#homepage-bottom-p {
+		width: 100%;
+	}
+	
+	#homepage-twitter-feed-wrapper {
+		float: none;
+		display: none;
+	}
+	
+	#recipes-of-the-week {
+		text-align: center;
+	}
+	
+	#recipes-of-the-week .recipe-of-the-week {
+		float: none;
+		text-align: left;
+		margin-bottom: 20px;
+	}
+	
+	.recipe-of-the-week a {
+		width: 236px;
+		margin: auto;
+		display: block;
+	}
+	
+	.recipe-of-the-week .responsive-clear {
+		clear: both;
+	}
+	
+	#quicknav {
+		text-align: center;
+	}
+	
+	#quicknav form {
+		margin: 0 0 50px;
+	}
+	
+	#quicknav input {
+		margin: 0;
+	}
+	
+	#quicknav #add-button-wrapper {
+		margin: 0;
+	}
+}

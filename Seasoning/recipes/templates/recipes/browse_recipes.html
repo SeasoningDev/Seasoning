@@ -36,8 +36,9 @@ $(function() {
 		    Niet-geavanceerd zoeken
 		</a>
 	    {{ search_form.advanced_search.as_hidden }}
-	    <a href="{% url 'add_recipe' %}" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
-	    <hr>
+	    <a href="{% url 'add_recipe' %}" title="Voeg een nieuw recept toe" 
+	       id="add-recipe-button" class="add-button"><span id="add-recipe-button-text">Voeg een nieuw recept toe</span></a>
+	    <hr id="search-form-divider">
 	    <div id="advanced-search">
 	        <div id="sorting-options">
 	            <p>
@@ -105,12 +106,17 @@ $(function() {
 	            </p>
 	            {{ search_form.cuisine }}
 	    	</div>
+			
+			
+	    	<br class="clear" />
 	    </div>
+	    	
+	    <div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
+		   {% include "includes/recipe_summaries.html" %}
+		</div>
 	</form>
 	
-	<div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
-	   {% include "includes/recipe_summaries.html" %}
-	</div>
+	<br class="clear" />
 	
 	<br class="clear" />
 </div>
