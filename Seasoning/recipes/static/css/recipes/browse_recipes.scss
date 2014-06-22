@@ -195,7 +195,8 @@ form.keywords {
 	}
 	
 	#content-container h2 {
-		margin-top: 15px;
+		width: 90%;
+		margin: auto;
 	}
 	
 	#add-recipe-button {
@@ -203,6 +204,7 @@ form.keywords {
 		background-position: 0;
 		width: 20px;
 		padding: 0;
+		margin-right: 5%;
 	}
 	
 	#add-recipe-button #add-recipe-button-text {

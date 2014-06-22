@@ -48,3 +48,41 @@
   div.ui-tooltip {
     max-width: 700px;
 }
+  
+@media only screen and (max-width: 959px) {
+	
+	.ingredient-availability .month {
+		width: 40px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	
+	.ingredient-availability .month {
+		width: 20px;
+	}
+	
+	.ingredient-availability .month-long {
+		display: none;
+	}
+	
+}
+
+@media only screen and (max-width: 560px) {
+	
+	.ingredient-availability .month {
+		width: 10px;
+	}
+}
+
+@media only screen and (max-width: 420px) {
+	
+	.availability-backdrop {
+		display: inherit;
+		text-align: left;
+	}
+	
+	.ingredient-availability {
+		display: none;
+	}
+}
