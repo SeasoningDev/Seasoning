@@ -3,6 +3,7 @@ U hebt zonet een contactformulier verstuurd op Seasoning met de volgende gegeven
 Onderwerp: {{ subject|safe }}
 
 Boodschap:
+
 {{ message|safe }}
 
 
