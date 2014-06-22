@@ -1,6 +1,10 @@
 .ingredient-availability {
   position: relative;
   margin-bottom: 30px; }
+  
+.availability-backdrop {
+	display: none;
+}
 
 .ingredient-availability .month {
   display: inline-block;
