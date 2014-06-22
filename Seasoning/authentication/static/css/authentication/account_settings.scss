@@ -292,3 +292,59 @@
 	margin-left: 10px;
 	font-weight: bold;
 }
+
+@media only screen and (max-width: 959px) {
+	
+	#account-settings-container {
+		padding-top: 40px;
+	}
+	
+	#account-settings-container #account-settings-links {
+		top: 0;
+		left: 0;
+		bottom: auto;
+		right: auto;
+		border: none;
+		border-bottom: 1px solid #dddddd;
+		padding: 0;
+		width: 100%;
+		height: auto;
+		float: none;
+	}
+	
+	#account-settings-container #account-settings-links ul li {
+		display: inline;
+		margin-right: 20px;
+	}
+	
+	#account-settings-container #account-settings-links ul li a {
+		display: inline;
+	}
+	
+	#account-settings-container #account-settings {
+		width: 100%;
+	}
+	
+	#account-settings-container #account-recipes {
+		width: 100%;
+	}
+	
+	#account-recipes .title, #account-recipes #recipe-summaries-wrapper {
+		margin-right: 0;
+	}
+	
+	#account-recipes #recipe-summaries-wrapper {
+		text-align: center;
+	}
+	
+	#account-recipes .recipe-summary-link {
+		text-align: left;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	
+	#content-container {
+		width: 98%;
+	}
+}
