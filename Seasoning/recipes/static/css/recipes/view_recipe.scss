@@ -252,12 +252,18 @@ h1 #recipe-actions {
 #basic-info #description p {
   margin-top: 0; }
 
+#recipe #recipe-charts {
+	position: absolute;
+	bottom: 10px;
+	height: 10px;
+}
+
 #recipe #chart-tabs {
   clear: left;
   width: 510px;
   height: 350px;
-  position: absolute;
-  bottom: 10px; }
+  position: absolute; 
+  bottom: 0;}
 
 #recipe #chart-tabs ul {
   font-size: 10px; }
@@ -325,6 +331,10 @@ h1 #recipe-actions {
 .ingredient .moreinfo {
   padding-top: 20px;
   margin: 0 20px 0 9px; }
+	
+#recipe .recipe-info-wrapper .ingredient .moreinfo p {
+	margin-left: 0;
+}
 
 .ingredient .moreinfo .basic-moreinfo {
   margin-bottom: 10px; }
@@ -467,3 +477,77 @@ h1 #recipe-actions {
   margin-top: 10px;
   width: 80%;
   text-align: justify; }
+  
+@media only screen and (max-width: 959px) {
+	
+	#recipe #img-and-basic-user-options {
+		float: none;
+		margin: auto;
+		padding: 1px 0;
+	}
+	
+	#recipe #basic-info {
+		width: 90%;
+		margin: 20px auto;
+	}
+	
+	#recipe-charts {
+		display: none;
+	}
+	
+	#recipe .recipe-info-wrapper > div, #recipe .recipe-info-wrapper .ingredient {
+		padding-right: 20px;
+	}
+	
+	.ingredient .ingredient-left {
+		float: none;
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	
+	.ingredient .ingredient-right {
+		float: none;
+		width: 100%;
+	}
+	
+	.ingredient-right .ingredient-moreinfo-button {
+		width: 18px;
+		margin-left: 20px;
+	}
+	
+	.ingredient-right .ingredient-footprint {
+		float: none;
+	}
+	
+	.ingredient .moreinfo .ingredient-availability .month {
+		width: 40px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	
+	.ingredient .moreinfo .ingredient-availability .month {
+		width: 15px;
+	}
+	
+	.moreinfo .month-long {
+		display: none;
+	}
+	
+}
+
+@media only screen and (max-width: 420px) {
+	
+	.availability-backdrop {
+		display: inherit;
+		text-align: left;
+	}
+	
+	.ingredient-availability {
+		display: none;
+	}
+	
+	.ingredient .moreinfo {
+		height: auto;
+	}
+}

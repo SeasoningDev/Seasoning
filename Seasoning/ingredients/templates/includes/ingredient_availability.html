@@ -1,31 +1,32 @@
 {% load footprints %}
 {% if ingredient.type == 1 or ingredient.type == 2 %}
 <p><strong>Beschikbaarheidsdata:</strong><br /></p>
+<p class="availability-backdrop">Je scherm is te klein om beschikbaarheidsdata weer te geven, sorry!</p>
 <div class="ingredient-availability">
     <span class="month alpha">
-        Jan
+        J<span class="month-long">an</span>
     </span><span class="month">
-        Feb
+        F<span class="month-long">eb</span>
     </span><span class="month">
-        Maa
+        M<span class="month-long">aa</span>
     </span><span class="month">
-        Apr
+        A<span class="month-long">pr</span>
     </span><span class="month">
-        Mei
+        M<span class="month-long">ei</span>
     </span><span class="month">
-        Jun
+        J<span class="month-long">un</span>
     </span><span class="month">
-        Jul
+        J<span class="month-long">ul</span>
     </span><span class="month">
-        Aug
+        A<span class="month-long">ug</span>
     </span><span class="month">
-        Sep
+        S<span class="month-long">ep</span>
     </span><span class="month">
-        Okt
+        O<span class="month-long">kt</span>
     </span><span class="month">
-        Nov
+        N<span class="month-long">ov</span>
     </span><span class="month omega">
-        Dec
+        D<span class="month-long">ec</span>
     </span>
     
     <span class="number-of-groups" style="display:none;">{{ ingredient.get_available_ins|length }}</span>
