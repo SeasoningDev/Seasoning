@@ -34,7 +34,8 @@ form.keywords {
   background-color: white;
   background-color: rgba(255, 255, 255, 0.5);
   padding: 10px 0 0 10px; 
-  margin-right: 10px;}
+  margin-right: 10px;
+  z-index: 999; }
 
 #advanced-search > div {
   margin: 10px 0;
