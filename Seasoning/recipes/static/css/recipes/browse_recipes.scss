@@ -1,7 +1,8 @@
 @import "variables";
 
 #recipe-search-container {
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  position: relative; }
   
  #recipe-search-container hr {
   margin-bottom: 10px; }
@@ -11,6 +12,7 @@ form.keywords {
   
 #add-recipe-button {
   margin-top: 9px;
+  top: -50px;
 }
   
 #browse-recipes-loader {
@@ -22,12 +24,12 @@ form.keywords {
 
 #advanced-link {
   position: absolute;
-  top: 85px;
+  top: 39px;
   font-size: 12px; }
 
 #advanced-search {
-  position: relative;
-  top: -10px;
+  position: absolute;
+  top: 62px;
   width: 219px;
   float: left;
   border-right: 1px solid #DDDDDD;
@@ -35,7 +37,8 @@ form.keywords {
   background-color: rgba(255, 255, 255, 0.5);
   padding: 10px 0 0 10px; 
   margin-right: 10px;
-  z-index: 998; }
+  z-index: 998;
+  display: none; }
 
 #advanced-search > div {
   margin: 10px 0;
@@ -175,7 +178,14 @@ form.keywords {
 
 #browse-recipe-summaries-wrapper {
   margin-top: -10px;
-  position: relative; }
+  position: relative;
+  float: right;
+  width: 100%;
+  text-align: center;
+  min-height: 888px; }
+
+#browse-recipe-summaries-wrapper.advanced {
+  width: 733px; }
 
 #browse-recipe-summaries-wrapper #search-result-count {
   position: absolute;
@@ -188,8 +198,11 @@ form.keywords {
   margin: 30px auto;
   text-align: center;
   font-weight: bold; }
+
+#browse-recipe-summaries-wrapper a {
+  text-align: left; }
   
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 963px) {
 	
 	#content-container {
 		width: 100%;
@@ -229,6 +242,7 @@ form.keywords {
 	}
 	
 	#advanced-search {
+		position: static;
 		float: none;
 		margin: 5px auto;
 		width: 320px;
@@ -237,7 +251,10 @@ form.keywords {
 	
 	#browse-recipe-summaries-wrapper {
 		text-align: center;
+	}
 	
+	#browse-recipe-summaries-wrapper.advanced {
+		width: 100%;
 	}
 	
 	#browse-recipe-summaries-wrapper #search-result-count {

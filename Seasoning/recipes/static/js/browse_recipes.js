@@ -14,12 +14,14 @@ $(document).ready(function() {
 			$("#advanced-search").slideUp(1000, function() {
 				$("#advanced-link").text("Geavanceerd zoeken");
 				$("#id_advanced_search").val("False");
+				$("#browse-recipe-summaries-wrapper").removeClass("advanced");
 			});
 		} else {
 			// Show
 			$("#advanced-search").slideDown(1000);
 			$("#advanced-link").text("Niet-geavanceerd zoeken");
 			$("#id_advanced_search").val("True");
+			$("#browse-recipe-summaries-wrapper").addClass("advanced");
 		}
 		return false;
 	});
