@@ -51,8 +51,10 @@
     			}
 			};
 			
-			$(window).scroll(setHeader);
-			$(window).resize(setHeader);
+			$(document).ready(function() {
+				$(window).scroll(setHeader);
+				$(window).resize(setHeader);
+			});
 		</script>
 	</head>
 	
