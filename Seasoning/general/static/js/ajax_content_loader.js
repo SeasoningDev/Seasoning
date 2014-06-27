@@ -54,12 +54,15 @@
 	   if (!settings.ajax_url || !settings.form || !settings.loader_element) {
 		   alert('No valid ajax url was given, ajax load will not work');
 	   } else {
-		   $(window).scroll(function() {
+		   $(window).bind('scroll', function() {
 			   if (!loading && ($(document).height() - $(window).height()) - $(window).scrollTop() <= 100) {
 				   load_data();
 			   }
+			   return;
 		   });
 	   }
+	   
+	   $(window).on("ajax-load-data", load_data);
 	   
 	   load_data();
 	   

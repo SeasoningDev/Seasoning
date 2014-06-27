@@ -131,12 +131,12 @@ form.keywords {
 
 #advanced-search #included-ingredients a {
   display: block;
-  margin-bottom: 5px;
+  margin: 5px 0;
   text-decoration: none; }
 
 #advanced-search #excluded-ingredients a {
   display: block;
-  margin-bottom: 5px;
+  margin: 5px 0;
   text-decoration: none; }
 
 #advanced-search .filtered-ingredient {
@@ -201,6 +201,10 @@ form.keywords {
 
 #browse-recipe-summaries-wrapper a {
   text-align: left; }
+  
+.ui-autocomplete {
+  z-index: 998;
+}
   
 @media only screen and (max-width: 963px) {
 	

@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     
     # AJAX Calls
     url(r'^ing_list/$', 'ingredients.views.ajax_ingredient_name_list'),
+    url(r'^ajax/$', 'ingredients.views.ajax_ingredient_list', name='ajax_ingredient_list'),
     url(r'^ing_avail/$', 'ingredients.views.ajax_ingredient_availability'),
 )
