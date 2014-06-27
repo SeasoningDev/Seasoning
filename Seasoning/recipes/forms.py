@@ -22,8 +22,6 @@ class AddRecipeForm(forms.ModelForm):
         css = {
             'all': ('css/forms.css',)
         }
-        
-#    instructions = forms.CharField(widget=WMDWidget())
     
     def save(self, author, commit=True):
         recipe = super(AddRecipeForm, self).save(commit=False)
@@ -203,10 +201,9 @@ class SearchRecipeForm(forms.Form):
                                        widget=CheckboxSelectMultiple())
     
     include_ingredients_operator = forms.ChoiceField(widget=RadioSelect, choices=OPERATOR_CHOICES, label='', initial=OPERATOR_CHOICES[1][0])
+    
+    page = forms.IntegerField(widget=forms.HiddenInput(attrs={'autocomplete': 'off'}), initial=0)
 
 class IngredientInRecipeSearchForm(forms.Form):
     
     name = forms.CharField()
-    
-    
-

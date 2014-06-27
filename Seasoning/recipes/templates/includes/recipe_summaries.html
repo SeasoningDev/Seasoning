@@ -1,45 +1,5 @@
-<span id="search-result-count">{{ recipes.start_index }}-{{ recipes.end_index }} van de {{ recipes.paginator.count }} resultaten</span>
-{% if recipes.has_previous or recipes.has_next %}
-<!-- 
-<div class="page-controls top">
-    {% if recipes.has_previous %}
-    <a href="#" onclick="return update_page({{ recipes.previous_page_number }}{% if search_form_id %}, '{{ search_form_id }}'{% endif %})"><div class="page-control prev-page active"><img src="{{ STATIC_URL }}img/icons/left.png" alt="" />Vorige resultaten</div></a>
-    {% else %}
-    <div class="page-control prev-page"><img src="{{ STATIC_URL }}img/icons/left.png" alt="" />Vorige resultaten</div>
-    {% endif %}
-    
-    
-    {% if recipes.has_next %}
-    <a href="#" onclick="return update_page({{ recipes.next_page_number }}{% if search_form_id %}, '{{ search_form_id }}'{% endif %})"><div class="page-control next-page active">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" alt="" /></div></a>
-    {% else %}
-    <div class="page-control next-page">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" alt="" /></div>
-    {% endif %}  
-</div>-->
-{% endif %}
-
 {% if not recipes.0 == None %}
 {% for recipe in recipes %}
 {% include "includes/recipe_summary.html" %}
-{% empty %}
-<p class="sorry">
-    Sorry! Er werden geen recepten gevonden in onze databank die aan jouw criteria voldoen...
-</p>
 {% endfor %}
-{% endif %}
-
-{% if recipes.has_previous or recipes.has_next %}
-<div class="page-controls bottom">
-    {% if recipes.has_previous %}
-    <a href="#" onclick="return update_page({{ recipes.previous_page_number }}{% if search_form_id %}, '{{ search_form_id }}'{% endif %})"><div class="page-control prev-page active"><img src="{{ STATIC_URL }}img/icons/left.png" alt="" />Vorige resultaten</div></a>
-    {% else %}
-    <div class="page-control prev-page"><img src="{{ STATIC_URL }}img/icons/left.png" alt="" />Vorige resultaten</div>
-    {% endif %}
-    
-    
-    {% if recipes.has_next %}
-    <a href="#" onclick="return update_page({{ recipes.next_page_number }}{% if search_form_id %}, '{{ search_form_id }}'{% endif %})"><div class="page-control next-page active">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" alt="" /></div></a>
-    {% else %}
-    <div class="page-control next-page">Volgende resultaten<img src="{{ STATIC_URL }}img/icons/right.png" alt="" /></div>
-    {% endif %}  
-</div>
 {% endif %}

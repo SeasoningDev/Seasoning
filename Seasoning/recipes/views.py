@@ -45,8 +45,11 @@ def browse_recipes(request):
     # This is a formset for inputting ingredients to be included or excluded in the recipe search
     IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
     
+    page = 1
+    
     if request.method == 'POST':
         search_form = SearchRecipeForm(request.POST)
+        
         try:
             include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
             exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
@@ -71,6 +74,8 @@ def browse_recipes(request):
             search_form = SearchRecipeForm()
             include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
             exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
+        
+        page = search_form.cleaned_data['page']
             
     else:
         search_form = SearchRecipeForm()
@@ -81,13 +86,12 @@ def browse_recipes(request):
     # Split the result by 12
     paginator = Paginator(recipes_list, 12)
     
-    page = request.GET.get('page')
     try:
         recipes = paginator.page(page)
     except PageNotAnInteger:
         recipes = paginator.page(1)
     except EmptyPage:
-        recipes = paginator.page(paginator.num_pages)
+        raise Http404()
     
     search_form_id = 'recipe-search-form'
     
