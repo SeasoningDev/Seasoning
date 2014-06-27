@@ -317,10 +317,6 @@
 {% block recipes-active %}active{% endblock %}
 
 {% block body-hook %}
-<!-- <div id="zoomed-recipe-image-container">
-    <div id="page-darkener"> </div>
-    <div id="zoomed-recipe-image" style="background-image: url('{{ MEDIA_URL }}{{ recipe.image }}')" /> </div>
-</div>-->
 <div id="zoomed-recipe-image-container">
     <div id="page-darkener"> </div>
     <img id="zoomed-recipe-image" src="{{ MEDIA_URL }}{{ recipe.image }}" alt="" />
@@ -355,7 +351,7 @@
     
     <div id="first-information">
         <div id="img-and-basic-user-options">
-            <img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" />
+            <img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
             <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
 		       	<span class="footprint-cloud-text">
 		       		{{ recipe.total_footprint|floatformat:-2 }}
