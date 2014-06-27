@@ -5,6 +5,12 @@
  */
 var timer;
 
+function update_recipe_page() {
+	$("#browse-recipe-summaries-wrapper").html("");
+	$("#id_page").val(0);
+	$(window).trigger("ajax-load-data");
+}
+
 $(document).ready(function() {
 	
 	// Toggle the Advanced Search Window
@@ -75,10 +81,9 @@ $(document).ready(function() {
 		update_recipe_page();
 		return false;
 	});
-
-	// Activate the input field for including ingredients
-	$("#include-ingredients-input").pressEnter(function() {
-		if ($(this).val() != "") {
+	
+	function add_include_ingredient(ingredient) {
+		if (ingredient && ingredient != "") {
 			// If the user pressed enter while
 			// in the input field, and it
 			// contains text,
@@ -90,11 +95,11 @@ $(document).ready(function() {
 			var new_form = empty_form.clone();
 			new_form.attr("id", new_form.attr("id").replace("__prefix__", current_form_num));
 			new_form.attr("name", new_form.attr("name").replace("__prefix__",current_form_num));
-			new_form.val($(this).val());
+			new_form.val(ingredient);
 			new_form.insertBefore(empty_form);
 			// Display the new ingredient as
 			// being in the filter
-			var new_ing = $('<a href="#"><div class="filtered-ingredient">' + $(this).val() + '</div></a>');
+			var new_ing = $('<a href="#"><div class="filtered-ingredient">' + ingredient + '</div></a>');
 			new_ing.click(function() {
 				new_form.remove();
 				$(this).remove();
@@ -102,14 +107,28 @@ $(document).ready(function() {
 				return false;
 			});
 			$("#included-ingredients").append(new_ing);
-			$(this).val("");
 			update_recipe_page();
 		}
+	}
+	
+	// Activate the input field for including ingredients
+	$("#include-ingredients-input").pressEnter(function(event) {
+		add_include_ingredient($(this).val());
+		$(this).val("");
 	});
 	
-	// Activate the input field for excluding ingredients
-	$("#exclude-ingredients-input").pressEnter(function() {
-		if ($(this).val() != "") {
+	$("#advanced-search #include-ingredients-input").autocomplete({
+		source: "/ingredients/ing_list/",
+		minLength: 2,
+		select: function(event, ui) {
+			if (event.keyCode != 13) {
+				add_include_ingredient(ui.item.value);
+			}
+		},
+	});
+	
+	function add_exclude_ingredient(ingredient) {
+		if (ingredient && ingredient != "") {
 			// If the user pressed enter while
 			// in the input field, and it
 			// contains text,
@@ -121,11 +140,11 @@ $(document).ready(function() {
 			var new_form = empty_form.clone();
 			new_form.attr("id", new_form.attr("id").replace("__prefix__",current_form_num));
 			new_form.attr("name", new_form.attr("name").replace("__prefix__",current_form_num));
-			new_form.val($(this).val());
+			new_form.val(ingredient);
 			new_form.insertBefore(empty_form);
 			// Display the new ingredient as
 			// being in the filter
-			var new_ing = $('<a href="#"><div class="filtered-ingredient">' + $(this).val() + '</div></a>')
+			var new_ing = $('<a href="#"><div class="filtered-ingredient">' + ingredient + '</div></a>')
 			new_ing.click(function() {
 				new_form.remove();
 				$(this).remove();
@@ -133,9 +152,24 @@ $(document).ready(function() {
 				return false;
 			});
 			$("#excluded-ingredients").append(new_ing);
-			$(this).val("");
 			update_recipe_page();
 		}
+	}
+	
+	// Activate the input field for excluding ingredients
+	$("#exclude-ingredients-input").pressEnter(function() {
+		add_exclude_ingredient($(this).val());
+		$(this).val("");
+	});
+	
+	$( "#advanced-search #exclude-ingredients-input").autocomplete({
+		source: "/ingredients/ing_list/",
+		minLength: 2,
+		select: function(event, ui) {
+			if (event.keyCode != 13) {
+				add_exclude_ingredient(ui.item.value);
+			}
+		},
 	});
 	
 	// Update recipe list on filter change
@@ -151,7 +185,9 @@ $(document).ready(function() {
 	 */
 	// Start the timer when more than 3 chars have been typed
 	$("#id_search_string").keyup(function() {
-		if ($(this).val().length >= 3) {
+		if (event.keyCode >= 65 && event.keyCode <= 90 && $(this).val().length >= 3) {
+			var x = $(this).val().length;
+			clearTimeout(timer);
 			timer = setTimeout(update_recipe_page, 100);
 		}
 	});
@@ -162,9 +198,7 @@ $(document).ready(function() {
 	
 	// Force a search by pressing the Return key when typing a query
 	$("#id_search_string").pressEnter(function() {
-		update_recipe_page;
-		// Stop the timer when a search is being forced
-		timer = clearTimeout(timer);
+		update_recipe_page();
 	});
 	
 	update_recipe_page();

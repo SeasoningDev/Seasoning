@@ -9,39 +9,11 @@ from ingredients.models import Ingredient, Synonym
 
 def view_ingredients(request):
     
-    if request.method == 'POST':
-        search_form = SearchIngredientForm(request.POST)
+    search_form = SearchIngredientForm()
         
-        if search_form.is_valid():
-            ingredient_list = Ingredient.objects.accepted_with_name_like(search_form.cleaned_data['name']).order_by('name')       
-        else:
-            ingredient_list = []
-    else:
-        search_form = SearchIngredientForm()
-    
-        ingredient_list = Ingredient.objects.distinct().filter(accepted=True).order_by('name')
-        
-    # Split the result by 12
-    paginator = Paginator(ingredient_list, 12)
-    
-    page = request.GET.get('page')
-    try:
-        ingredients = paginator.page(page)
-    except PageNotAnInteger:
-        ingredients = paginator.page(1)
-    except EmptyPage:
-        ingredients = paginator.page(paginator.num_pages)
-    
     search_form_id = 'browse-ingredients-form'
     
-    if request.method == 'POST' and request.is_ajax():
-        return render(request, 'includes/ingredient_summaries.html', {'ingredients': ingredients,
-                                                                      'search_form_id': search_form_id})
-    
-    # TODO: ajax aanpassen voor ingredients
-    
     return render(request, 'ingredients/view_ingredients.html', {'form': search_form,
-                                                                 'ingredients': ingredients,
                                                                  'search_form_id': search_form_id})
     
 def view_ingredient(request, ingredient_id):
@@ -82,6 +54,36 @@ def ajax_ingredient_name_list(request):
     
     # If this is not an ajax request, permission is denied
     raise PermissionDenied
+
+def ajax_ingredient_list(request):
+    """
+    an ajax call that returns an html element containing summaries of all
+    ingredients that were found using the parameters in the posts form.
+    
+    """
+    if request.method == 'POST' and request.is_ajax():
+        search_form = SearchIngredientForm(request.POST)
+        
+        if search_form.is_valid():
+            ingredient_list = Ingredient.objects.accepted_with_name_like(search_form.cleaned_data['name']).order_by('name')       
+            
+            # Split the result by 12
+            paginator = Paginator(ingredient_list, 12)
+            
+            page = search_form.cleaned_data['page']
+            try:
+                ingredients = paginator.page(page)
+            except PageNotAnInteger:
+                ingredients = paginator.page(1)
+            except EmptyPage:
+                raise Http404()
+                
+        else:
+            ingredients = []
+        
+        return render(request, 'includes/ingredient_summaries.html', {'ingredients': ingredients})
+    raise PermissionDenied()
+        
 
 @csrf_exempt
 def ajax_ingredient_availability(request):

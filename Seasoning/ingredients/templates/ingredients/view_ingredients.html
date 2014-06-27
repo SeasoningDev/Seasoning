@@ -4,15 +4,54 @@
 
 {% block extra_script %}
 <script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
-<script src="{{ STATIC_URL }}js/paging.js"></script>
+<script src="{{ STATIC_URL }}js/forms.js"></script>
+<script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $("input.keywords-searchbar").each(function() {
-            $(this).autocomplete({
-                source: "/ingredients/ing_list/",
-                minLength: 2
-            });
-        });
+	var timer;
+	
+	function update_ingredients() {
+		$("#ingredient-summaries-wrapper").html("");
+		$("#id_page").val(0);
+		$(window).trigger("ajax-load-data");
+	}
+	
+	 $(document).ready(function() {
+        
+    	$("#ingredient-summaries-wrapper").ajax_load({
+    		ajax_url: '{% url "ajax_ingredient_list" %}',
+    		form: $("#{{ search_form_id }}"),
+    		page_field_to_update: $("#id_page"),
+    		loader_element: $("#ingredients-ajax-loader"),
+    		no_more_data_element_to_show: $("#ingredients-ajax-done"),
+    	});
+		
+    	$("input.keywords-searchbar").focus()
+    	
+    	/**
+    	 * Update the ingredient list when the user types a search query
+    	 * 
+    	 * If the user is typing multiple characters, we wait until he
+    	 * has finished typing (delay of 1s)
+    	 */
+    	 // Start the timer when more than 3 chars have been typed
+    	.keyup(function(event) {
+    		if (event.keyCode >= 65 && event.keyCode <= 90 && $(this).val().length >= 3) {
+    			var x = $(this).val().length;
+    			clearTimeout(timer);
+    			timer = setTimeout(update_ingredients, 100);
+    		}
+    	})
+    	
+    	// Stop the timer when a new char is being typed
+    	.keydown(function(event) {
+    		clearTimeout(timer);
+    	})
+    	
+    	// Force a search by pressing the Return key when typing a query
+    	.pressEnter(function() {
+    		update_ingredients();
+    	});
+		
     });
 </script>
 {% endblock %}
@@ -21,7 +60,9 @@
 
 {% block content %}
 
-<h2>Ingrediënten zoeken</h2>
+<a id="ingredients-top">
+	<h2>Ingrediënten zoeken</h2>
+</a>
 
 <div id="ingredient-search-container">
 	<p>
@@ -31,6 +72,8 @@
 	
 	<form id="{{ search_form_id }}" target="" method="post">
 		{% csrf_token %}
+	    
+	    {{ form.page }}
 		
 		<div id="basic-search">
 			{{ form.name }}
@@ -45,7 +88,17 @@
 	
 	
 	<div id="ingredient-summaries-wrapper" class="summaries-wrapper">
-	   {% include "includes/ingredient_summaries.html" %}
+	</div>
+		
+	<div id="ingredients-ajax-loader" style="clear: both; text-align: center; padding-top: 20px; height: 60px;">
+		<div>
+			{% include "includes/ajax-loader.html" %}
+		</div>
+		Meer ingrediënten worden geladen...
+	</div>
+	
+	<div id="ingredients-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 60px;">
+		<a href="#ingredients-top">Terug naar boven</a>
 	</div>
 
 </div>

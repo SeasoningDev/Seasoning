@@ -5,8 +5,10 @@
 {% block extra_script %}
 <script src="{{ STATIC_URL }}js/forms.js"></script>
 <script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
+<script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
 <script>
-function update_recipe_page() {
+$(function() {
 	$("#browse-recipe-summaries-wrapper").ajax_load({
 		ajax_url: '/recipes/',
 		form: $("#{{ search_form_id }}"),
@@ -14,12 +16,6 @@ function update_recipe_page() {
 		loader_element: $("#recipes-ajax-loader"),
 		no_more_data_element_to_show: $("#recipes-ajax-done"),
 	});
-}
-</script>
-<script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
-<script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
-<script>
-$(function() {
 	$("#id_search_string").focus();
 });
 </script>
@@ -91,7 +87,7 @@ $(function() {
 	            <a href="#"><span class="option and first{% if search_form.include_ingredients_operator.0.is_checked %} active{% endif %}">Allemaal</span></a><a href="#"><span class="option or last{% if search_form.include_ingredients_operator.1.is_checked %} active{% endif %}">Minstens 1</span></a>
 	            {{ search_form.include_ingredients_operator }}
 	            
-	            <input id="include-ingredients-input" class="ingredients-input autocomplete-ingredient" type="text" placeholder="Voer ingrediënten in" />
+	            <input id="include-ingredients-input" class="ingredients-input" type="text" placeholder="Voer ingrediënten in" />
 	
 	            <div id="included-ingredients">
 	            </div>
@@ -104,7 +100,7 @@ $(function() {
 	                Dit wil ik er niet bij:
 	            </p>
 	            {{ exclude_ingredients_formset.management_form }}
-	            <input id="exclude-ingredients-input" class="ingredients-input autocomplete-ingredient" type="text" placeholder="Voer ingrediënten in" />
+	            <input id="exclude-ingredients-input" class="ingredients-input" type="text" placeholder="Voer ingrediënten in" />
 	
 	            <div id="excluded-ingredients">
 	            </div>
