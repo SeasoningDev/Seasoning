@@ -1,6 +1,6 @@
 {% load ratings %}
 <a class="recipe-summary-link" href="{% url 'view_recipe' recipe.id %}">
-	<div class="recipe-summary">
+	<div class="recipe-summary" title="{{ recipe.name }}">
 	    <img alt="{{ recipe.name }}" src="{{ recipe.thumbnail.url }}" />
 	    <span class="recipe-title">
 	        <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.normalized_footprint|floatformat:2 }} kgCO2 per 4 porties">
