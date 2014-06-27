@@ -167,9 +167,5 @@ $(document).ready(function() {
 		timer = clearTimeout(timer);
 	});
 	
-	function update_recipe_page() {
-		update_page(0, "recipe-search-form", "#browse-recipes-loader");
-	}
-	
 	update_recipe_page();
 });

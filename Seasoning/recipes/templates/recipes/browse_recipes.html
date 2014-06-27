@@ -5,8 +5,19 @@
 {% block extra_script %}
 <script src="{{ STATIC_URL }}js/forms.js"></script>
 <script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+<script>
+function update_recipe_page() {
+	$("#browse-recipe-summaries-wrapper").ajax_load({
+		ajax_url: '/recipes/',
+		form: $("#{{ search_form_id }}"),
+		page_field_to_update: $("#id_page"),
+		loader_element: $("#recipes-ajax-loader"),
+		no_more_data_element_to_show: $("#recipes-ajax-done"),
+	});
+}
+</script>
 <script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
-<script src="{{ STATIC_URL }}js/paging.js"></script>
+<script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
 <script>
 $(function() {
 	$("#id_search_string").focus();
@@ -17,11 +28,16 @@ $(function() {
 {% block recipes-active %}active{% endblock %}
 
 {% block content %}
-<h2>Recepten zoeken</h2>
+<a id="recipes-top">
+	<h2>Recepten zoeken</h2>
+</a>
 
 <div id="recipe-search-container">
 	<form id="{{ search_form_id }}" class="keywords" action="" method="post">
 	    {% csrf_token %}
+	    
+	    {{ search_form.page }}
+	    
 	    <div id="basic-search">
 	        {{ search_form.search_string }}
 		    <button id="keywords-submit" class="nochrome" type="submit">
@@ -110,13 +126,21 @@ $(function() {
 			
 	    	<br class="clear" />
 	    </div>
-	    	
+	    
 	    <div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
-		   {% include "includes/recipe_summaries.html" %}
+		</div>
+		
+		<div id="recipes-ajax-loader" style="clear: both; text-align: center; padding-top: 20px;">
+			<div>
+				{% include "includes/ajax-loader.html" %}
+			</div>
+			Meer recepten worden geladen...
+		</div>
+		
+		<div id="recipes-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none;">
+			<a href="#recipes-top">Terug naar boven</a>
 		</div>
 	</form>
-	
-	<br class="clear" />
 	
 	<br class="clear" />
 </div>
