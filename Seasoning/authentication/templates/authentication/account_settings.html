@@ -6,7 +6,18 @@
 {% block myaccount-active %}{% if not viewing_other %}active{% endif %}{% endblock %}
 
 {% block extra_script %}
-<script src="{{ STATIC_URL }}js/paging.js"></script>
+<script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
+<script>
+$(document).ready(function() {
+	$("#recipe-summaries-wrapper").ajax_load({
+		ajax_url: '{% url "ajax_account_recipes_list" viewed_user.id %}',
+		form: $("#account-recipes-form"),
+		page_field_to_update: $("#account-recipes-form #page"),
+		loader_element: $("#recipes-ajax-loader"),
+		no_more_data_element_to_show: $("#recipes-ajax-done"),
+	});
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -15,7 +26,7 @@
     <div id="account-settings">
         {% block account_settings %}
         <div id="account-image">
-            <img src="{{ MEDIA_URL }}{{ viewed_user.avatar }}" alt="De avatar van {{ user.fullname }}">
+            <img src="{{ MEDIA_URL }}{{ viewed_user.avatar }}" alt="De avatar van {{ viewed_user.get_full_name }}">
         </div>
         
         <div id="account-info">
@@ -62,16 +73,26 @@
         
     
     <div id="account-recipes">
+    	<a id="recipes-top"></a>
         <h3 class="title">Toegevoegde recepten:</h3> 
-        {% if not recipes %}
-        <p>
-            {% if viewing_other %}Deze gebruiker heeft{% else %}Je hebt{% endif %} nog geen recepten toegevoegd!
-        </p>
-        {% else %}    
+        <form id="account-recipes-form" target="" method="post">
+			{% csrf_token %}
+        	<input id="page" name="page" type="hidden" value="0" autocomplete="off" />
+			<input type="submit" style="display: none;" />
+        </form>
         <div id="recipe-summaries-wrapper" class="summaries-wrapper">
-           {% include "includes/recipe_summaries.html" %}
         </div>
-        {% endif %}
+		
+		<div id="recipes-ajax-loader" style="clear: both; text-align: center; padding-top: 20px; margin-bottom: 20px;">
+			<div>
+				{% include "includes/ajax-loader.html" %}
+			</div>
+			Meer recepten worden geladen...
+		</div>
+		
+		<div id="recipes-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none; margin-bottom: 20px;">
+			<a href="#top-of-page">Terug naar boven</a>
+		</div>
         {% endblock %}
     </div>
     

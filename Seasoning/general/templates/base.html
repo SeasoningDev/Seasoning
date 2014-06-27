@@ -51,15 +51,14 @@
     			}
 			};
 			
-			$(document).ready(function() {
-				$(window).scroll(setHeader);
-				$(window).resize(setHeader);
-			});
+			$(window).scroll(setHeader);
+			$(window).resize(setHeader);
 		</script>
 	</head>
 	
 	<body class="{% block bodyclass %}{% endblock %}">
         
+        <a id="top-of-page"></a>
         {% block body-hook %}{% endblock %}
         
 	    <div id="header">

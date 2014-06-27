@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     
     # Profile urls
     url(r'^$', 'authentication.views.account_settings', name='my_profile'),
-    url(r'^(\d.*)/$', 'authentication.views.account_settings', name='user_profile'),
+    url(r'^(\d*)/$', 'authentication.views.account_settings', name='user_profile'),
     url(r'^settings/$', 'authentication.views.account_settings_profile', name='account_settings'),
     url(r'^settings/social/$', 'authentication.views.account_settings_social', name='account_settings_social'),
     url(r'^settings/privacy/$', 'authentication.views.account_settings_privacy', name='account_settings_privacy'),
@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     url(r'^password/change/$', 'authentication.views.change_password',
         name='password_change'),
     url(r'^email/change/(?P<activation_key>\w+)/$', 'authentication.views.change_email', name='change_email'),
+    url(r'^recipes/(\d*)/$', 'authentication.views.ajax_account_recipes_list', name='ajax_account_recipes_list'),
     
     # Social logins
     url(r'^auth/(.*)/register/', 'authentication.views.social_register'),
