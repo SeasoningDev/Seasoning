@@ -5,6 +5,7 @@
 }
 
 #account-settings #account-image img {
+	display: block;
 	width: 250px;
 	height: 250px;
 }
@@ -87,13 +88,16 @@
 
 #account-recipes .title {
 	border-bottom: 2px solid #333;
-	margin-right: 258px;
 }
 
 #account-recipes #recipe-summaries-wrapper {
 	width: auto;
-	margin-right: 180px;
 	position: relative;
+	text-align: center;
+}
+
+#recipe-summaries-wrapper a {
+	text-align: left;
 }
 
 #account-recipes #search-result-count {
@@ -109,10 +113,11 @@
 #account-settings-container {
 	position: relative;
 	min-height: 400px;
+	padding-right: 200px;
 }
 
 #account-settings-container #account-settings {
-	width: 65%;
+	width: 100%;
 	margin: 0 20px 0 0;
 	float: left;
 }
@@ -293,10 +298,11 @@
 	font-weight: bold;
 }
 
-@media only screen and (max-width: 959px) {
+@media only screen and (max-width: 965px) {
 	
 	#account-settings-container {
 		padding-top: 40px;
+		padding-right: 0;
 	}
 	
 	#account-settings-container #account-settings-links {

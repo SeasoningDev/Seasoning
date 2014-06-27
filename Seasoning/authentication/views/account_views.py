@@ -13,6 +13,9 @@ from django.db.models.aggregates import Avg, Count
 from authentication.forms import AccountSettingsForm, DeleteAccountForm,\
     CheckActiveAuthenticationForm
 from authentication.models import NewEmail, User
+from django.core.exceptions import PermissionDenied
+from recipes.models import Recipe
+from django.views.decorators.csrf import csrf_exempt
 
 def login(request):
     return django_login(request, template_name='authentication/login.html', 
@@ -24,11 +27,9 @@ def account_settings(request, user_id=None):
     try:
         if user_id is None or user_id == request.user.id:
             user = get_user_model().objects.prefetch_related('recipes').get(id=request.user.id)
-            recipes_list = user.recipes.all().order_by('-rating')
             viewing_self = True
         else:
             user = get_user_model().objects.prefetch_related('recipes').get(id=user_id)
-            recipes_list = user.recipes.accepted().order_by('-rating')
     except get_user_model().DoesNotExist:
         raise Http404
     
@@ -39,23 +40,8 @@ def account_settings(request, user_id=None):
     except (ValueError, TypeError):
         most_used_veganism = None
     
-    # Split the result by 9
-    paginator = Paginator(recipes_list, 9)
-    
-    page = request.GET.get('page')
-    try:
-        recipes = paginator.page(page)
-    except PageNotAnInteger:
-        recipes = paginator.page(1)
-    except EmptyPage:
-        recipes = paginator.page(paginator.num_pages)
-    
-    if request.is_ajax():
-        return render(request, 'includes/recipe_summaries.html', {'recipes': recipes})
-    
     return render(request, 'authentication/account_settings.html', {'viewed_user': user,
                                                                     'viewing_other': not viewing_self,
-                                                                    'recipes': recipes,
                                                                     'average_fp': averages['footprint__avg'],
                                                                     'average_rating': averages['rating__avg'],
                                                                     'most_used_veganism': most_used_veganism})
@@ -160,3 +146,32 @@ def account_delete(request):
     else:
         form = DeleteAccountForm()
     return render(request, 'authentication/account_delete.html', {'form': form})
+
+
+def ajax_account_recipes_list(request, user_id=None):
+    """
+    an ajax call that returns an html element containing summaries of all
+    recipes that were found using the parameters in the posts form.
+    
+    """
+    if request.method == 'POST' and request.is_ajax():
+        if 'page' in request.POST:
+            if user_id is None:
+                user_id = request.user.id
+                
+            recipes_list = Recipe.objects.filter(author__id=user_id).order_by('-time_added')
+            
+            # Split the result by 9
+            paginator = Paginator(recipes_list, 9)
+            
+            page = request.POST['page']
+            try:
+                recipes = paginator.page(page)
+            except PageNotAnInteger:
+                recipes = paginator.page(1)
+            except EmptyPage:
+                raise Http404()
+            
+            return render(request, 'includes/recipe_summaries.html', {'recipes': recipes})
+        
+    raise PermissionDenied()

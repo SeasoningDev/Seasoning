@@ -22,7 +22,6 @@
 	   }
 	   
 	   settings.page_field_to_update.val(0);
-	   $(window).unbind('scroll');
 	   
 	   function load_data() {
 		   // We are now loading new data
