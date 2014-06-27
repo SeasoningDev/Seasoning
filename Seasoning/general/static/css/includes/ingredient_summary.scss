@@ -1,9 +1,14 @@
 @import "variables";
 
+.ingredient-summary-link {
+	display: inline-block;
+	text-decoration: none;
+	margin: 10px 7px;
+}
+
 .ingredient-summary {
-  float: left;
+  display: inline-block;
   width: 220px;
-  margin: 10px;
   background-color: #333333;
   border-radius: 15px;
   -moz-border-radius: 15px;
@@ -35,28 +40,3 @@
   font-size: 21px;
   text-align: center;
   overflow: hidden; }
-
-#ingredient-summaries-wrapper {
-  width: 960px;
-  float: right;
-  margin-top: -10px;
-  margin-bottom: 20px;
-  position: relative; }
-
-#ingredient-summaries-wrapper #search-result-count {
-  position: absolute;
-  right: 0;
-  top: -21px;
-  font-size: 12px; }
-
-#browse-recipe-summaries-wrapper #search-result-count {
-  position: absolute;
-  right: 0;
-  top: 85px;
-  font-size: 12px; }
-
-#ingredient-summaries-wrapper p.sorry {
-  max-width: 500px;
-  margin: 30px auto;
-  text-align: center;
-  font-weight: bold; }
