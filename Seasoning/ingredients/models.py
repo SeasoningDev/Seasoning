@@ -263,7 +263,8 @@ class Ingredient(models.Model):
                     else:
                         if current_date.year < extended_until_date.year:
                             # We've wrapped around
-                            return True    
+                            return True
+                    current_date = extended_until_date
                     
             if before_loop_date == current_date:
                 # This loop did nothing
