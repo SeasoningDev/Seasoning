@@ -173,6 +173,8 @@ class Recipe(models.Model):
         
         total_footprint = 0
         self.accepted = True
+        self.endangered = False
+        self.inseason = False
         for uses in self.uses.all():
             if update_usess:
                 # Update the footprint of the usesingredients
@@ -190,7 +192,7 @@ class Recipe(models.Model):
                 self.accepted = False
             
             # Check if this ingredient is currently from an endangered spot
-            if uses.ingredient.coming_from_endangered:
+            if uses.ingredient.coming_from_endangered():
                 self.endangered = True
             
         self.footprint = total_footprint / self.portions

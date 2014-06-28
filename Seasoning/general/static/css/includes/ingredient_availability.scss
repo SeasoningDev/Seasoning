@@ -44,6 +44,9 @@
 .ingredient-availability .availability-indicator.preservability {
   background-color: #E3E848;
   z-index: 80; }
+
+.ingredient-availability .availability-indicator.endangered {
+  background-color: #b80000; }
   
   div.ui-tooltip {
     max-width: 700px;

@@ -40,6 +40,15 @@ h1 #recipe-actions {
 
 #add-info #time-added {
   font-size: .75em; }
+  
+#endangered-notification {
+    padding: 5px;
+    margin: -20px 0 30px;
+    background-color: rgba(184, 0, 0, 0.4);
+    border:1px dashed #5B6553;
+    box-shadow:1px 1px 2px 0 rgba(0,0,0,0.3);
+    display: block;
+  }
 
 #recipe {
   margin-bottom: 40px; }
@@ -286,8 +295,15 @@ h1 #recipe-actions {
   margin-top: 10px;
   font-weight: bold; }
 
+.ingredient {
+	position: relative;
+}
+
 .ingredient.dark-row {
   background-color: rgba(118, 186, 59, 0.1); }
+
+.ingredient.endangered {
+  background-color: rgba(184, 0, 0, 0.1); }
 
 .ingredient .ingredient-left {
   display: inline-block;
@@ -296,6 +312,17 @@ h1 #recipe-actions {
 
 .ingredient-left .ingredient-name {
   display: inline-block; }
+
+.ingredient-left .ingredient-name a {
+  text-decoration: none; }
+  
+.ingredient-left .endangered-icon {
+	height: 22px;
+	margin-left: 10px;
+	top: 8px;
+	position: absolute;
+    cursor: pointer;
+}
 
 .ingredient-left .ingredient-amount {
   float: right; }
@@ -343,7 +370,7 @@ h1 #recipe-actions {
   margin-top: 10px; }
 
 .ingredient .moreinfo .ingredient-availability .month {
-  width: 60px; }
+  width: 59px; }
 
 .footprint-percentage .percentage-number {
   float: left;
@@ -503,6 +530,10 @@ h1 #recipe-actions {
 		float: none;
 		width: 100%;
 		margin-bottom: 10px;
+	}
+	
+	.ingredient-left .ingredient-name a {
+		font-weight: bold;
 	}
 	
 	.ingredient .ingredient-right {
