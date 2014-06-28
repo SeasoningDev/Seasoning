@@ -139,6 +139,9 @@ class Recipe(models.Model):
     footprint = FloatField(editable=False)
     veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, editable=False)
     
+    endangered = models.BooleanField(default=False, editable=False)
+    inseason = models.BooleanField(default=False, editable=False)
+    
     accepted = models.BooleanField(default=False)        
     
     def __unicode__(self):
@@ -185,6 +188,11 @@ class Recipe(models.Model):
             # Check the state of this ingredient
             if not uses.ingredient.accepted:
                 self.accepted = False
+            
+            # Check if this ingredient is currently from an endangered spot
+            if uses.ingredient.coming_from_endangered:
+                self.endangered = True
+            
         self.footprint = total_footprint / self.portions
         
                 
