@@ -263,9 +263,7 @@ class Recipe(models.Model):
         footprints = self.monthly_footprint()
         min_footprint = min(footprints)
         if (min_footprint - footprints[month] < 0.01*min_footprint) and (max(footprints) - min_footprint > 0.01*min_footprint):
-            print('ok')
             return True
-        print('nok')
         return False 
 
 class UsesIngredient(models.Model):
