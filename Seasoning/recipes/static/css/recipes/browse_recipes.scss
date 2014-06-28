@@ -181,11 +181,11 @@ form.keywords {
   position: relative;
   float: right;
   width: 100%;
-  text-align: center;
-  min-height: 888px; }
+  text-align: center; }
 
 #browse-recipe-summaries-wrapper.advanced {
-  width: 733px; }
+  width: 733px;
+  min-height: 888px; }
 
 #browse-recipe-summaries-wrapper #search-result-count {
   position: absolute;
