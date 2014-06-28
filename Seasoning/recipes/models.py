@@ -174,7 +174,6 @@ class Recipe(models.Model):
         total_footprint = 0
         self.accepted = True
         self.endangered = False
-        self.inseason = False
         for uses in self.uses.all():
             if update_usess:
                 # Update the footprint of the usesingredients
@@ -197,6 +196,7 @@ class Recipe(models.Model):
             
         self.footprint = total_footprint / self.portions
         
+        self.inseason = self.has_lowest_footprint_in_month()
                 
         return super(Recipe, self).save(*args, **kwargs)
     
@@ -221,6 +221,22 @@ class Recipe(models.Model):
         """
         return self.footprint * 4
     
+    def monthly_footprint(self):
+        """
+        Returns an array of 12 elements containing the footprint of this recipe
+        for every month of the year
+        
+        """
+        usess = self.uses.select_related('ingredient', 'unit__parent_unit').prefetch_related('ingredient__available_in_country', 'ingredient__available_in_sea', 'ingredient__canuseunit_set__unit__parent_unit').order_by('group', 'ingredient__name')
+        # One footprint per month
+        footprints = [0] * 12
+        dates = [datetime.date(day=1, month=month, year=ingredients.models.AvailableIn.BASE_YEAR) for month in range(1, 13)]
+        for uses in usess:
+            for i in range(12):
+                footprints[i] += uses._calculate_footprint(uses.ingredient.footprint(date=dates[i]))
+        footprints = [float('%.2f' % (4*footprint/self.portions)) for footprint in footprints]
+        return footprints
+    
     def vote(self, user, score):
         try:
             # Check if the user already voted on this recipe
@@ -240,6 +256,17 @@ class Recipe(models.Model):
         self.rating = aggregate['score__avg']
         self.number_of_votes = aggregate['score__count']
         self.quicksave()
+        
+    def has_lowest_footprint_in_month(self, month=None):
+        if month is None:
+            month = datetime.date.today().month
+        footprints = self.monthly_footprint()
+        min_footprint = min(footprints)
+        if (min_footprint - footprints[month] < 0.01*min_footprint) and (max(footprints) - min_footprint > 0.01*min_footprint):
+            print('ok')
+            return True
+        print('nok')
+        return False 
 
 class UsesIngredient(models.Model):
     

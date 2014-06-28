@@ -41,15 +41,16 @@
   float: left; }
 
 .recipe-summary-link {
+	position: relative;
 	display: inline-block;
 	text-decoration: none;
 	margin: 10px 8px;
 }
 
-.recipe-summary-link .corner-ribbon-endangered {
+.recipe-summary-link .corner-ribbon {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: -3px;
+  left: -2px;
 }
 
 .recipe-summary {
