@@ -295,6 +295,13 @@ class Ingredient(models.Model):
         except self.BasicIngredientException:
             return self.base_footprint
     
+    def coming_from_endangered(self):
+        if self.type == Ingredient.SEASONAL_SEA:
+            for available_in in self.get_active_available_ins():
+                if available_in.endangered:
+                    return True
+        return False
+    
     def can_use_unit(self, unit):
         return unit in self.useable_units.all()
     
