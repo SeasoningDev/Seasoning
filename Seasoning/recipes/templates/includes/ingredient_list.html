@@ -6,11 +6,14 @@
 <h4>Overige ingrediënten</h4>
 {% endif %}
 {% for uses in group.list %}
-<div class="ingredient {% cycle "dark-row" "" %}">
+<div class="ingredient {% cycle "dark-row" "" %}{% if uses.ingredient.coming_from_endangered %} endangered{% endif %}">
     <span class="ingredient-id" style="display:none;">{{ uses.ingredient.id }}</span>
 	<span class="ingredient-left">
 		<span class="ingredient-name">
 			<a href="{% url 'view_ingredient' uses.ingredient.id %}">{{ uses.ingredient.name }}</a>
+			{% if uses.ingredient.coming_from_endangered %}
+			<img class="endangered-icon" src="{{ STATIC_URL }}img/icons/attention.png" title="Opgelet! Dit ingrediënt kan uit overbeviste gebieden komen. Druk op het plusje voor meer informatie." />
+			{% endif %}
 		</span>
 		<span class="ingredient-amount">
 			{{ uses.amount|floatformat:"-2" }} {{ uses.unit.short_name}}

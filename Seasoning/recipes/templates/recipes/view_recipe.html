@@ -152,7 +152,7 @@
     });
     
     function fix_moreinfo_links() {
-        $('.ingredient-moreinfo-link').click(function() {
+        $('.ingredient-moreinfo-link, .endangered-icon').click(function() {
             var ing_id = $(this).parents('.ingredient').find('.ingredient-id').text();
             var $moreinfo = $(this).parents('.ingredient').find('.moreinfo');
             if ($moreinfo.is(':hidden')) {
@@ -345,6 +345,13 @@
     
     <br class="clear" />
 </div>
+
+{% if recipe.endangered %}
+<div id="endangered-notification">
+	Opgelet! Dit recept kan ingrediënten bevatten die uit overbeviste gebieden afkomstig zijn. Bekijk hieronder over welke ingredïenten het gaat en wees extra waakzaam bij 
+	aankoop. 
+</div>
+{% endif %}
 
     
 <div id="recipe">
