@@ -50,7 +50,14 @@ form.keywords {
   font-size: 12px;
   line-height: 14px;
   border-bottom: 1px solid #DDDDDD;
-  font-weight: bold; }
+  font-weight: bold;
+  position: relative; }
+  
+#advanced-search p input {
+	position: absolute;
+	right: 23px;
+}
+	
 
 #advanced-search #sorting-options select {
   width: 150px;
