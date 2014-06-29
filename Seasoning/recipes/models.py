@@ -32,7 +32,7 @@ class Cuisine(models.Model):
 class RecipeManager(models.Manager):
     
     def query(self, search_string='', advanced_search=False, sort_field='time_added', 
-              sort_order='-', ven=True, veg=True, nveg=True, cuisines=[], 
+              sort_order='-', inseason=False, ven=True, veg=True, nveg=True, cuisines=[], 
               courses=[], include_ingredients_operator='and', include_ingredient_names=[],
               exclude_ingredient_names=[]):
         
@@ -65,6 +65,9 @@ class RecipeManager(models.Manager):
                 recipes_list = recipes_list.exclude(ingredients__name__icontains=ingredient_name)
                 recipes_list = recipes_list.exclude(ingredients__synonyms__name__icontains=ingredient_name)
             
+            if inseason:
+                additional_filters = additional_filters & models.Q(inseason=True)
+                
             if cuisines:
                 additional_filters = additional_filters & models.Q(cuisine__in=cuisines)
             

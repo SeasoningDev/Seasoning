@@ -47,6 +47,8 @@ $(document).ready(function() {
 		update_recipe_page();
 		return false;
 	});
+	
+	$("#inseason-option input").click(update_recipe_page);
 
 	// Activate the buttons for veganism selection
 	$(".veg-choice").each(function() {

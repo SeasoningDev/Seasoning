@@ -190,6 +190,8 @@ class SearchRecipeForm(forms.Form):
     sort_field = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[1][0])
     sort_order = forms.ChoiceField(widget=RadioSelect, choices=SORT_ORDER_CHOICES, required=False, initial=SORT_ORDER_CHOICES[1][0])
     
+    inseason = forms.BooleanField(initial=False, required=False)
+    
     ven = forms.BooleanField(initial=True, required=False, label='Veganistisch')
     veg = forms.BooleanField(initial=True, required=False, label='Vegetarisch')
     nveg = forms.BooleanField(initial=True, required=False, label='Niet-Vegetarisch')
