@@ -68,7 +68,7 @@ def ajax_ingredient_list(request):
             ingredient_list = Ingredient.objects.accepted_with_name_like(search_form.cleaned_data['name']).order_by('name')       
             
             # Split the result by 12
-            paginator = Paginator(ingredient_list, 12)
+            paginator = Paginator(ingredient_list, 12, allow_empty_first_page=False)
             
             page = search_form.cleaned_data['page']
             try:
@@ -77,6 +77,7 @@ def ajax_ingredient_list(request):
                 ingredients = paginator.page(1)
             except EmptyPage:
                 raise Http404()
+            print(ingredients.object_list)
                 
         else:
             ingredients = []

@@ -10,6 +10,7 @@
 		   page_field_to_update: null,
 		   loader_element: null,
 		   no_more_data_element_to_show: null,
+		   no_results_element_to_show: null,
 	   }, options );
 	   
 	   // If we are already loading new data, don't try to load more data yet
@@ -42,8 +43,14 @@
 		   }).done(function() {
 			   loading = false;
 		   }).error(function() {
-			   if (settings.no_more_data_element_to_show) {
-				   settings.no_more_data_element_to_show.show();
+			   if (settings.page_field_to_update.val() <= 1) {
+				   if (settings.no_results_element_to_show) {
+					   settings.no_results_element_to_show.show();
+				   }
+			   } else {
+				   if (settings.no_more_data_element_to_show) {
+					   settings.no_more_data_element_to_show.show();
+				   }
 			   }
 		   }).always(function() {
 			   settings.loader_element.hide();
