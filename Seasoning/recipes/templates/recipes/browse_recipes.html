@@ -10,7 +10,7 @@
 <script>
 $(function() {
 	$("#browse-recipe-summaries-wrapper").ajax_load({
-		ajax_url: '/recipes/',
+		ajax_url: '{% url "ajax_browse_recipes" %}',
 		form: $("#{{ search_form_id }}"),
 		page_field_to_update: $("#id_page"),
 		loader_element: $("#recipes-ajax-loader"),
