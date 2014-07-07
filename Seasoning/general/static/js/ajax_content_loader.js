@@ -25,6 +25,13 @@
 	   settings.page_field_to_update.val(0);
 	   
 	   function load_data() {
+		   if (settings.no_results_element_to_show) {
+			   settings.no_results_element_to_show.hide();
+		   }
+		   if (settings.no_more_data_element_to_show) {
+			   settings.no_more_data_element_to_show.hide();
+		   }
+		   
 		   // We are now loading new data
 		   loading = true;
 		   

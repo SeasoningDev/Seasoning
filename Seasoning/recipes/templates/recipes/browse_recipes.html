@@ -127,23 +127,26 @@ $(function() {
 	    	<br class="clear" />
 	    </div>
 	    
-	    <div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
-		</div>
-		
-		<div id="recipes-ajax-loader" style="clear: both; text-align: center; padding-top: 20px;">
-			<div>
-				{% include "includes/ajax-loader.html" %}
+	    <div id="browse-recipes-right-column">
+	    	<div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
 			</div>
-			Recepten laden...
-		</div>
+			
+			<div id="recipes-ajax-loader" style="clear: both; text-align: center; padding-top: 20px;">
+				<div>
+					{% include "includes/ajax-loader.html" %}
+				</div>
+				Recepten laden...
+			</div>
+			
+			<div id="recipes-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none;">
+				<a href="#top-of-page">Terug naar boven</a>
+			</div>
 		
-		<div id="recipes-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none;">
-			<a href="#top-of-page">Terug naar boven</a>
+			<div id="recipes-ajax-noresults" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 60px;">
+				Je zoekopdracht heeft geen resultaten opgeleverd...
 		</div>
-	
-		<div id="recipes-ajax-noresults" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 60px;">
-			Je zoekopdracht heeft geen resultaten opgeleverd...
-		</div>
+	    </div>
+	    
 	</form>
 	
 	<br class="clear" />
