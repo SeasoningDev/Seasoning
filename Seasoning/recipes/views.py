@@ -549,7 +549,6 @@ def ajax_browse_recipes(request):
                                                 veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
                                                 include_ingredients_operator=data['include_ingredients_operator'],
                                                 include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
-        print(search_form.errors)
         page = search_form.cleaned_data['page']
         
         # Split the result by 12
