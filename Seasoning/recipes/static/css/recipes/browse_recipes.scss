@@ -29,7 +29,7 @@ form.keywords {
 
 #advanced-search {
   position: absolute;
-  top: 62px;
+  top: 42px;
   width: 219px;
   float: left;
   border-right: 1px solid #DDDDDD;
@@ -182,17 +182,23 @@ form.keywords {
 #advanced-search #extra-info label {
   font-size: 11px;
   font-weight: normal; }
+  
+#browse-recipes-right-column {
+	width: 100%;
+  	float: right;
+}
+
+#browse-recipes-right-column.advanced {
+	width: 733px;
+  	min-height: 900px;
+}
 
 #browse-recipe-summaries-wrapper {
   margin-top: -10px;
   position: relative;
-  float: right;
-  width: 100%;
   text-align: center; }
 
-#browse-recipe-summaries-wrapper.advanced {
-  width: 733px;
-  min-height: 888px; }
+#browse-recipe-summaries-wrapper.advanced { }
 
 #browse-recipe-summaries-wrapper #search-result-count {
   position: absolute;
