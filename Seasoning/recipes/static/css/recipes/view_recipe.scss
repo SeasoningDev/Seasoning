@@ -64,11 +64,22 @@ h1 #recipe-actions {
   background-color: rgba(118, 186, 59, 0.1);
   position: relative; }
 
+#img-and-basic-user-options #recipe-img-wrapper {
+	position: relative;
+	width: 330px;
+	margin: 10px auto;
+}
+
+#img-and-basic-user-options .corner-ribbon {
+	position: absolute;
+	top: -3px;
+	left: -3px;
+}
+
 #img-and-basic-user-options #recipe-img {
   width: 330px;
   height: 330px;
   display: block;
-  margin: 2.5% 0 0 2.5%;
   cursor: url(/static/img/icons/zoom.cur), -moz-zoom-in; }
 
 #recipe .footprint-cloud {

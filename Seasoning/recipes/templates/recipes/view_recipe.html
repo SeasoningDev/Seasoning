@@ -362,7 +362,14 @@
     
     <div id="first-information">
         <div id="img-and-basic-user-options">
-            <img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
+            <div id="recipe-img-wrapper">
+				{% if recipe.endangered %}
+				<img class="corner-ribbon" src="{{ STATIC_URL }}img/decoration/corner-ribbon-endangered.png" title="Opgelet! Dit recept bevat een vissoort die mogelijk overbevist wordt."/>
+				{% elif recipe.inseason %}
+				<img class="corner-ribbon" src="{{ STATIC_URL}}img/decoration/corner-ribbon-inseason.png" title="Dit recept is momenteel in seizoen!" />
+				{% endif %}
+				<img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
+			</div>
             <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
 		       	<span class="footprint-cloud-text">
 		       		{{ recipe.total_footprint|floatformat:-2 }}
