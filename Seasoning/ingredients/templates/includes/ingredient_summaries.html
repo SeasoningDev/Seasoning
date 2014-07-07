@@ -1,3 +1,6 @@
+{% if ingredients.number == 1 %}
+<span id="search-result-count">{{ ingredients.paginator.count }} ingrediënten gevonden</span>
+{% endif %}
 {% for ingredient in ingredients %}
 {% include "includes/ingredient_summary.html" %}
 {% endfor %}
