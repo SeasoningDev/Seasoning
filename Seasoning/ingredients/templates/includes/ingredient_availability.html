@@ -1,44 +1,47 @@
 {% load footprints %}
 {% if ingredient.type == 1 or ingredient.type == 2 %}
 <p><strong>Beschikbaarheidsdata:</strong><br /></p>
-<p class="availability-backdrop">Je scherm is te klein om beschikbaarheidsdata weer te geven, sorry!</p>
 <div class="ingredient-availability">
-    <span class="month alpha">
-        J<span class="month-long">an</span>
-    </span><span class="month">
-        F<span class="month-long">eb</span>
-    </span><span class="month">
-        M<span class="month-long">aa</span>
-    </span><span class="month">
-        A<span class="month-long">pr</span>
-    </span><span class="month">
-        M<span class="month-long">ei</span>
-    </span><span class="month">
-        J<span class="month-long">un</span>
-    </span><span class="month">
-        J<span class="month-long">ul</span>
-    </span><span class="month">
-        A<span class="month-long">ug</span>
-    </span><span class="month">
-        S<span class="month-long">ep</span>
-    </span><span class="month">
-        O<span class="month-long">kt</span>
-    </span><span class="month">
-        N<span class="month-long">ov</span>
-    </span><span class="month omega">
-        D<span class="month-long">ec</span>
-    </span>
+	<div class="months">
+	    <span class="month alpha">
+	        J<span class="month-long">an</span>
+	    </span><span class="month">
+	        F<span class="month-long">eb</span>
+	    </span><span class="month">
+	        M<span class="month-long">aa</span>
+	    </span><span class="month">
+	        A<span class="month-long">pr</span>
+	    </span><span class="month">
+	        M<span class="month-long">ei</span>
+	    </span><span class="month">
+	        J<span class="month-long">un</span>
+	    </span><span class="month">
+	        J<span class="month-long">ul</span>
+	    </span><span class="month">
+	        A<span class="month-long">ug</span>
+	    </span><span class="month">
+	        S<span class="month-long">ep</span>
+	    </span><span class="month">
+	        O<span class="month-long">kt</span>
+	    </span><span class="month">
+	        N<span class="month-long">ov</span>
+	    </span><span class="month omega">
+	        D<span class="month-long">ec</span>
+	    </span>
+	</div>
     
     <span class="number-of-groups" style="display:none;">{{ ingredient.get_available_ins|length }}</span>
     <span class="available-in-preservability" style="display:none;">{{ ingredient.preservability }}</span>
     {% for available_in in ingredient.get_available_ins_sorted %}
     <div class="available-in" id="available-in-{{ available_in.location }}">
         <span class="location-name">{{ available_in.location.name }}{% if available_in.production_type %} ({{ available_in.production_type }}){% endif %}</span>
-        <span class="availability-indicator{% if available_in.endangered %} endangered{% endif %}" 
-              title="{% if available_in.endangered %}<span style='color: #b80000; font-weight: bold; margin-bottom: 5px; display: block; text-decoration: underline;'>Opgelet! Deze vis wordt hier overbevist</span>{% endif %}Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until|lower }}.<br />{% endif %}Voetafdruk: {{ available_in.footprint|floatformat:"-2" }} kgCO2 per {{ ingredient.primary_unit.short_name }}{% if ingredient.preservability > 0 and ingredient.preservation_footprint > 0 %} (+ {{ ingredient.preservation_footprint_monthly|floatformat:"-2" }} per maand in bewaring.){% endif %}">
-            <span class="available-from">{{ available_in.date_from.month }}</span>
-            <span class="available-until">{{ available_in.date_until.month }}</span>
-        </span>
+        <div class="availability-indicator-wrapper">
+	        <span class="availability-indicator{% if available_in.endangered %} endangered{% endif %}" 
+	              title="{% if available_in.endangered %}<span style='color: #b80000; font-weight: bold; margin-bottom: 5px; display: block; text-decoration: underline;'>Opgelet! Deze vis wordt hier overbevist</span>{% endif %}Dit ingredient is beschikbaar in {{ available_in.location }} van {{ available_in.month_from }} tot {{ available_in.month_until }}.<br />{% if ingredient.preservability > 0 %}Het kan bewaard worden tot {{ available_in.extended_month_until|lower }}.<br />{% endif %}Voetafdruk: {{ available_in.footprint|floatformat:"-2" }} kgCO2 per {{ ingredient.primary_unit.short_name }}{% if ingredient.preservability > 0 and ingredient.preservation_footprint > 0 %} (+ {{ ingredient.preservation_footprint_monthly|floatformat:"-2" }} per maand in bewaring.){% endif %}">
+	            <span class="available-from">{{ available_in.date_from.month }}</span>
+	            <span class="available-until">{{ available_in.date_until.month }}</span>
+	        </span>
+	    </div>
     </div>
     {% endfor %}
 </div>

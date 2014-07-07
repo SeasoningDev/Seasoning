@@ -1,14 +1,16 @@
 .ingredient-availability {
   position: relative;
   margin-bottom: 30px; }
-  
-.availability-backdrop {
-	display: none;
+
+.ingredient-availability .months {
+	margin-left: 160px;
+	height: 100%;
 }
 
 .ingredient-availability .month {
   display: inline-block;
-  width: 65px;
+  box-sizing: border-box;
+  width: 8.33%;
   text-align: center;
   border-left: 1px solid #DDD;
   margin-bottom: 10px;
@@ -16,15 +18,23 @@
   height: 100%; }
 
 .ingredient-availability .month.alpha {
-  margin-left: 160px;
   border-left: none; }
 
-.ingredient-availability .country-name {
-  width: 55px; }
+.ingredient-availability .location-name {
+  float: left;
+  width: 160px; }
 
 .ingredient-availability .available-in {
   position: absolute;
   width: 100%; }
+  
+.ingredient-availability .availability-indicator-wrapper {
+	position: absolute;
+	margin-left: 160px;
+	height: 20px;
+	right: 0;
+	left: 0;
+}
 
 .ingredient-availability .availability-indicator {
   position: absolute;
@@ -52,40 +62,10 @@
     max-width: 700px;
 }
   
-@media only screen and (max-width: 959px) {
-	
-	.ingredient-availability .month {
-		width: 40px;
-	}
-}
-
 @media only screen and (max-width: 767px) {
-	
-	.ingredient-availability .month {
-		width: 20px;
-	}
 	
 	.ingredient-availability .month-long {
 		display: none;
 	}
 	
-}
-
-@media only screen and (max-width: 560px) {
-	
-	.ingredient-availability .month {
-		width: 10px;
-	}
-}
-
-@media only screen and (max-width: 420px) {
-	
-	.availability-backdrop {
-		display: inherit;
-		text-align: left;
-	}
-	
-	.ingredient-availability {
-		display: none;
-	}
 }

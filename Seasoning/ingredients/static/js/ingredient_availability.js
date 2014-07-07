@@ -7,44 +7,42 @@
 		    $(this).children(".available-in").each(function() {
 		    	$(this).css("top", offset_top);
 		        offset_top = offset_top + 30;
-		        var extra_top = 0;
 		        if (first) {
 		    		$(this).css('border-top', '1px solid #DDD');
 		    		$(this).css('padding-top', '10px');
 		    		first = false;
 		    		offset_top = offset_top + 10;
-		    		extra_top = 10;
 		    	}
 		        var preservability = Math.round(parseInt($(".available-in-preservability").text()) / 30);
-		        $(this).children(".availability-indicator").each(function() {
+		        $(this).find(".availability-indicator").each(function() {
 		            var from = parseInt($(this).children(".available-from").text());
 		            var until = parseInt($(this).children(".available-until").text());
 		            var extended_until = (until + preservability - 1) % 12 + 1;
 		            
-		            var total_width = ($(".month.alpha").width() + 1) * 12;
-		            var from_point = total_width * ((from-1)/12);
-		            var until_point = total_width * (until/12);
-		            var left_margin = parseInt($(".month.alpha").css("margin-left").replace("px", ""));
+		            var width_p_month = 8.33;
+		            var from_point = width_p_month * (from - 1);
+		            	            
 		            $(this).html("");
 		            
 		            if (from > (until + 1) ) {
 		                var second_indicator = $(this).clone();
-		                $(this).css("left", left_margin);
-		                $(this).css("width", until_point);
-		                $(this).css("top", extra_top + "px");
+		                $(this).css("left", from_point + "%");
+		                $(this).css("width", (width_p_month * (12 - from + 1)) + "%");
+		                
 		                second_indicator.insertAfter($(this));
-		                second_indicator.css("left", from_point + left_margin);
-		                second_indicator.css("width", total_width - from_point);
-		                second_indicator.css("top", extra_top + "px");
+		                second_indicator.css("left", 0);
+		                second_indicator.css("width", (width_p_month * (until)) + "%");
 		            } else {
+		            	var width;
 		                if (from == (until + 1)) {
 		                    // The ingredient is available all year round
-		                    var from_point = total_width * (0/12);
-		                    var until_point = total_width * (12/12);
+		                    var from_point = 0;
+		                    width = 100;
+		                } else {
+		                	width = width_p_month * (until - from + 1);
 		                }
-		                $(this).css("left", from_point + left_margin);
-		                $(this).css("width", until_point - from_point);
-		                $(this).css("top", extra_top + "px");
+		                $(this).css("left", from_point + "%");
+		                $(this).css("width", width + "%");
 		            }
 		            
 		            // Add preservability bars
