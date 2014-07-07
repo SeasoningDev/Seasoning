@@ -75,7 +75,8 @@ def browse_recipes(request):
             include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
             exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
         
-        page = search_form.cleaned_data['page']
+        if hasattr(search_form, 'cleaned_data') and 'page' in search_form.cleaned_data:
+            page = search_form.cleaned_data['page']
             
     else:
         search_form = SearchRecipeForm()
@@ -84,7 +85,7 @@ def browse_recipes(request):
         recipes_list = [None]
     
     # Split the result by 12
-    paginator = Paginator(recipes_list, 12)
+    paginator = Paginator(recipes_list, 12, allow_empty_first_page=False)
     
     try:
         recipes = paginator.page(page)
