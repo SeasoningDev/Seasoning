@@ -77,7 +77,6 @@ def ajax_ingredient_list(request):
                 ingredients = paginator.page(1)
             except EmptyPage:
                 raise Http404()
-            print(ingredients.object_list)
                 
         else:
             ingredients = []
