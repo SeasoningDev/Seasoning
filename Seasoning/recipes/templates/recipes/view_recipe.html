@@ -4,6 +4,8 @@
 {% load compressed %}
 {% load ratings %}
 
+{% block meta_description %}{{ recipe.description }}{% endblock %}
+
 {% block title %}{{ recipe.name }}{% endblock %}
 
 {% block extra_style %}
