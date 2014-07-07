@@ -3,7 +3,6 @@ from general.sitemaps import GeneralViewsSitemap, StaticViewSitemap
 from ingredients.sitemaps import IngredientViewsSitemap
 from news.sitemaps import NewsViewsSitemap
 from recipes.sitemaps import RecipeViewsSitemap
-from django.http.response import HttpResponse
 
 sitemaps = {
     'general': GeneralViewsSitemap,

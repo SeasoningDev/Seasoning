@@ -1,7 +1,7 @@
 {% load ratings %}
 <a class="recipe-summary-link" href="{% url 'view_recipe' recipe.id %}">
 	{% if recipe.endangered %}
-	<img class="corner-ribbon" src="{{ STATIC_URL }}img/decoration/corner-ribbon-endangered.png" title="Dit recept bevat mogelijk ingrediënten afkomstig uit overbeviste gebieden."/>
+	<img class="corner-ribbon" src="{{ STATIC_URL }}img/decoration/corner-ribbon-endangered.png" title="Opgelet! Dit recept bevat een vissoort die mogelijk overbevist wordt."/>
 	{% elif recipe.inseason %}
 	<img class="corner-ribbon" src="{{ STATIC_URL}}img/decoration/corner-ribbon-inseason.png" title="Dit recept is momenteel in seizoen!" />
 	{% endif %}
