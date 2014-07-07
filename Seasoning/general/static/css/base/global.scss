@@ -129,7 +129,7 @@
 }
 
 #basic-search {
-  padding-top: 20px;
+  margin-top: 20px;
   position: relative;
   width: 320px;
   margin: auto; }
@@ -141,9 +141,9 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-#basic-search #keywords-submit {
+form #keywords-submit {
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0;
   padding: 0;
   margin: 3px;

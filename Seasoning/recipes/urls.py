@@ -20,4 +20,6 @@ urlpatterns = patterns('',
     
     url(r'^ingunits/$', 'recipes.views.ajax_ingredient_units'),
     url(r'^markdownpreview/$', 'recipes.views.ajax_markdown_preview'),
+    
+    url(r'^ajax/$', 'recipes.views.ajax_browse_recipes', name='ajax_browse_recipes')
 )

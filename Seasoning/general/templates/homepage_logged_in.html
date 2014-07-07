@@ -41,7 +41,16 @@
 <div id="quicknav">
 	<form action="{% url 'browse_recipes' %}" method="post">
 		{% csrf_token %}
-		<strong>Zoek recepten: </strong><input id="id_search_string" class="keywords-searchbar" type="text" name="search_string" />
+		<strong>Zoek recepten: </strong>
+		
+		<span style="position: relative; display:inline-block;">
+			<input id="id_search_string" class="keywords-searchbar" type="text" name="search_string" />
+			
+			<button id="keywords-submit" class="nochrome" type="submit">
+				<span class="submit-icon"> </span>
+			</button>
+		</span>
+		
 	</form>
 	<p id="add-button-wrapper">
 		<a href="{% url 'add_recipe' %}" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>

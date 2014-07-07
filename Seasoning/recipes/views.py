@@ -45,65 +45,20 @@ def browse_recipes(request):
     # This is a formset for inputting ingredients to be included or excluded in the recipe search
     IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
     
-    page = 1
-    
     if request.method == 'POST':
+        # A simple search with only the recipe name was done (from the homepage)
         search_form = SearchRecipeForm(request.POST)
-        
-        try:
-            include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
-            exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
-            if search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid():
-                data = search_form.cleaned_data
-                include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
-                exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
-                recipes_list = Recipe.objects.query(search_string=data['search_string'], advanced_search=data['advanced_search'],
-                                                    sort_field=data['sort_field'], sort_order=data['sort_order'], inseason=data['inseason'], ven=data['ven'], 
-                                                    veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
-                                                    include_ingredients_operator=data['include_ingredients_operator'],
-                                                    include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
-            else:
-                recipes_list = []
-        except ValidationError:
-            # A simple search with only the recipe name was done (from the homepage)
-            search_form.is_valid()
-            if 'search_string' in search_form.cleaned_data:
-                recipes_list = Recipe.objects.filter(name__icontains=search_form.cleaned_data['search_string'], accepted=True).order_by('footprint')
-            else:
-                recipes_list = []
-            search_form = SearchRecipeForm()
-            include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
-            exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
-        
-        if hasattr(search_form, 'cleaned_data') and 'page' in search_form.cleaned_data:
-            page = search_form.cleaned_data['page']
-            
     else:
         search_form = SearchRecipeForm()
-        include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
-        exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
-        recipes_list = [None]
-    
-    # Split the result by 12
-    paginator = Paginator(recipes_list, 12, allow_empty_first_page=False)
-    
-    try:
-        recipes = paginator.page(page)
-    except PageNotAnInteger:
-        recipes = paginator.page(1)
-    except EmptyPage:
-        raise Http404()
-    
+        
+    include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
+    exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
+        
     search_form_id = 'recipe-search-form'
-    
-    if request.method == 'POST' and request.is_ajax():
-        return render(request, 'includes/recipe_summaries.html', {'recipes': recipes,
-                                                                  'search_form_id': search_form_id})
         
     return render(request, 'recipes/browse_recipes.html', {'search_form': search_form,
                                                            'include_ingredients_formset': include_ingredients_formset,
                                                            'exclude_ingredients_formset': exclude_ingredients_formset,
-                                                           'recipes': recipes,
                                                            'search_form_id': search_form_id})
 
 def view_recipe(request, recipe_id):
@@ -572,4 +527,44 @@ def ajax_markdown_preview(request):
     if request.method == 'POST' and request.is_ajax():
         markdown = request.POST.get('data', '')
         return render(request, 'recipes/markdown_preview.html', {'markdown_text': markdown})
+    raise PermissionDenied()
+
+def ajax_browse_recipes(request):
+    if request.method == 'POST' and request.is_ajax():
+        # This is a formset for inputting ingredients to be included or excluded in the recipe search
+        IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
+    
+        page = 1
+        search_form = SearchRecipeForm(request.POST)
+        
+        include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
+        exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
+        
+        if search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid():
+            data = search_form.cleaned_data
+            include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
+            exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
+            recipes_list = Recipe.objects.query(search_string=data['search_string'], advanced_search=data['advanced_search'],
+                                                sort_field=data['sort_field'], sort_order=data['sort_order'], inseason=data['inseason'], ven=data['ven'], 
+                                                veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
+                                                include_ingredients_operator=data['include_ingredients_operator'],
+                                                include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
+        print(search_form.errors)
+        page = search_form.cleaned_data['page']
+        
+        # Split the result by 12
+        paginator = Paginator(recipes_list, 12, allow_empty_first_page=False)
+        
+        try:
+            recipes = paginator.page(page)
+        except PageNotAnInteger:
+            recipes = paginator.page(1)
+        except EmptyPage:
+            raise Http404()
+        
+        search_form_id = 'recipe-search-form'
+    
+        return render(request, 'includes/recipe_summaries.html', {'recipes': recipes,
+                                                                  'search_form_id': search_form_id})
+        
     raise PermissionDenied()

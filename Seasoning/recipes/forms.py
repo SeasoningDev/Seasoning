@@ -202,7 +202,7 @@ class SearchRecipeForm(forms.Form):
     course = forms.MultipleChoiceField(required=False, choices=recipes.models.Recipe.COURSES, label='Maaltijd',
                                        widget=CheckboxSelectMultiple())
     
-    include_ingredients_operator = forms.ChoiceField(widget=RadioSelect, choices=OPERATOR_CHOICES, label='', initial=OPERATOR_CHOICES[1][0])
+    include_ingredients_operator = forms.ChoiceField(widget=RadioSelect, choices=OPERATOR_CHOICES, label='', initial=OPERATOR_CHOICES[1][0], required=False)
     
     page = forms.IntegerField(widget=forms.HiddenInput(attrs={'autocomplete': 'off'}), initial=0)
 
