@@ -265,7 +265,7 @@ class Recipe(models.Model):
             month = datetime.date.today().month
         footprints = self.monthly_footprint()
         min_footprint = min(footprints)
-        if (abs(min_footprint - footprints[month]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
+        if (abs(min_footprint - footprints[month-1]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
             return True
         return False 
 

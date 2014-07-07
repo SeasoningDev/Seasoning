@@ -9,7 +9,11 @@ def rating_display_stars(rating, novotes):
     if rating is None:
         return ''
     width_percentage = int((rating/5.0)*100)
-    return '<span class="star-rating-wrapper" title="Dit recept heeft een score van %.3g op 5 (%d waarderingen)"><span style="display: none">%.2f</span><span class="star-rating" style="width:%d%%"></span><span class="star-rating-not" style="width:%d%%"></span></span>' % (rating, novotes, rating, width_percentage, 100-width_percentage)
+    if novotes == 1:
+        mul = ''
+    else:
+        mul = 'en'
+    return '<span class="star-rating-wrapper" title="Dit recept heeft een score van %.3g op 5 (%d waardering%s)"><span style="display: none">%.2f</span><span class="star-rating" style="width:%d%%"></span><span class="star-rating-not" style="width:%d%%"></span></span>' % (rating, novotes, mul, rating, width_percentage, 100-width_percentage)
 
 @register.simple_tag
 def mean_rating(rating):
