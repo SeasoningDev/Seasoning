@@ -343,7 +343,10 @@
         <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
     </div>
     
-    <span class="recipe-rating">{% rating_display_stars recipe.rating recipe.number_of_votes %}</span>
+    <span class="recipe-rating">
+    	<span style="display: none">{{ recipe.rating }}</span>
+    	{% rating_display_stars recipe.rating recipe.number_of_votes %}
+    </span>
     
     <br class="clear" />
 </div>
