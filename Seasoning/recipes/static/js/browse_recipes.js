@@ -13,6 +13,11 @@ function update_recipe_page() {
 
 $(document).ready(function() {
 	
+	$("#keywords-submit").click(function() {
+		update_recipe_page();
+		return false;
+	});
+	
 	// Toggle the Advanced Search Window
 	$("#advanced-link").click(function() {
 		if ($("#advanced-search").is(":visible")) {
@@ -186,7 +191,7 @@ $(document).ready(function() {
 	 * has finished typing (delay of 1s)
 	 */
 	// Start the timer when more than 3 chars have been typed
-	$("#id_search_string").keyup(function() {
+	$("#id_search_string").keyup(function(event) {
 		if (event.keyCode >= 65 && event.keyCode <= 90 && $(this).val().length >= 3) {
 			var x = $(this).val().length;
 			clearTimeout(timer);
