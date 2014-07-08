@@ -90,6 +90,10 @@
 	border-bottom: 2px solid #333;
 }
 
+#account-recipes-form {
+	margin: 0;
+}
+
 #account-recipes #recipe-summaries-wrapper {
 	width: auto;
 	position: relative;
@@ -103,7 +107,7 @@
 #account-recipes #search-result-count {
 	position: absolute;
 	top: -32px;
-	right: 78px;
+	right: 0;
 }
 
 #account-recipes .page-controls {
