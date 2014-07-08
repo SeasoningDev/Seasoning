@@ -340,7 +340,7 @@
     
     <div id="add-info">
     	{% if recipe.external %}
-    	<span id="author">Recept van <a href="http://www.evavzw.be/index.php?option=com_content&view=article&id=53&Itemid=396">{{ recipe.author.get_full_name }}</a></span>
+    	<span id="author">Recept van <a href="{{ recipe.external_url }}" target="_blank">{{ recipe.author.get_full_name }}</a></span>
     	{% else %}
         <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
         <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
