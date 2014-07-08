@@ -339,8 +339,12 @@
 <div id="below-recipe-name">
     
     <div id="add-info">
+    	{% if recipe.external %}
+    	<span id="author">Recept van <a href="http://www.evavzw.be/index.php?option=com_content&view=article&id=53&Itemid=396">{{ recipe.author.get_full_name }}</a></span>
+    	{% else %}
         <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
         <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
+        {% endif %}
     </div>
     
     <span class="recipe-rating">
@@ -360,7 +364,7 @@
     
 <div id="recipe">
     
-    <div id="first-information">
+    <div id="first-information" style="{% if recipe.active_time > 0 %}min-height: 570px;{% else %}min-height: 500px;{% endif %}">
         <div id="img-and-basic-user-options">
             <div id="recipe-img-wrapper">
 				{% if recipe.endangered %}
@@ -387,6 +391,7 @@
                 </div>
             </div>
             
+            {% if recipe.active_time > 0 %}
             <div id="time-needed">
                 <strong>Bereidingstijd</strong>
                 <div class="timebar" title="Dit recept duurt ongeveer {{ total_time }} min om klaar te maken (waarvan je {{ recipe.active_time }} min actief bezig zal zijn)">
@@ -396,6 +401,7 @@
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
             
             <div id="portions">
                 <strong>Porties</strong>
@@ -436,7 +442,13 @@
         <div id="basic-info">
             <div id="vague-description">
                 <strong>Categorie</strong><br />
-                {% if recipe.cuisine %}{{ recipe.cuisine }}{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} {% endif %}{{ recipe.get_course_display|lower }}
+                {% if recipe.cuisine %}
+                	{{ recipe.cuisine }}
+                	{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
+                	{{ recipe.get_course_display|lower }}
+                {% else %}
+                	{{ recipe.get_course_display }}
+                {% endif %}
                 
                 <div id="veganism">
                     <img src="{{ STATIC_URL }}img/icons/vegan.png" {% if not recipe.veganism == 2 %}class="not-this"{% else %}title="Dit is een veganistisch recept"{% endif %} alt="" />
@@ -445,10 +457,29 @@
                 </div>
             </div>
             
+            {% if not recipe.external or recipe.description != " " %}
             <div id="description">
                 <strong>Beschrijving</strong><br />
                 {{ recipe.description }}
             </div>
+            {% endif %}
+            
+            {% if recipe.external %}
+            <div id="instructions" style="margin-top: 20px;">
+		        <strong>Bereidingswijze</strong>
+		        <div id="instructions" class="markdown-container">
+		           <div id="instructions-warning">
+		                Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
+		                is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
+		            </div>
+		            <form action="{{ recipe.external_url }}" method="post" target="_blank" style="margin: 10px 0 0;">
+		            	<button type="submit" style="margin: 0;">Bekijk het volledige recept op EVA</button>
+		            </form>
+		        </div>
+        	</div>
+        	{% endif %}
+        	
+        	<div id="charts-reserver" style="height: 358px; margin: 20px 0 10px;"></div>
             
         </div>
         
@@ -492,6 +523,7 @@
         {% endif %}
     </div>
     
+    {% if not recipe.external %}
     <div class="recipe-info-wrapper">
         <h3>Bereidingswijze</h3>
         <div id="instructions" class="markdown-container">
@@ -502,6 +534,7 @@
             {{ recipe.instructions|markdown|safe }}
         </div>  
     </div>
+    {% endif %}
 </div>
 
 <div id="comment-section">

@@ -112,6 +112,9 @@ class Recipe(models.Model):
     author = models.ForeignKey(User, related_name='recipes', editable=False, null=True)
     time_added = models.DateTimeField(auto_now_add=True, editable=False)
     
+    external = models.BooleanField(default=False)
+    external_url = models.CharField(max_length=300, null=True, blank=True)
+    
     course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
     cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine', null=True, blank=True,
