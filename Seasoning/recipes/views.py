@@ -62,6 +62,7 @@ def browse_recipes(request):
                                                            'search_form_id': search_form_id})
 
 def view_recipe(request, recipe_id):
+    context = {}
     
     try:
         recipe = Recipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
@@ -77,18 +78,24 @@ def view_recipe(request, recipe_id):
             pass
     
     total_time = recipe.active_time + recipe.passive_time
-    active_time_perc = str((float(recipe.active_time) / total_time) * 100).replace(',', '.')
-    passive_time_perc = str(100 - (float(recipe.active_time) / total_time) * 100).replace(',', '.')
+    if total_time > 0:
+        active_time_perc = str((float(recipe.active_time) / total_time) * 100).replace(',', '.')
+        passive_time_perc = str(100 - (float(recipe.active_time) / total_time) * 100).replace(',', '.')
+        
+        context['active_time_perc'] = active_time_perc
+        context['passive_time_perc'] = passive_time_perc
     
     comments = Comment.objects.filter(content_type=ContentType.objects.get_for_model(Recipe), object_pk=recipe.id, is_removed=False, is_public=True).select_related('user')
     
-    return render(request, 'recipes/view_recipe.html', {'recipe': recipe,
-                                                        'usess': usess,
-                                                        'user_vote': user_vote,
-                                                        'active_time_perc': active_time_perc,
-                                                        'passive_time_perc': passive_time_perc,
-                                                        'total_time': total_time,
-                                                        'comments': comments})
+    template = 'recipes/view_recipe.html'
+    
+    context['recipe'] = recipe
+    context['usess'] = usess
+    context['user_vote'] = user_vote
+    context['total_time'] = total_time 
+    context['comments'] = comments
+    
+    return render(request, template, context)
 
 class EditRecipeWizard(SessionWizardView):
     

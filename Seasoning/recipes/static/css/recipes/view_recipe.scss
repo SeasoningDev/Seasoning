@@ -60,9 +60,12 @@ h1 #recipe-actions {
 #recipe #img-and-basic-user-options {
   float: right;
   width: 350px;
-  margin: 0 0 10px 10px;
+  margin: 0;
   background-color: rgba(118, 186, 59, 0.1);
-  position: relative; }
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0; }
 
 #img-and-basic-user-options #recipe-img-wrapper {
 	position: relative;
@@ -274,7 +277,7 @@ h1 #recipe-actions {
 
 #recipe #recipe-charts {
 	position: absolute;
-	bottom: 10px;
+	bottom: 0;
 	height: 10px;
 }
 
