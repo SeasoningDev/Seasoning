@@ -560,17 +560,9 @@ h1 #recipe-actions {
 	.ingredient-right .ingredient-footprint {
 		float: none;
 	}
-	
-	.ingredient .moreinfo .ingredient-availability .month {
-		width: 40px;
-	}
 }
 
 @media only screen and (max-width: 767px) {
-	
-	.ingredient .moreinfo .ingredient-availability .month {
-		width: 15px;
-	}
 	
 	.moreinfo .month-long {
 		display: none;
@@ -579,15 +571,6 @@ h1 #recipe-actions {
 }
 
 @media only screen and (max-width: 420px) {
-	
-	.availability-backdrop {
-		display: inherit;
-		text-align: left;
-	}
-	
-	.ingredient-availability {
-		display: none;
-	}
 	
 	.ingredient .moreinfo {
 		height: auto;
