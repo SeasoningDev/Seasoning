@@ -109,7 +109,7 @@ class Recipe(models.Model):
     
     name = models.CharField(_('Name'), max_length=100,
                             help_text=_('The names of the recipe.'))
-    author = models.ForeignKey(User, related_name='recipes', editable=False, null=True)
+    author = models.ForeignKey(User, related_name='recipes', null=True)
     time_added = models.DateTimeField(auto_now_add=True, editable=False)
     
     external = models.BooleanField(default=False)
