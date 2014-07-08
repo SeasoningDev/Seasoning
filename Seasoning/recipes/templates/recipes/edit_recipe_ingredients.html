@@ -153,7 +153,7 @@
             {% for form in group.list %}
             {{ form.non_field_errors }}
             {% if forloop.parentloop.last or form.ingredient.value or form.amount.value or form.unit.value %}
-            <li class="ingredient">
+            <li class="ingredient" {% if form.DELETE.value %}style="display: none"{% endif %}>
                 <span class="move-handle"> </span>
                 <span class="ingredient-name">{{ form.id }}{{ form.group }}{{ form.ingredient }}</span>
                 <span class="ingredient-amount">{{ form.amount }}</span>
