@@ -52,10 +52,11 @@
 	</p>
 	{% endif %}
 	
-	
+	{% if ingredient.type != 0 %}
 	<div id="ingredient-availability-wrapper">
 		{% include "includes/ingredient_availability.html" %}
 	</div>
+	{% endif %}
 	
 	<p>
 	    <strong>Bronnen:</strong><br />
