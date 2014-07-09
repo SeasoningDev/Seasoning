@@ -133,8 +133,8 @@ class Ingredient(models.Model):
     
     base_footprint = models.FloatField()
     
-    image = ProcessedImageField(processors=[ResizeToFill(350, 350)], upload_to=get_image_filename, 
-                                validators=[validate_image_size], default='images/ingredients/no_image.png')
+    image = ProcessedImageField(format='JPEG', processors=[ResizeToFill(350, 350)], upload_to=get_image_filename, 
+                                validators=[validate_image_size], default='images/no_image.jpg')
     thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='JPEG')
     image_source = models.TextField(blank=True)
     

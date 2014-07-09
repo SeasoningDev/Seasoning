@@ -7,7 +7,7 @@ from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
 
 def get_image_filename(instance, old_filename):
-    filename = str(time.time()) + '.png'
+    filename = str(time.time()) + '.jpg'
     return 'images/news/' + filename
 
 class NewsItem(models.Model):
@@ -20,7 +20,7 @@ class NewsItem(models.Model):
     
     subject = models.CharField(max_length=300)
     content = models.TextField()
-    image = ProcessedImageField(format='PNG', upload_to=get_image_filename, processors=[ResizeToFill(500, 500)],
+    image = ProcessedImageField(format='JPEG', upload_to=get_image_filename, processors=[ResizeToFill(500, 500)],
                                 help_text=_('An image of this news item.'))
     image_source = models.TextField(blank=True)
     
