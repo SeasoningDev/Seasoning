@@ -135,7 +135,7 @@ class Ingredient(models.Model):
     
     image = ProcessedImageField(processors=[ResizeToFill(350, 350)], upload_to=get_image_filename, 
                                 validators=[validate_image_size], default='images/ingredients/no_image.png')
-    thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='PNG')
+    thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='JPEG')
     image_source = models.TextField(blank=True)
     
     accepted = models.BooleanField(default=False)
