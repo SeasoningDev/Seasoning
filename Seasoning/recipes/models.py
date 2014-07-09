@@ -134,7 +134,7 @@ class Recipe(models.Model):
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
     instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'))
     
-    default_image_location = 'images/ingredients/no_image.png'
+    default_image_location = 'images/no_image.jpg'
     image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
     thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
