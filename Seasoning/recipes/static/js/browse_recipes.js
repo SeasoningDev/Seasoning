@@ -192,7 +192,7 @@ $(document).ready(function() {
 	 */
 	// Start the timer when more than 3 chars have been typed
 	$("#id_search_string").keyup(function(event) {
-		if (event.keyCode >= 65 && event.keyCode <= 90 && $(this).val().length >= 3) {
+		if (event.keyCode >= 65 && event.keyCode <= 90) {
 			var x = $(this).val().length;
 			clearTimeout(timer);
 			timer = setTimeout(update_recipe_page, 100);
