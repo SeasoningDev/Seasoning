@@ -153,6 +153,7 @@
         fix_moreinfo_links();
     });
     
+    // Make sure the '+' icons behind ingredients do their job
     function fix_moreinfo_links() {
         $('.ingredient-moreinfo-link, .endangered-icon').click(function() {
             var ing_id = $(this).parents('.ingredient').find('.ingredient-id').text();

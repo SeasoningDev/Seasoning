@@ -5,9 +5,13 @@
 function fix_ingredient_availabilities() {
 		// Fix every element showing availability data on the page
 		$(".ingredient-availability").each(function() {
+			if ($(this).hasClass("transformed")) {
+				return;
+			}
+			$(this).addClass("transformed");
 			
 			// The preservability of this ingredient
-			var preservability = Math.round(parseInt($(".available-in-preservability").text()) / 30);
+			var preservability = Math.round(parseInt($(this).find(".available-in-preservability").text()) / 30);
 	        
 			// The first available in indicator should have certain margins and a border
 		    var first = true;
