@@ -1,29 +1,45 @@
-
-	function fix_ingredient_availabilities() {
+/**
+ * This function will transform the bare availability data into
+ * eyecandy
+ */
+function fix_ingredient_availabilities() {
+		// Fix every element showing availability data on the page
 		$(".ingredient-availability").each(function() {
-			$(this).height(parseInt($(this).find(".number-of-groups").text())*30 + 25);
-		    var offset_top = 20;
+			
+			// The preservability of this ingredient
+			var preservability = Math.round(parseInt($(".available-in-preservability").text()) / 30);
+	        
+			// The first available in indicator should have certain margins and a border
 		    var first = true;
+		    
+		    // Markup every available in in this element
 		    $(this).children(".available-in").each(function() {
-		    	$(this).css("top", offset_top);
-		        offset_top = offset_top + 30;
-		        if (first) {
+		    	if (first) {
 		    		$(this).css('border-top', '1px solid #DDD');
-		    		$(this).css('padding-top', '10px');
+		    		$(this).css('padding-top', '5px');
 		    		first = false;
-		    		offset_top = offset_top + 10;
 		    	}
-		        var preservability = Math.round(parseInt($(".available-in-preservability").text()) / 30);
+		    	
+		    	// This should only be 1
 		        $(this).find(".availability-indicator").each(function() {
+		        	// The month when this availability starts
 		            var from = parseInt($(this).children(".available-from").text());
+		            // The month when this availability ends
 		            var until = parseInt($(this).children(".available-until").text());
+		            
+		            // The month when this availability ends with preservability accounted for
 		            var extended_until = (until + preservability - 1) % 12 + 1;
 		            
+		            // The percentage of the width every month gets
 		            var width_p_month = 8.33;
+		            
+		            // The percentage where the availability indicator starts
 		            var from_point = width_p_month * (from - 1);
-		            	            
+		            
+		            // Clear this element
 		            $(this).html("");
 		            
+		            // Check if we need 2 availability indicators for this available in
 		            if (from > (until + 1) ) {
 		                var second_indicator = $(this).clone();
 		                $(this).css("left", from_point + "%");
@@ -49,20 +65,28 @@
 		            if (preservability > 0 && from != (until + 1)) {
 		            	// preservability > 0: We only need to display a preservability bar if the ingredient is preservable
 		            	// from != (until + 1): No need to display preservability if the ingredient is available all year
+		            	
 		                var preservability_indicator = $(this).clone();
 		                preservability_indicator.addClass('preservability');
+		                
 		                if (extended_until > until) {
 		                    // We did not wrap around by adding preservability
-		                    preservability_indicator.css("left", left_margin + until_point - 20);
-		                    pres_width = total_width * (preservability/12) + 20;
-		                    preservability_indicator.css("width", pres_width);
+		                	
+		                    preservability_indicator.css("left", ((until * width_p_month) - 1) + "%");
+		                    pres_width = preservability * width_p_month + 1;
+		                    preservability_indicator.css("width", pres_width + "%");
 		                } else {
 		                    // preservability wraps around availability
-		                    preservability_indicator_2 = preservability_indicator.clone()
-		                    preservability_indicator.css("left", left_margin + until_point - 20);
-		                    preservability_indicator.css("width", total_width - until_point + 20);
-		                    preservability_indicator_2.css("left", left_margin);
-		                    preservability_indicator_2.css("width", total_width * (extended_until/12));
+		                    // Create a second preservability indicator
+		                	preservability_indicator_2 = preservability_indicator.clone();
+		                    
+		                	// First goes from 'until' month to last month
+		                    preservability_indicator.css("left", (until * width_p_month) + "%");
+		                    preservability_indicator.css("width", ((12 - until) * width_p_month) + "%");
+		                    
+		                    // Second goes from first month to 'extended until' month
+		                    preservability_indicator_2.css("left", 0);
+		                    preservability_indicator_2.css("width", (extended_until * width_p_month) + "%");
 		                    preservability_indicator_2.insertAfter($(this));
 		                }
 		                preservability_indicator.insertAfter($(this));

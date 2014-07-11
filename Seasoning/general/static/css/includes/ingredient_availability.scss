@@ -1,10 +1,14 @@
 .ingredient-availability {
   position: relative;
-  margin-bottom: 30px; }
+  margin-bottom: 30px;
+  padding-bottom: 5px; }
 
 .ingredient-availability .months {
 	margin-left: 160px;
 	height: 100%;
+	position: absolute;
+	left: 0;
+	right: 0;
 }
 
 .ingredient-availability .month {
@@ -19,14 +23,18 @@
 
 .ingredient-availability .month.alpha {
   border-left: none; }
+  
+.ingredient-availability #months-margin {
+	height: 20px;
+}
 
 .ingredient-availability .location-name {
   float: left;
   width: 160px; }
 
 .ingredient-availability .available-in {
-  position: absolute;
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 5px; }
   
 .ingredient-availability .availability-indicator-wrapper {
 	position: absolute;
