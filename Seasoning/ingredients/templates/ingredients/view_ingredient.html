@@ -11,57 +11,63 @@
 {% block ingredients-active %}active{% endblock %}
 
 {% block content %}
-
-<h1 class="ingredient-title">
-    {{ ingredient.name }}{% if ingredient.synonyms.all %}<span id="ingredient-synonyms">{% for synonym in ingredient.synonyms.all %}, {{ synonym.name }}{% endfor %}</span>{% endif %}
-    {% if user.is_staff %}<a href="/admin/ingredients/ingredient/{{ ingredient.id }}/">Aanpassen</a>{% endif %}
-</h1>
-
-<div id="ingredient-wrapper">
-	<img id="ingredient-image" src="{{ ingredient.image.url }}" alt="" title="{{ ingredient.image_source }}" />
+<div itemscope itemtype="http://www.schema.org/Thing">
+	<h1 class="ingredient-title">
+	    {{ ingredient.name }}{% if ingredient.synonyms.all %}<span id="ingredient-synonyms">{% for synonym in ingredient.synonyms.all %}, {{ synonym.name }}{% endfor %}</span>{% endif %}
+	    {% if user.is_staff %}<a href="/admin/ingredients/ingredient/{{ ingredient.id }}/">Aanpassen</a>{% endif %}
+	</h1>
+	<meta itemprop="name" content="{{ ingredient.name }}" />
+	{% for synonym in ingredient.synonyms.all %}
+	<meta itemprop="alternateName" content="{{ synonym.name }}" />
+	{% endfor %}
 	
-	<p>
-	    <strong>Categorie:</strong> {{ ingredient.get_category_display }}
-	</p>
-	<p>
-	    <strong>Huidige voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
-	</p>
-	<p>
-	    <strong>Beschrijving:</strong><br />
-	    {{ ingredient.description|markdown_safe|safe }}
-	</p>
-	
-	{% if ingredient.conservation_tip %}
-	<p>
-	    <strong>Bewaring:</strong><br />
-	    {{ ingredient.conservation_tip|markdown_safe|safe }}
-	</p>
-	{% endif %}
-	
-	{% if ingredient.preparation_tip %}
-	<p>
-	    <strong>Bereidingstip:</strong><br />
-	    {{ ingredient.preparation_tip|markdown_safe|safe }}
-	</p>
-	{% endif %}
-	
-	{% if ingredient.properties %}
-	<p>
-	    <strong>Eigenschappen:</strong><br />
-	    {{ ingredient.properties|markdown_safe|safe }}
-	</p>
-	{% endif %}
-	
-	{% if ingredient.type != 0 %}
-	<div id="ingredient-availability-wrapper">
-		{% include "includes/ingredient_availability.html" %}
+	<div id="ingredient-wrapper">
+		<img id="ingredient-image" src="{{ ingredient.image.url }}" alt="" title="{{ ingredient.image_source }}" itemprop="image" />
+		
+		<p>
+		    <strong>Categorie:</strong> {{ ingredient.get_category_display }}
+		</p>
+		<p>
+		    <strong>Huidige voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
+		</p>
+		<p>
+		    <strong>Beschrijving:</strong><br />
+		    <span itemprop="description">
+		    	{{ ingredient.description|markdown_safe|safe }}
+		    </span>
+		</p>
+		
+		{% if ingredient.conservation_tip %}
+		<p>
+		    <strong>Bewaring:</strong><br />
+		    {{ ingredient.conservation_tip|markdown_safe|safe }}
+		</p>
+		{% endif %}
+		
+		{% if ingredient.preparation_tip %}
+		<p>
+		    <strong>Bereidingstip:</strong><br />
+		    {{ ingredient.preparation_tip|markdown_safe|safe }}
+		</p>
+		{% endif %}
+		
+		{% if ingredient.properties %}
+		<p>
+		    <strong>Eigenschappen:</strong><br />
+		    {{ ingredient.properties|markdown_safe|safe }}
+		</p>
+		{% endif %}
+		
+		{% if ingredient.type != 0 %}
+		<div id="ingredient-availability-wrapper">
+			{% include "includes/ingredient_availability.html" %}
+		</div>
+		{% endif %}
+		
+		<p>
+		    <strong>Bronnen:</strong><br />
+		    {{ ingredient.source|linebreaks }}
+		</p>
 	</div>
-	{% endif %}
-	
-	<p>
-	    <strong>Bronnen:</strong><br />
-	    {{ ingredient.source|linebreaks }}
-	</p>
 </div>
-
 {% endblock %}
