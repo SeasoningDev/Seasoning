@@ -351,11 +351,11 @@
 	    
 	    <span class="recipe-rating">
 	    	{% rating_display_stars recipe.rating recipe.number_of_votes %}
-	    	<meta itemscope itemtype="http://www.schema.org/AggregateRating">
+	    	<span itemscope itemtype="http://www.schema.org/AggregateRating">
 		    	<meta itemprop="ratingValue" content={{ recipe.rating }} />
 		    	<meta itemprop="bestRating" content=5 />
-		    	<meta itemprop="ratingCount" content={ recipe.number_of_votes }} />
-		    </meta>
+		    	<meta itemprop="ratingCount" content={{ recipe.number_of_votes }} />
+		    </span>
 	    </span>
 	    
 	    <br class="clear" />
