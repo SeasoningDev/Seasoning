@@ -327,272 +327,278 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="recipe-title">
-    {{ recipe.name }}
-    <div id="recipe-actions">
-        {% if recipe.author == user or user.is_staff %}
-        <a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
-        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
-        {% endif %}
-    </div>
-</h1>
-
-<div id="below-recipe-name">
-    
-    <div id="add-info">
-    	{% if recipe.external %}
-    	<span id="author">Recept van <a href="{{ recipe.external_url }}" target="_blank">{{ recipe.author.get_full_name }}</a></span>
-    	{% else %}
-        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
-        <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
-        {% endif %}
-    </div>
-    
-    <span class="recipe-rating">
-    	{% rating_display_stars recipe.rating recipe.number_of_votes %}
-    </span>
-    
-    <br class="clear" />
-</div>
-
-{% if recipe.endangered %}
-<div id="endangered-notification">
-	Opgelet! Dit recept bevat een vissoort die mogelijk slecht beheerd wordt. Bekijk hieronder over welk ingrediënt het gaat en wees extra waakzaam bij 
-	aankoop. 
-</div>
-{% endif %}
-
-    
-<div id="recipe">
-    
-    <div id="first-information" style="{% if recipe.active_time > 0 %}min-height: 570px;{% else %}min-height: 500px;{% endif %}">
-        <div id="img-and-basic-user-options">
-            <div id="recipe-img-wrapper">
-				{% if recipe.endangered %}
-				<img class="corner-ribbon" src="{{ STATIC_URL }}img/decoration/corner-ribbon-endangered.png" title="Opgelet! Dit recept bevat een vissoort die mogelijk overbevist wordt."/>
-				{% elif recipe.inseason %}
-				<img class="corner-ribbon" src="{{ STATIC_URL}}img/decoration/corner-ribbon-inseason.png" title="Dit recept is momenteel in seizoen!" />
-				{% endif %}
-				<img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
-			</div>
-            <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
-		       	<span class="footprint-cloud-text">
-		       		{{ recipe.total_footprint|floatformat:-2 }}
-		       	</span>
-		    </span>
-	        
-            <div id="rating">
-                <strong>Jouw waardering</strong>
-                <div id="user-rating">
-                    {% if user.is_authenticated %}
-                    <div id="user-rating-display"> </div> {% include "includes/ajax-loader.html" %}
-                    {% else %}
-                    <a href="{% url 'login' %}?next={% url 'view_recipe' recipe.id %}">Meld je aan</a> om een rating aan dit recept te geven
-                    {% endif %}
-                </div>
-            </div>
-            
-            {% if recipe.active_time > 0 %}
-            <div id="time-needed">
-                <strong>Bereidingstijd</strong>
-                <div class="timebar" title="Dit recept duurt ongeveer {{ total_time }} min om klaar te maken (waarvan je {{ recipe.active_time }} min actief bezig zal zijn)">
-                    <div class="timebar-active" style="width: {{ active_time_perc }}%"><span class="time-label">{{ recipe.active_time }} min</span></div>
-                    {% if recipe.passive_time > 0 %}
-                    <div class="timebar-passive" style="width: {{ passive_time_perc }}%"><span class="time-label">{{ total_time }} min</span></div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-            
-            <div id="portions">
-                <strong>Porties</strong>
-                <div id="portions-slider-wrapper">
-                    <div id="portions-slider-labels">
-                        <div class="portions-slider-label" style="left: 0%">
-                            <span> </span>1
-                        </div>
-                        <div class="portions-slider-label" style="left: 14.3%">
-                            <span> </span>2
-                        </div>
-                        <div class="portions-slider-label" style="left: 28.6%">
-                            <span> </span>3
-                         </div>
-                        <div class="portions-slider-label" style="left: 42.9%">
-                            <span> </span>4
-                         </div>
-                        <div class="portions-slider-label" style="left: 57.2%">
-                            <span> </span>5
-                         </div>
-                        <div class="portions-slider-label" style="left: 71.4%">
-                            <span> </span>6
-                         </div>
-                        <div class="portions-slider-label" style="left: 85.7%">
-                            <span> </span>7
-                         </div>
-                        <div class="portions-slider-label" style="left: 100%">
-                            <span> </span>8
-                         </div>
-                    </div>
-                    <div id="portions-slider"> </div>
-                    <br class="clear" />
-                </div>
-                <input id="custom-portions-input" type="text" value="{{ recipe.portions }}"/>
-            </div>
-        </div>
-        
-        <div id="basic-info">
-            <div id="vague-description">
-                <strong>Categorie</strong><br />
-                {% if recipe.cuisine %}
-                	{{ recipe.cuisine }}
-                	{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
-                	{{ recipe.get_course_display|lower }}
-                {% else %}
-                	{{ recipe.get_course_display }}
-                {% endif %}
-                
-                <div id="veganism">
-                    <img src="{{ STATIC_URL }}img/icons/vegan.png" {% if not recipe.veganism == 2 %}class="not-this"{% else %}title="Dit is een veganistisch recept"{% endif %} alt="" />
-                    <img src="{{ STATIC_URL }}img/icons/vegetarian.png" {% if not recipe.veganism == 1 %}class="not-this"{% else %}title="Dit is een vegetarisch recept"{% endif %} alt="" />
-                    <img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" {% if not recipe.veganism == 0 %}class="not-this"{% else %}title="Dit is een niet-vegetarisch recept"{% endif %} alt="" />
-                </div>
-            </div>
-            
-            {% if not recipe.external or recipe.description != " " %}
-            <div id="description">
-                <strong>Beschrijving</strong><br />
-                {{ recipe.description }}
-            </div>
-            {% endif %}
-            
-            {% if recipe.external %}
-            <div id="instructions" style="margin-top: 20px;">
-		        <strong>Bereidingswijze</strong>
-		        <div id="instructions" class="markdown-container">
-		           <div id="instructions-warning">
-		                Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
-		                is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
-		            </div>
-		            <form action="{{ recipe.external_url }}" method="post" target="_blank" style="margin: 10px 0 0;">
-		            	<button type="submit" style="margin: 0;">Bekijk het volledige recept op EVA</button>
-		            </form>
-		        </div>
-        	</div>
-        	{% endif %}
-        	
-        	<div id="charts-reserver" style="height: 358px; margin: 20px 0 10px;"></div>
-            
-        </div>
-        
-        <div id="recipe-charts">
-	        <div id="chart-tabs">
-	            <ul>
-	                <li><a href="#tabs-1">Dynamiek</a></li>
-	                <li><a href="#tabs-2">Verhoudingen</a></li>
-	            </ul>
-	            <div id="tabs-1">
-	                <div id="recipe-fpevo-chart">
-	                    
+<div itemscope itemtype="http://schema.org/Recipe">
+	<h1 class="recipe-title" itemprop="name">
+	    {{ recipe.name }}
+	    <span id="recipe-actions">
+	        {% if recipe.author == user or user.is_staff %}
+	        <a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
+	        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
+	        {% endif %}
+	    </span>
+	</h1>
+	
+	<div id="below-recipe-name">
+	    
+	    <div id="add-info">
+	    	{% if recipe.external %}
+	    	<span id="author">Recept van <a href="{{ recipe.external_url }}" target="_blank">{{ recipe.author.get_full_name }}</a></span>
+	    	{% else %}
+	        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
+	        <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
+	        {% endif %}
+	    </div>
+	    
+	    <span class="recipe-rating">
+	    	{% rating_display_stars recipe.rating recipe.number_of_votes %}
+	    	<span style="display: none;" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+	    		<span itemprop="ratingValue">{{ recipe.rating }}</span>
+	    		<span itemprop="bestRating">5</span>
+	    		<span itemprop="ratingCount">{{ recipe.number_of_votes }}</span>
+	    	</span>
+	    </span>
+	    
+	    <br class="clear" />
+	</div>
+	
+	{% if recipe.endangered %}
+	<div id="endangered-notification">
+		Opgelet! Dit recept bevat een vissoort die mogelijk slecht beheerd wordt. Bekijk hieronder over welk ingrediënt het gaat en wees extra waakzaam bij 
+		aankoop. 
+	</div>
+	{% endif %}
+	
+	    
+	<div id="recipe">
+	    
+	    <div id="first-information" style="{% if recipe.active_time > 0 %}min-height: 570px;{% else %}min-height: 500px;{% endif %}">
+	        <div id="img-and-basic-user-options">
+	            <div id="recipe-img-wrapper">
+					{% if recipe.endangered %}
+					<img class="corner-ribbon" src="{{ STATIC_URL }}img/decoration/corner-ribbon-endangered.png" title="Opgelet! Dit recept bevat een vissoort die mogelijk overbevist wordt."/>
+					{% elif recipe.inseason %}
+					<img class="corner-ribbon" src="{{ STATIC_URL}}img/decoration/corner-ribbon-inseason.png" title="Dit recept is momenteel in seizoen!" />
+					{% endif %}
+					<img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
+				</div>
+	            <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
+			       	<span class="footprint-cloud-text">
+			       		{{ recipe.total_footprint|floatformat:-2 }}
+			       	</span>
+			    </span>
+		        
+	            <div id="rating">
+	                <strong>Jouw waardering</strong>
+	                <div id="user-rating">
+	                    {% if user.is_authenticated %}
+	                    <div id="user-rating-display"> </div> {% include "includes/ajax-loader.html" %}
+	                    {% else %}
+	                    <a href="{% url 'login' %}?next={% url 'view_recipe' recipe.id %}">Meld je aan</a> om een rating aan dit recept te geven
+	                    {% endif %}
 	                </div>
 	            </div>
-	            <div id="tabs-2">
-	                <div id="recipe-fprel-chart">
-	                    
+	            
+	            {% if recipe.active_time > 0 %}
+	            <div id="time-needed">
+	                <strong>Bereidingstijd</strong>
+	                <div class="timebar" title="Dit recept duurt ongeveer {{ total_time }} min om klaar te maken (waarvan je {{ recipe.active_time }} min actief bezig zal zijn)">
+	                    <div class="timebar-active" style="width: {{ active_time_perc }}%"><span class="time-label" itemprop="prepTime"">{{ recipe.active_time }} min</span></div>
+	                    {% if recipe.passive_time > 0 %}
+	                    <div class="timebar-passive" style="width: {{ passive_time_perc }}%"><span class="time-label" itemprop="totalTime">{{ total_time }} min</span></div>
+	                    {% endif %}
 	                </div>
+	            </div>
+	            {% endif %}
+	            
+	            <div id="portions">
+	                <strong>Porties</strong>
+	                <div id="portions-slider-wrapper">
+	                    <div id="portions-slider-labels">
+	                        <div class="portions-slider-label" style="left: 0%">
+	                            <span> </span>1
+	                        </div>
+	                        <div class="portions-slider-label" style="left: 14.3%">
+	                            <span> </span>2
+	                        </div>
+	                        <div class="portions-slider-label" style="left: 28.6%">
+	                            <span> </span>3
+	                         </div>
+	                        <div class="portions-slider-label" style="left: 42.9%">
+	                            <span> </span>4
+	                         </div>
+	                        <div class="portions-slider-label" style="left: 57.2%">
+	                            <span> </span>5
+	                         </div>
+	                        <div class="portions-slider-label" style="left: 71.4%">
+	                            <span> </span>6
+	                         </div>
+	                        <div class="portions-slider-label" style="left: 85.7%">
+	                            <span> </span>7
+	                         </div>
+	                        <div class="portions-slider-label" style="left: 100%">
+	                            <span> </span>8
+	                         </div>
+	                    </div>
+	                    <div id="portions-slider"> </div>
+	                    <br class="clear" />
+	                </div>
+	                <input id="custom-portions-input" type="text" value="{{ recipe.portions }}"/>
 	            </div>
 	        </div>
-	    </div>
-        
-        <div id="charts-ajax-loader">
-            {% include "includes/big-ajax-loader.html" %}
-        </div>
-        
-        <br class="clear" />
-    </div>
-    
-    <div class="recipe-info-wrapper">
-        <h3><span style="position:relative;">Ingrediënten<div id="ingredients-loader" style="position:absolute;top:2px;right:-55px;height:50px;display:none;">{% include "includes/ajax-loader.html" %}</div></span></h3>
-        
-        <div id="ingredients">
-            {% include "includes/ingredient_list.html" %}
-        </div>
-        {% if recipe.extra_info %}
-        <div id="extra-info">
-            <strong>Extra info en benodigdheden</strong><br />
-            {{ recipe.extra_info|linebreaks }}
-        </div>
-        {% endif %}
-    </div>
-    
-    {% if not recipe.external %}
-    <div class="recipe-info-wrapper">
-        <h3>Bereidingswijze</h3>
-        <div id="instructions" class="markdown-container">
-           <div id="instructions-warning">
-                Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
-                is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
-            </div>
-            {{ recipe.instructions|markdown|safe }}
-        </div>  
-    </div>
-    {% endif %}
-</div>
-
-<div id="comment-section">
-	<div id="give-comment">
-	    <h3>Geef een reactie op dit recept:</h3>
-	    {% if user.is_authenticated %}
-	        <div id="new-comment" class="comment">
-	            <div class="commenter-img">
-	                <img src="{{ MEDIA_URL }}{{ user.avatar }}" alt="De avatar van {{ user.get_full_name }}"/>
-	            </div>
-	            <div class="comment-content">
-	                <div class="commenter"><a href="{% url 'user_profile' user.id %}">{{ user.get_full_name }}</a> zegt:</div>
-	                <div class="comment-body">
-	                    {% get_comment_form for recipe as form %}
-	                    <form action="{% comment_form_target %}" method="POST">
-	                        {% csrf_token %}
-	                        {{ form.comment }}
-	                        {{ form.honeypot }}
-	                        {{ form.content_type }}
-	                        {{ form.object_pk }}
-	                        {{ form.timestamp }}
-	                        {{ form.security_hash }}
-	                        <input type="hidden" name="next" value="{{ request.path }}" />
-	                        <input type="submit" value="Voeg Reactie Toe" id="id_submit" />
-	                    </form>
+	        
+	        <div id="basic-info">
+	            <div id="vague-description">
+	                <strong>Categorie</strong><br />
+	                {% if recipe.cuisine %}
+	                	<span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
+	                	<span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
+	                {% else %}
+	                	<span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
+	                {% endif %}
+	                
+	                <div id="veganism">
+	                    <img src="{{ STATIC_URL }}img/icons/vegan.png" {% if not recipe.veganism == 2 %}class="not-this"{% else %}title="Dit is een veganistisch recept"{% endif %} alt="" />
+	                    <img src="{{ STATIC_URL }}img/icons/vegetarian.png" {% if not recipe.veganism == 1 %}class="not-this"{% else %}title="Dit is een vegetarisch recept"{% endif %} alt="" />
+	                    <img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" {% if not recipe.veganism == 0 %}class="not-this"{% else %}title="Dit is een niet-vegetarisch recept"{% endif %} alt="" />
 	                </div>
 	            </div>
-	            <br class="clear" />
+	            
+	            {% if not recipe.external or recipe.description != " " %}
+	            <div id="description">
+	                <strong>Beschrijving</strong><br />
+	                <span itemprop="description">{{ recipe.description }}</span>
+	            </div>
+	            {% endif %}
+	            
+	            {% if recipe.external %}
+	            <div id="instructions" style="margin-top: 20px;">
+			        <strong>Bereidingswijze</strong>
+			        <div id="instructions" class="markdown-container">
+			           <div id="instructions-warning">
+			                Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
+			                is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
+			            </div>
+			            <form action="{{ recipe.external_url }}" method="post" target="_blank" style="margin: 10px 0 0;">
+			            	<button type="submit" style="margin: 0;">Bekijk het volledige recept op EVA</button>
+			            </form>
+			        </div>
+	        	</div>
+	        	{% endif %}
+	        	
+	        	<div id="charts-reserver" style="height: 358px; margin: 20px 0 10px;"></div>
+	            
+	        </div>
+	        
+	        <div id="recipe-charts">
+		        <div id="chart-tabs">
+		            <ul>
+		                <li><a href="#tabs-1">Dynamiek</a></li>
+		                <li><a href="#tabs-2">Verhoudingen</a></li>
+		            </ul>
+		            <div id="tabs-1">
+		                <div id="recipe-fpevo-chart">
+		                    
+		                </div>
+		            </div>
+		            <div id="tabs-2">
+		                <div id="recipe-fprel-chart">
+		                    
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+	        
+	        <div id="charts-ajax-loader">
+	            {% include "includes/big-ajax-loader.html" %}
 	        </div>
 	        
 	        <br class="clear" />
-	    {% else %}
-	        <p><a href="{% url 'login' %}?next={{ request.path  }}">Meld je aan</a> om een reactie te geven.</p>
+	    </div>
+	    
+	    <div class="recipe-info-wrapper">
+	        <h3><span style="position:relative;">Ingrediënten<div id="ingredients-loader" style="position:absolute;top:2px;right:-55px;height:50px;display:none;">{% include "includes/ajax-loader.html" %}</div></span></h3>
+	        
+	        <div id="ingredients">
+	            {% include "includes/ingredient_list.html" %}
+	        </div>
+	        {% if recipe.extra_info %}
+	        <div id="extra-info">
+	            <strong>Extra info en benodigdheden</strong><br />
+	            {{ recipe.extra_info|linebreaks }}
+	        </div>
+	        {% endif %}
+	    </div>
+	    
+	    {% if not recipe.external %}
+	    <div class="recipe-info-wrapper">
+	        <h3>Bereidingswijze</h3>
+	        <div id="instructions" class="markdown-container">
+	           <div id="instructions-warning">
+	                Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
+	                is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
+	            </div>
+	            <span itemprop="recipeInstructions">{{ recipe.instructions|markdown|safe }}</span>
+	        </div>  
+	    </div>
 	    {% endif %}
 	</div>
-	<h3>Reacties op dit recept:</h3>
-	<div id="comment-list">
-	    {% for comment in comments %}
-	    <div id="comment-{{ forloop.counter }}" class="comment">
-	        <div class="commenter-img">
-	            <img src="{{ MEDIA_URL }}{{ comment.user.avatar }}" alt="De avatar van {{ comment.user.get_full_name }}"/>
-	        </div>
-	        <div class="comment-content">
-	            <div class="commenter"><a href="{% url 'user_profile' comment.user.id %}">{{ comment.user.get_full_name }}</a> zegt:</div>
-	            <div class="comment-submit-date"><a href="#comment-{{ forloop.counter }}">{{ comment.submit_date|date:"j F Y, G" }}u{{ comment.submit_date|date:"i" }}</a></div>
-	            {% if comment.user == user %}<div class="comment-delete"><a href="{% url 'delete_comment' recipe.id comment.id %}">Verwijder Reactie</a></div>{% endif %}
-	            <div class="comment-body">
-	                {{ comment.comment }}
-	            </div>
-	        </div>
-	        <br class="clear" />
-	    </div>
-	    {% empty %}
-	    <div id="no-comments">
-	        Dit recept heeft nog geen reacties gekregen...
-	    </div>
-	    {% endfor %}
+	
+	<div id="comment-section">
+		<div id="give-comment">
+		    <h3>Geef een reactie op dit recept:</h3>
+		    {% if user.is_authenticated %}
+		        <div id="new-comment" class="comment">
+		            <div class="commenter-img">
+		                <img src="{{ MEDIA_URL }}{{ user.avatar }}" alt="De avatar van {{ user.get_full_name }}"/>
+		            </div>
+		            <div class="comment-content">
+		                <div class="commenter"><a href="{% url 'user_profile' user.id %}">{{ user.get_full_name }}</a> zegt:</div>
+		                <div class="comment-body">
+		                    {% get_comment_form for recipe as form %}
+		                    <form action="{% comment_form_target %}" method="POST">
+		                        {% csrf_token %}
+		                        {{ form.comment }}
+		                        {{ form.honeypot }}
+		                        {{ form.content_type }}
+		                        {{ form.object_pk }}
+		                        {{ form.timestamp }}
+		                        {{ form.security_hash }}
+		                        <input type="hidden" name="next" value="{{ request.path }}" />
+		                        <input type="submit" value="Voeg Reactie Toe" id="id_submit" />
+		                    </form>
+		                </div>
+		            </div>
+		            <br class="clear" />
+		        </div>
+		        
+		        <br class="clear" />
+		    {% else %}
+		        <p><a href="{% url 'login' %}?next={{ request.path  }}">Meld je aan</a> om een reactie te geven.</p>
+		    {% endif %}
+		</div>
+		<h3>Reacties op dit recept:</h3>
+		<div id="comment-list">
+		    {% for comment in comments %}
+		    <div id="comment-{{ forloop.counter }}" class="comment">
+		        <div class="commenter-img">
+		            <img src="{{ MEDIA_URL }}{{ comment.user.avatar }}" alt="De avatar van {{ comment.user.get_full_name }}"/>
+		        </div>
+		        <div class="comment-content">
+		            <div class="commenter"><a href="{% url 'user_profile' comment.user.id %}">{{ comment.user.get_full_name }}</a> zegt:</div>
+		            <div class="comment-submit-date"><a href="#comment-{{ forloop.counter }}">{{ comment.submit_date|date:"j F Y, G" }}u{{ comment.submit_date|date:"i" }}</a></div>
+		            {% if comment.user == user %}<div class="comment-delete"><a href="{% url 'delete_comment' recipe.id comment.id %}">Verwijder Reactie</a></div>{% endif %}
+		            <div class="comment-body">
+		                {{ comment.comment }}
+		            </div>
+		        </div>
+		        <br class="clear" />
+		    </div>
+		    {% empty %}
+		    <div id="no-comments">
+		        Dit recept heeft nog geen reacties gekregen...
+		    </div>
+		    {% endfor %}
+		</div>
 	</div>
 </div>
 
