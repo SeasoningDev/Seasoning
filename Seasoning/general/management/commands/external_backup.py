@@ -17,7 +17,7 @@ class Command(NoArgsCommand):
         OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
         
         # Redirect URI for installed apps
-        REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
+        REDIRECT_URI = 'https://www.seasoning.be'
         
         # Path to the file to upload
         FILENAME = 'document.txt'
