@@ -7,6 +7,7 @@ from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 import pprint
 from oauth2client.file import Storage
+import datetime
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
@@ -46,13 +47,13 @@ class Command(NoArgsCommand):
         
         drive_service = build('drive', 'v2', http=http)
         
+        today = datetime.date.today()
+        
         # Insert a file
         media_body = MediaFileUpload(FILENAME, mimetype='text/plain', resumable=True)
         body = {
-            'title': 'My document',
-            'description': 'A test document',
-            'mimeType': 'text/plain'
+            'title': 'seasoning-%s.sql.bzip2' % today.strftime('%Y-%m-%d'),
+            'description': 'Seasoning database backup for %s' % today.strftime('%d-%m-%Y'),
         }
         
         f = drive_service.files().insert(body=body, media_body=media_body).execute()
-        pprint.pprint(f)
