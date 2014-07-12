@@ -7,11 +7,11 @@
 
 {% block content %}
 
-<div class="news-item-wrapper">
-    <div class="subject">{{ news_item.subject }}</div>
-    <div class="author">Gepost door {{ news_item.author.givenname }} op {{ news_item.time_published|date:"d E Y, H" }}u{{ news_item.time_published|date:"i" }}</div>
-    <img class="news-image" src="{{ news_item.image.url }}" title="{{ news_item.image_source }}" alt="" />
-    <div class="content">{{ news_item.content|markdown_safe|safe }}</div>
+<div class="news-item-wrapper" itemscope itemtype="http://www.schema.org/Article">
+    <div class="subject" itemprop="title">{{ news_item.subject }}</div>
+    <div class="author">Gepost door <span itemprop="author">{{ news_item.author.givenname }}</span> op {{ news_item.time_published|date:"d E Y, H" }}u{{ news_item.time_published|date:"i" }}</div>
+    <img class="news-image" src="{{ news_item.image.url }}" title="{{ news_item.image_source }}" alt="" itemprop="image" />
+    <div class="content" itemprop="articleBody">{{ news_item.content|markdown_safe|safe }}</div>
 </div>
 
 {% endblock %}

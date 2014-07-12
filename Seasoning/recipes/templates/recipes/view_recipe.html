@@ -351,11 +351,9 @@
 	    
 	    <span class="recipe-rating">
 	    	{% rating_display_stars recipe.rating recipe.number_of_votes %}
-	    	<span style="display: none;" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-	    		<span itemprop="ratingValue">{{ recipe.rating }}</span>
-	    		<span itemprop="bestRating">5</span>
-	    		<span itemprop="ratingCount">{{ recipe.number_of_votes }}</span>
-	    	</span>
+	    	<meta itemprop="ratingValue" content={{ recipe.rating }} />
+	    	<meta itemprop="bestRating" content=5 />
+	    	<meta itemprop="ratingCount" content={ recipe.number_of_votes }} />
 	    </span>
 	    
 	    <br class="clear" />
@@ -406,10 +404,8 @@
 	                    {% if recipe.passive_time > 0 %}
 	                    <div class="timebar-passive" style="width: {{ passive_time_perc }}%"><span class="time-label">{{ total_time }} min</span></div>
 	                    {% endif %}
-	                    <span style="display: none">
-	                    	<span itemprop="prepTime">P0M{{ recipe.active_time }}M</span>
-	                    	<span itemprop="totalTime">P0M{{ recipe.total_time }}M</span>
-	                    </span>
+	                    <meta itemprop="prepTime" content="P0M{{ recipe.active_time }}M" />
+	                    <meta itemprop="totalTime" content="P0M{{ recipe.total_time }}M" />
 	                </div>
 	            </div>
 	            {% endif %}
