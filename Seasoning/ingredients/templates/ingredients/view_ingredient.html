@@ -31,12 +31,13 @@
 		    <strong>Huidige voetafdruk:</strong> {{ ingredient.footprint|floatformat:2 }} kgCO2/{{ ingredient.primary_unit.short }}
 		</p>
 		<p>
-		    <strong>Beschrijving:</strong><br />
-		    <span itemprop="description">
-		    	{{ ingredient.description|markdown_safe|safe }}
-		    </span>
+		    <strong>Beschrijving:</strong>
 		</p>
 		
+		<span itemprop="description">
+		  	{{ ingredient.description|markdown_safe|safe }}
+		</span>
+				
 		{% if ingredient.conservation_tip %}
 		<p>
 		    <strong>Bewaring:</strong><br />
