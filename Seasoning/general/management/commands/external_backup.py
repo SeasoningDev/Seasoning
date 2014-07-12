@@ -1,6 +1,7 @@
 from django.core.management.base import NoArgsCommand
 from oauth2client.client import OAuth2WebServerFlow
-from Seasoning.settings import GOOGLE_APP_ID as CLIENT_ID, GOOGLE_SECRET as CLIENT_SECRET, GOOGLE_CREDS_FILE as CRED_FILENAME
+from Seasoning.settings import GOOGLE_APP_ID as CLIENT_ID, GOOGLE_SECRET as CLIENT_SECRET, GOOGLE_CREDS_FILE as CRED_FILENAME,\
+    DATABASE_DAILY_BACKUP_FILE
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
@@ -20,7 +21,7 @@ class Command(NoArgsCommand):
         REDIRECT_URI = 'https://www.seasoning.be'
         
         # Path to the file to upload
-        FILENAME = 'document.txt'
+        FILENAME = DATABASE_DAILY_BACKUP_FILE
         
         ### For storing token
         storage = Storage(CRED_FILENAME)
