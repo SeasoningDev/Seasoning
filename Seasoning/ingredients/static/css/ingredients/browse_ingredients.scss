@@ -3,7 +3,7 @@
 }
 
 #browse-ingredients-line {
-	margin: 10px 0;
+	margin: 30px 0 10px;
 }
 
 #ingredient-summaries-wrapper #search-result-count {
@@ -19,7 +19,9 @@
   position: relative;
   text-align: center; }
 
-@media only screen and (max-width: 963px) {
-
+@media only screen and (max-width: 767px) {
+	#ingredient-summaries-wrapper #search-result-count {
+		width: 100%;
+	}
 		
 }
