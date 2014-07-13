@@ -54,6 +54,11 @@
 	padding-top: 50px;
 }
 
+#info-img-3 {
+	float: left;
+	margin: 40px 42px 40px -2px;
+}
+
 #homepage-bottom-p {
 	width: 60%; 
 	margin: 0 auto 20px;
@@ -80,7 +85,7 @@
 	}
 	
 	#info-img-container-3 .info-img {
-		padding: 0 0 20px 30px;
+		padding: 0;
 	}
 	
 	#homepage-bottom-p {
@@ -136,5 +141,12 @@
 	
 	#quicknav #add-button-wrapper {
 		margin: 0;
+	}
+}
+
+@media only screen and (max-width: 969px) {
+	
+	#arrow2 {
+		display: none;
 	}
 }
