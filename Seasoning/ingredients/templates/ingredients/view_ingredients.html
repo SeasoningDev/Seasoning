@@ -16,6 +16,11 @@
 	}
 	
 	 $(document).ready(function() {
+			
+		$("#keywords-submit").click(function() {
+			update_ingredients();
+			return false;
+		});
         
     	$("#ingredient-summaries-wrapper").ajax_load({
     		ajax_url: '{% url "ajax_ingredient_list" %}',
