@@ -112,18 +112,6 @@ def contact_form(request, contact_type):
     
     return render(request, 'contact_form.html', {'form': form,
                                                  'contact_type': TYPES[contact_type]['title']})
-    
-@staff_member_required
-def backup_db(request):
-    '''
-    Backup the Seasoning Database to disk
-    '''
-    db = settings.DATABASES['default']
-    filename = "/backups/mysql/%s-%s.sql.bzip2" % (db['NAME'], time.strftime('%Y-%m-%d'))
-    cmd = 'mysqldump --opt -u %s -p%s -e -c %s | bzip2 -c > %s' % (db['USER'], db['PASSWORD'], db['NAME'], filename)
-    os.popen(cmd)
-    
-    return redirect(home)
 
 @staff_member_required
 def upload_static_image(request):

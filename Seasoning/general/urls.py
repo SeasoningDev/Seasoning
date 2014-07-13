@@ -13,7 +13,6 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     
     # Backup Database
-    url(r'^backup/$', 'general.views.backup_db'),
     url(r'^upload/img/$', 'general.views.upload_static_image'),
     
     url(r'^contribute/$', 'general.views.contribute', name='contribute'),
