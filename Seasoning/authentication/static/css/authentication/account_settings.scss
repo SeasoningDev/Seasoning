@@ -236,6 +236,7 @@
 #account-settings-links li a {
 	color: #629B31;
 	text-decoration: none;
+	white-space: nowrap;
 }
 
 #account-settings-links li a:hover {
@@ -356,5 +357,42 @@
 	
 	#content-container {
 		width: 98%;
+	}
+
+	#account-settings #account-info {
+		width: auto;
+	}
+	
+	#account-info-stats {
+		clear: left;
+	}
+}
+
+@media only screen and (max-width: 650px) {
+	#account-settings #account-image {
+		margin: 10px 0;
+	}
+	
+	#account-info {
+		clear: left;
+	}
+	
+	#account-settings #account-info .account-info-stat {
+		float: none;
+		margin-left: auto;
+		margin-right: auto;
+		width: auto;
+	}
+	
+	#account-settings #account-info .account-info-stat strong {
+		height: auto;
+		width: auto;
+	}
+}
+
+
+@media only screen and (max-width: 400px) {
+	#account-settings-links li a {
+		font-size: .8em;
 	}
 }
