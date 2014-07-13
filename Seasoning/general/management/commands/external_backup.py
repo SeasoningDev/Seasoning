@@ -54,7 +54,8 @@ class Command(NoArgsCommand):
         body = {
             'title': 'seasoning-%s.sql.bzip2' % today.strftime('%Y-%m-%d'),
             'description': 'Seasoning database backup for %s' % today.strftime('%d-%m-%Y'),
-            'parents': ['Archief/Backups/Database']
+            'parents': [{"kind": "drive#fileLink",
+                         "id": "0B8LyPJRp3UzOTXJIQ0tyYVY4VzQ"}]
         }
         
         f = drive_service.files().insert(body=body, media_body=media_body).execute()
