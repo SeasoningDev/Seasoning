@@ -2,6 +2,7 @@
 import os
 import sys
 from Seasoning import secrets
+from django.core.exceptions import SuspiciousOperation
 
 # Debug settings
 DEBUG = secrets.DEBUG
@@ -195,6 +196,14 @@ AUTHENTICATION_BACKENDS = (
 
 SERVER_EMAIL = 'server@seasoning.be'
 
+
+def skip_suspicious_operations(record):
+    if record.exc_info:
+        exc_value = record.exc_info[1]
+        if isinstance(exc_value, SuspiciousOperation):
+            return False
+        return True
+  
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.
@@ -206,12 +215,16 @@ LOGGING = {
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
-        }
+        },
+        'skip_suspicious_operations': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_suspicious_operations,
+        },
     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_false', 'skip_suspicious_operations'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'console': {
