@@ -253,17 +253,23 @@ class Ingredient(models.Model):
                     
                     # The end date of this available in with preservability
                     extended_until_date = avail.extended_date_until(date_until_extension=self.preservability)
+                    
                     # Add a day to include dates that end the day before the start date => these are valid as well
                     extended_until_date += datetime.timedelta(days=1)
+                    
+                    extended_until_date = extended_until_date.replace(year=AvailableIn.BASE_YEAR)
                     
                     if extended_until_date <= current_date:
                         # The availability wrapped around the year => we're finished
                         return True
                     
                     else:
-                        if current_date.year < extended_until_date.year:
-                            # We've wrapped around
+                        # If we wrapped around and overshot current date, we're still finished
+                        extended_until_date_year_intact = avail.extended_date_until(date_until_extension=self.preservability)
+                        if extended_until_date_year_intact.year > extended_until_date.year and extended_until_date > avail.date_from:
+                            # We wrapped around
                             return True
+                        
                     current_date = extended_until_date
                     
             if before_loop_date == current_date:
