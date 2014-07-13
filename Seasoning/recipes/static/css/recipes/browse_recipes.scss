@@ -22,10 +22,18 @@ form.keywords {
 	display: none;
 }
 
-#advanced-link {
+.advanced-link {
   position: absolute;
   top: 19px;
   font-size: 12px; }
+ 
+#advanced-link {
+	display: none;
+}
+
+#not-advanced-link {
+	display: block;
+}
 
 #advanced-search {
   position: absolute;
@@ -241,20 +249,24 @@ form.keywords {
 		display: none;
 	}
 	
-	#basic-search {
-		padding-top: 10px;
-	}
-	
 	#search-form-divider {
 		display: none;
 	}
 	
-	#advanced-link {
+	.advanced-link {
 		position: inherit;
 		width: 320px;
 		margin: 20px auto 0;
 		display: block;
 		text-align: center;
+	}
+ 
+	#advanced-link {
+		display: block;
+	}
+	
+	#not-advanced-link {
+		display: none;
 	}
 	
 	#advanced-search {
@@ -263,6 +275,7 @@ form.keywords {
 		margin: 5px auto;
 		width: 320px;
 		border: none;
+		display: none;
 	}
 	
 	#browse-recipe-summaries-wrapper {
@@ -271,6 +284,11 @@ form.keywords {
 	
 	#browse-recipe-summaries-wrapper.advanced {
 		width: 100%;
+	}
+
+	#browse-recipes-right-column.advanced {
+		width: 100%;
+  		min-height: 0;
 	}
 	
 	#browse-recipe-summaries-wrapper #search-result-count {

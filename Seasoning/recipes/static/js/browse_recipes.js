@@ -20,20 +20,25 @@ $(document).ready(function() {
 	
 	// Toggle the Advanced Search Window
 	$("#advanced-link").click(function() {
-		if ($("#advanced-search").is(":visible")) {
-			// Hide
-			$("#advanced-search").slideUp(1000, function() {
-				$("#advanced-link").text("Geavanceerd zoeken");
-				$("#id_advanced_search").val("False");
-				$("#browse-recipes-right-column").removeClass("advanced");
-			});
-		} else {
-			// Show
-			$("#advanced-search").slideDown(1000);
-			$("#advanced-link").text("Niet-geavanceerd zoeken");
-			$("#id_advanced_search").val("True");
-			$("#browse-recipes-right-column").addClass("advanced");
-		}
+		$("#advanced-link").hide();
+		$("#not-advanced-link").show().css('display', 'block');
+
+		$("#advanced-search").slideDown(1000);
+		$("#id_advanced_search").val("True");
+		$("#browse-recipes-right-column").addClass("advanced");
+		
+		return false;
+	});
+	
+	$("#not-advanced-link").click(function() {
+		$("#advanced-search").slideUp(1000, function() {
+			$("#not-advanced-link").hide();
+			$("#advanced-link").show().css('display', 'block');
+			
+			$("#id_advanced_search").val("False");
+			$("#browse-recipes-right-column").removeClass("advanced");
+		});
+		
 		return false;
 	});
 
