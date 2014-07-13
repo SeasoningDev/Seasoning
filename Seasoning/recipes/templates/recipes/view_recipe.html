@@ -27,14 +27,19 @@
             data : {recipe : {{ recipe.id }}},
             success: function(data) {
                 evochart.addSeries({
+                	name: "Vandaag",
+                	data: [[12*(data.doy/365), 100], [12*(data.doy/365), -5]],
+                	color: "#000",
+                	tooltip: {
+                		headerFormat: "",
+                		pointFormat: "Vandaag (" + $.datepicker.formatDate('dd-mm-yy', new Date()) + ")"
+                	}
+                });
+                evochart.addSeries({
                   name: "Voetafdruk",
                   data: data.footprints
                 });
-                evochart.renderer.path(['M', 63+(427/366)*data.doy, 250, 'L', 63+(427/366)*data.doy, 40]).attr({
-                    'stroke-width': 1,
-                    'stroke': 'black',
-                    'zIndex': 1000
-                }).add();
+                evochart.yAxis[0].setExtremes(0, Math.max.apply(Math, data.footprints)*1.1);
                 $("#charts-ajax-loader").hide();
             },
             cache: false
@@ -50,6 +55,14 @@
             data : {recipe : {{ recipe.id }}},
             success: function(data) {
                 relchart.addSeries({
+                	name: "De voetafdruk van dit recept",
+                	data: [[data.fp, 100], [data.fp, -5]],
+                	tooltip: {
+                		headerFormat: "",
+                		pointFormat: "De voetafdruk van dit recept (" + Math.round(data.fp*100)/100 + "kgCO²)"
+                	}
+                });
+                relchart.addSeries({
                   name: "Alle recepten",
                   data: data.all_fps,
                   pointInterval: data.interval_length,
@@ -64,13 +77,8 @@
                   data: data.veg_fps,
                   pointInterval: data.interval_length,
                 });
-                relchart.xAxis[0].setExtremes(data.min_fp, data.max_fp, true);
-                var len = data.max_fp - data.min_fp
-                relchart.renderer.path(['M', 63+(427/len)*(data.fp-data.min_fp), 250, 'L', 63+(427/len)*(data.fp-data.min_fp), 40]).attr({
-                    'stroke-width': 1,
-                    'stroke': 'black',
-                    'zIndex': 1000
-                }).add();
+                relchart.xAxis[0].setExtremes(0, data.max_fp, true);
+                relchart.yAxis[0].setExtremes(0, data.all_fps[0]*1.1);
                 $("#charts-ajax-loader").hide();
             },
             cache: false
@@ -78,6 +86,104 @@
     }
     
     $(document).ready(function() {
+    	evochart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'recipe-fpevo-chart',
+                type: 'spline',
+            },
+            plotOptions: {
+                spline: {
+                    //pointPlacement: "on"
+                }
+            },
+            title: {
+                text: 'Verloop voetafdruk doorheen het jaar',
+                style: {
+                    color: '#333'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            xAxis: {
+                title: {
+                    text: 'Maand',
+                    style: {
+                        fontWeight: 'normal',
+                        color: '#333'
+                    }
+                },
+                min: 1,
+                max: 12,
+                categories: ['prejan', 'Jan', 'Feb', 'Maa', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec', 'postdec']
+            },
+            yAxis: {
+                title: {
+                    text: 'Voetafdruk (kgCO2)',
+                    style: {
+                        fontWeight: 'normal',
+                        color: '#333'
+                    }
+                },
+                min: 0
+            },
+            tooltip: {
+                valueSuffix: ' kgCO2 per 4 porties'
+            },
+            colors: [
+                '#629B31'
+            ],
+        });
+        relchart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'recipe-fprel-chart',
+                type: 'line',
+            },
+            title: {
+                text: 'Voetafdruk relatief t.o.v. andere recepten',
+                style: {
+                    color: '#333'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                floating: true,
+                y: 30,
+                backgroundColor: "#FFF"
+            },
+            xAxis: {
+                title: {
+                    text: 'Voetafdruk (kgCO2)',
+                    style: {
+                        fontWeight: 'normal',
+                        color: '#333'
+                    }
+                },
+                min: 0,
+                max: 1,
+            },
+            yAxis: {
+                title: {
+                    text: 'Aantal recepten met deze voetafdruk',
+                    style: {
+                        fontWeight: 'normal',
+                        color: '#333'
+                    }
+                },
+                min: 0,
+                tickInterval: 10,
+            },
+            tooltip: {
+                headerFormat: "",
+                pointFormat: '<span style="color:{series.color}">{series.name}</span>'
+            },
+            colors: [
+                "#000", '#629B31', '#386312', '#C0E2A2'
+            ]
+        });
+        
         load_evochart();
         
         $("#recipe-img").click(function() {
@@ -202,106 +308,6 @@
             }, 1000);
         });
     }
-    
-    $(function () { 
-        evochart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'recipe-fpevo-chart',
-                type: 'spline',
-            },
-            plotOptions: {
-                spline: {
-                    //pointPlacement: "on"
-                }
-            },
-            title: {
-                text: 'Verloop voetafdruk doorheen het jaar',
-                style: {
-                    color: '#333'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            xAxis: {
-                title: {
-                    text: 'Maand',
-                    style: {
-                        fontWeight: 'normal',
-                        color: '#333'
-                    }
-                },
-                min: 1,
-                max: 12,
-                categories: ['prejan', 'Jan', 'Feb', 'Maa', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec', 'postdec']
-            },
-            yAxis: {
-                title: {
-                    text: 'Voetafdruk (kgCO2)',
-                    style: {
-                        fontWeight: 'normal',
-                        color: '#333'
-                    }
-                },
-                min: 0
-            },
-            tooltip: {
-                valueSuffix: ' kgCO2 per 4 porties'
-            },
-            colors: [
-                '#629B31'
-            ]
-        });
-        relchart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'recipe-fprel-chart',
-                type: 'line',
-            },
-            title: {
-                text: 'Voetafdruk relatief t.o.v. andere recepten',
-                style: {
-                    color: '#333'
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                floating: true,
-                y: 30,
-                backgroundColor: "#FFF"
-            },
-            xAxis: {
-                title: {
-                    text: 'Voetafdruk (kgCO2)',
-                    style: {
-                        fontWeight: 'normal',
-                        color: '#333'
-                    }
-                },
-                min: 0,
-                max: 1,
-            },
-            yAxis: {
-                title: {
-                    text: 'Aantal recepten met deze voetafdruk',
-                    style: {
-                        fontWeight: 'normal',
-                        color: '#333'
-                    }
-                },
-                min: 0,
-                tickInterval: 1,
-            },
-            tooltip: {
-                headerFormat: "",
-                pointFormat: '<span style="color:{series.color}">{series.name}</span>'
-            },
-            colors: [
-                '#629B31', '#1E2F0F', '#C0E2A2'
-            ]
-        });
-    }); 
     
     var tab_1_loaded = false;
     $(function() {
