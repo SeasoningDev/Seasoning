@@ -19,6 +19,12 @@
   position: relative;
   text-align: center; }
 
+@media only screen and (max-width: 963px) {
+	#content-container {
+    	width: 90%;
+	}
+}
+
 @media only screen and (max-width: 767px) {
 	#ingredient-summaries-wrapper #search-result-count {
 		width: 100%;
