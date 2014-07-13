@@ -11,7 +11,7 @@ function fix_ingredient_availabilities() {
 			$(this).addClass("transformed");
 			
 			// The preservability of this ingredient
-			var preservability = Math.round(parseInt($(this).find(".available-in-preservability").text()) / 30);
+			var preservability = Math.round(parseInt($(this).find(".available-in-preservability").text(), 10) / 30);
 	        
 			// The first available in indicator should have certain margins and a border
 		    var first = true;
@@ -27,9 +27,9 @@ function fix_ingredient_availabilities() {
 		    	// This should only be 1
 		        $(this).find(".availability-indicator").each(function() {
 		        	// The month when this availability starts
-		            var from = parseInt($(this).children(".available-from").text());
+		            var from = parseInt($(this).children(".available-from").text(), 10);
 		            // The month when this availability ends
-		            var until = parseInt($(this).children(".available-until").text());
+		            var until = parseInt($(this).children(".available-until").text(), 10);
 		            
 		            // The month when this availability ends with preservability accounted for
 		            var extended_until = (until + preservability - 1) % 12 + 1;
@@ -56,7 +56,7 @@ function fix_ingredient_availabilities() {
 		            	var width;
 		                if (from == (until + 1)) {
 		                    // The ingredient is available all year round
-		                    var from_point = 0;
+		                    from_point = 0;
 		                    width = 100;
 		                } else {
 		                	width = width_p_month * (until - from + 1);
