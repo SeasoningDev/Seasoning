@@ -41,3 +41,16 @@
 
 #help-seasoning .help-type .help-text p {
   margin-bottom: 5px; }
+
+@media only screen and (max-width: 767px) {
+	
+	#help-seasoning a {
+		float: left;
+	}
+	
+	#help-seasoning .help-type, #help-seasoning .help-type.left {
+		width: auto;
+		margin: 10px 5%;
+		height: auto;
+	}
+}
