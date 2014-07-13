@@ -88,7 +88,7 @@ class UserManagerTestCase(TestCase):
         self.assertEqual(new_user.givenname, 'test')
         self.assertEqual(new_user.surname, 'user')
         self.assertEqual(new_user.date_of_birth, datetime.date.today())
-        self.assertEqual(new_user.avatar.url, 'https://www.seasoning.be/media/images/users/no_image.png')
+        self.assertEqual(new_user.avatar.url, 'https://www.seasoning.be/media/images/no_image.jpg')
         self.assertEqual(new_user.is_active, False)
         self.assertEqual(new_user.is_staff, False)
         self.assertEqual(new_user.is_superuser, False)

@@ -53,9 +53,6 @@ class AccountViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('viewed_user' in resp.context)
         self.assertTrue(resp.context['viewed_user'].pk == self.user.pk)
-        self.assertTrue('recipes' in resp.context)
-        for recipe in resp.context['recipes']:
-            self.assertTrue(recipe.author == self.user.pk)
     
     def test_account_settings(self):
         location = reverse('my_profile')
