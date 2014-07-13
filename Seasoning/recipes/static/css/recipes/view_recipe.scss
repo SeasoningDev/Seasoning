@@ -529,9 +529,18 @@ h1 #recipe-actions {
 		margin: 20px auto;
 	}
 	
-	#recipe-charts {
-		display: none;
+	#recipe #recipe-charts {
+		width: 90%;
+		margin-left: 5%;
 	}
+	
+	#recipe #chart-tabs {
+		width: 420px;
+	}
+
+	#recipe #recipe-fpevo-chart,
+	#recipe #recipe-fprel-chart {
+  		width: 410px; }
 	
 	#recipe .recipe-info-wrapper > div, #recipe .recipe-info-wrapper .ingredient {
 		padding-right: 20px;
@@ -563,6 +572,18 @@ h1 #recipe-actions {
 }
 
 @media only screen and (max-width: 767px) {
+	
+	#recipe #img-and-basic-user-options {
+		position: relative;
+	}
+	
+	#recipe #chart-tabs {
+		width: 98%;
+	}
+
+	#recipe #recipe-fpevo-chart,
+	#recipe #recipe-fprel-chart {
+  		width: 98%; }
 	
 	.moreinfo .month-long {
 		display: none;

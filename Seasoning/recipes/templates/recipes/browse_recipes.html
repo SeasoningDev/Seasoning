@@ -27,6 +27,10 @@ $(function() {
 {% block content %}
 <h2>Recepten zoeken</h2>
 
+<a href="{% url 'add_recipe' %}" title="Voeg een nieuw recept toe" id="add-recipe-button" class="add-button">
+	<span id="add-recipe-button-text">Voeg een nieuw recept toe</span>
+</a>
+	    
 <div id="recipe-search-container">
 	<form id="{{ search_form_id }}" class="keywords" action="" method="post">
 	    {% csrf_token %}
@@ -50,8 +54,7 @@ $(function() {
 		    Geavanceerd zoeken
 		</a>
 	    {{ search_form.advanced_search.as_hidden }}
-	    <a href="{% url 'add_recipe' %}" title="Voeg een nieuw recept toe" 
-	       id="add-recipe-button" class="add-button"><span id="add-recipe-button-text">Voeg een nieuw recept toe</span></a>
+	    
 	    <hr id="search-form-divider">
 	    <div id="advanced-search">
 	        <div id="sorting-options">
