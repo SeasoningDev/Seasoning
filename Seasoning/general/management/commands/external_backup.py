@@ -1,13 +1,32 @@
 from django.core.management.base import NoArgsCommand
 from oauth2client.client import OAuth2WebServerFlow
 from Seasoning.settings import GOOGLE_APP_ID as CLIENT_ID, GOOGLE_SECRET as CLIENT_SECRET, GOOGLE_CREDS_FILE as CRED_FILENAME,\
-    DATABASE_DAILY_BACKUP_FILE
+    DATABASE_DAILY_BACKUP_FILE, MEDIA_ROOT, MEDIA_DAILY_BACKUP_FILE
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
-import pprint
 from oauth2client.file import Storage
 import datetime
+from django.conf import settings
+import os
+
+def backup_db():
+    """
+    Backup the Seasoning Database to disk
+    
+    """
+    db = settings.DATABASES['default']
+    cmd = 'mysqldump --opt -u %s -p%s -e -c %s | bzip2 -c > %s' % (db['USER'], db['PASSWORD'], db['NAME'], DATABASE_DAILY_BACKUP_FILE)
+    os.popen(cmd)
+
+def backup_media():
+    """
+    Backup the Seasoning media files to disk
+    
+    """
+    cmd = 'tar -czf %s %s' % (MEDIA_DAILY_BACKUP_FILE, MEDIA_ROOT)
+    os.popen(cmd)
+    
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
@@ -15,6 +34,10 @@ class Command(NoArgsCommand):
         This command backs up all the media files and the database to the Seasoning Google Drive
         
         """
+        backup_db()
+        backup_media()
+        
+        
         # Check https://developers.google.com/drive/scopes for all available scopes
         OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
         
@@ -49,13 +72,22 @@ class Command(NoArgsCommand):
         
         today = datetime.date.today()
         
-        # Insert a file
+        # Insert database bacup
         media_body = MediaFileUpload(FILENAME, mimetype='text/plain', resumable=True)
         body = {
             'title': 'seasoning-%s.sql.bzip2' % today.strftime('%Y-%m-%d'),
-            'description': 'Seasoning database backup for %s' % today.strftime('%d-%m-%Y'),
+            'description': 'Seasoning database backup (%s)' % today.strftime('%d-%m-%Y'),
             'parents': [{"kind": "drive#fileLink",
                          "id": "0B8LyPJRp3UzOTXJIQ0tyYVY4VzQ"}]
         }
+        drive_service.files().insert(body=body, media_body=media_body).execute()
         
-        f = drive_service.files().insert(body=body, media_body=media_body).execute()
+        # Insert media backup
+        media_body = MediaFileUpload(FILENAME, mimetype='text/plain', resumable=True)
+        body = {
+            'title': 'seasoning_media_files-%s.tar.gz' % today.strftime('%Y-%m-%d'),
+            'description': 'Seasoning media files backup (%s)' % today.strftime('%d-%m-%Y'),
+            'parents': [{"kind": "drive#fileLink",
+                         "id": "0B8LyPJRp3UzOcnRsYnBIYm9DWlU"}]
+        }
+        drive_service.files().insert(body=body, media_body=media_body).execute()

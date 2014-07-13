@@ -95,6 +95,8 @@ STATIC_URL = secrets.STATIC_URL
 MEDIA_ROOT = secrets.MEDIA_ROOT
 STATIC_ROOT = secrets.STATIC_ROOT
 
+MEDIA_DAILY_BACKUP_FILE = secrets.MEDIA_DAILY_BACKUP_FILE
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
