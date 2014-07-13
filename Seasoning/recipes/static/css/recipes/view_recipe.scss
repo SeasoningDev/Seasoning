@@ -541,6 +541,16 @@ h1 #recipe-actions {
 	#recipe #recipe-fpevo-chart,
 	#recipe #recipe-fprel-chart {
   		width: 410px; }
+  		
+  	#recipe .recipe-info-wrapper {
+  		width: 90%;
+  		margin-left: auto;
+  		margin-right: auto;
+  	}
+  	
+  	#recipe .recipe-info-wrapper #ingredients {
+  		padding: 0
+  	}
 	
 	#recipe .recipe-info-wrapper > div, #recipe .recipe-info-wrapper .ingredient {
 		padding-right: 20px;
