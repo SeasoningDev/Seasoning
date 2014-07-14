@@ -126,8 +126,9 @@ def change_password(request,
             form.save()
             
             # Send email to user
+            email_txt = render_to_string('emails/password_changed_email.txt')
             email_html = render_to_string('emails/password_changed_email.html')
-            request.user.email_user('Seasoning wachtwoord gewijzigd', email_html, 'info@seasoning.be', )
+            request.user.email_user('Seasoning wachtwoord gewijzigd', email_txt, 'info@seasoning.be', html_message=email_html)
             messages.add_message(request, messages.INFO, _('Your password has been successfully changed.'))
             return redirect(account_settings)
     
