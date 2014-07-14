@@ -144,12 +144,19 @@ class User(models.Model):
             return 0
         return 2**next_rank - ao_recipes
 
-    def email_user(self, subject, message, from_email=None):
+    def email_user(self, subject, message, from_email=None, html_message=None):
         """
         Sends an email to this User.
         
         """
-        send_mail(subject, message, from_email, [self.email])
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        
+        msg = EmailMultiAlternatives(subject, message, from_email, [self.email])
+        if html_message:
+            msg.attach_alternative(html_message, "text/html")
+        
+        msg.send()
 
     def __unicode__(self):
         return self.get_full_name()
