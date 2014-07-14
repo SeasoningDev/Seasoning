@@ -216,6 +216,9 @@ LOGGING = {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
         },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        },
         'skip_suspicious_operations': {
             '()': 'django.utils.log.CallbackFilter',
             'callback': skip_suspicious_operations,
@@ -229,6 +232,7 @@ LOGGING = {
         },
         'console': {
             'level': 'DEBUG',
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler'
         }
     },
