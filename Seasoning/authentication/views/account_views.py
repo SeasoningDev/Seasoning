@@ -15,7 +15,7 @@ from authentication.forms import AccountSettingsForm, DeleteAccountForm,\
 from authentication.models import NewEmail, User
 from django.core.exceptions import PermissionDenied
 from recipes.models import Recipe
-from django.views.decorators.csrf import csrf_exempt
+from django.template.loader import render_to_string
 
 def login(request):
     return django_login(request, template_name='authentication/login.html', 
@@ -124,6 +124,10 @@ def change_password(request,
         form = password_change_form(user=request.user, data=request.POST)
         if form.is_valid():
             form.save()
+            
+            # Send email to user
+            email_html = render_to_string('emails/password_changed_email.html')
+            request.user.email_user('Seasoning wachtwoord gewijzigd', email_html, 'info@seasoning.be', )
             messages.add_message(request, messages.INFO, _('Your password has been successfully changed.'))
             return redirect(account_settings)
     
