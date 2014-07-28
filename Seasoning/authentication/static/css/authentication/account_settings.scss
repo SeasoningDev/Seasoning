@@ -248,7 +248,7 @@
 }
 
 #account-settings #goto-account-delete {
-	width: 120%;
+	width: 100%;
 	text-align: center;
 }
 
@@ -276,6 +276,7 @@
 
 #account-delete-form #submit-button {
 	text-align: center;
+	max-width: 80%;
 }
 
 #account-delete-form #submit-button input {
