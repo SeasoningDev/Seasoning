@@ -5,11 +5,44 @@
 {% block content %}
 
 <a href="/admin/ingredients/ingredient/add/">Nieuw Ingrediënt</a><br/><br/><br/>
-
-<h2>Vooruitgang: {{ ingredients | length }}/700</h2>
-<div class="meter{% if perc_done > 75%} green{% elif perc_done > 25%} yellow{% else %} red{% endif %}">
-	<span style="width: {{ perc_done }}%"></span>
+	
+<div class="meter orange">
+	<span style="width: {{ perc_accepted }}%"></span>
+	<span class="green" style="width: {{ perc_bramified }}%"></span>
 </div>
+
+<table style="margin: 20px 0 40px 5%; font-size: 1.5em;">
+	<tr>
+		<td style="font-size: 1em; width: 300px;">
+			Aantal ingredient in database
+		</td>
+		<td style="font-size: 1em; width: 100px;">
+			{{ ao_ingredients }}
+		</td>
+	</tr>
+	<tr>
+		<td style="font-size: 1em; color: rgb(241, 161, 101);">
+			Accepted
+		</td>
+		<td style="font-size: 1em; color: rgb(241, 161, 101);">
+			{{ ao_accepted }}
+		</td>
+		<td style="font-size: 1em; color: rgb(241, 161, 101);">
+			{{ perc_accepted }}%
+		</td>
+	</tr>
+	<tr>
+		<td style="color: rgb(43,194,83);">
+			Bramified (zucht)
+		</td>
+		<td style="color: rgb(43,194,83);">
+			{{ ao_bramified }}
+		</td>
+		<td style="color: rgb(43,194,83);">
+			{{ perc_bramified }}%
+		</td>
+	</tr>
+</table>
 
 <table>
   <tr align="left">
