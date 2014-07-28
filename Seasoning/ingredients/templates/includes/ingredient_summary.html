@@ -1,8 +1,8 @@
 <a class="ingredient-summary-link" href="{% url 'view_ingredient' ingredient.id %}">
 	<span class="ingredient-summary">
 	    <img alt="{{ ingredient.name }}" src="{{ ingredient.thumbnail.url }}" />
-	    <span class="ingredient-title">
-	    	{{ ingredient.name|truncatechars:50 }}
-	    </span>
+	    <div class="ingredient-title">
+	    	<span>{{ ingredient.name|truncatechars:50 }}</span>
+	    </div>
 	</span>
 </a>
