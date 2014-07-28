@@ -24,7 +24,7 @@
 	   
 	   settings.page_field_to_update.val(0);
 	   
-	   function load_data() {
+	   function load_data(clear) {
 		   if (settings.no_results_element_to_show) {
 			   settings.no_results_element_to_show.hide();
 		   }
@@ -47,6 +47,11 @@
 			   type : "POST",
 			   data: settings.form.serialize(),
 			   success: add_data,
+		   }).success(function(data) {
+			   if (clear) {
+				   wrapper.html("");
+			   }
+			   add_data(data);
 		   }).done(function() {
 			   loading = false;
 		   }).error(function() {
@@ -64,6 +69,10 @@
 		   });
 	   }
 	   
+	   function clear_and_load_data() {
+		   load_data(true);
+	   }
+	   
 	   if (!settings.ajax_url || !settings.form || !settings.loader_element) {
 		   alert('No valid ajax url was given, ajax load will not work');
 	   } else {
@@ -74,8 +83,9 @@
 			   return true;
 		   });
 	   }
-	   
+
 	   $(window).on("ajax-load-data", load_data);
+	   $(window).on("ajax-clear-and-load-data", clear_and_load_data);
 	   
 	   load_data();
 	   

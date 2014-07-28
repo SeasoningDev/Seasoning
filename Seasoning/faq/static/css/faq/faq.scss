@@ -53,3 +53,17 @@
   background-repeat: no-repeat;
   background-position: left;
   padding-left: 17px; }
+  
+@media only screen and (max-width: 767px) {
+  
+  #faq-index .index-topic-wrapper,
+  #faq-index .index-topic-wrapper.right {
+  	clear: both;
+  	float: none;
+  	width: 95%;
+  }
+  
+  .faq-question-wrapper .faq-question {
+  	margin-bottom: 30px;
+  }
+}
