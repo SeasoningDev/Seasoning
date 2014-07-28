@@ -114,7 +114,15 @@ def list_ingredients(request):
         raise PermissionDenied
    
     ingredients = Ingredient.objects.all().order_by('accepted', 'name').prefetch_related('canuseunit_set__unit', 'useable_units', 'available_in_country', 'available_in_sea')
-    perc_done = int(len(ingredients)/7)
+    ao_ingredients = len(ingredients)
+    ao_accepted = len(ingredients.filter(accepted=True))
+    perc_accepted = int(ao_accepted/float(ao_ingredients)*100)
+    ao_bramified = len(ingredients.filter(bramified=True))
+    perc_bramified = int(ao_bramified/float(ao_ingredients)*100)
     
     return render(request, 'admin/list_ingredients.html', {'ingredients': ingredients,
-                                                           'perc_done': perc_done})
+                                                           'ao_ingredients': ao_ingredients,
+                                                           'perc_accepted': perc_accepted,
+                                                           'ao_accepted': ao_accepted,
+                                                           'perc_bramified': perc_bramified,
+                                                           'ao_bramified': ao_bramified,})

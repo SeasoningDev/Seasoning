@@ -117,7 +117,7 @@ def contact_form(request, contact_type):
 def upload_static_image(request):
     """
     Upload a picture into the static folder
-    
+    XtNbleXlMsq1GysQ4oSI
     """
     class UploadStaticImageForm(forms.Form):
         image = forms.FileField()
