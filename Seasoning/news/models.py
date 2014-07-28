@@ -3,8 +3,8 @@ import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
-from imagekit.models.fields import ProcessedImageField
-from imagekit.processors.resize import ResizeToFill
+from imagekit.models.fields import ProcessedImageField, ImageSpecField
+from imagekit.processors.resize import ResizeToFill, SmartResize
 
 def get_image_filename(instance, old_filename):
     filename = str(time.time()) + '.jpg'
@@ -20,7 +20,7 @@ class NewsItem(models.Model):
     
     subject = models.CharField(max_length=300)
     content = models.TextField()
-    image = ProcessedImageField(format='JPEG', upload_to=get_image_filename, processors=[ResizeToFill(500, 500)],
+    image = ProcessedImageField(format='JPEG', upload_to=get_image_filename, processors=[ResizeToFill(220, 220)],
                                 help_text=_('An image of this news item.'))
     image_source = models.TextField(blank=True)
     
