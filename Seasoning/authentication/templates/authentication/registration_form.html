@@ -42,6 +42,17 @@ $(function() {
 	Registreren op Seasoning hoeft slechts één keer en is heel eenvoudig. Je kan een persoonlijk profiel aanmaken via de verschillende portaalwebsites (Facebook en Google) of via Seasoning zelf.
 </p>
 
+<div id="social-register">
+    {% include "includes/fb-button.html" with register=True %}
+    <br/>
+    {% include "includes/google-button.html" with register=True %}
+</div>
+
+<div id="register-mobile-separator">
+	<hr />
+	<h3>Of registreer via Seasoning:</h3>
+</div>
+
 <div id="seasoning-register">
     <form action="/profile/register/" method="post" id="registration-form">
     	{% csrf_token %}
@@ -133,10 +144,5 @@ $(function() {
         
         <input id="register-button" type="submit" value="Registreer Nu!" />
     </form>
-</div>
-<div id="social-register">
-    {% include "includes/fb-button.html" with register=True %}
-    <br/>
-    {% include "includes/google-button.html" with register=True %}
 </div>
 {% endblock %}

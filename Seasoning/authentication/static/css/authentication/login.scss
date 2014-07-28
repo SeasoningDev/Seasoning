@@ -37,6 +37,13 @@
 		margin: 20px auto;
 		float: none;
 		border: none;
+		width: 90%;
+		padding: 0;
+		text-align: center;
+	}
+	
+	#seasoning-login input[type="text"], 
+	#seasoning-login input[type="password"] {
 		width: 100%;
 	}
 	

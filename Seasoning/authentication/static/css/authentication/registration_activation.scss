@@ -61,6 +61,16 @@
 	margin: 30px 0 0 -1px;
 }
 
+#register-mobile-separator {
+	display: none;
+	text-align: center;
+	margin: 40px 10px 20px;
+}
+
+#register-mobile-separator hr {
+	margin-bottom: 10px;
+}
+
 #password-reset-login-form {
 	width: 100%;
 	text-align: center;
@@ -74,4 +84,37 @@
 
 #resend-activation-email-form input[type=submit] {
 	margin-right: -2px;
+}
+
+@media only screen and (max-width: 767px) {
+	
+	#social-register {
+		float: none;
+		width: 90%;
+		margin: 0 auto 20px;
+	}
+	
+	#register-mobile-separator {
+		display: block;
+	}
+	
+	#seasoning-register {
+		border: none;
+		width: 90%;
+		float: none;
+		text-align: center;
+		margin: auto;
+	}
+	
+	#seasoning-register input[type="text"], 
+	#seasoning-register input[type="password"] {
+		width: 80%;
+		margin: auto;
+	}
+	
+	.field-wrapper.captcha-wrapper #captcha-height-reserver {
+		margin: auto;
+		max-width: 95%;
+		overflow: hidden;	
+	}
 }

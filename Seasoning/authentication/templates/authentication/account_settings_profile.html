@@ -53,9 +53,11 @@ $(function() {
                 <label for="id_surname" id="surname-label">Naam</label>
                 {% if user.name_changed %}
                 <input id="id_surname" type="text" value="{{ user.surname }}" maxlength="50" disabled />
+                <label for="id_surname" class="surname-label">Naam</label>
                 <input id="id_givenname" type="text" value="{{ user.givenname }}" maxlength="30" disabled />
                 {% else %}
                 {{ form.givenname }}
+                <label for="id_surname" class="surname-label">Naam</label>
                 {{ form.surname }}
                 {% endif %}
                 <div class="tooltip">Opgelet, je kan je naam maar 1 keer veranderen!</div>
