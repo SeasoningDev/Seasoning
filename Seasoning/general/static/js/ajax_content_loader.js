@@ -46,7 +46,6 @@
 			   url: settings.ajax_url,
 			   type : "POST",
 			   data: settings.form.serialize(),
-			   success: add_data,
 		   }).success(function(data) {
 			   if (clear) {
 				   wrapper.html("");
