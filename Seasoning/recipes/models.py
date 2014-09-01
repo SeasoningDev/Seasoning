@@ -94,6 +94,9 @@ class ExternalSite(models.Model):
                             help_text=_('The names of the external website.'))
     url = models.CharField(_('URL'), max_length=200,
                             help_text=_('The home url of the external website'))
+    
+    def __unicode__(self):
+        return self.name
 
 class Recipe(models.Model):
     
@@ -120,8 +123,8 @@ class Recipe(models.Model):
     time_added = models.DateTimeField(auto_now_add=True, editable=False)
     
     external = models.BooleanField(default=False)
-    external_url = models.CharField(max_length=300, null=True, blank=True)
-    external_site = models.ForeignKey(ExternalSite, null=True)
+    external_url = models.CharField(max_length=1000, null=True, blank=True)
+    external_site = models.ForeignKey(ExternalSite, null=True, blank=True)
     
     course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
