@@ -1,5 +1,5 @@
 from django.contrib import admin
-from recipes.models import Recipe, Cuisine, UsesIngredient, UnknownIngredient
+from recipes.models import Recipe, Cuisine, UsesIngredient, UnknownIngredient, ExternalSite
 
 class UsesIngredientInline(admin.TabularInline):
     model = UsesIngredient
@@ -8,7 +8,7 @@ class UsesIngredientInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [ UsesIngredientInline, ]
     search_fields = ['name']
-    list_display = ('__unicode__', 'accepted')
+    list_display = ('__unicode__', 'external', 'accepted')
     
     # Make sure the recipe object gets saved again after the usesingredient objects are saved
     temp_obj = None
@@ -20,7 +20,8 @@ class RecipeAdmin(admin.ModelAdmin):
     def save_related(self, request, form, formsets, change):
         admin.ModelAdmin.save_related(self, request, form, formsets, change)
         self.temp_obj.save()
-    
+
+admin.site.register(ExternalSite)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Cuisine)
 admin.site.register(UnknownIngredient)
