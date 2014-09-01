@@ -88,6 +88,13 @@ class RecipeManager(models.Manager):
     def accepted(self):
         return self.filter(accepted=True)
 
+class ExternalSite(models.Model):
+    
+    name = models.CharField(_('Name'), max_length=200,
+                            help_text=_('The names of the external website.'))
+    url = models.CharField(_('URL'), max_length=200,
+                            help_text=_('The home url of the external website'))
+
 class Recipe(models.Model):
     
     class Meta:
@@ -114,6 +121,7 @@ class Recipe(models.Model):
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=300, null=True, blank=True)
+    external_site = models.ForeignKey(ExternalSite, null=True)
     
     course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
