@@ -348,7 +348,7 @@
 	    
 	    <div id="add-info">
 	    	{% if recipe.external %}
-	    	<span id="author">Recept van <a href="{{ recipe.external_url }}" target="_blank">{{ recipe.author.get_full_name }}</a></span>
+	    	<span id="author">Recept van <a href="{{ recipe.external_site.url }}" target="_blank">{{ recipe.external_site.name }}</a></span>
 	    	{% else %}
 	        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
 	        <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
