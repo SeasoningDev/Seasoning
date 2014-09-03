@@ -193,6 +193,7 @@ class Recipe(models.Model):
         self.endangered = False
         for uses in self.uses.all():
             if update_usess:
+                # TODO: Check of het ooit eigenlijk nodig is dat uses gesaved worden hier.
                 # Update the footprint of the usesingredients
                 uses.save()
                 
