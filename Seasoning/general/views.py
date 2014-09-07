@@ -32,6 +32,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from ingredients.models import Ingredient
 import re
+from general import all_templates
 
 def home(request):
     if request.user.is_authenticated():
@@ -141,6 +142,13 @@ def upload_static_image(request):
     
     return render(request, 'admin/upload_image.html', {'form': form,
                                                        'images': images})
+
+def contact_overview(request):
+    templates = all_templates(filter='email')
+    rendered_templates = [render(request, template) for template in templates]
+    
+    return render(request, 'admin/contact_overview.html', {'templates': templates,
+                                                           'renders': rendered_templates})
     
 # TEST VIEWS FOR TEMPLATE INSPECTION
 def test_500(request):
