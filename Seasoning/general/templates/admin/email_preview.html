@@ -1,0 +1,7 @@
+{% if is_text %}
+<pre>{% endif %}
+{{ template_html|safe }}
+
+{% if is_text %}
+</pre>
+{% endif %}

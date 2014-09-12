@@ -396,6 +396,8 @@ DEBUG_TOOLBAR_PANELS = (
 )
 
 def show_toolbar(request):
+    if hasattr(request, 'hide_toolbar'):
+        return False
     if request.user.is_staff:
         return True
     return False

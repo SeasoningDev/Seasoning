@@ -33,6 +33,8 @@ from django.utils.translation import ugettext_lazy as _
 from ingredients.models import Ingredient
 import re
 from general import all_templates
+from django.contrib.sites.models import RequestSite
+from django.template.context import RequestContext
 
 def home(request):
     if request.user.is_authenticated():
@@ -142,13 +144,56 @@ def upload_static_image(request):
     
     return render(request, 'admin/upload_image.html', {'form': form,
                                                        'images': images})
-
-def contact_overview(request):
-    templates = all_templates(filter='email')
-    rendered_templates = [render(request, template) for template in templates]
+def email_preview(request, tid):
+    class InvalidVarException(object):
+        """
+        Raise this exception if a variable is missing from the email template
+        
+        """
+        def __mod__(self, missing):
+            try:
+                missing_str=unicode(missing)
+            except:
+                missing_str='Failed to create string representation'
+            raise Exception('Unknown template variable %r %s' % (missing, missing_str))
+        def __contains__(self, search):
+            if search=='%s':
+                return True
+            return False
     
-    return render(request, 'admin/contact_overview.html', {'templates': templates,
-                                                           'renders': rendered_templates})
+    try:
+        templates = all_templates(filter_with='emails', filter_without='subject')
+        for template in templates:
+            if template['id'] == int(tid):
+                break
+        else:
+            raise IndexError
+    except IndexError:
+        raise Http404
+    
+    global_context = {'uid': 1, 'token': '1-1',
+                       'activation_key': 1,
+                       'protocol': 'https', 'domain': 'www.seasoning.be',
+                       'site': RequestSite(request),
+                       'type': 'test', 'email': 'test', 'subject': 'test', 'message': 'test',
+                       'request_string': 'test'}
+    
+    # Make temporary changes
+    r = render_to_string(template['path'], global_context, context_instance=RequestContext(request))
+    
+    return render(request, 'admin/email_preview.html', {'template_html': r, 'is_text': '.txt' in template['path']})
+    
+def contact_overview(request):
+    templates = all_templates(filter_with='emails', filter_without='subject')
+    
+    grouped_templates = {}
+    for template in templates:
+        if template['name'] in grouped_templates:
+            grouped_templates[template['name']].insert(0, template)
+        else:
+            grouped_templates[template['name']] = [template]
+    
+    return render(request, 'admin/contact_overview.html', {'grouped_emails': grouped_templates.values()})
     
 # TEST VIEWS FOR TEMPLATE INSPECTION
 def test_500(request):

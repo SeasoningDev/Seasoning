@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     
     # Admin
     url(r'^admin/ingredients/list/$', 'ingredients.views.list_ingredients', name='list_ingredients'),
+    url(r'^admin/contact/(\d*)/$', 'general.views.email_preview', name='email_preview'),
     url(r'^admin/contact/$', 'general.views.contact_overview', name='contact_overview'),
     (r'^admin/', include(admin.site.urls)),
     
