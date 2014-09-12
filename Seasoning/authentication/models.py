@@ -521,14 +521,14 @@ class RegistrationProfile(models.Model):
         """
         ctx_dict = {'activation_key': self.activation_key,
                     'site': site}
-        subject = render_to_string('authentication/activation_email_subject.txt',
+        subject = render_to_string('emails/activation_email_subject.txt',
                                    ctx_dict)
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
         
-        message_text = render_to_string('authentication/activation_email.txt',
+        message_text = render_to_string('emails/activation_email.txt',
                                         ctx_dict)
-        message_html = render_to_string('authentication/activation_email.html',
+        message_html = render_to_string('emails/activation_email.html',
                                         ctx_dict)
 
         msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [self.user.email])
@@ -620,14 +620,14 @@ class NewEmail(models.Model):
         ctx_dict = {'activation_key': self.activation_key,
                     'site': site,
                     'user': self.user}
-        subject = render_to_string('authentication/change_email_email_subject.txt',
+        subject = render_to_string('emails/change_email_email_subject.txt',
                                    ctx_dict)
         # Email subject *must not* contain newlines
         subject = ''.join(subject.splitlines())
         
-        message_text = render_to_string('authentication/change_email_email.txt',
+        message_text = render_to_string('emails/change_email_email.txt',
                                         ctx_dict)
-        message_html = render_to_string('authentication/change_email_email.html',
+        message_html = render_to_string('emails/change_email_email.html',
                                         ctx_dict)
 
         msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [self.email])

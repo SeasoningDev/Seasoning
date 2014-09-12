@@ -4,6 +4,21 @@
 
 {% block content %}
 
+{% for email_group in grouped_emails %}
 
+<h2>{{ email_group.0.name }}</h2>
+
+{% if email_group.1 %}
+{% for email in email_group %}
+<a href="#" style="font-weight: bold; font-size: 14px; margin-right: 20px;" onclick="$('#iframe-{{ forloop.parentloop.counter }}').attr('src', '{% url 'email_preview' email.id %}'); return false;">View {{ email.type }} version</a>
+{% endfor %}
+{% endif %}
+
+<iframe id="iframe-{{ forloop.counter }}" src="{% url 'email_preview' email_group.0.id %}" style="width: 100%; height: 100%; border: 1px solid #DDD;">
+</iframe>
+
+<input type="button" value="Verzend deze email naar mij" onclick="alert('Dit ga ik pas implementeren als u dat nodig lijkt, want is redelijk tijdrovend :)')" />
+
+{% endfor %}
 
 {% endblock %}
