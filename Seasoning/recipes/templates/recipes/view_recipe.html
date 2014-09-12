@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load comments %}
 {% load markdown_filter %}
+{% load remove_protocol_filter %}
 {% load compressed %}
 {% load ratings %}
 
@@ -488,7 +489,7 @@
 			            </div>
 			            <form method="post" action="{% url 'external_recipe' %}">
 			            	{% csrf_token %}
-			            	<input name="external_url" type="hidden" value="{{ recipe.external_url }}" />
+			            	<input name="external_url" type="hidden" value="{{ recipe.external_url|remove_protocol }}" />
 			            	<button type="submit" style="margin: 10px 0 0;">Bekijk het volledige recept op {{ recipe.external_site.name }}</button>
 			            </form>
 			        </div>
