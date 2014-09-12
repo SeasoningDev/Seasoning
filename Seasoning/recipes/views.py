@@ -384,7 +384,7 @@ def external_recipe(request):
     if not request.method == 'POST' or not 'external_url' in request.POST:
         raise PermissionDenied()
     
-    return render(request, 'recipes/external_site_wrapper.html', {'external_url': request.POST['external_url'],
+    return render(request, 'recipes/external_site_wrapper.html', {'external_url': request.POST['external_url'].replace('http:', ''),
                                                                   'previous_url': request.META.get('HTTP_REFERER')})
     
 
