@@ -31,6 +31,7 @@ from recipes.forms import SearchRecipeForm,\
     EditRecipeIngredientsForm, EditRecipeInstructionsForm
 from general.templatetags.ratings import rating_display_stars
 from django.contrib.comments.signals import comment_was_posted
+from django.core.urlresolvers import reverse
 
 # Inform user when posting a comment was succesfull
 def comment_posted_message(sender, comment=None, request=None, **kwargs):
@@ -378,6 +379,13 @@ def delete_recipe(request, recipe_id):
         
         
     raise PermissionDenied
+
+def external_recipe(request):
+    if not request.method == 'POST' or not 'external_url' in request.POST:
+        raise PermissionDenied()
+    
+    return render(request, 'recipes/external_site_wrapper.html', {'external_url': request.POST['external_url'],
+                                                                  'previous_url': request.META.get('HTTP_REFERER')})
     
 
 """
