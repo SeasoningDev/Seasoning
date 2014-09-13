@@ -264,7 +264,7 @@ class MultiEmailPasswordResetForm(PasswordResetForm):
     
     def save(self, domain_override=None,
              subject_template_name='authentication/password_reset_subject.txt',
-             email_template_name='registration/password_reset_email.html',
+             email_template_name='emails/password_reset_email.html',
              use_https=False, token_generator=default_token_generator,
              from_email=None, request=None):
         """
@@ -287,11 +287,11 @@ class MultiEmailPasswordResetForm(PasswordResetForm):
                 'token': token_generator.make_token(user),
                 'protocol': use_https and 'https' or 'http',
             }
-            subject = loader.render_to_string('authentication/password_reset_subject.txt', c)
+            subject = loader.render_to_string('emails/password_reset_subject.txt', c)
             # Email subject *must not* contain newlines
             subject = ''.join(subject.splitlines())
-            message_text = loader.render_to_string('authentication/password_reset_email.txt', c)
-            message_html = loader.render_to_string('authentication/password_reset_email.html', c)            
+            message_text = loader.render_to_string('emails/password_reset_email.txt', c)
+            message_html = loader.render_to_string('emails/password_reset_email.html', c)            
             
 
             msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [self.user.email])
