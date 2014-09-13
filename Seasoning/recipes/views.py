@@ -474,6 +474,9 @@ def get_recipe_footprint_evolution(request):
         
     raise PermissionDenied
 
+"""
+Unused for now
+
 @csrf_exempt
 def get_relative_footprint(request):
     
@@ -526,6 +529,7 @@ def get_relative_footprint(request):
                 raise Http404
         
     raise PermissionDenied
+"""
 
 @csrf_exempt
 def ajax_ingredient_units(request):
