@@ -489,6 +489,7 @@
 			            <form method="post" action="{% url 'external_recipe' %}">
 			            	{% csrf_token %}
 			            	<input name="external_url" type="hidden" value="{{ recipe.external_url }}" />
+			            	<input name="external_title" type="hidden" value="{{ recipe.name }}" />
 			            	<button type="submit" style="margin: 10px 0 0;">Bekijk het volledige recept op {{ recipe.external_site.name }}</button>
 			            </form>
 			        </div>

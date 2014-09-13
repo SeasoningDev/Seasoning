@@ -385,6 +385,7 @@ def external_recipe(request):
         raise PermissionDenied()
     
     return render(request, 'recipes/external_site_wrapper.html', {'external_url': request.POST['external_url'].replace('http:', ''),
+                                                                  'title': request.POST.get('external_title', 'External website'),
                                                                   'previous_url': request.META.get('HTTP_REFERER')})
     
 
