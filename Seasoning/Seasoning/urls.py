@@ -1,13 +1,11 @@
 from django.conf.urls import patterns, include, url
 from general.sitemaps import GeneralViewsSitemap, StaticViewSitemap
 from ingredients.sitemaps import IngredientViewsSitemap
-from news.sitemaps import NewsViewsSitemap
 from recipes.sitemaps import RecipeViewsSitemap
 
 sitemaps = {
     'general': GeneralViewsSitemap,
     'static': StaticViewSitemap,
-    'news': NewsViewsSitemap,
     'ingredients': IngredientViewsSitemap,
     'recipes': RecipeViewsSitemap,
 }
@@ -25,8 +23,6 @@ urlpatterns = patterns('',
     (r'^comments/', include('django.contrib.comments.urls')),
     # FAQ
     (r'^faq/', include('faq.urls')),
-    # News
-    (r'^news/', include('news.urls')),
     
     # Sitemap
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': sitemaps}),

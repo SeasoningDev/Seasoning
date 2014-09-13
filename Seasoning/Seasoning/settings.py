@@ -176,7 +176,6 @@ INSTALLED_APPS = (
     'ingredients',
     'recipes',
     'faq',
-    'news',
     
     # Admin
     'django.contrib.admin',
@@ -354,12 +353,6 @@ PIPELINE_CSS = {
             'css/faq/*.scss',
         ),
         'output_filename': 'css/faq.css',
-    },
-    'news': {
-        'source_filenames': (
-            'css/news/*.scss',
-        ),
-        'output_filename': 'css/news.css',
     },
 }
 
