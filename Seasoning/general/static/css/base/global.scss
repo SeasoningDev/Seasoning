@@ -88,7 +88,7 @@
     height: 1px;
   }
   
-  li.info,
+  ul.messages li,
   div.message {
     padding: 5px;
     margin: 0 0 10px 0;
@@ -96,6 +96,10 @@
     border:1px dashed #5B6553;
     box-shadow:1px 1px 2px 0 rgba(0,0,0,0.3);
     display: block;
+  }
+  
+  ul.messages li.warning {
+    background-color: rgba(247, 192, 96, 0.8);
   }
   
   #impact-breakdown img {
