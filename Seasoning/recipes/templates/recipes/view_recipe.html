@@ -390,7 +390,8 @@
 					{% elif recipe.inseason %}
 					<img class="corner-ribbon" src="{{ STATIC_URL}}img/decoration/corner-ribbon-inseason.png" title="Dit recept is momenteel in seizoen!" />
 					{% endif %}
-					<img itemprop="image" id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
+					<img id="recipe-img" src="{{ recipe.small_image.url }}" alt="" title="{{ recipe.name }}" />
+		            <img itemprop="image" id="recipe-img-full" src="{{ recipe.image.url }}" alt="" title="{{ recipe.name }}" style="display: none;"/>
 		            <span class="footprint-cloud" title="Dit recept heeft een voetafdruk van {{ recipe.total_footprint|floatformat:2 }} kgCO2 per {{ recipe.portions }} porties">
 				       	<span class="footprint-cloud-text">
 				       		{{ recipe.total_footprint|floatformat:-2 }}
