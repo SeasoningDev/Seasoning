@@ -12,6 +12,16 @@
 <meta name="twitter:title" content="{{ recipe.name }}">
 <meta name="twitter:description" content="{{ recipe.description }}">
 <meta name="twitter:image:src" content="{{ recipe.image.url }}">
+
+<meta content="nl_NL" property="og:locale">
+<meta content="article" property="og:type">
+<meta content="{{ recipe.name }}" property="og:title">
+<meta content="{{ recipe.description }}" property="og:description">
+<meta content="{% url 'view_recipe' recipe.id %}" property="og:url">
+<meta content="Seasoning" property="og:site_name">
+<meta content="Recepten" property="article:section">
+<meta content="{{ recipe.time_added }}" property="article:published_time">
+<meta content="{{ recipe.image.url }}" property="og:image">
 {% endblock %}
 
 {% block title %}{{ recipe.name }}{% endblock %}
