@@ -13,6 +13,8 @@
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 		
+		{% block moar_meta_tags %}{% endblock %}
+		
 		{% block default_static_stuff %}
         <link rel="icon" href="{{ STATIC_URL }}img/logos/favicon.png" type="image/png" />
 		{% compressed_css 'global' %}
