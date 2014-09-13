@@ -25,6 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # The file to which the database backed up should be written
 DB_BACKUP_FILE = os.path.join(BASE_DIR, '../../seasoning_db.bak')
 
+SESSION_COOKIE_DOMAIN = secrets.SESSION_COOKIE_DOMAIN
+
 ADMINS = (
     ('Joep Driesen', 'joep.driesen@seasoning.be'),
 )
