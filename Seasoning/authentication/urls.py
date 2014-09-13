@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
 from authentication.backends import RegistrationBackend
+from authentication.forms import MultiEmailPasswordResetForm
 
 urlpatterns = patterns('',
     
@@ -22,7 +23,8 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'authentication/logout.html'},
         name='logout'),
     url(r'^password/reset/$', 'django.contrib.auth.views.password_reset', {'email_template_name': 'emails/password_reset_email.html',
-                                                                           'subject_template_name': 'emails/password_reset_subject.txt'},
+                                                                           'subject_template_name': 'emails/password_reset_subject.txt',
+                                                                           'password_reset_form': MultiEmailPasswordResetForm},
         name='password_reset'),
     url(r'^password/reset/done/$', 'django.contrib.auth.views.password_reset_done', 
         {'template_name':'authentication/password_reset_done.html'},
