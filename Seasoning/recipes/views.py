@@ -380,12 +380,10 @@ def delete_recipe(request, recipe_id):
         
     raise PermissionDenied
 
-def external_recipe(request):
-    if not request.method == 'POST' or not 'external_url' in request.POST:
-        raise PermissionDenied()
+def external_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
     
-    return render(request, 'recipes/external_site_wrapper.html', {'external_url': request.POST['external_url'].replace('http:', ''),
-                                                                  'title': request.POST.get('external_title', 'External website'),
+    return render(request, 'recipes/external_site_wrapper.html', {'recipe': recipe,
                                                                   'previous_url': request.META.get('HTTP_REFERER')})
     
 

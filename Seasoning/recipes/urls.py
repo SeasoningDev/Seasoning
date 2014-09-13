@@ -23,5 +23,5 @@ urlpatterns = patterns('',
     
     url(r'^ajax/$', 'recipes.views.ajax_browse_recipes', name='ajax_browse_recipes'),
     
-    url(r'^external/$', 'recipes.views.external_recipe', name='external_recipe'),
+    url(r'^external/(\d*)/$', 'recipes.views.external_recipe', name='external_recipe'),
 )

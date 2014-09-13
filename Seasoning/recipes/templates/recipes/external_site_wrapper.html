@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 	<head>
-		<title>Seasoning | {{ title }}</title>
+		<title>Seasoning | {{ recipe.name }}</title>
 		
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Content-Language" content="nl-be" />
@@ -79,13 +79,13 @@
 	    <div id="header">
 	        <a href="/"><img src="{{ STATIC_URL }}img/logos/mobile_header.png" style="height: 40px;"/></a>
 	        
-	        <a id="close" href="{{ external_url }}"> </a>
+	        <a id="close" href="{{ recipe.external_url }}"> </a>
 	        
 	        <a id="back" href="{{ previous_url }}" style="">
 	        	Terug naar Seasoning.be >>
 	        </a>
         </div>
         
-        <iframe src="{{ external_url }}"></iframe>
+        <iframe src="{{ recipe.external_url }}"></iframe>
 	</body>
 </html>
