@@ -1,12 +1,18 @@
 {% load humanize %}
-Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op {{ site }}. Indien u 
-dit gedaan hebt, kan u onderstaande url gebruiken om het profiel te activeren:
+Beste,
 
+Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op seasoning.be. Indien u dit gedaan hebt, kan u de onderstaande url gebruiken om het profiel te activeren:
 
-https://{{ site }}{% url 'registration_activate' activation_key=activation_key %}
+https://seasoning.be/profile/activate/1/
 
-Indien u geen profiel aangemaakt hebt op {{ site }}, kan u deze e-mail gewoon negeren.
+Indien u geen profiel aangemaakt hebt op seasoning.be, kan u deze e-mail gewoon negeren.
+
 
 Met vriendelijke groeten,
 
 Het Seasoning Team
+
+
+Denk aan het milieu. Druk deze mail niet onnodig af.
+
+Dit is een automatisch gegenereerde email. Gelieve er niet op te antwoorden.

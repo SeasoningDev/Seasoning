@@ -1,15 +1,25 @@
 {% load humanize %}
-Beste {{ user.givenname }} {{ user.surname }},
-<br /><br />
-Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel te registreren bij
-Seasoning.
-<br /><br />
-Indien u dit gedaan hebt, kan u onderstaande link gebruiken om het profiel te activeren:
-<br /><br />
-<a href="https://{{ site }}{% url 'registration_activate' activation_key=activation_key %}">https://{{ site }}{% url 'registration_activate' activation_key=activation_key %}</a>
-<br /><br />
-Indien u geen profiel geregistreerd hebt bij Seasoning, kan u deze e-mail gewoon negeren.
-<br /><br />
-Met vriendelijke groeten,
-<br /><br />
-Het Seasoning Team
+<p>
+	Beste,
+</p>
+
+<p>
+	Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op seasoning.be. Indien u dit gedaan hebt, kan u de onderstaande url gebruiken om het profiel te activeren:
+</p>
+
+<a href="https://seasoning.be/profile/activate/1/">https://seasoning.be/profile/activate/1/</a>
+
+<p>
+	Indien u geen profiel aangemaakt hebt op seasoning.be, kan u deze e-mail gewoon negeren.
+</p>
+
+<p>
+	Met vriendelijke groeten,<br />
+	Het Seasoning Team
+</p>
+
+<p style="margin-top:50px; text-align: center; font-size: 12px;">
+	Denk aan het milieu. Druk deze mail niet onnodig af.
+	<br /><br />
+	Dit is een automatisch gegenereerde email. Gelieve er niet op te antwoorden.
+</p>
