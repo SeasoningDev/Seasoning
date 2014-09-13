@@ -46,6 +46,8 @@
         });
     }
     
+    /**
+    Unused for now
     function load_relchart() {
         $("#charts-ajax-loader").show();
         $.ajax({
@@ -84,6 +86,7 @@
             cache: false
         });
     }
+    */
     
     $(document).ready(function() {
     	evochart = new Highcharts.Chart({
@@ -134,6 +137,8 @@
                 '#629B31'
             ],
         });
+    	/**
+    	Unused for now
         relchart = new Highcharts.Chart({
             chart: {
                 renderTo: 'recipe-fprel-chart',
@@ -183,7 +188,7 @@
                 "#000", '#629B31', '#386312', '#C0E2A2'
             ]
         });
-        
+        */
         load_evochart();
         
         $("#recipe-img").click(function() {
@@ -501,18 +506,20 @@
 		        <div id="chart-tabs">
 		            <ul>
 		                <li><a href="#tabs-1">Dynamiek</a></li>
-		                <li><a href="#tabs-2">Verhoudingen</a></li>
+		                <!-- <li><a href="#tabs-2">Verhoudingen</a></li>-->
 		            </ul>
 		            <div id="tabs-1">
 		                <div id="recipe-fpevo-chart">
 		                    
 		                </div>
 		            </div>
+		            <!-- 
 		            <div id="tabs-2">
 		                <div id="recipe-fprel-chart">
 		                    
 		                </div>
 		            </div>
+		            -->
 		        </div>
 		    </div>
 	        
