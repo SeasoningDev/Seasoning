@@ -29,7 +29,6 @@ from general.forms import ContactForm
 from general.models import StaticPage, RecipeOfTheWeek
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-from ingredients.models import Ingredient
 import re
 from general import all_templates
 from django.contrib.sites.models import RequestSite
@@ -143,6 +142,7 @@ def upload_static_image(request):
     
     return render(request, 'admin/upload_image.html', {'form': form,
                                                        'images': images})
+@staff_member_required
 def email_preview(request, tid):
     class InvalidVarException(object):
         """
@@ -182,7 +182,11 @@ def email_preview(request, tid):
     
     return render(request, 'admin/email_preview.html', {'template_html': r, 'is_text': '.txt' in template['path']})
     
+@staff_member_required
 def contact_overview(request):
+    if not request.user.is_staff:
+        raise Http404
+    
     templates = all_templates(filter_with='emails', filter_without='subject')
     
     grouped_templates = {}
@@ -195,7 +199,6 @@ def contact_overview(request):
     return render(request, 'admin/contact_overview.html', {'grouped_emails': grouped_templates.values()})
     
 # TEST VIEWS FOR TEMPLATE INSPECTION
+@staff_member_required
 def test_500(request):
-    if not request.user.is_staff:
-        raise Http404
     return 1/0
