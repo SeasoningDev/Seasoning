@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand
 import os, datetime
-from django.core.mail.message import EmailMultiAlternatives
+from django.core.mail import send_mail
 
 def check_certificate():
     """
@@ -14,11 +14,11 @@ def check_certificate():
     cert_end_date = datetime.datetime.strptime(cert_end_date, '%b %d %H:%M:%S %Y')
     
     if (cert_end_date.date() - datetime.date.today()) < datetime.timedelta(days=10):
-        subject = 'Seasoning certificaten gaan vervallen'
-        message_text = 'De SSL certificaten van Seasoning gaan binnen %s dagen vervallen. Gelieve deze te vervangen. (sh renew_certificates.sh)' % (cert_end_date.date() - datetime.date.today()).days
-        
-        msg = EmailMultiAlternatives(subject, message_text, 'noreply@seasoning.be', ['admin@seasoning.be'])
-        msg.send()
+        send_mail('Seasoning certificaten gaan vervallen', 
+                  'De SSL certificaten van Seasoning gaan binnen %s dagen vervallen. Gelieve deze te vervangen. (sh renew_certificates.sh)' % (cert_end_date.date() - datetime.date.today()).days, 
+                  'cert_checker@seasoning.be',
+                  ['admin@seasoning.be'], fail_silently=False)
+            
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
