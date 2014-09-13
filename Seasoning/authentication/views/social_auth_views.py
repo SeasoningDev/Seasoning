@@ -71,8 +71,6 @@ def social_auth(request, backend):
                     # User was successfully authenticated, so log him in
                     auth_login(request, user)
                     
-                    request.session.set_test_cookie()
-                    
                     return redirect(next_page or home)
                 # A user with the this id whas not found in the database. Check if we can find a
                 # Seasoning account with the social users email
