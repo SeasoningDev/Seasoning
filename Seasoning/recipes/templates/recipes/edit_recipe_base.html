@@ -47,22 +47,17 @@
 
 {% block recipes-active %}active{% endblock %}
 
-{% block messages %}
-{% if messages %}
-<ul class="messages">
-	{% for message in messages %}
-    <li class="{{ message.tags }}">
-    	{{ message|safe }}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 
 <div id="edit-recipe">
 	<h2>Recept {% if new_recipe %}Toevoegen{% else %}Aanpassen{% endif %}</h2>
+	
+	<ul class="messages">
+		<li class="warning">
+			Het toevoegen van recepten zit momenteel nog in een testfase waardoor er onverwachte fouten kunnen optreden. Probeer in dit geval de pagina enkele keren te vernieuwen. Als de fout zich blijft voordoen kan je ons steeds contacteren via dit
+			<a href="/contact/form/contact_type/" target="_blank">contactformulier</a>.
+		</li>
+	</ul>
 	
 	<form id="edit-recipe-form" action="" method="post" enctype="{% block form-enctype %}application/x-www-form-urlencoded{% endblock %}">
         <p id="primary-explanation">
