@@ -294,6 +294,6 @@ class MultiEmailPasswordResetForm(PasswordResetForm):
             message_html = loader.render_to_string('emails/password_reset_email.html', c)            
             
 
-            msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [self.user.email])
+            msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [user.email])
             msg.attach_alternative(message_html, "text/html")
             msg.send()
