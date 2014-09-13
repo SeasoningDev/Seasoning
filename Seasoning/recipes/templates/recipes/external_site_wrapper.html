@@ -42,6 +42,20 @@
 				color: rgba(200, 200, 200, .8);
 			}
 			
+			a#close {
+				float: right;
+				width: 30px;
+				height: 30px;
+				margin: 5px;
+				background-image: url('{{ STATIC_URL }}img/icons/delete.png');
+				background-size: 30px;
+				transition: opacity ease .5s;
+			}
+			
+			a#close:hover {
+				opacity: .5;
+			}
+			
 			iframe {
 			   display:block; /* force the iframe to display as block */   
 			   height:100%; /* assign 100% height */
@@ -55,6 +69,8 @@
 	<body>
 	    <div id="header">
 	        <a href="/"><img src="{{ STATIC_URL }}img/logos/mobile_header.png" style="height: 40px;"/></a>
+	        
+	        <a id="close" href="{{ external_url }}"> </a>
 	        
 	        <a id="back" href="{{ previous_url }}" style="">
 	        	Terug naar Seasoning.be >>
