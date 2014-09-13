@@ -1,4 +1,3 @@
-{% load humanize %}
 Beste,
 
 Enkele ogenblikken geleden werd geprobeerd dit e-mailadres te koppelen aan het profiel van {{ user.givenname }} {{ user.surname }} op Seasoning.

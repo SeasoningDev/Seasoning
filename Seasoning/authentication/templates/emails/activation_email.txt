@@ -1,4 +1,3 @@
-{% load humanize %}
 Beste,
 
 Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op seasoning.be. Indien u dit gedaan hebt, kan u de onderstaande url gebruiken om het profiel te activeren:
