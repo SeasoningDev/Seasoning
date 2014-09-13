@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 {% block content %}
 
-<div id="account-settings-container">
+<div id="account-settings-container"{% if viewing_other %} class="public-profile"{% endif %}>
     <div id="account-settings">
         {% block account_settings %}
         <div id="account-image">
