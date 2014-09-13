@@ -183,6 +183,9 @@ class EditRecipeWizard(SessionWizardView):
                 raise PermissionDenied()
         else:
             self.instance = Recipe()
+        
+        messages.add_message(self.request, messages.WARNING, 'Het toevoegen van recepten zit momenteel nog in een testfase waardoor er onverwachte fouten kunnen optreden. Probeer in dit geval de pagina enkele keren te vernieuwen. Als de fout zich blijft voordoen kan je ons steeds contacteren via dit <a target="_blank" href="%s">contactformulier</a>.' % reverse('contact', args={'contact_type': 'abuse'}))
+        
         return SessionWizardView.dispatch(self, *args, **kwargs)
 
     def post(self, *args, **kwargs):
