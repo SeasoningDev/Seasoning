@@ -33,6 +33,7 @@ import re
 from general import all_templates
 from django.contrib.sites.models import RequestSite
 from django.template.context import RequestContext
+from django.core.mail.message import EmailMultiAlternatives
 
 def home(request):
     if request.user.is_authenticated():
@@ -88,22 +89,27 @@ def contact_form(request, contact_type):
                         'subject': form.cleaned_data['subject'],
                         'message': form.cleaned_data['message']}
             
+            # Send email to us
             subject_text_to_us = render_to_string('emails/contact_form_subject.txt',
                                                   ctx_dict)
             # Email subject *must not* contain newlines
             subject_text_to_us = ''.join(subject_text_to_us.splitlines())
-            
             message_text_to_us = render_to_string('emails/contact_form_email.txt',
                                                   ctx_dict)
-            message_text_feedback = render_to_string('emails/contact_form_autoreply.txt',
-                                                     ctx_dict)
-    
             send_mail(subject_text_to_us, message_text_to_us, 
                       'contact@seasoning.be',
                       [TYPES[contact_type]['email']], fail_silently=False)
-            send_mail('Contact met Seasoning.be', message_text_feedback, 
-                      'noreply@seasoning.be',
-                      [email], fail_silently=True)
+            
+            
+            # Send confirmation email to user
+            subject = 'Contact met Seasoning.be'
+            message_text = render_to_string('emails/contact_form_autoreply.txt', ctx_dict)
+            message_html = render_to_string('emails/contact_form_autoreply.html', ctx_dict)            
+            
+
+            msg = EmailMultiAlternatives(subject, message_text, 'noreply@seasoning.be', [email])
+            msg.attach_alternative(message_html, "text/html")
+            msg.send()
             
             messages.add_message(request, messages.INFO, _('Your contact form was submitted succesfully.'))
             

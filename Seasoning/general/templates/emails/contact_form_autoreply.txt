@@ -1,18 +1,22 @@
+Beste gebruiker,
+
 U hebt zonet een contactformulier verstuurd op Seasoning met de volgende gegevens:
 
-Onderwerp: {{ subject|safe }}
+
+Onderwerp: {{ subject }}
 
 Boodschap:
 
-{{ message|safe }}
+{{ message }}
 
 
-
-Wij proberen dit zo spoedig mogelijk te behandelen!
+Wij proberen dit bericht zo spoedig mogelijk te behandelen!
 
 Bedankt voor uw geduld,
 
 Het Seasoning Team
 
+
+Denk aan het milieu. Druk deze mail niet onnodig af.
 
 Dit is een automatisch gegenereerde email. Gelieve er niet op te antwoorden.
