@@ -113,11 +113,11 @@ def list_ingredients(request):
     if not request.user.is_superuser:
         raise PermissionDenied
    
-    ingredients = Ingredient.objects.all().order_by('accepted', 'name').prefetch_related('canuseunit_set__unit', 'useable_units', 'available_in_country', 'available_in_sea')
+    ingredients = Ingredient.objects.all().order_by('accepted', 'name')
     ao_ingredients = len(ingredients)
-    ao_accepted = len(ingredients.filter(accepted=True))
+    ao_accepted = len(filter(lambda x: x.accepted==True, ingredients))
     perc_accepted = int(ao_accepted/float(ao_ingredients)*100)
-    ao_bramified = len(ingredients.filter(bramified=True))
+    ao_bramified = len(filter(lambda x: x.bramified==True, ingredients))
     perc_bramified = int(ao_bramified/float(ao_ingredients)*100)
     
     return render(request, 'admin/list_ingredients.html', {'ingredients': ingredients,
