@@ -28,6 +28,8 @@ urlpatterns = patterns('',
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': sitemaps}),
     (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
     
+    (r'^dowser/', include('django_dowser.urls')),
+    
     # General Pages
     (r'^', include('general.urls')),
 )
