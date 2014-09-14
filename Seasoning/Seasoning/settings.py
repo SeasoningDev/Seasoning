@@ -185,6 +185,7 @@ INSTALLED_APPS = (
     'pipeline',
     'markitup',
     'debug_toolbar',
+    'django_dowser'
 )
 
 AUTH_USER_MODEL = 'authentication.User'
