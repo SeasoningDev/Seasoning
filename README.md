@@ -1,7 +1,7 @@
 Seasoning
 =========
 
-Copyright 2012, 2013 Driesen Joep
+Copyright 2014 Driesen Joep
 
 Seasoning is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
