@@ -48,23 +48,16 @@
   <tr align="left">
   	<th width=2%>#</th>
     <th width=20%>Ingrediënt</th>
-    <th width=10%>Primaire Eenheid aangegeven</th>
-    <th width=10%>Aantal Eenheden</th>
-    <th width=10%>Altijd ergens beschikbaar</th>
     <th width=10%>Accepted</th>
     <th width=5%>Klaar</th>
     <th width=5%>Bramified</th>
   </tr>
 {% for ingredient in ingredients %}
   <tr>
-  	{% with pu=ingredient.primary_unit aa=ingredient.always_available acc=ingredient.accepted br=ingredient.bramified %}
+  	{% with acc=ingredient.accepted br=ingredient.bramified %}
   	<td>{{ forloop.counter }}</td>
     <td><a href="/admin/ingredients/ingredient/{{ ingredient.id }}/">{{ ingredient.name }}</a></td>
-    <td>{% if pu %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
-    <td>{{ ingredient.useable_units.count }}</td>
-    <td>{% if aa %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
     <td>{% if acc %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
-    <td>{% if pu and aa and acc %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
     <td>{% if br %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
     {% endwith %}
   </tr>
