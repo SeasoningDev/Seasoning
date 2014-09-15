@@ -23,12 +23,14 @@ urlpatterns = patterns('',
     (r'^comments/', include('django.contrib.comments.urls')),
     # FAQ
     (r'^faq/', include('faq.urls')),
+    # Logs
+    (r'^log/', include('logs.urls')),
     
     # Sitemap
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': sitemaps}),
     (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
     
-    (r'^dowser/', include('django_dowser.urls')),
+#     (r'^dowser/', include('django_dowser.urls')),
     
     # General Pages
     (r'^', include('general.urls')),

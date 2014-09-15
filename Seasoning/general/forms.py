@@ -2,7 +2,6 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import BaseFormSet
 from django.utils.datastructures import SortedDict, MultiValueDict
-from django.utils.encoding import StrAndUnicode
 from django.utils.safestring import mark_safe
 from captcha.fields import ReCaptchaField
 
@@ -48,7 +47,7 @@ class FormContainerMetaclass(type):
         return new_class
 
 
-class FormContainer(StrAndUnicode):
+class FormContainer(unicode):
     __metaclass__ = FormContainerMetaclass
 
     def __init__(self, **kwargs):

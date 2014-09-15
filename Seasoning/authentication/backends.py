@@ -2,7 +2,7 @@ import datetime, urllib, urllib2
 from django.contrib.auth import login, load_backend
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
-from django.utils import simplejson
+import json
 from django.core.exceptions import PermissionDenied
 from django.contrib.sites.models import RequestSite
 from authentication import signals
@@ -231,7 +231,7 @@ class OAuth2Backend(ModelBackend):
     def get_unparsed_user_info(self, access_token):
         try:
             user_info = urllib2.urlopen(self.USER_INFO_URL + '?access_token=' + access_token)
-            return simplejson.loads(user_info.read())
+            return json.loads(user_info.read())
         except urllib2.HTTPError:
             return False
     
@@ -273,7 +273,7 @@ class GoogleAuthBackend(OAuth2Backend):
             data = urllib.urlencode(post_data)
             token_response = urllib2.urlopen(self.TOKEN_REQUEST_URL, data)
             try:
-                token = simplejson.loads(token_response.read())
+                token = json.loads(token_response.read())
                 return token['access_token']
             except (KeyError, ValueError):
                 error = TypeError()
