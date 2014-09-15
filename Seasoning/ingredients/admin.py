@@ -13,7 +13,7 @@ class CanUseUnitInline(admin.TabularInline):
     model = CanUseUnit
     extra = 1
     
-    def queryset(self, request):
+    def get_queryset(self, request):
         """
         Alter the queryset to return only base units
         

@@ -184,8 +184,7 @@ INSTALLED_APPS = (
     'imagekit',
     'pipeline',
     'markitup',
-    'debug_toolbar',
-    'django_dowser'
+    'debug_toolbar'
 )
 
 AUTH_USER_MODEL = 'authentication.User'
@@ -405,3 +404,7 @@ DEBUG_TOOLBAR_CONFIG = {
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 SSL_CERTIFICATE_FILE = secrets.SSL_CERTIFICATE_FILE
+
+UWSGI_LOG_FILE = secrets.UWSGI_LOG_FILE
+
+TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'

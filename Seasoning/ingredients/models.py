@@ -370,7 +370,7 @@ class CanUseUnit(models.Model):
     ingredient = models.ForeignKey('Ingredient', db_column='ingredient')
     unit = models.ForeignKey('Unit', related_name='useable_by', db_column='unit', limit_choices_to=models.Q(parent_unit__exact=None))
     
-    is_primary_unit = models.BooleanField()
+    is_primary_unit = models.BooleanField(default=False)
     
     conversion_factor = models.FloatField()
     
@@ -595,7 +595,7 @@ class AvailableInSea(AvailableIn):
     ingredient = models.ForeignKey(Ingredient, related_name='available_in_sea', db_column='ingredient')
     location = models.ForeignKey('Sea', db_column='sea')
     
-    endangered = models.BooleanField()
+    endangered = models.BooleanField(default=False)
     
     def sea(self):
         return self.location
