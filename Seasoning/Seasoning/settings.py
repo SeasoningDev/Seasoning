@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     
     # Admin
     'django.contrib.admin',
+    'logs',
     
     # Misc
     'imagekit',
