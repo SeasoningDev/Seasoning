@@ -174,10 +174,8 @@ class OAuth2Backend(ModelBackend):
         return str(reverse_lazy('authentication.views.social_register', args=(self.NAME,)))
     
     def authenticate(self, **kwargs):
-        if self.ID_FIELD is None:
-            raise NotImplementedError
-        if not self.ID_FIELD in kwargs:
-            raise TypeError
+        if self.ID_FIELD is None or self.ID_FIELD not in kwargs:
+            raise PermissionDenied
         social_id = kwargs[self.ID_FIELD]
         try:
             return User.objects.get(**{self.ID_FIELD: social_id})

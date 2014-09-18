@@ -1,0 +1,64 @@
+{% extends "admin/base_site.html" %}
+
+{% block extra_script %}
+<script src="{{ STATIC_URL }}js/highcharts.js"></script>
+<script>
+    var data = {{ json_log_data|safe }};
+    var times = {{ times|safe }};
+    var msecs = {{ msecs|safe }};
+    var ip_data = {{ ips|safe }};
+    
+    $(function () {
+        $('#container').highcharts({
+            title: {
+                text: 'Page Requests',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'per 5 minutes',
+                x: -20
+            },
+            xAxis: {
+            	categories: times,
+            	tickInterval: 2
+            },
+            yAxis: [{
+                title: {
+                    text: 'Requests'
+                },
+                min: 0,
+            }, {
+            	title: {
+            		text: 'Response Time (msec)'
+            	},
+            	min: 0,
+            	opposite: true
+            }],
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+				visible: false
+            },
+            series: [{
+                name: 'Requests',
+            	data: data
+            }, {
+            	name: 'Response Time',
+            	yAxis: 1,
+            	data: msecs
+            }, {
+            	name: 'Distinct ip adresses',
+            	data: ip_data
+            }]
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div id="container"></div>
+
+{% endblock %}
