@@ -30,3 +30,5 @@ def parse_uwsgi_log():
         RequestLog(line=line_no, time=time, pid=pid, wid=wid, ip=ip, user_agent=user_agent,
                    method=method, protocol=protocol, uri=uri, status=status, 
                    referer=referer, msec=msec, size=size, vsz=vsz, rss=rss).save()
+    
+    lf.close()

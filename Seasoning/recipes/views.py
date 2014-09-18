@@ -241,7 +241,7 @@ class EditRecipeWizard(SessionWizardView):
                                                  files=self.storage.get_step_files(step))
                             form.is_valid()
                             return self.render(form)
-            print(form)
+            
             # check if the current step is the last step
             if self.steps.current == self.steps.last:
                 # no more steps, render done view

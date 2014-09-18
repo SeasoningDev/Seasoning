@@ -3,56 +3,122 @@
 {% block extra_script %}
 <script src="{{ STATIC_URL }}js/highcharts.js"></script>
 <script>
-    var data = {{ json_log_data|safe }};
-    var times = {{ times|safe }};
-    var msecs = {{ msecs|safe }};
-    var ip_data = {{ ips|safe }};
+// 	var times = {{ time_intervals|safe }};
+	
+// 	var data = {{ requests|safe }};
+//     var msecs = {{ response_times|safe }};
+//     var ip_data = {{ distinct_ips|safe }};
     
-    $(function () {
-        $('#container').highcharts({
-            title: {
-                text: 'Page Requests',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'per 5 minutes',
-                x: -20
-            },
-            xAxis: {
-            	categories: times,
-            	tickInterval: 2
-            },
-            yAxis: [{
-                title: {
-                    text: 'Requests'
-                },
-                min: 0,
-            }, {
-            	title: {
-            		text: 'Response Time (msec)'
-            	},
-            	min: 0,
-            	opposite: true
-            }],
-            tooltip: {
-                valueSuffix: ''
-            },
-            legend: {
+//     $(function () {
+//         $('#container').highcharts({
+//             title: {
+//                 text: 'Page Requests',
+//                 x: -20 //center
+//             },
+//             subtitle: {
+//                 text: 'per 5 minutes',
+//                 x: -20
+//             },
+//             xAxis: {
+//             	categories: times,
+//             	tickInterval: Math.floor(times.length / 10)
+//             },
+//             yAxis: [{
+//                 title: {
+//                     text: 'Requests'
+//                 },
+//                 min: 0,
+//             }, {
+//             	title: {
+//             		text: 'Response Time (msec)'
+//             	},
+//             	min: 0,
+//             	opposite: true
+//             }],
+//             tooltip: {
+//                 valueSuffix: ''
+//             },
+//             legend: {
+// 				visible: false
+//             },
+//             series: [{
+//                 name: 'Requests',
+//             	data: data
+//             }, {
+//             	name: 'Response Time',
+//             	yAxis: 1,
+//             	data: msecs
+//             }, {
+//             	name: 'Distinct ip adresses',
+//             	data: ip_data
+//             }],
+//             plotOptions: {
+//                 series: {
+//                     marker: {
+//                         enabled: false
+//                     }
+//                 }
+//             }
+//         });
+//		
+//    });
+
+	var pages = {{ pages|safe }};
+	var hits = {{ hits|safe }};
+	var rt = {{ resp_time|safe }};
+	
+	$(function () {
+	    $('#container').highcharts({
+	        chart: {
+	            type: 'column',
+	            height: 600
+	        },
+	        title: {
+	            text: 'Hits per page'
+	        },
+	        xAxis: {
+	            categories: pages,
+	            labels: {
+	                rotation: -75,
+	                style: {
+	                    fontSize: '13px',
+	                    fontFamily: 'Verdana, sans-serif'
+	                }
+	            }
+	        },
+         	yAxis: [{
+		        title: {
+		            text: 'Requests'
+		        },
+		        min: 0,
+		    }, {
+		    	title: {
+		     		text: 'Response Time (msec)'
+		     	},
+		     	min: 0,
+		     	opposite: true
+		     }],
+	        plotOptions: {
+	            column: {
+	                pointPadding: 0.2,
+	                borderWidth: 0
+	            }
+	        },
+	        series: [{
+	            name: 'Hits per page',
+	            data: hits
+	
+	        },{
+	            name: 'Average response time',
+	            data: rt,
+	            yAxis: 1,
+	
+	        }],
+	        legend: {
 				visible: false
-            },
-            series: [{
-                name: 'Requests',
-            	data: data
-            }, {
-            	name: 'Response Time',
-            	yAxis: 1,
-            	data: msecs
-            }, {
-            	name: 'Distinct ip adresses',
-            	data: ip_data
-            }]
-        });
-    });
+	        },
+	    });
+	});
 </script>
 
 {% endblock %}
