@@ -3,65 +3,72 @@
 {% block extra_script %}
 <script src="{{ STATIC_URL }}js/highcharts.js"></script>
 <script>
-// 	var times = {{ time_intervals|safe }};
-	
-// 	var data = {{ requests|safe }};
-//     var msecs = {{ response_times|safe }};
-//     var ip_data = {{ distinct_ips|safe }};
-    
-//     $(function () {
-//         $('#container').highcharts({
-//             title: {
-//                 text: 'Page Requests',
-//                 x: -20 //center
-//             },
-//             subtitle: {
-//                 text: 'per 5 minutes',
-//                 x: -20
-//             },
-//             xAxis: {
-//             	categories: times,
-//             	tickInterval: Math.floor(times.length / 10)
-//             },
-//             yAxis: [{
-//                 title: {
-//                     text: 'Requests'
-//                 },
-//                 min: 0,
-//             }, {
-//             	title: {
-//             		text: 'Response Time (msec)'
-//             	},
-//             	min: 0,
-//             	opposite: true
-//             }],
-//             tooltip: {
-//                 valueSuffix: ''
-//             },
-//             legend: {
-// 				visible: false
-//             },
-//             series: [{
-//                 name: 'Requests',
-//             	data: data
-//             }, {
-//             	name: 'Response Time',
-//             	yAxis: 1,
-//             	data: msecs
-//             }, {
-//             	name: 'Distinct ip adresses',
-//             	data: ip_data
-//             }],
-//             plotOptions: {
-//                 series: {
-//                     marker: {
-//                         enabled: false
-//                     }
-//                 }
-//             }
-//         });
-//		
-//    });
+	function show_site_wide_history_graph() {
+		$.ajax({
+			type: "POST",
+			url: "{% url 'ajax_site_wide_history' %}", 
+			data: $('#site-wide-graph-form').serialize(),
+			dataType: "json",
+			success: function(data) {
+				var times = data['time_intervals'];
+				var requests = data['requests'];
+				var response_times = data['response_times'];
+				var distinct_ips = data['distinct_ips'];
+				
+				$('#container').highcharts({
+		            title: {
+		                text: 'Page Requests',
+		                x: -20 //center
+		            },
+		            subtitle: {
+		                text: 'per 5 minutes',
+		                x: -20
+		            },
+		            xAxis: {
+		            	categories: times,
+		            	tickInterval: Math.floor(times.length / 10)
+		            },
+		            yAxis: [{
+		                title: {
+		                    text: 'Requests'
+		                },
+		                min: 0,
+		            }, {
+		            	title: {
+		            		text: 'Response Time (msec)'
+		            	},
+		            	min: 0,
+		            	opposite: true
+		            }],
+		            tooltip: {
+		                valueSuffix: ''
+		            },
+		            legend: {
+						visible: false
+		            },
+		            series: [{
+		                name: 'Requests',
+		            	data: requests
+		            }, {
+		            	name: 'Response Time',
+		            	yAxis: 1,
+		            	data: response_times
+		            }, {
+		            	name: 'Distinct ip adresses',
+		            	data: distinct_ips
+		            }],
+		            plotOptions: {
+		                series: {
+		                    marker: {
+		                        enabled: false
+		                    }
+		                }
+		            }
+		        });
+			},
+		});
+		
+   }
 
 	var pages = {{ pages|safe }};
 	var hits = {{ hits|safe }};
@@ -124,7 +131,10 @@
 {% endblock %}
 
 {% block content %}
-
+<a href="#" onclick="show_site_wide_history_graph(); return false;">Site wide history</a>
+<form id="site-wide-graph-form">
+	
+</form>
 <div id="container"></div>
 
 {% endblock %}
