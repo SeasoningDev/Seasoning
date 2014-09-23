@@ -50,7 +50,7 @@ def ajax_ingredient_name_list(request):
         ingredients_json = json.dumps(result)
   
         # Return the response
-        return HttpResponse(ingredients_json, mimetype='application/javascript')
+        return HttpResponse(ingredients_json, content_type='application/javascript')
     
     # If this is not an ajax request, permission is denied
     raise PermissionDenied
