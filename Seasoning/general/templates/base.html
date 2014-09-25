@@ -71,6 +71,9 @@
         {% block body-hook %}{% endblock %}
         
 	    <div id="header">
+	    	{% if 'dev.' in request.get_host %}
+	    	<div style="position: absolute;margin:50px 0;font-size:50px;font-weight:bold;width:100%;text-align:center;color:maroon;z-index:3000">DEVELOPMENT VERSION</div>
+	    	{% endif %}
 	        <div id="header-container" class="container">
 	            <div id="logo">
                     <a href="{% url 'home' %}"></a>
