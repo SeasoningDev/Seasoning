@@ -1,7 +1,7 @@
 pillow==2.0.0
 django==1.7
 django-imagekit==2.0.2
-django-recaptcha==0.0.5
+django-recaptcha==1.0
 mysql-python==1.2.5
 coverage==3.7
 django_dynamic_fixture==1.6.5
