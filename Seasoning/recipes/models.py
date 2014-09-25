@@ -42,7 +42,7 @@ class RecipeManager(models.Manager):
             
         veg_filter = models.Q()
         incl_ingredient_filter = models.Q()
-        additional_filters = models.Q(accepted=True)
+        additional_filters = models.Q(complete_information=True, visible=True, accepted=True)
         if advanced_search:
             # Filter for Veganism
             if ven:
@@ -151,6 +151,10 @@ class Recipe(models.Model):
     thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
     small_image = ImageSpecField([SmartResize(310, 310)], image_field='image', format='JPEG')
     
+    visible = models.BooleanField(default=True)
+    
+    accepted = models.BooleanField(default=False)
+    
     # Derived Parameters
     # Footprint per portion
     footprint = FloatField(editable=False)
@@ -159,10 +163,13 @@ class Recipe(models.Model):
     endangered = models.BooleanField(default=False, editable=False)
     inseason = models.BooleanField(default=False, editable=False)
     
-    accepted = models.BooleanField(default=False)        
+    complete_information = models.BooleanField(default=True, editable=False)
     
     def __unicode__(self):
         return self.name
+    
+    def publish(self):
+        return self.complete_information and self.visible and self.accepted
     
     @property
     def total_time(self):
@@ -189,7 +196,7 @@ class Recipe(models.Model):
         self.veganism = Ingredient.VEGAN
         
         total_footprint = 0
-        self.accepted = True
+        self.complete_information = True
         self.endangered = False
         for uses in self.uses.all():
             if update_usess:
@@ -206,7 +213,7 @@ class Recipe(models.Model):
             
             # Check the state of this ingredient
             if not uses.ingredient.accepted:
-                self.accepted = False
+                self.complete_information = False
             
             # Check if this ingredient is currently from an endangered spot
             if uses.ingredient.coming_from_endangered():
