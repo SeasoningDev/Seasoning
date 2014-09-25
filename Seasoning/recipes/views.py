@@ -10,7 +10,7 @@ from django.contrib import messages, comments
 from django.forms.formsets import formset_factory
 from django.contrib.comments.views.moderation import perform_delete
 from django.http.response import Http404, HttpResponse
-from django.utils import simplejson
+import json
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.contrib.comments.models import Comment
@@ -241,7 +241,7 @@ class EditRecipeWizard(SessionWizardView):
                                                  files=self.storage.get_step_files(step))
                             form.is_valid()
                             return self.render(form)
-            print(form)
+            
             # check if the current step is the last step
             if self.steps.current == self.steps.last:
                 # no more steps, render done view
@@ -444,7 +444,7 @@ def get_recipe_portions(request):
             
             data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess}),
                     'new_footprint': new_footprint}
-            json_data = simplejson.dumps(data)
+            json_data = json.dumps(data)
             
             return HttpResponse(json_data)
     
@@ -464,7 +464,7 @@ def get_recipe_footprint_evolution(request):
                 footprints.insert(0, footprints[0])
                 data = {'footprints': footprints,
                         'doy': datetime.date.today().timetuple().tm_yday}
-                json_data = simplejson.dumps(data)
+                json_data = json.dumps(data)
             
                 return HttpResponse(json_data)
             except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
@@ -537,7 +537,7 @@ def ajax_ingredient_units(request):
             units = Ingredient.objects.accepted_with_name(name).useable_units.all().values('id', 'name')
         except Ingredient.DoesNotExist:
             units = Unit.objects.all().values('id', 'name')
-        data = simplejson.dumps({unit['id']: unit['name'] for unit in units})
+        data = json.dumps({unit['id']: unit['name'] for unit in units})
         return HttpResponse(data)
     raise PermissionDenied()
 
