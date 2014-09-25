@@ -206,7 +206,7 @@ class CheckActiveAuthenticationForm(AuthenticationForm):
                     self.error_messages['invalid_login_override'])
             elif not self.user_cache.is_active:
                 raise forms.ValidationError(self.error_messages['inactive'])
-        self.check_for_test_cookie()
+        
         return self.cleaned_data
         
 class AccountSettingsForm(ModelForm):
