@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from django.template.loaders.app_directories import app_template_dirs
 import re
 import hashlib
 
@@ -15,8 +14,8 @@ def validate_image_size(fieldfile_obj):
         raise ValidationError(_('Max file size is %sMB') % str(size_limit/(1024*1024)))
 
 def all_templates(filter_with='', filter_without=''):
-    
     import os
+    from django.template.loaders.app_directories import app_template_dirs
     
     tid = 0
     templates = []
