@@ -192,7 +192,8 @@ class Ingredient(models.Model):
         """
         if date is None:
             date = datetime.date.today()
-        
+        if self.name == 'Spinazie':
+            ok = 1
         active_available_ins = []
         for available_in in self.get_available_ins():
             if available_in.is_active(date):
@@ -276,7 +277,7 @@ class Ingredient(models.Model):
         
         try:
             available_in = self.get_available_in_with_smallest_footprint(date)
-            return self.base_footprint + available_in.footprint()
+            return available_in.full_footprint()
         except self.BasicIngredientException:
             return self.base_footprint
     
@@ -413,7 +414,7 @@ class AvailableIn(models.Model):
     
     """
     BASE_YEAR = 2000
-    DAYS_IN_BASE_YEAR = (datetime.date(BASE_YEAR - 1, 12, 31) - datetime.date(BASE_YEAR, 12, 31)).days
+    DAYS_IN_BASE_YEAR = (datetime.date(BASE_YEAR, 12, 31) - datetime.date(BASE_YEAR - 1, 12, 31)).days
     
     class Meta:
         abstract = True
@@ -440,6 +441,13 @@ class AvailableIn(models.Model):
         if self.under_preservation(date):
             self.days_preserving(date)*self.ingredient.preservation_footprint
         return footprint
+    
+    def full_footprint(self, date=None):
+        """
+        The total footprint for this ingredient provided by this AvailableIn
+        
+        """
+        return self.ingredient.base_footprint + self.footprint(date)
     
     def full_date_until(self):
         """
@@ -494,7 +502,7 @@ class AvailableIn(models.Model):
         else:
             # 2000      until         from   2001
             # |---------]-------------[------|
-            if self.full_date_until() < date or date < self.date_from:
+            if self.full_date_until() < date and date < self.date_from:
                 return False
             return True
     
