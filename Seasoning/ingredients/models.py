@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*- 
 import time
 import datetime
-import recipes
 from django.db import models
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import date as _date
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
@@ -176,7 +175,7 @@ class Ingredient(models.Model):
             return self.available_in_sea.all()
     
     def get_available_ins_sorted(self):
-        return self.get_available_ins().order_by('footprint')
+        return sorted(self.get_available_ins(), key=lambda available_in: available_in.footprint())
     
     def get_active_available_ins(self, date=None):
         """
@@ -196,7 +195,7 @@ class Ingredient(models.Model):
         
         active_available_ins = []
         for available_in in self.get_available_ins():
-            if available_in.is_active(date, date_until_extension=self.preservability):
+            if available_in.is_active(date):
                 active_available_ins.append(available_in)
         return active_available_ins
     
@@ -216,19 +215,12 @@ class Ingredient(models.Model):
         if date is None:
             date = datetime.date.today()
         
-        smallest_footprint = None
-        for available_in in self.get_active_available_ins(date):
-            if not available_in.is_active(date_until_extension=0):
-                # This means this available in is currently under preservation
-                footprint = available_in.footprint + available_in.days_apart()*self.preservation_footprint
-            else:
-                footprint = available_in.footprint
-            if not smallest_footprint or smallest_footprint > footprint:
-                smallest_footprint = footprint
-                smallest_available_in = available_in
-        if smallest_footprint is None:
+        active_available_ins = self.get_active_available_ins(date)
+        sorted_active_availeble_ins = sorted(active_available_ins, key=lambda x: x.footprint())
+        try:
+            return sorted_active_availeble_ins[0]
+        except IndexError:
             raise ObjectDoesNotExist('No active AvailableIn object was found for ingredient ' + str(self))
-        return smallest_available_in
         
     def always_available(self):
         """
@@ -249,26 +241,17 @@ class Ingredient(models.Model):
             # Find an available in that is currently active
             for avail in available_ins:
                 # Found an active available in
-                if avail.is_active(current_date, date_until_extension=self.preservability):
+                if avail.is_active(current_date):
                     
                     # The end date of this available in with preservability
-                    extended_until_date = avail.extended_date_until(date_until_extension=self.preservability)
+                    extended_until_date = avail.full_date_until()
                     
                     # Add a day to include dates that end the day before the start date => these are valid as well
                     extended_until_date += datetime.timedelta(days=1)
                     
-                    extended_until_date = extended_until_date.replace(year=AvailableIn.BASE_YEAR)
-                    
-                    if extended_until_date <= current_date:
-                        # The availability wrapped around the year => we're finished
+                    if extended_until_date.year > AvailableIn.BASE_YEAR:
+                        # We started on jan 1st, if the next year has arrived, we're golden
                         return True
-                    
-                    else:
-                        # If we wrapped around and overshot current date, we're still finished
-                        extended_until_date_year_intact = avail.extended_date_until(date_until_extension=self.preservability)
-                        if extended_until_date_year_intact.year > extended_until_date.year and extended_until_date > avail.date_from:
-                            # We wrapped around
-                            return True
                         
                     current_date = extended_until_date
                     
@@ -293,12 +276,7 @@ class Ingredient(models.Model):
         
         try:
             available_in = self.get_available_in_with_smallest_footprint(date)
-            if not available_in.is_active(date_until_extension=0):
-                # This means this available in is currently under preservation
-                footprint = available_in.footprint + available_in.days_apart()*self.preservation_footprint
-            else:
-                footprint = available_in.footprint
-            return footprint
+            return self.base_footprint + available_in.footprint()
         except self.BasicIngredientException:
             return self.base_footprint
     
@@ -312,32 +290,12 @@ class Ingredient(models.Model):
     def can_use_unit(self, unit):
         return unit in self.useable_units.all()
     
-    def clean(self):
-        if self.accepted and not self.always_available():
-            raise ValidationError(_('This ingredient is not always available somewhere, and should not be accepted.'))
-        
     def save(self):
         if not self.type == Ingredient.SEASONAL:
             self.preservability = 0
             self.preservation_footprint = 0
-        saved = super(Ingredient, self).save()
+        return super(Ingredient, self).save()
         
-        try:
-            availableins = self.get_available_ins()
-            for availablein in availableins:
-                availablein.save()
-        except self.BasicIngredientException:
-            pass
-        
-        # Update all recipes using this ingredient
-        uses = recipes.models.UsesIngredient.objects.filter(ingredient=self)
-        if len(uses) > 0 and len(uses) < 100:
-            # If more than 100 recipes use this ingredient, just wait for the cron job to
-            # avoid overloading the server
-            for uses_ingredient in uses:
-                uses_ingredient.save(update_recipe=True)
-        return saved
-
 class Synonym(models.Model):
     """
     Represents a synonym for an ingredient, these will be displayed when viewing
@@ -455,6 +413,7 @@ class AvailableIn(models.Model):
     
     """
     BASE_YEAR = 2000
+    DAYS_IN_BASE_YEAR = (datetime.date(BASE_YEAR - 1, 12, 31) - datetime.date(BASE_YEAR, 12, 31)).days
     
     class Meta:
         abstract = True
@@ -470,41 +429,52 @@ class AvailableIn(models.Model):
     date_from = models.DateField()
     date_until = models.DateField()
     
-    # This is the added footprint when an ingredient is available with this AvailableIn object,
-    # it is calculated when the model is saved
-    footprint = models.FloatField(editable=False)
-    
-    def extended_date_until(self, date_until_extension=None):
-        if date_until_extension is None:
-            date_until_extension = self.ingredient.preservability
-        date = self.date_until + datetime.timedelta(days=date_until_extension)
-        if date.year > self.BASE_YEAR:
-            tmp_date = date.replace(year=self.BASE_YEAR)
-            if tmp_date > self.date_from:
-                return self.date_from - datetime.timedelta(days=1)
-            return date
-        
-        if self.date_until < self.date_from:
-            ok_day = date.day
-            while True:
-                try:
-                    date = date.replace(day=ok_day, year=self.BASE_YEAR + 1)
-                    break
-                except ValueError:
-                    ok_day -= 1
+    def footprint(self, date=None):
+        if date is None:
+            date = datetime.date.today()
             
-        return date
+        footprint = self.ingredient.base_footprint + \
+            self.extra_production_footprint + \
+            self.location.distance*self.transport_method.emission_per_km
         
+        if self.under_preservation(date):
+            self.days_preserving(date)*self.ingredient.preservation_footprint
+        return footprint
+    
+    def full_date_until(self):
+        """
+        This function returns the end date of the period in which this AvailableIn
+        was available.
+        It takes into account the preservability period of its ingredient. If the 
+        until date wraps around the year because of its preservability, the following 
+        things take place:
+         - The year of the returned date is reset to self.BASE_YEAR
+         - If the date is bigger than self.date_from, the returned date is set to the 
+           day before self.date_from
+        
+        """
+        if self.ingredient.preservability > 0:
+            extended_date = self.date_until + datetime.timedelta(days=self.ingredient.preservability)
+            if extended_date.year > self.BASE_YEAR:
+                # preservability pushed it over the edge
+                days_in_next_year = (extended_date - datetime.date(self.BASE_YEAR, 12, 31))
+                extended_until_date = datetime.date(self.BASE_YEAR - 1, 12, 31) + days_in_next_year
+                if extended_until_date > self.date_from:
+                    # if we have a wraparound (mind jan 1st)
+                    return (self.date_from - datetime.timedelta(days=1)).replace(year=self.BASE_YEAR)
+            return extended_date
+        return self.date_until
+    
     def month_from(self):
         return _date(self.date_from, 'F')
     
     def month_until(self):
         return _date(self.date_until, 'F')
     
-    def extended_month_until(self, date_until_extension=None):
-        return _date(self.extended_date_until(date_until_extension), 'F')
+    def extended_month_until(self):
+        return _date(self.full_date_until(), 'F')
     
-    def is_active(self, date=None, date_until_extension=0):
+    def is_active(self, date=None):
         """
         Returns if this available in is currently active. This means the
         ingredient can be supplied using these parameters today.
@@ -515,44 +485,23 @@ class AvailableIn(models.Model):
         else:
             date = date.replace(year=self.BASE_YEAR)
         
-        if date < self.date_from:
-            try:
-                date = date.replace(year=self.BASE_YEAR + 1)
-            except ValueError:
-                # This probably means we hit 29th feb.
-                date = date.replace(day=date.day-1, year=self.BASE_YEAR + 1)
-            
-        if self.date_from <= self.date_until:
+        if self.date_from < self.full_date_until():
             # 2000      from          until  2001
             # |---------[-------------]------|
-            extended_until_date = (self.date_until + datetime.timedelta(days=date_until_extension))
+            if date < self.date_from or self.full_date_until() < date:
+                return False
+            return True
         else:
             # 2000      until         from   2001
             # |---------]-------------[------|
-            try:
-                date_until = self.date_until.replace(year=self.BASE_YEAR + 1)
-            except ValueError:
-                if self.date_until.month == 2 and self.date_until.day == 29:
-                    date_until = self.date_until.replace(day=28, year=self.BASE_YEAR + 1)
-                else:
-                    raise
-            extended_until_date = (date_until + datetime.timedelta(days=date_until_extension))
-            
-        return date <= extended_until_date
+            if self.full_date_until() < date or date < self.date_from:
+                return False
+            return True
     
-    def save(self, *args, **kwargs):
-        self.footprint = self.ingredient.base_footprint + self.extra_production_footprint + self.location.distance*self.transport_method.emission_per_km
-        
-        self.date_from = self.date_from.replace(year=self.BASE_YEAR)
-        self.date_until = self.date_until.replace(year=self.BASE_YEAR)
-        
-        super(AvailableIn, self).save(*args, **kwargs)
-    
-    def days_apart(self, date=None):
+    def under_preservation(self, date=None):
         """
-        Returns the amount of days between the date_until of this available in object
-        and the given date.
-        If the given date is between date_from and date_until, 0 is returned
+        Returns if this available in is currently active. This means the
+        ingredient can be supplied using these parameters today.
         
         """
         if date is None:
@@ -560,15 +509,48 @@ class AvailableIn(models.Model):
         else:
             date = date.replace(year=self.BASE_YEAR)
         
-        if self.is_active(date):
+        if not self.is_active(date):
+            return False
+        
+        """
+        If its active, but not in the raw date_from to date_until period,
+        it must be preserving
+        
+        """
+        if self.date_from < self.full_date_until():
+            # 2000      from          until  2001
+            # |---------[-------------]------|
+            if date < self.date_from or self.date_until < date:
+                return True
+            return False
+        else:
+            # 2000      until         from   2001
+            # |---------]-------------[------|
+            if self.date_until < date or date < self.date_from:
+                return True
+            return False
+    
+    def days_preserving(self, date=None):
+        if date is None:
+            date = datetime.date.today().replace(year=self.BASE_YEAR)
+        else:
+            date = date.replace(year=self.BASE_YEAR)
+        
+        if not self.under_preservation(date):
             return 0
         
-        if date < self.date_until:
-            date = date.replace(year=self.BASE_YEAR + 1)
+        if date > self.date_until:
+            return (date - self.date_until).days
         
-        return (date - self.date_until).total_seconds() // (24*60*60)
-    
-
+        return self.DAYS_IN_BASE_YEAR - (date - self.date_until).days
+        
+         
+    def save(self, *args, **kwargs):
+        self.date_from = self.date_from.replace(year=self.BASE_YEAR)
+        self.date_until = self.date_until.replace(year=self.BASE_YEAR)
+        
+        super(AvailableIn, self).save(*args, **kwargs)
+        
     
 class AvailableInCountry(AvailableIn):
     """
