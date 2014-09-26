@@ -177,7 +177,7 @@ class Recipe(models.Model):
     complete_information = models.BooleanField(default=True, editable=False)
     
     # This field gives the veganism of this recipe according to the used ingredients
-    veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, editable=False)
+    veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, default=Ingredient.VEGAN, editable=False)
     
     # This field is True if any of this recipes ingredients is currenly available in an endangered location
     endangered = models.BooleanField(default=False, editable=False)
@@ -186,10 +186,10 @@ class Recipe(models.Model):
     inseason = models.BooleanField(default=False, editable=False)
     
     # This field gives the current footprint of this recipe
-    footprint = models.FloatField(editable=False)
+    footprint = models.FloatField(default=0, editable=False)
     
     # The current rating of this recipe
-    rating = models.FloatField(editable=False)
+    rating = models.FloatField(null=True, blank=True, editable=False)
     
     def __unicode__(self):
         return self.name
@@ -220,11 +220,9 @@ class Recipe(models.Model):
                 return True
         return False
     
-    @property
     def _inseason(self):
         return self.has_lowest_footprint_in_month(datetime.date.today().month)
     
-    @property
     def _footprint(self):
         """
         Footprint per portion of this recipe
@@ -239,6 +237,8 @@ class Recipe(models.Model):
         return total_footprint / self.portions
     
     def _rating(self):
+        if self.number_of_votes <= 0:
+            return None
         return self.votes.all().aggregate(models.Avg('score'))['score__avg']
     
     @property
