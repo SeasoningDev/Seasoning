@@ -4,7 +4,6 @@ import datetime
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator,\
     MaxLengthValidator
-from django.db.models.fields import FloatField
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 from authentication.models import User
@@ -137,9 +136,6 @@ class Recipe(models.Model):
     active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
     passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
     
-    rating = models.FloatField(null=True, blank=True, default=None, editable=False)
-    number_of_votes = models.PositiveIntegerField(default=0, editable=False)
-    
     ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
@@ -155,16 +151,6 @@ class Recipe(models.Model):
     
     accepted = models.BooleanField(default=False)
     
-    # Derived Parameters
-    # Footprint per portion
-    footprint = FloatField(editable=False)
-    veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, editable=False)
-    
-    endangered = models.BooleanField(default=False, editable=False)
-    inseason = models.BooleanField(default=False, editable=False)
-    
-    complete_information = models.BooleanField(default=True, editable=False)
-    
     def __unicode__(self):
         return self.name
     
@@ -174,6 +160,65 @@ class Recipe(models.Model):
     @property
     def total_time(self):
         return self.active_time + self.passive_time
+    
+    @property
+    def footprint(self):
+        """
+        Footprint per portion of this recipe
+        
+        """
+        total_footprint = 0
+        
+        for uses in self.uses.all():
+            # Add the footprint for this used ingredient to the total
+            total_footprint += uses.footprint()
+            
+        return total_footprint / self.portions
+    
+    @property
+    def veganism(self):
+        veganism = Ingredient.VEGAN
+        for uses in self.uses.all():
+            if uses.ingredient.veganism < veganism:
+                veganism = uses.ingredient.veganism
+        return veganism
+    
+    @property
+    def endangered(self):
+        for uses in self.uses.all():
+            if uses.ingredient.coming_from_endangered():
+                return True
+        return False
+    
+    @property
+    def inseason(self):
+        return self.has_lowest_footprint_in_month(datetime.date.today().month)
+    
+    @property
+    def compelete_information(self):
+        for uses in self.uses.all():
+            if not uses.ingredient.accepted:
+                return False
+        return True
+    
+    @property
+    def rating(self):
+        return self.votes.all().aggregate(models.Avg('score'))['score__avg']
+    
+    @property
+    def number_of_votes(self):
+        return self.votes.all().aggregate(models.Count('score'))['score__count']
+        
+    
+    def total_footprint(self):
+        return self.footprint * self.portions
+    
+    def normalized_footprint(self):
+        """
+        The footprint of this recipe for 4 portions
+        
+        """
+        return self.footprint * 4
     
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)
@@ -190,61 +235,7 @@ class Recipe(models.Model):
         if not self.save_allowed:
             raise PermissionDenied('Saving this object has been disallowed')
         
-        update_usess = kwargs.pop('update_usess', True)
-        
-        self.footprint = 0
-        self.veganism = Ingredient.VEGAN
-        
-        total_footprint = 0
-        self.complete_information = True
-        self.endangered = False
-        for uses in self.uses.all():
-            if update_usess:
-                # TODO: Check of het ooit eigenlijk nodig is dat uses gesaved worden hier.
-                # Update the footprint of the usesingredients
-                uses.save()
-                
-            # Add the footprint for this used ingredient to the total
-            total_footprint += uses.footprint
-            
-            # Check the veganism of this ingredient
-            if uses.ingredient.veganism < self.veganism:
-                self.veganism = uses.ingredient.veganism
-            
-            # Check the state of this ingredient
-            if not uses.ingredient.accepted:
-                self.complete_information = False
-            
-            # Check if this ingredient is currently from an endangered spot
-            if uses.ingredient.coming_from_endangered():
-                self.endangered = True
-            
-        self.footprint = total_footprint / self.portions
-        
-        self.inseason = self.has_lowest_footprint_in_month()
-                
         return super(Recipe, self).save(*args, **kwargs)
-    
-    def quicksave(self, *args, **kwargs):
-        """
-        Saves this recipe without recalculating parameters such as footprint and veganism. 
-        Only use if you know what you are doing
-        
-        """
-        if not self.save_allowed:
-            raise PermissionDenied('Saving this object has been disallowed')
-        return super(Recipe, self).save(*args, **kwargs)
-        
-    
-    def total_footprint(self):
-        return self.footprint * self.portions
-    
-    def normalized_footprint(self):
-        """
-        The footprint of this recipe for 4 portions
-        
-        """
-        return self.footprint * 4
     
     def monthly_footprint(self):
         """
@@ -258,7 +249,7 @@ class Recipe(models.Model):
         dates = [datetime.date(day=1, month=month, year=ingredients.models.AvailableIn.BASE_YEAR) for month in range(1, 13)]
         for uses in usess:
             for i in range(12):
-                footprints[i] += uses._calculate_footprint(uses.ingredient.footprint(date=dates[i]))
+                footprints[i] += uses.footprint(date=dates[i])
         footprints = [float('%.2f' % (4*footprint/self.portions)) for footprint in footprints]
         return footprints
     
@@ -275,12 +266,6 @@ class Recipe(models.Model):
     def unvote(self, user):
         vote = self.votes.get(user=user)
         vote.delete()
-    
-    def calculate_and_set_rating(self):
-        aggregate = self.votes.all().aggregate(models.Count('score'), models.Avg('score'))
-        self.rating = aggregate['score__avg']
-        self.number_of_votes = aggregate['score__count']
-        self.quicksave()
         
     def has_lowest_footprint_in_month(self, month=None):
         if month is None:
@@ -303,23 +288,24 @@ class UsesIngredient(models.Model):
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
     unit = models.ForeignKey(ingredients.models.Unit, db_column='unit')
     
-    # Derived Parameters
-    footprint = FloatField(null=True, editable=False)
-    
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)
     save_allowed = True
     
-    def _calculate_footprint(self, ingredient_footprint):
-        """
-        Calculate the footprint of the ingredient used.
+    def footprint(self, date=None):
+        if not self.ingredient.accepted:
+            return 0
         
-        """
+        unit_properties = None
+        
         for canuseunit in self.ingredient.canuseunit_set.all():
             if canuseunit.unit == self.unit:
                 unit_properties = canuseunit
                 break
-        return self.amount * unit_properties.conversion_factor * ingredient_footprint
+        
+        if unit_properties is None:
+            raise Unit.DoesNotExist("This ingredient (%s) can not use the given unit (%s)" % (self.ingredient, self.unit))
+        return self.amount * unit_properties.conversion_factor * self.ingredient.footprint(date)
     
     def clean(self, *args, **kwargs):
         # Validate that is ingredient is using a unit that it can use
@@ -339,23 +325,10 @@ class UsesIngredient(models.Model):
         
     
     def save(self, *args, **kwargs):
-        update_recipe = kwargs.pop('update_recipe', False)
-        
         if not self.save_allowed:
             raise PermissionDenied('Saving this object has been disallowed')
         
-        if self.ingredient.accepted:
-            self.footprint = self._calculate_footprint(self.ingredient.footprint())
-        else:
-            self.footprint = 0
-        
-        saved = super(UsesIngredient, self).save(*args, **kwargs)
-        
-        if update_recipe:
-            # Update the recipe as well
-            self.recipe.save()
-        
-        return saved
+        return super(UsesIngredient, self).save(*args, **kwargs)
 
 class UnknownIngredient(models.Model):
     class Meta:
