@@ -291,10 +291,11 @@ class Ingredient(models.Model):
     def can_use_unit(self, unit):
         return unit in self.useable_units.all()
     
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.type == Ingredient.SEASONAL:
             self.preservability = 0
             self.preservation_footprint = 0
+            
         return super(Ingredient, self).save()
         
 class Synonym(models.Model):

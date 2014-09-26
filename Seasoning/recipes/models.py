@@ -39,18 +39,9 @@ class RecipeManager(models.Manager):
         
         name_query = models.Q(name__icontains=search_string)
             
-        veg_filter = models.Q()
         incl_ingredient_filter = models.Q()
-        additional_filters = models.Q(complete_information=True, visible=True, accepted=True)
+        additional_filters = models.Q(visible=True, accepted=True)
         if advanced_search:
-            # Filter for Veganism
-            if ven:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGAN)
-            if veg:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGETARIAN)
-            if nveg:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.NON_VEGETARIAN)
-            
             # Filter for included en excluded ingredients
             if include_ingredients_operator == 'and':
                 for ingredient_name in include_ingredient_names:
@@ -64,16 +55,13 @@ class RecipeManager(models.Manager):
                 recipes_list = recipes_list.exclude(ingredients__name__icontains=ingredient_name)
                 recipes_list = recipes_list.exclude(ingredients__synonyms__name__icontains=ingredient_name)
             
-            if inseason:
-                additional_filters = additional_filters & models.Q(inseason=True)
-                
             if cuisines:
                 additional_filters = additional_filters & models.Q(cuisine__in=cuisines)
             
             if courses:
                 additional_filters = additional_filters & models.Q(course__in=courses)
                      
-        recipes_list = recipes_list.filter(name_query & veg_filter & incl_ingredient_filter & additional_filters)
+        recipes_list = recipes_list.filter(name_query & incl_ingredient_filter & additional_filters)
         
         # SORTING
         if sort_field:
@@ -82,7 +70,26 @@ class RecipeManager(models.Manager):
             sort_field = sort_order + sort_field
             recipes_list = recipes_list.order_by(sort_field)
         
-        return recipes_list.distinct()
+        search_results = recipes_list.distinct()
+        
+        # Aggregate values filters
+        agg_filter = lambda x: x.complete_information
+        
+        if not ven or not veg or not nveg:
+            if not ven:
+                agg_filter = lambda x: agg_filter(x) and x.veganism != Ingredient.VEGAN
+            if not veg:
+                agg_filter = lambda x: agg_filter(x) and x.veganism != Ingredient.VEGETARIAN
+            if not nveg:
+                agg_filter = lambda x: agg_filter(x) and x.veganism != Ingredient.NON_VEGETARIAN
+        
+        if inseason:
+            agg_filter = lambda x: agg_filter(x) and x.inseason
+            
+        if not ven or not veg or not nveg or inseason:
+            search_results = filter(agg_filter, search_results)
+                
+        return search_results
     
     def accepted(self):
         return self.filter(accepted=True)
@@ -151,6 +158,39 @@ class Recipe(models.Model):
     
     accepted = models.BooleanField(default=False)
     
+    """
+    WARNING: DENORMALIZED FIELDS
+    
+    These fields are denormalized for the following reasons:
+     - They are queried often
+     - The queries where these fields are part of the filter might return large result sets
+     - The calculation of the field requires one or more related models
+    
+    When any UsesIngredient connected to this recipe is changed, these values are updated.
+    When any Ingredients or AvailableIns connected to this recipe are changed, these values are not updated
+    The entire database of recipes should be updated nightly to reflect these changes, and seasonal changes
+    You can update these values for every recipe in the database by issuing the 'update_recipe_aggregates'
+     management command.
+    
+    """
+    # This field is True if all required information is present to display this recipe correctly
+    complete_information = models.BooleanField(default=True, editable=False)
+    
+    # This field gives the veganism of this recipe according to the used ingredients
+    veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, editable=False)
+    
+    # This field is True if any of this recipes ingredients is currenly available in an endangered location
+    endangered = models.BooleanField(default=False, editable=False)
+    
+    # This field is True if the recipe currently has its lowest footprint of the year
+    inseason = models.BooleanField(default=False, editable=False)
+    
+    # This field gives the current footprint of this recipe
+    footprint = models.FloatField(editable=False)
+    
+    # The current rating of this recipe
+    rating = models.FloatField(editable=False)
+    
     def __unicode__(self):
         return self.name
     
@@ -161,8 +201,31 @@ class Recipe(models.Model):
     def total_time(self):
         return self.active_time + self.passive_time
     
+    def _compelete_information(self):
+        for uses in self.uses.all():
+            if not uses.ingredient.accepted:
+                return False
+        return True
+    
+    def _veganism(self):
+        veganism = Ingredient.VEGAN
+        for uses in self.uses.all():
+            if uses.ingredient.veganism < veganism:
+                veganism = uses.ingredient.veganism
+        return veganism
+    
+    def _endangered(self):
+        for uses in self.uses.all():
+            if uses.ingredient.coming_from_endangered():
+                return True
+        return False
+    
     @property
-    def footprint(self):
+    def _inseason(self):
+        return self.has_lowest_footprint_in_month(datetime.date.today().month)
+    
+    @property
+    def _footprint(self):
         """
         Footprint per portion of this recipe
         
@@ -175,40 +238,12 @@ class Recipe(models.Model):
             
         return total_footprint / self.portions
     
-    @property
-    def veganism(self):
-        veganism = Ingredient.VEGAN
-        for uses in self.uses.all():
-            if uses.ingredient.veganism < veganism:
-                veganism = uses.ingredient.veganism
-        return veganism
-    
-    @property
-    def endangered(self):
-        for uses in self.uses.all():
-            if uses.ingredient.coming_from_endangered():
-                return True
-        return False
-    
-    @property
-    def inseason(self):
-        return self.has_lowest_footprint_in_month(datetime.date.today().month)
-    
-    @property
-    def compelete_information(self):
-        for uses in self.uses.all():
-            if not uses.ingredient.accepted:
-                return False
-        return True
-    
-    @property
-    def rating(self):
+    def _rating(self):
         return self.votes.all().aggregate(models.Avg('score'))['score__avg']
     
     @property
     def number_of_votes(self):
-        return self.votes.all().aggregate(models.Count('score'))['score__count']
-        
+        return self.votes.all().aggregate(models.Count('score'))['score__count']        
     
     def total_footprint(self):
         return self.footprint * self.portions
@@ -236,6 +271,18 @@ class Recipe(models.Model):
             raise PermissionDenied('Saving this object has been disallowed')
         
         return super(Recipe, self).save(*args, **kwargs)
+    
+    def recalculate_ingredient_aggregates(self):
+        self.complete_information = self._compelete_information()
+        self.veganism = self._veganism()
+        self.endangered = self._endangered()
+        self.inseason = self._inseason()
+        self.footprint = self._footprint()
+        self.save()
+    
+    def recalculate_rating_aggregates(self):
+        self.rating = self._rating()
+        self.save()
     
     def monthly_footprint(self):
         """
@@ -274,7 +321,7 @@ class Recipe(models.Model):
         min_footprint = min(footprints)
         if (abs(min_footprint - footprints[month-1]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
             return True
-        return False 
+        return False
 
 class UsesIngredient(models.Model):
     
@@ -282,7 +329,7 @@ class UsesIngredient(models.Model):
         db_table = 'usesingredient'
     
     recipe = models.ForeignKey(Recipe, related_name='uses', db_column='recipe')
-    ingredient = models.ForeignKey(ingredients.models.Ingredient, db_column='ingredient')
+    ingredient = models.ForeignKey(ingredients.models.Ingredient, related_name='used_in', db_column='ingredient')
     
     group = models.CharField(max_length=100, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
@@ -324,11 +371,16 @@ class UsesIngredient(models.Model):
             raise ValidationError('This unit cannot be used for measuring this Ingredient.')
         
     
-    def save(self, *args, **kwargs):
+    def save(self, update_recipe_aggregates=True, *args, **kwargs):
         if not self.save_allowed:
             raise PermissionDenied('Saving this object has been disallowed')
         
-        return super(UsesIngredient, self).save(*args, **kwargs)
+        ret = super(UsesIngredient, self).save(*args, **kwargs)
+        
+        if update_recipe_aggregates:
+            self.recipe.recalculate_ingredient_aggregates()
+        
+        return ret
 
 class UnknownIngredient(models.Model):
     class Meta:
@@ -350,15 +402,16 @@ class Vote(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='votes')
     user = models.ForeignKey(User)
     score = models.PositiveIntegerField(validators=[MaxValueValidator(5)])
-    time_added = models.DateTimeField(default=datetime.datetime.now, editable=False)
-    time_changed = models.DateTimeField(default=datetime.datetime.now, editable=False)
+    time_added = models.DateTimeField(auto_now_add=True, editable=False)
+    time_changed = models.DateTimeField(auto_now=True, editable=False)
     
     def save(self, *args, **kwargs):
-        self.time_changed = datetime.datetime.now()
-        super(Vote, self).save(*args, **kwargs)
-        self.recipe.calculate_and_set_rating()
+        ret = super(Vote, self).save(*args, **kwargs)
+        self.recipe.recalculate_rating_aggregates()
+        return ret
     
     def delete(self, *args, **kwargs):
-        super(Vote, self).delete(*args, **kwargs)
-        self.recipe.calculate_and_set_rating()
+        ret = super(Vote, self).delete(*args, **kwargs)
+        self.recipe.recalculate_rating_aggregates()
+        return ret
     
