@@ -192,7 +192,7 @@ class Ingredient(models.Model):
         """
         if date is None:
             date = datetime.date.today()
-        if self.name == 'Spinazie':
+        if self.pk == 273:
             ok = 1
         active_available_ins = []
         for available_in in self.get_available_ins():
@@ -463,15 +463,20 @@ class AvailableIn(models.Model):
         
         """
         if self.ingredient.preservability > 0:
-            extended_date = self.date_until + datetime.timedelta(days=self.ingredient.preservability)
-            if extended_date.year > self.BASE_YEAR:
+            extended_until_date = self.date_until + datetime.timedelta(days=self.ingredient.preservability)
+            if self.date_until < self.date_from and extended_until_date > self.date_from:
+                # extended until date overshot the from date, take the day before from date
+                return (self.date_from - datetime.timedelta(days=1)).replace(year=self.BASE_YEAR)
+            
+            if extended_until_date.year > self.BASE_YEAR:
                 # preservability pushed it over the edge
-                days_in_next_year = (extended_date - datetime.date(self.BASE_YEAR, 12, 31))
-                extended_until_date = datetime.date(self.BASE_YEAR - 1, 12, 31) + days_in_next_year
+                days_in_next_year = (extended_until_date - datetime.date(self.BASE_YEAR, 12, 31)).days % 366
+                extended_until_date = datetime.date(self.BASE_YEAR - 1, 12, 31) + datetime.timedelta(days=days_in_next_year)
                 if extended_until_date > self.date_from:
                     # if we have a wraparound (mind jan 1st)
                     return (self.date_from - datetime.timedelta(days=1)).replace(year=self.BASE_YEAR)
-            return extended_date
+            
+            return extended_until_date
         return self.date_until
     
     def month_from(self):
