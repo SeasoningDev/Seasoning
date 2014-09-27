@@ -7,5 +7,11 @@ class Command(NoArgsCommand):
         Recalculate the denormalized aggregate values of all recipes.
         
         """
-        for recipe in Recipe.objects.all():
+        recipes = Recipe.objects.all().prefetch_related('uses__unit',
+                                                        'uses__ingredient__canuseunit_set__unit',
+                                                        'uses__ingredient__available_in_country__location',
+                                                        'uses__ingredient__available_in_country__transport_method',
+                                                        'uses__ingredient__available_in_sea__location',
+                                                        'uses__ingredient__available_in_sea__transport_method')
+        for recipe in recipes:
             recipe.recalculate_ingredient_aggregates()

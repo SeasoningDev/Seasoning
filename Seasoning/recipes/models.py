@@ -190,6 +190,8 @@ class Recipe(models.Model):
     
     # The current rating of this recipe
     rating = models.FloatField(null=True, blank=True, editable=False)
+    # The number of people who gave a rating for this recipe
+    no_of_ratings = models.IntegerField(default=0)
     
     def __unicode__(self):
         return self.name
@@ -241,8 +243,7 @@ class Recipe(models.Model):
             return None
         return self.votes.all().aggregate(models.Avg('score'))['score__avg']
     
-    @property
-    def number_of_votes(self):
+    def _no_of_ratings(self):
         return self.votes.all().aggregate(models.Count('score'))['score__count']        
     
     def total_footprint(self):
@@ -282,6 +283,7 @@ class Recipe(models.Model):
     
     def recalculate_rating_aggregates(self):
         self.rating = self._rating()
+        self.no_of_ratings = self._no_of_ratings()
         self.save()
     
     def monthly_footprint(self):
@@ -290,11 +292,10 @@ class Recipe(models.Model):
         for every month of the year
         
         """
-        usess = self.uses.select_related('ingredient', 'unit__parent_unit').prefetch_related('ingredient__available_in_country', 'ingredient__available_in_sea', 'ingredient__canuseunit_set__unit__parent_unit').order_by('group', 'ingredient__name')
         # One footprint per month
         footprints = [0] * 12
         dates = [datetime.date(day=1, month=month, year=ingredients.models.AvailableIn.BASE_YEAR) for month in range(1, 13)]
-        for uses in usess:
+        for uses in self.uses.all():
             for i in range(12):
                 footprints[i] += uses.footprint(date=dates[i])
         footprints = [float('%.2f' % (4*footprint/self.portions)) for footprint in footprints]
