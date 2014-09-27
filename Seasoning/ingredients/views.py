@@ -18,7 +18,13 @@ def view_ingredients(request):
     
 def view_ingredient(request, ingredient_id):
     try:
-        ingredient = Ingredient.objects.get(pk=ingredient_id, accepted=True)
+        ingredient = Ingredient.objects.prefetch_related(
+            'synonyms',
+            'available_in_country__location',
+            'available_in_country__transport_method',
+            'available_in_sea__location',
+            'available_in_sea__transport_method',
+            'canuseunit_set__unit').get(pk=ingredient_id, accepted=True)
     except Ingredient.DoesNotExist:
         raise Http404
     
