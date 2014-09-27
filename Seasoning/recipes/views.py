@@ -16,7 +16,6 @@ from django.template.loader import render_to_string
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
-from django.db.models.aggregates import Max, Min
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.utils.decorators import method_decorator
 from django.core.files.storage import FileSystemStorage
@@ -31,7 +30,6 @@ from recipes.forms import SearchRecipeForm,\
     EditRecipeIngredientsForm, EditRecipeInstructionsForm
 from general.templatetags.ratings import rating_display_stars
 from django.contrib.comments.signals import comment_was_posted
-from django.core.urlresolvers import reverse
 
 # Inform user when posting a comment was succesfull
 def comment_posted_message(sender, comment=None, request=None, **kwargs):
@@ -66,10 +64,16 @@ def view_recipe(request, recipe_id):
     context = {}
     
     try:
-        recipe = Recipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
+        recipe = Recipe.objects.select_related(
+            'author', 'cuisine').prefetch_related(
+            'uses__unit',
+            'uses__ingredient__canuseunit_set__unit',
+            'uses__ingredient__available_in_country__location',
+            'uses__ingredient__available_in_country__transport_method',
+            'uses__ingredient__available_in_sea__location',
+            'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
     except Recipe.DoesNotExist:
         raise Http404
-    usess = UsesIngredient.objects.select_related('ingredient', 'unit').filter(recipe=recipe).order_by('-group')
     
     user_vote = None
     if request.user.is_authenticated():
@@ -91,7 +95,6 @@ def view_recipe(request, recipe_id):
     template = 'recipes/view_recipe.html'
     
     context['recipe'] = recipe
-    context['usess'] = usess
     context['user_vote'] = user_vote
     context['total_time'] = total_time 
     context['comments'] = comments
@@ -139,6 +142,7 @@ class EditRecipeWizard(SessionWizardView):
             # If the form is based on ModelFormSet, add queryset if available
             # and not previous set.
             kwargs.setdefault('queryset', self.get_form_instance(step))
+        
         return self.form_list[step](**kwargs)
     
     def form_is_valid(self, step=None):
@@ -458,7 +462,12 @@ def get_recipe_footprint_evolution(request):
     
         if recipe_id is not None:
             try:
-                recipe = Recipe.objects.get(pk=recipe_id)
+                recipe = Recipe.objects.prefetch_related('uses__unit',
+                                                         'uses__ingredient__canuseunit_set__unit',
+                                                         'uses__ingredient__available_in_country__location',
+                                                         'uses__ingredient__available_in_country__transport_method',
+                                                         'uses__ingredient__available_in_sea__location',
+                                                         'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
                 footprints = recipe.monthly_footprint()
                 footprints.append(footprints[-1])
                 footprints.insert(0, footprints[0])

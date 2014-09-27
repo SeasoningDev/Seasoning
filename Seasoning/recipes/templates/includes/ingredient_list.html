@@ -1,4 +1,4 @@
-{% regroup usess by group as groups %}
+{% regroup recipe.uses.all by group as groups %}
 {% for group in groups %}
 {% if group.grouper %}
 <h4>{{ group.grouper }}</h4>

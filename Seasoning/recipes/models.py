@@ -39,9 +39,18 @@ class RecipeManager(models.Manager):
         
         name_query = models.Q(name__icontains=search_string)
             
+        veg_filter = models.Q()
         incl_ingredient_filter = models.Q()
-        additional_filters = models.Q(visible=True, accepted=True)
+        additional_filters = models.Q(complete_information=True, visible=True, accepted=True)
         if advanced_search:
+            # Filter for Veganism
+            if ven:
+                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGAN)
+            if veg:
+                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGETARIAN)
+            if nveg:
+                veg_filter = veg_filter | models.Q(veganism=Ingredient.NON_VEGETARIAN)
+            
             # Filter for included en excluded ingredients
             if include_ingredients_operator == 'and':
                 for ingredient_name in include_ingredient_names:
@@ -55,13 +64,16 @@ class RecipeManager(models.Manager):
                 recipes_list = recipes_list.exclude(ingredients__name__icontains=ingredient_name)
                 recipes_list = recipes_list.exclude(ingredients__synonyms__name__icontains=ingredient_name)
             
+            if inseason:
+                additional_filters = additional_filters & models.Q(inseason=True)
+                
             if cuisines:
                 additional_filters = additional_filters & models.Q(cuisine__in=cuisines)
             
             if courses:
                 additional_filters = additional_filters & models.Q(course__in=courses)
                      
-        recipes_list = recipes_list.filter(name_query & incl_ingredient_filter & additional_filters)
+        recipes_list = recipes_list.filter(name_query & veg_filter & incl_ingredient_filter & additional_filters)
         
         # SORTING
         if sort_field:
@@ -70,26 +82,7 @@ class RecipeManager(models.Manager):
             sort_field = sort_order + sort_field
             recipes_list = recipes_list.order_by(sort_field)
         
-        search_results = recipes_list.distinct()
-        
-        # Aggregate values filters
-        agg_filter = lambda x: x.complete_information
-        
-        if not ven or not veg or not nveg:
-            if not ven:
-                agg_filter = lambda x: agg_filter(x) and x.veganism != Ingredient.VEGAN
-            if not veg:
-                agg_filter = lambda x: agg_filter(x) and x.veganism != Ingredient.VEGETARIAN
-            if not nveg:
-                agg_filter = lambda x: agg_filter(x) and x.veganism != Ingredient.NON_VEGETARIAN
-        
-        if inseason:
-            agg_filter = lambda x: agg_filter(x) and x.inseason
-            
-        if not ven or not veg or not nveg or inseason:
-            search_results = filter(agg_filter, search_results)
-                
-        return search_results
+        return recipes_list.distinct()
     
     def accepted(self):
         return self.filter(accepted=True)
