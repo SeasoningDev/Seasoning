@@ -164,7 +164,7 @@ def ajax_account_recipes_list(request, user_id=None):
             if user_id is None:
                 user_id = request.user.id
                 
-            recipes_list = Recipe.objects.filter(author__id=user_id).order_by('-time_added')
+            recipes_list = Recipe.objects.filter(author__id=user_id, external=False).order_by('-time_added')
             
             # Split the result by 9
             paginator = Paginator(recipes_list, 9)
