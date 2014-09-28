@@ -31,7 +31,6 @@ def view_ingredient(request, ingredient_id):
     return render(request, 'ingredients/view_ingredient.html', {'ingredient': ingredient})
 
 
-
 """
 Ajax calls
 """
