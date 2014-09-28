@@ -257,7 +257,7 @@ class DeleteAccountForm(forms.Form):
     def clean_checkstring(self):
         checkstring = self.cleaned_data['checkstring']
         if not checkstring == 'DELETEME':
-            raise forms.ValidationError('You must provide the string \'DELETEME\' if you would like to delete your account')
+            raise forms.ValidationError(_('You must provide the string \'DELETEME\' if you would like to delete your account'))
         return checkstring
 
 class MultiEmailPasswordResetForm(PasswordResetForm):

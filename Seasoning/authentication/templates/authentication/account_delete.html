@@ -60,7 +60,9 @@ $(function() {
     
 <div class="field-wrapper tooltip-field">
     {{ form.checkstring }}
-    
+</div>
+<div style="margin: -20px 0 20px;text-align: center;">
+{{ form.checkstring.errors }}
 </div>
 
 <p>
@@ -69,8 +71,8 @@ $(function() {
     auteur 'Onbekend' krijgen.
 </p>
     
-<div class="field-wrapper tooltip-field" style="position: relative;">
-    <div><strong>{{ form.delete_recipes.label }}</strong></div>
+<div class="field-wrapper tooltip-field" style="position: relative; width: auto;">
+    <div style="margin-bottom:5px;"><strong>Verwijder ook al mijn recepten</strong></div>
     {{ form.delete_recipes }}
     
     <div id="dontdeleteplox" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" style="right: 0; top: 0; display: none;">
