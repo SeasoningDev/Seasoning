@@ -124,11 +124,6 @@ $(document).ready(function() {
 	}
 	
 	// Activate the input field for including ingredients
-	$("#include-ingredients-input").pressEnter(function(event) {
-		add_include_ingredient($(this).val());
-		$(this).val("");
-	});
-	
 	$("#advanced-search #include-ingredients-input").autocomplete({
 		source: "/ingredients/ing_list/",
 		minLength: 2,
@@ -169,11 +164,6 @@ $(document).ready(function() {
 	}
 	
 	// Activate the input field for excluding ingredients
-	$("#exclude-ingredients-input").pressEnter(function() {
-		add_exclude_ingredient($(this).val());
-		$(this).val("");
-	});
-	
 	$( "#advanced-search #exclude-ingredients-input").autocomplete({
 		source: "/ingredients/ing_list/",
 		minLength: 2,
