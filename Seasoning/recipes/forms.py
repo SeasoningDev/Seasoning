@@ -147,8 +147,7 @@ class IngredientsFormSet(BaseInlineFormSet):
                 completed += 1
 
         if completed < 1:
-            raise forms.ValidationError("At least one %s is required." %
-                self.model._meta.object_name.lower())
+            raise forms.ValidationError(_("At least one Ingredient is required."))
 
 class EditRecipeIngredientsForm(FormContainer):
     
