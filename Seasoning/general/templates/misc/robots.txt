@@ -10,3 +10,4 @@ Disallow: /profile/
 Disallow: /accounts/
 Disallow: /email/
 Disallow: /auth/
+Disallow: /recipes/external/
