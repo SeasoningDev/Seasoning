@@ -8,15 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-01 12:05+0200\n"
+"POT-Creation-Date: 2014-10-01 18:36+0200\n"
 "PO-Revision-Date: 2014-02-17 16:43+0100\n"
 "Last-Translator: Bram Somers <bram.somers@seasoning.be>\n"
 "Language-Team: Dutch <LL@li.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: authentication/forms.py:64 authentication/models.py:80
 msgid "Givenname"
@@ -24,8 +25,7 @@ msgstr "Voornaam"
 
 #: authentication/forms.py:65
 msgid "30 characters or fewer, only letters allowed."
-msgstr ""
-"Gebruik maximaal 30 lettertekens."
+msgstr "Gebruik maximaal 30 lettertekens."
 
 #: authentication/forms.py:66
 msgid "This field is required."
@@ -37,11 +37,10 @@ msgstr "Achternaam"
 
 #: authentication/forms.py:71
 msgid "50 characters or fewer, only letters allowed."
-msgstr ""
-"Gebruik maximaal 50 lettertekens."
+msgstr "Gebruik maximaal 50 lettertekens."
 
 #: authentication/forms.py:74 authentication/forms.py:160
-#: authentication/models.py:72 general/forms.py:12
+#: authentication/models.py:72 general/forms.py:11
 msgid "Email"
 msgstr "E-mailadres"
 
@@ -71,7 +70,7 @@ msgstr "Gelieve nogmaals het gekozen wachtwoord in te geven ter verificatie."
 msgid "Date of birth"
 msgstr "Geboortedatum"
 
-#: authentication/forms.py:92 general/forms.py:17
+#: authentication/forms.py:92 general/forms.py:16
 msgid "You must enter the correct ReCaptcha characters"
 msgstr "Vul de correcte tekens van de ReCaptcha in."
 
@@ -134,8 +133,8 @@ msgid ""
 msgstr ""
 "Dit account werd nog niet geactiveerd, waardoor aanmelden momenteel niet "
 "mogelijk is. Indien je 15 minuten na je registratie nog geen activatiemail "
-"ontvangen hebt, kan je <a href=\"%s\">dit formulier</a> "
-"gebruiken om een nieuwe activatiemail te versturen."
+"ontvangen hebt, kan je <a href=\"%s\">dit formulier</a> gebruiken om een "
+"nieuwe activatiemail te versturen."
 
 #: authentication/forms.py:194
 msgid ""
@@ -144,6 +143,12 @@ msgid ""
 msgstr ""
 "Deze combinatie van e-mailadres en wachtwoord is niet correct. Probeer nog "
 "een keer."
+
+#: authentication/forms.py:260
+msgid ""
+"You must provide the string 'DELETEME' if you would like to delete your "
+"account"
+msgstr ""
 
 #: authentication/models.py:81
 msgid ""
@@ -177,31 +182,32 @@ msgstr "datum registratie"
 msgid "last login"
 msgstr "laatste aanmelding"
 
-#: authentication/models.py:438 authentication/models.py:600
+#: authentication/models.py:445 authentication/models.py:607
 msgid "activation key"
 msgstr "activeringssleutel"
 
-#: authentication/models.py:444
+#: authentication/models.py:451
 msgid "registration profile"
 msgstr "registratie profiel"
 
-#: authentication/models.py:445
+#: authentication/models.py:452
 msgid "registration profiles"
 msgstr "registratie profielen"
 
-#: authentication/views/account_views.py:85
+#: authentication/views/account_views.py:71
 msgid ""
 "An email has been sent to the new email address provided by you. Please "
-"follow the instructions "
+"follow the instructions in this email to complete the changing of your email "
+"address."
 msgstr ""
 "Er werd een e-mail verstuurd naar het aangepaste e-mailadres. Gelieve de "
 "instructies te volgen "
 
-#: authentication/views/account_views.py:121
+#: authentication/views/account_views.py:107
 msgid "Your email address has been successfully changed."
 msgstr "Je e-mailadres werd succesvol aangepast."
 
-#: authentication/views/account_views.py:141
+#: authentication/views/account_views.py:132
 msgid "Your password has been successfully changed."
 msgstr "Je wachtwoord werd succesvol aangepast."
 
@@ -210,6 +216,7 @@ msgid "You already have an account!"
 msgstr "Je hebt reeds een account!"
 
 #: authentication/views/registration_views.py:152
+#, python-brace-format
 msgid ""
 "A new activation email has been sent to {email_address}. This email should "
 "arrive within 15 minutes. Please be sure to check your Spam/Junk folder."
@@ -223,18 +230,20 @@ msgid "Your account has been successfully activated. Have fun!"
 msgstr "Je account werd succesvol geactiveerd. Veel plezier!"
 
 #: authentication/views/social_auth_views.py:38
-#: authentication/views/social_auth_views.py:138
+#: authentication/views/social_auth_views.py:139
+#, python-brace-format
 msgid "Could not access your {social_network} Information. Please try again."
 msgstr ""
 "Seasoning kreeg geen toegang tot je {social_network} informatie. Gelieve "
 "opnieuw te proberen."
 
 #: authentication/views/social_auth_views.py:41
-#: authentication/views/social_auth_views.py:141
+#: authentication/views/social_auth_views.py:142
 msgid "Something went wrong. Check URL for error."
 msgstr "Er ging iets mis. Kijk de URL na."
 
 #: authentication/views/social_auth_views.py:61
+#, python-brace-format
 msgid ""
 "You cannot use this type of {social_network} account on Seasoning. Please "
 "try another..."
@@ -242,7 +251,8 @@ msgstr ""
 "Dit type {social_network} account kan niet gebruikt worden op Seasoning. "
 "Gelieve een andere mogelijkheid te proberen."
 
-#: authentication/views/social_auth_views.py:81
+#: authentication/views/social_auth_views.py:82
+#, python-brace-format
 msgid ""
 "The email corresponding to your {social_network} account is already in use "
 "on Seasoning. If this account belongs to you, please log in to connect it to "
@@ -252,7 +262,8 @@ msgstr ""
 "je dit zelf, gelieve dan in te loggen. Ben je dit niet? Neem dan contact op "
 "met een beheerder."
 
-#: authentication/views/social_auth_views.py:88
+#: authentication/views/social_auth_views.py:89
+#, python-brace-format
 msgid ""
 "Your {social_network} account has not been connected to Seasoning yet. "
 "Please take a minute to register."
@@ -260,10 +271,11 @@ msgstr ""
 "Je {social_network} account is nog niet verbonden met Seasoning. Gelieve "
 "eerst te registreren."
 
-#: authentication/views/social_auth_views.py:92
-#: authentication/views/social_auth_views.py:124
-#: authentication/views/social_auth_views.py:171
-#: authentication/views/social_auth_views.py:293
+#: authentication/views/social_auth_views.py:93
+#: authentication/views/social_auth_views.py:125
+#: authentication/views/social_auth_views.py:172
+#: authentication/views/social_auth_views.py:294
+#, python-brace-format
 msgid ""
 "An error occurred while checking your identity with {social_network}. Please "
 "try again."
@@ -271,8 +283,9 @@ msgstr ""
 "Er is een fout opgetreden tijdens het aftoetsen van je gegevens met "
 "{social_network}. Gelieve opnieuw te proberen."
 
-#: authentication/views/social_auth_views.py:109
-#: authentication/views/social_auth_views.py:160
+#: authentication/views/social_auth_views.py:110
+#: authentication/views/social_auth_views.py:161
+#, python-brace-format
 msgid ""
 "You cannot connect this type of {social_network} account to your Seasoning "
 "account. Please try another..."
@@ -280,11 +293,13 @@ msgstr ""
 "Dit type {social_network} account kan niet verbonden worden met je Seasoning "
 "account. Gelieve een andere mogelijkheid te proberen."
 
-#: authentication/views/social_auth_views.py:117
+#: authentication/views/social_auth_views.py:118
+#, python-brace-format
 msgid "This {social_network} account is already connected to another account."
 msgstr "Dit {social_network} account is reeds verbonden met een ander account."
 
-#: authentication/views/social_auth_views.py:120
+#: authentication/views/social_auth_views.py:121
+#, python-brace-format
 msgid ""
 "Your {social_network} account has been successfully connected to your "
 "Seasoning account!"
@@ -292,7 +307,8 @@ msgstr ""
 "Je {social_network} account werd succesvol verbonden met je Seasoning "
 "account!"
 
-#: authentication/views/social_auth_views.py:182
+#: authentication/views/social_auth_views.py:183
+#, python-brace-format
 msgid ""
 "You can only disconnect your {social_network} account if your password has "
 "been set."
@@ -300,15 +316,17 @@ msgstr ""
 "Je kan je {social_network} account enkel loskoppelen als je een wachtwoord "
 "hebt ingesteld."
 
-#: authentication/views/social_auth_views.py:185
+#: authentication/views/social_auth_views.py:186
+#, python-brace-format
 msgid ""
 "Your Seasoning account has been disconnected from your {social_network} "
 "account."
 msgstr ""
 "Je Seasoning account werd losgekoppeld van je {social_network} account."
 
-#: authentication/views/social_auth_views.py:207
-#: authentication/views/social_auth_views.py:264
+#: authentication/views/social_auth_views.py:208
+#: authentication/views/social_auth_views.py:265
+#, python-brace-format
 msgid ""
 "You cannot use this type of {social_network} account to register on "
 "Seasoning. Please try another..."
@@ -316,8 +334,9 @@ msgstr ""
 "Dit type {social_network} account kan niet gebruikt worden om te registreren "
 "op Seasoning. Gelieve een andere mogelijkheid te proberen."
 
-#: authentication/views/social_auth_views.py:213
-#: authentication/views/social_auth_views.py:270
+#: authentication/views/social_auth_views.py:214
+#: authentication/views/social_auth_views.py:271
+#, python-brace-format
 msgid ""
 "A user has already registered with your {social_network} account. If this is "
 "you, please log in, otherwise, contact an administrator"
@@ -326,7 +345,8 @@ msgstr ""
 "je dit zelf, gelieve dan in te loggen. Ben je dit niet? Neem dan contact op "
 "met een beheerder."
 
-#: authentication/views/social_auth_views.py:220
+#: authentication/views/social_auth_views.py:221
+#, python-brace-format
 msgid ""
 "A user has already registered on Seasoning with the email in your "
 "{social_network}. If this is your account, would you like to connect it to "
@@ -336,7 +356,8 @@ msgstr ""
 "je {social_network}. Indien dit jouw account is, zou je het graag willen "
 "verbinden met je {social_network} account?"
 
-#: authentication/views/social_auth_views.py:237
+#: authentication/views/social_auth_views.py:238
+#, python-brace-format
 msgid ""
 "You have successfully registered your {social_network} account on Seasoning. "
 "Have fun!"
@@ -344,7 +365,8 @@ msgstr ""
 "Je hebt je {social_network} account succesvol geregistreerd op Seasoning. "
 "Veel plezier!"
 
-#: authentication/views/social_auth_views.py:277
+#: authentication/views/social_auth_views.py:278
+#, python-brace-format
 msgid ""
 "A user has already registered on Seasoning with the email in your "
 "{social_network}. If this is your account, please log in to connect it to "
@@ -394,84 +416,96 @@ msgstr "De antwoordtekst"
 msgid "topic"
 msgstr "onderwerp"
 
-#: general/__init__.py:12
+#: general/__init__.py:14
 #, python-format
 msgid "Max file size is %sMB"
 msgstr "De maximale grootte voor een afbeelding is %sMB."
 
-#: general/forms.py:11
+#: general/forms.py:10
 msgid "Subject"
 msgstr "Onderwerp"
 
-#: general/forms.py:14
+#: general/forms.py:13
 msgid "Message"
 msgstr "Boodschap"
 
 #: general/models.py:33
+#, python-brace-format
 msgid "{recipe_name} is the {recipe_veganism} recipe of the week."
 msgstr "{recipe_name} is het {recipe_veganism} recept van de week."
 
 #: general/models.py:37
+#, python-brace-format
 msgid "The given recipe is not {recipe_veganism}."
 msgstr "Het recept is niet {recipe_veganism}."
 
-#: general/views.py:107
+#: general/views.py:114
 msgid "Your contact form was submitted succesfully."
 msgstr "Je contactformulier werd succesvol ingediend."
 
-#: ingredients/models.py:293
-msgid ""
-"This ingredient is not always available somewhere, and should not be "
-"accepted."
-msgstr ""
-"Dit ingrediënt is niet altijd ergens beschikbaar en zou niet geaccepteerd "
-"mogen worden."
-
-#: news/models.py:24
-msgid "An image of this news item."
-msgstr "Een afbeelding van dit nieuwsbericht."
-
-#: recipes/forms.py:141
+#: recipes/forms.py:140
 msgid "Unknown ingredients found"
 msgstr "Sommige ingredienten werden niet teruggevonden."
 
-#: recipes/models.py:107
+#: recipes/forms.py:150
+#, fuzzy
+#| msgid "This field is required."
+msgid "At least one Ingredient is required."
+msgstr "Gelieve minstens 1 ingredient aan het recept toe te voegen."
+
+#: recipes/forms.py:171 recipes/models.py:142
+msgid "Instructions"
+msgstr "Instructies"
+
+#: recipes/models.py:92 recipes/models.py:119
 msgid "Name"
 msgstr "naam"
 
-#: recipes/models.py:108
+#: recipes/models.py:93
+msgid "The names of the external website."
+msgstr "De naam van de externe website."
+
+#: recipes/models.py:94
+msgid "URL"
+msgstr "URL"
+
+#: recipes/models.py:95
+msgid "The home url of the external website"
+msgstr "Het webadres van de externe website"
+
+#: recipes/models.py:120
 msgid "The names of the recipe."
 msgstr "De naam van het recept."
 
-#: recipes/models.py:112
+#: recipes/models.py:128
 msgid "Course"
 msgstr "Type Maaltijd"
 
-#: recipes/models.py:113
+#: recipes/models.py:129
 msgid "The type of course this recipe will provide."
 msgstr "De soort maaltijd van het recept."
 
-#: recipes/models.py:114
+#: recipes/models.py:130
 msgid "Cuisine"
 msgstr "Keuken"
 
-#: recipes/models.py:115
+#: recipes/models.py:131
 msgid "The type of cuisine this recipe represents."
 msgstr "De keuken waarin dit recept gebruikt wordt."
 
-#: recipes/models.py:116
+#: recipes/models.py:132
 msgid "Description"
 msgstr "Beschrijving"
 
-#: recipes/models.py:117
+#: recipes/models.py:133
 msgid "A few sentences describing the recipe (Maximum 140 characters)."
 msgstr "Een korte beschrijving van het recept (maximaal 140 tekens)."
 
-#: recipes/models.py:118
+#: recipes/models.py:134
 msgid "Portions"
 msgstr "Porties"
 
-#: recipes/models.py:118
+#: recipes/models.py:134
 msgid ""
 "The average amount of people that can be fed by this recipe using the given "
 "amounts of ingredients."
@@ -479,33 +513,35 @@ msgstr ""
 "Het gemiddeld aantal porties dat voorzien kan worden met de opgegeven "
 "hoeveelheden."
 
-#: recipes/models.py:120
+#: recipes/models.py:136
 msgid "Active time"
 msgstr "Actieve tijd"
 
-#: recipes/models.py:120
+#: recipes/models.py:136
 msgid ""
 "The time needed to prepare this recipe where you are actually doing "
 "something."
-msgstr "Het aantal minuten dat je actief besteedt aan de bereiding van het recept."
+msgstr ""
+"Het aantal minuten dat je actief besteedt aan de bereiding van het recept."
 
-#: recipes/models.py:121
+#: recipes/models.py:137
 msgid "Passive time"
 msgstr "Passieve tijd"
 
-#: recipes/models.py:121
+#: recipes/models.py:137
 msgid ""
 "The time needed to prepare this recipe where you can do something else (e.g. "
 "water is boiling)"
 msgstr ""
-"Het aantal minuten dat je niet actief besteedt aan de bereiding van het recept "
-"en je dus iets anders kan doen (bv. tijdens het koken van aardappelen)."
+"Het aantal minuten dat je niet actief besteedt aan de bereiding van het "
+"recept en je dus iets anders kan doen (bv. tijdens het koken van "
+"aardappelen)."
 
-#: recipes/models.py:127
+#: recipes/models.py:140
 msgid "Extra info"
 msgstr "Extra informatie"
 
-#: recipes/models.py:128
+#: recipes/models.py:141
 msgid ""
 "Extra info about the ingredients or needed tools (e.g. \"You will need a "
 "mixer for this recipe\" or \"Use big potatoes\")"
@@ -513,15 +549,11 @@ msgstr ""
 "Extra informatie over de ingrediënten of andere benodigdheden (bv. \"je hebt "
 "een mixer nodig voor dit recept\" of \"gebruik grote aardappelen\")."
 
-#: recipes/models.py:129
-msgid "Instructions"
-msgstr "Instructies"
-
-#: recipes/models.py:129
+#: recipes/models.py:142
 msgid "Detailed instructions for preparing this recipe."
 msgstr "Gedetailleerde instructies voor de bereiding van het recept."
 
-#: recipes/models.py:133
+#: recipes/models.py:146
 msgid ""
 "An image of this recipe. Please do not use copyrighted images, these will be "
 "removed as quick as possible."
