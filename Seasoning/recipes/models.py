@@ -182,7 +182,7 @@ class Recipe(models.Model):
     footprint = models.FloatField(default=0, editable=False)
     
     # The current rating of this recipe
-    rating = models.FloatField(null=True, blank=True, editable=False)
+    rating = models.FloatField(null=True, blank=True, default=None, editable=False)
     # The number of people who gave a rating for this recipe
     no_of_ratings = models.IntegerField(default=0)
     
@@ -232,7 +232,7 @@ class Recipe(models.Model):
         return total_footprint / self.portions
     
     def _rating(self):
-        if self.number_of_votes <= 0:
+        if self._no_of_ratings() <= 0:
             return None
         return self.votes.all().aggregate(models.Avg('score'))['score__avg']
     

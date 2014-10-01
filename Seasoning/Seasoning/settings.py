@@ -408,4 +408,4 @@ SSL_CERTIFICATE_FILE = secrets.SSL_CERTIFICATE_FILE
 
 UWSGI_LOG_FILE = secrets.UWSGI_LOG_FILE
 
-TEST_RUNNER = 'django.test.simple.DjangoTestSuiteRunner'
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
