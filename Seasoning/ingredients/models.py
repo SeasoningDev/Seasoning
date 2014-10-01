@@ -217,7 +217,7 @@ class Ingredient(models.Model):
             date = datetime.date.today()
         
         active_available_ins = self.get_active_available_ins(date)
-        sorted_active_availeble_ins = sorted(active_available_ins, key=lambda x: x.footprint())
+        sorted_active_availeble_ins = sorted(active_available_ins, key=lambda x: x.footprint(date))
         try:
             return sorted_active_availeble_ins[0]
         except IndexError:
@@ -243,6 +243,13 @@ class Ingredient(models.Model):
             for avail in available_ins:
                 # Found an active available in
                 if avail.is_active(current_date):
+                    
+                    if avail.outie():
+                        if current_date > avail.date_from:
+                            # |------]---------------[-----------x---------------|
+                            # 2000   date_until      date_from   current_date    2001
+                            # -> This means we are done
+                            return True
                     
                     # The end date of this available in with preservability
                     extended_until_date = avail.full_date_until()
@@ -277,7 +284,7 @@ class Ingredient(models.Model):
         
         try:
             available_in = self.get_available_in_with_smallest_footprint(date)
-            return available_in.full_footprint()
+            return available_in.full_footprint(date)
         except self.BasicIngredientException:
             return self.base_footprint
     
@@ -435,12 +442,12 @@ class AvailableIn(models.Model):
         if date is None:
             date = datetime.date.today()
             
-        footprint = self.ingredient.base_footprint + \
-            self.extra_production_footprint + \
+        footprint = self.extra_production_footprint + \
             self.location.distance*self.transport_method.emission_per_km
         
         if self.under_preservation(date):
-            self.days_preserving(date)*self.ingredient.preservation_footprint
+            ok = self.days_preserving(date)
+            footprint += self.days_preserving(date)*self.ingredient.preservation_footprint
         return footprint
     
     def full_footprint(self, date=None):
@@ -479,6 +486,16 @@ class AvailableIn(models.Model):
             return extended_until_date
         return self.date_until
     
+    def innie(self):
+        # 2000      from          until  2001
+        # |---------[-------------]------|
+        return self.date_from < self.full_date_until()
+    
+    def outie(self):
+        # 2000      until         from   2001
+        # |---------]-------------[------|
+        return self.date_from > self.full_date_until()
+    
     def month_from(self):
         return _date(self.date_from, 'F')
     
@@ -499,15 +516,11 @@ class AvailableIn(models.Model):
         else:
             date = date.replace(year=self.BASE_YEAR)
         
-        if self.date_from < self.full_date_until():
-            # 2000      from          until  2001
-            # |---------[-------------]------|
+        if self.innie():
             if date < self.date_from or self.full_date_until() < date:
                 return False
             return True
         else:
-            # 2000      until         from   2001
-            # |---------]-------------[------|
             if self.full_date_until() < date and date < self.date_from:
                 return False
             return True
@@ -531,15 +544,11 @@ class AvailableIn(models.Model):
         it must be preserving
         
         """
-        if self.date_from < self.full_date_until():
-            # 2000      from          until  2001
-            # |---------[-------------]------|
+        if self.innie():
             if date < self.date_from or self.date_until < date:
                 return True
             return False
         else:
-            # 2000      until         from   2001
-            # |---------]-------------[------|
             if self.date_until < date or date < self.date_from:
                 return True
             return False
@@ -556,7 +565,7 @@ class AvailableIn(models.Model):
         if date > self.date_until:
             return (date - self.date_until).days
         
-        return self.DAYS_IN_BASE_YEAR - (date - self.date_until).days
+        return self.DAYS_IN_BASE_YEAR - (self.date_until - date).days
         
          
     def save(self, *args, **kwargs):

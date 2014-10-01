@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core import mail, management
-from django.utils.hashcompat import sha_constructor
+import hashlib
 from django_dynamic_fixture import G
 from django.core.exceptions import ValidationError
 from authentication.models import User, RegistrationProfile, NewEmail
@@ -23,8 +23,8 @@ class UserModelTestCase(TestCase):
         self.assertEqual(user.rank(), User.RANKS[0])
         
         G(Cuisine, name='Andere')
-        G(Recipe, author=user)
-        G(Recipe, author=user)
+        G(Recipe, author=user, accepted=True)
+        G(Recipe, author=user, accepted=True)
         self.assertEqual(user.rank(), User.RANKS[1])
     
     def test_recipes_until_next_rank(self):
@@ -32,8 +32,8 @@ class UserModelTestCase(TestCase):
         self.assertEqual(user.recipes_until_next_rank(), 2)
         
         G(Cuisine, name='Andere')
-        G(Recipe, author=user)
-        G(Recipe, author=user)
+        G(Recipe, author=user, accepted=True)
+        G(Recipe, author=user, accepted=True)
         self.assertEqual(user.recipes_until_next_rank(), 2)
     
     def test_clean(self):
@@ -171,7 +171,7 @@ class RegistrationManagerTestCase(TestCase):
         """
         # Due to the way activation keys are constructed during
         # registration, this will never be a valid key.
-        invalid_key = sha_constructor('foo').hexdigest()
+        invalid_key = hashlib.sha1('foo').hexdigest()
         self.failIf(RegistrationProfile.objects.activate_user(invalid_key))   
     
     def test_profile_creation(self):

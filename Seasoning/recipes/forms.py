@@ -62,6 +62,7 @@ class MultipleSeparatorsFloatField(forms.FloatField):
 class UsesIngredientForm(forms.ModelForm):    
     class Meta:
         model = UsesIngredient
+        exclude = []
 
     ingredient = AutoCompleteSelectIngredientField()
     group = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput(attrs={'class': 'group'}))

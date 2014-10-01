@@ -2,7 +2,6 @@ import time
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django_dynamic_fixture import G, N
-from general.decorators import mysqldb_required
 from ingredients.models import Ingredient, Unit, CanUseUnit
 from recipes.models import Recipe, Vote, UsesIngredient, Cuisine
 
@@ -14,8 +13,12 @@ class VoteModelTestCase(TestCase):
     def setUp(self):
         G(Cuisine, name='Andere')
     
-    def test_save(self):
-        vote = N(Vote)
+    def test_recalculate_aggregates(self):
+        recipe = G(Recipe)
+        recipe.recalculate_rating_aggregates()
+        self.assertEqual(recipe.rating, None)
+        
+        vote = N(Vote, recipe=recipe)
         self.assertEqual(vote.recipe.rating, None)
         
         old_time_changed = vote.time_changed
@@ -56,17 +59,18 @@ class UsesIngredientModelTestCase(TestCase):
         rec = G(Recipe, portions=1)
         uses = G(UsesIngredient, recipe=rec, ingredient=ing, unit=cuu.unit, amount=1)
         
-        self.assertEqual(uses.footprint, 50)
-        self.assertEqual(uses.recipe.footprint, 0)
-        
-        uses.recipe.save()
+        self.assertEqual(uses.footprint(), 50)
         self.assertEqual(uses.recipe.footprint, 50)
         
         ing.base_footprint = 5
         ing.save()
         
         uses = UsesIngredient.objects.get(pk=uses.pk)
-        self.assertEqual(uses.footprint, 5)
+        self.assertEqual(uses.footprint(), 5)
+        self.assertEqual(uses.recipe.footprint, 50)
+        
+        uses.save()
+        self.assertEqual(uses.footprint(), 5)
         self.assertEqual(uses.recipe.footprint, 5)
 
 class RecipeModelTestCase(TestCase):
@@ -76,13 +80,12 @@ class RecipeModelTestCase(TestCase):
     
     def test_save(self):
         recipe = G(Recipe, footprint=10, portions=1)
-        self.assertEqual(recipe.footprint, 0)
+        self.assertEqual(recipe.footprint, 10)
         self.assertEqual(recipe.veganism, Ingredient.VEGAN)
         
         ing = G(Ingredient, type=Ingredient.BASIC, base_footprint=50, veganism=Ingredient.VEGETARIAN, accepted=True)
         cuu = G(CanUseUnit, ingredient=ing, conversion_factor=1)
         G(UsesIngredient, recipe=recipe, ingredient=ing, unit=cuu.unit, amount=1)
-        recipe.save()
         
         self.assertEqual(recipe.footprint, 50)
         self.assertEqual(recipe.veganism, Ingredient.VEGETARIAN)
@@ -123,6 +126,7 @@ class RecipeModelTestCase(TestCase):
     def test_calculate_and_set_rating(self):
         recipe = G(Recipe)
         G(Vote, score=2, recipe=recipe)
+        recipe.recalculate_rating_aggregates()
         self.assertEqual(recipe.rating, 2)
         G(Vote, score=4, recipe=recipe)
         self.assertEqual(recipe.rating, 3)

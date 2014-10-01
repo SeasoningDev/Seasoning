@@ -3,7 +3,6 @@ import ingredients
 from django.test import TestCase
 from django_dynamic_fixture import G
 from ingredients.tests import test_datetime
-from general.decorators import mysqldb_required
 from recipes.models import Recipe, UsesIngredient, Cuisine
 from ingredients.models import Unit, Country, Ingredient, AvailableInCountry, TransportMethod, AvailableIn, CanUseUnit, AvailableInSea
 
@@ -31,7 +30,6 @@ class CanUseUnitModelTestCase(TestCase):
 
 class CanUseUnitManagerTestCase(TestCase):
     
-    @mysqldb_required
     def test_useable_by(self):
         punit = G(Unit)        
         cunit = G(Unit, parent_unit=punit)
@@ -66,7 +64,6 @@ class AvailableInModelTestCase(TestCase):
         
         self.assertEqual(avail.date_from.year, AvailableIn.BASE_YEAR)
         self.assertEqual(avail.date_until.year, AvailableIn.BASE_YEAR)
-        self.assertEqual(avail.footprint, 5 + 10*20 + 30)
     
     def test_is_active(self):
         avail = G(AvailableInCountry,
@@ -100,52 +97,9 @@ class AvailableInModelTestCase(TestCase):
                   date_until=datetime.date(2013, 1, 1))
         self.assertFalse(avail.is_active())
     
-    def test_is_active_extension(self):
-        avail = G(AvailableInCountry,
-                  date_from=datetime.date(2013, 2, 2),
-                  date_until=datetime.date(2013, 5, 1))
-        self.assertTrue(avail.is_active(date_until_extension=4))
-        self.assertTrue(avail.is_active(date_until_extension=40))
-        self.assertTrue(avail.is_active(date_until_extension=400))
-        
-        avail = G(AvailableInCountry,
-                  date_from=datetime.date(2013, 12, 10),
-                  date_until=datetime.date(2013, 12, 15))
-        self.assertTrue(avail.is_active(date_until_extension=200))
-        self.assertTrue(avail.is_active(date_until_extension=400))
-        
-        avail = G(AvailableInCountry,
-                  date_from=datetime.date(2013, 12, 10),
-                  date_until=datetime.date(2013, 5, 1))
-        self.assertTrue(avail.is_active(date_until_extension=4))
-        self.assertTrue(avail.is_active(date_until_extension=40))
-        self.assertTrue(avail.is_active(date_until_extension=400))
     
-    def test_days_apart(self):
-        avail = G(AvailableInCountry,
-                  date_from=datetime.date(2013, 5, 1),
-                  date_until=datetime.date(2013, 5, 1))
-        
-        date = datetime.date(2010, 5, 5)
-        self.assertEqual(avail.days_apart(date), 4)
-        
-        date = datetime.date(2010, 5, 1)
-        self.assertEqual(avail.days_apart(date), 0)
-        
-        date = datetime.date(2010, 4, 30)
-        self.assertEqual(avail.days_apart(date), 364)
-        
-        avail = G(AvailableInCountry,
-                  date_from=datetime.date(2013, 5, 10),
-                  date_until=datetime.date(2013, 5, 1))
-        
-        date = datetime.date(2010, 5, 5)
-        self.assertEqual(avail.days_apart(date), 4)
-        
-        date = datetime.date(2010, 5, 1)
-        self.assertEqual(avail.days_apart(date), 0)
-
 class IngredientModelTestCase(TestCase):
+    # TODO: Make independant on current date
     
     def test_primary_unit(self):
         ing = G(Ingredient)
@@ -254,7 +208,7 @@ class IngredientModelTestCase(TestCase):
         self.assertTrue(ing.always_available())
         
         # Preservability pushes until date over edge
-        ing2 = G(Ingredient, type=Ingredient.SEASONAL, preservability=90)
+        ing2 = G(Ingredient, type=Ingredient.SEASONAL, preservability=91)
         G(AvailableInCountry, ingredient=ing2,
           date_from=datetime.date(2013, 6, 1),
           date_until=datetime.date(2013, 7, 31))
@@ -273,26 +227,26 @@ class IngredientModelTestCase(TestCase):
         self.assertEqual(bing.footprint(), bing.base_footprint)
         
         sing = G(Ingredient, type=Ingredient.SEASONAL, preservability=200,
-                 preservation_footprint=10)
+                 preservation_footprint=10, base_footprint=100)
         country = G(Country, distance=10)
         tpm = G(TransportMethod, emission_per_km=20)
         avail1 = G(AvailableInCountry, ingredient=sing, location=country,
                    transport_method=tpm, extra_production_footprint=5000,
                    date_from=datetime.date(2013, 2, 2),
                    date_until=datetime.date(2013, 7, 7))        
-        self.assertEqual(sing.footprint(), avail1.footprint)
+        self.assertEqual(sing.footprint(), avail1.full_footprint())
         
         avail2 = G(AvailableInCountry, ingredient=sing, location=country,
                    transport_method=tpm, extra_production_footprint=0,
                    date_from=datetime.date(2013, 7, 1),
                    date_until=datetime.date(2013, 12, 1))
-        self.assertEqual(sing.footprint(), avail2.footprint + 155*sing.preservation_footprint)
+        self.assertEqual(sing.footprint(), avail2.full_footprint())
         
         avail3 = G(AvailableInCountry, ingredient=sing, location=country,
                     transport_method=tpm, extra_production_footprint=100,
                     date_from=datetime.date(2013, 2, 2),
                     date_until=datetime.date(2013, 5, 1))
-        self.assertEqual(sing.footprint(), avail3.footprint + 4*sing.preservation_footprint)
+        self.assertEqual(sing.footprint(), avail3.full_footprint())
         
     
     def test_save(self):
@@ -301,16 +255,3 @@ class IngredientModelTestCase(TestCase):
         self.assertEqual(bing.preservability, 0)
         self.assertEqual(bing.preservation_footprint, 0)
         
-        # Check if recipe footprint is updated
-        G(Cuisine, name='Andere')
-        recipe = G(Recipe, portions=1)
-        cuu = G(CanUseUnit, ingredient=bing, is_primary_unit=True, conversion_factor=1)
-        G(UsesIngredient, recipe=recipe, ingredient=bing, amount=1, unit=cuu.unit)
-        recipe.save()
-        current_fp = recipe.footprint
-        self.assertEqual(recipe.footprint, 1)
-        
-        bing.base_footprint = 10*bing.base_footprint
-        bing.save()
-        
-        self.assertNotEqual(current_fp, Recipe.objects.get(id=recipe.id).footprint)
