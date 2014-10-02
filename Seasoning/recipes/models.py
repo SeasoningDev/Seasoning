@@ -1,5 +1,4 @@
 import time
-import ingredients
 import datetime
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator,\
@@ -9,13 +8,23 @@ from django.utils.translation import ugettext_lazy as _
 from authentication.models import User
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import SmartResize
-from ingredients.models import Ingredient, Unit
+from ingredients.models import AvailableIn, Ingredient, Unit
 from general import validate_image_size
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
     filename = '%s.%s' % (str(time.time()), extension)
     return 'images/recipes/' + filename
+
+class ExternalSite(models.Model):
+    
+    name = models.CharField(_('Name'), max_length=200,
+                            help_text=_('The names of the external website.'))
+    url = models.CharField(_('URL'), max_length=200,
+                            help_text=_('The home url of the external website'))
+    
+    def __unicode__(self):
+        return self.name
 
 class Cuisine(models.Model):
     
@@ -87,16 +96,6 @@ class RecipeManager(models.Manager):
     def accepted(self):
         return self.filter(accepted=True)
 
-class ExternalSite(models.Model):
-    
-    name = models.CharField(_('Name'), max_length=200,
-                            help_text=_('The names of the external website.'))
-    url = models.CharField(_('URL'), max_length=200,
-                            help_text=_('The home url of the external website'))
-    
-    def __unicode__(self):
-        return self.name
-
 class Recipe(models.Model):
     
     class Meta:
@@ -136,7 +135,7 @@ class Recipe(models.Model):
     active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
     passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
     
-    ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
+    ingredients = models.ManyToManyField(Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
     instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'))
@@ -287,7 +286,7 @@ class Recipe(models.Model):
         """
         # One footprint per month
         footprints = [0] * 12
-        dates = [datetime.date(day=1, month=month, year=ingredients.models.AvailableIn.BASE_YEAR) for month in range(1, 13)]
+        dates = [datetime.date(day=1, month=month, year=AvailableIn.BASE_YEAR) for month in range(1, 13)]
         for uses in self.uses.all():
             for i in range(12):
                 footprints[i] += uses.footprint(date=dates[i])
@@ -323,11 +322,11 @@ class UsesIngredient(models.Model):
         db_table = 'usesingredient'
     
     recipe = models.ForeignKey(Recipe, related_name='uses', db_column='recipe')
-    ingredient = models.ForeignKey(ingredients.models.Ingredient, related_name='used_in', db_column='ingredient')
+    ingredient = models.ForeignKey(Ingredient, related_name='used_in', db_column='ingredient')
     
     group = models.CharField(max_length=100, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
-    unit = models.ForeignKey(ingredients.models.Unit, db_column='unit')
+    unit = models.ForeignKey(Unit, db_column='unit')
     
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)

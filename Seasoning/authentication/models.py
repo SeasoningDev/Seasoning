@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password, check_password, is_passwo
 from django.contrib.auth.models import BaseUserManager
 from django.core import validators
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _

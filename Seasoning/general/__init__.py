@@ -20,9 +20,9 @@ def all_templates(filter_with='', filter_without=''):
     tid = 0
     templates = []
     for template_dir in (settings.TEMPLATE_DIRS + app_template_dirs):
-        for dir, dirnames, filenames in os.walk(template_dir):
+        for cdir, _, filenames in os.walk(template_dir):
             for filename in filenames:
-                full_path = os.path.join(dir, filename)
+                full_path = os.path.join(cdir, filename)
                 
                 if not re.match('.*%s.*' % filter_with, full_path):
                     continue
@@ -31,9 +31,9 @@ def all_templates(filter_with='', filter_without=''):
                 
                 rel_path = full_path.split('/templates/')[1]
                 name = rel_path.split('/')[-1].split('.')[0]
-                type = rel_path.split('.')[-1]
+                ctype = rel_path.split('.')[-1]
                 templates.append({'name': name, 'path': rel_path,
-                                  'id': tid, 'type': type})
+                                  'id': tid, 'type': ctype})
                 tid += 1
                                   
     return templates

@@ -1,20 +1,16 @@
+from std import *
+from ajax import *
+from admin import *
+
+from django.contrib.comments.signals import comment_was_posted
+
+# Inform user when posting a comment was succesfull
+def comment_posted_message(sender, comment=None, request=None, **kwargs):
+    messages.add_message( request, messages.SUCCESS, 'Uw reactie werd succesvol toegevoegd.' )
+comment_was_posted.connect(comment_posted_message)
+
 import os
-import datetime
-import ingredients
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied,\
-    ValidationError
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages, comments
-from django.forms.formsets import formset_factory
-from django.contrib.comments.views.moderation import perform_delete
-from django.http.response import Http404, HttpResponse
-import json
-from django.views.decorators.csrf import csrf_exempt
-from django.template.loader import render_to_string
-from django.contrib.comments.models import Comment
-from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.contrib.formtools.wizard.views import SessionWizardView
 from django.utils.decorators import method_decorator
@@ -23,83 +19,10 @@ from django.conf import settings
 from django import forms
 from django.contrib.formtools.wizard.forms import ManagementForm
 from general.forms import FormContainer
-from ingredients.models import Ingredient, Unit
-from recipes.models import Recipe, Vote, UsesIngredient, UnknownIngredient
-from recipes.forms import SearchRecipeForm,\
-    IngredientInRecipeSearchForm, EditRecipeBasicInfoForm,\
+from recipes.models import UnknownIngredient
+from recipes.forms import EditRecipeBasicInfoForm,\
     EditRecipeIngredientsForm, EditRecipeInstructionsForm
-from general.templatetags.ratings import rating_display_stars
-from django.contrib.comments.signals import comment_was_posted
-
-# Inform user when posting a comment was succesfull
-def comment_posted_message(sender, comment=None, request=None, **kwargs):
-    messages.add_message( request, messages.SUCCESS, 'Uw reactie werd succesvol toegevoegd.' )
-comment_was_posted.connect(comment_posted_message)
-
-def browse_recipes(request):
-    """
-    Browse or search through recipes
-    
-    """
-    # This is a formset for inputting ingredients to be included or excluded in the recipe search
-    IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
-    
-    if request.method == 'POST':
-        # A simple search with only the recipe name was done (from the homepage)
-        search_form = SearchRecipeForm(request.POST)
-    else:
-        search_form = SearchRecipeForm()
-        
-    include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
-    exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
-        
-    search_form_id = 'recipe-search-form'
-        
-    return render(request, 'recipes/browse_recipes.html', {'search_form': search_form,
-                                                           'include_ingredients_formset': include_ingredients_formset,
-                                                           'exclude_ingredients_formset': exclude_ingredients_formset,
-                                                           'search_form_id': search_form_id})
-
-def view_recipe(request, recipe_id):
-    context = {}
-    
-    try:
-        recipe = Recipe.objects.select_related(
-            'author', 'cuisine').prefetch_related(
-            'uses__unit',
-            'uses__ingredient__canuseunit_set__unit',
-            'uses__ingredient__available_in_country__location',
-            'uses__ingredient__available_in_country__transport_method',
-            'uses__ingredient__available_in_sea__location',
-            'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
-    except Recipe.DoesNotExist:
-        raise Http404
-    
-    user_vote = None
-    if request.user.is_authenticated():
-        try:
-            user_vote = Vote.objects.get(recipe_id=recipe_id, user=request.user)
-        except ObjectDoesNotExist:
-            pass
-    
-    total_time = recipe.active_time + recipe.passive_time
-    if total_time > 0:
-        active_time_perc = str((float(recipe.active_time) / total_time) * 100).replace(',', '.')
-        passive_time_perc = str(100 - (float(recipe.active_time) / total_time) * 100).replace(',', '.')
-        
-        context['active_time_perc'] = active_time_perc
-        context['passive_time_perc'] = passive_time_perc
-    
-    comments = Comment.objects.filter(content_type=ContentType.objects.get_for_model(Recipe), object_pk=recipe.id, is_removed=False, is_public=True).select_related('user')
-    
-    template = 'recipes/view_recipe.html'
-    
-    context['recipe'] = recipe
-    context['user_vote'] = user_vote
-    context['total_time'] = total_time 
-    context['comments'] = comments
-    
-    return render(request, template, context)
+from ingredients.models import CanUseUnit
 
 class EditRecipeWizard(SessionWizardView):
     
@@ -335,7 +258,7 @@ class EditRecipeWizard(SessionWizardView):
                                 ingredient = Ingredient(name=ingredient_info['name'], category=Ingredient.DRINKS, base_footprint=0)
                                 ingredient.save()
                             if not ingredient.can_use_unit(ingredient_info['unit']):
-                                ingredients.models.CanUseUnit(ingredient=ingredient, unit=ingredient_info['unit'], conversion_factor=0).save()
+                                CanUseUnit(ingredient=ingredient, unit=ingredient_info['unit'], conversion_factor=0).save()
                             if not UnknownIngredient.objects.filter(name=ingredient_info['name'], requested_by=self.request.user, real_ingredient=ingredient, for_recipe=self.instance).exists():
                                 UnknownIngredient(name=ingredient_info['name'], requested_by=self.request.user, real_ingredient=ingredient, for_recipe=self.instance).save()
                         
@@ -362,124 +285,11 @@ class EditRecipeWizard(SessionWizardView):
         messages.add_message(self.request, messages.INFO, done_message)
         return redirect('/recipes/%d/' % self.instance.id)
 
-@login_required
-def delete_recipe_comment(request, recipe_id, comment_id):
-    comment = get_object_or_404(comments.get_model(), pk=comment_id)
-    if comment.user == request.user:
-        perform_delete(request, comment)
-        messages.add_message(request, messages.INFO, 'Je reactie werd succesvol verwijderd.')
-        return redirect(view_recipe, recipe_id)
-    else:
-        raise PermissionDenied
-                    
-
-@login_required
-def delete_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    
-    if recipe.author == request.user:
-        recipe.delete()
-        messages.add_message(request, messages.INFO, 'Je recept \'' + recipe.name + '\' werd met succes verwijderd.')
-        return redirect('home')
-        
-        
-    raise PermissionDenied
-
-def external_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    
-    return render(request, 'recipes/external_site_wrapper.html', {'recipe': recipe})
-    
 
 """
 Ajax calls
 """
 
-@csrf_exempt
-@login_required
-def vote(request):
-    
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-        score = request.POST.get('score', None)
-        
-        if recipe_id and score:
-            try:
-                recipe = Recipe.objects.select_related().get(pk=recipe_id)
-            except Recipe.DoesNotExist:
-                raise Http404
-            recipe.vote(user=request.user, score=int(score))
-            recipe = Recipe.objects.get(pk=recipe_id)
-            data = rating_display_stars(recipe.rating, recipe.number_of_votes)
-            return HttpResponse(data)
-        
-    raise PermissionDenied
-    
-
-@login_required
-def remove_vote(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    recipe.unvote(user=request.user)
-    recipe = Recipe.objects.get(pk=recipe_id)
-    data = rating_display_stars(recipe.rating, recipe.number_of_votes)
-    return HttpResponse(data)
-
-@csrf_exempt
-def get_recipe_portions(request):
-    
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-        portions = request.POST.get('portions', None)
-        
-        if recipe_id is not None and portions is not None and portions > 0:
-            try:
-                recipe = Recipe.objects.get(pk=recipe_id)
-                usess = UsesIngredient.objects.select_related('ingredient', 'unit').filter(recipe=recipe).order_by('group', 'ingredient__name')
-            except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
-                raise Http404
-            
-            ratio = float(portions)/recipe.portions
-            new_footprint = ratio * recipe.total_footprint()
-            
-            for uses in usess:
-                uses.save_allowed = False
-                uses.amount = ratio * uses.amount
-                uses.footprint = ratio * uses.footprint
-            
-            data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess}),
-                    'new_footprint': new_footprint}
-            json_data = json.dumps(data)
-            
-            return HttpResponse(json_data)
-    
-    raise PermissionDenied
-
-@csrf_exempt
-def get_recipe_footprint_evolution(request):
-    
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-    
-        if recipe_id is not None:
-            try:
-                recipe = Recipe.objects.prefetch_related('uses__unit',
-                                                         'uses__ingredient__canuseunit_set__unit',
-                                                         'uses__ingredient__available_in_country__location',
-                                                         'uses__ingredient__available_in_country__transport_method',
-                                                         'uses__ingredient__available_in_sea__location',
-                                                         'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
-                footprints = recipe.monthly_footprint()
-                footprints.append(footprints[-1])
-                footprints.insert(0, footprints[0])
-                data = {'footprints': footprints,
-                        'doy': datetime.date.today().timetuple().tm_yday}
-                json_data = json.dumps(data)
-            
-                return HttpResponse(json_data)
-            except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
-                raise Http404
-        
-    raise PermissionDenied
 
 """
 Unused for now
@@ -537,60 +347,3 @@ def get_relative_footprint(request):
         
     raise PermissionDenied
 """
-
-@csrf_exempt
-def ajax_ingredient_units(request):
-    if request.method == 'POST' and request.is_ajax():
-        name = request.POST.get('ingredient_name', '')
-        try:
-            units = Ingredient.objects.accepted_with_name(name).useable_units.all().values('id', 'name')
-        except Ingredient.DoesNotExist:
-            units = Unit.objects.all().values('id', 'name')
-        data = json.dumps({unit['id']: unit['name'] for unit in units})
-        return HttpResponse(data)
-    raise PermissionDenied()
-
-def ajax_markdown_preview(request):
-    if request.method == 'POST' and request.is_ajax():
-        markdown = request.POST.get('data', '')
-        return render(request, 'recipes/markdown_preview.html', {'markdown_text': markdown})
-    raise PermissionDenied()
-
-def ajax_browse_recipes(request):
-    if request.method == 'POST' and request.is_ajax():
-        # This is a formset for inputting ingredients to be included or excluded in the recipe search
-        IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
-    
-        page = 1
-        search_form = SearchRecipeForm(request.POST)
-        
-        include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
-        exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
-        
-        if search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid():
-            data = search_form.cleaned_data
-            include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
-            exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
-            recipes_list = Recipe.objects.query(search_string=data['search_string'], advanced_search=data['advanced_search'],
-                                                sort_field=data['sort_field'], sort_order=data['sort_order'], inseason=data['inseason'], ven=data['ven'], 
-                                                veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
-                                                include_ingredients_operator=data['include_ingredients_operator'],
-                                                include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
-        page = search_form.cleaned_data['page']
-        
-        # Split the result by 12
-        paginator = Paginator(recipes_list, 12, allow_empty_first_page=False)
-        
-        try:
-            recipes = paginator.page(page)
-        except PageNotAnInteger:
-            recipes = paginator.page(1)
-        except EmptyPage:
-            raise Http404()
-        
-        search_form_id = 'recipe-search-form'
-    
-        return render(request, 'includes/recipe_summaries.html', {'recipes': recipes,
-                                                                  'search_form_id': search_form_id})
-        
-    raise PermissionDenied()

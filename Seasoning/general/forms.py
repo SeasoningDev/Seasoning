@@ -99,7 +99,7 @@ class FormContainer(unicode):
     def data(self):
         "Return a compressed dictionary of all data from all subforms"
         all_data = MultiValueDict()
-        for prefix, form in self.forms.items():
+        for _, form in self.forms.items():
             for key in form.data:
                 all_data.setlist(key, form.data.getlist(key))
         return all_data
@@ -108,7 +108,7 @@ class FormContainer(unicode):
     def files(self):
         "Return a compressed dictionary of all files from all subforms"
         all_files = MultiValueDict()
-        for prefix, form in self.forms.items():
+        for _, form in self.forms.items():
             for key in form.files:
                 all_files.setlist(key, form.files.getlist(key))
         return all_files
@@ -127,7 +127,7 @@ class FormContainer(unicode):
 
         This is needed if the original form collection was saved with commit=False
         """
-        for prefix, form in self.forms.items():
+        for _, form in self.forms.items():
             try:
                 for subform in form.saved_forms:
                     # Because the related instance wasn't saved at the time the
