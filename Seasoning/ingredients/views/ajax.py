@@ -1,39 +1,11 @@
-import json
-from django.shortcuts import render
-from django.core.exceptions import PermissionDenied
-from django.http.response import HttpResponse, Http404
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.views.decorators.csrf import csrf_exempt
-from ingredients.forms import SearchIngredientForm
 from ingredients.models import Ingredient, Synonym
-
-def view_ingredients(request):
-    
-    search_form = SearchIngredientForm()
-        
-    search_form_id = 'browse-ingredients-form'
-    
-    return render(request, 'ingredients/view_ingredients.html', {'form': search_form,
-                                                                 'search_form_id': search_form_id})
-    
-def view_ingredient(request, ingredient_id):
-    try:
-        ingredient = Ingredient.objects.prefetch_related(
-            'synonyms',
-            'available_in_country__location',
-            'available_in_country__transport_method',
-            'available_in_sea__location',
-            'available_in_sea__transport_method',
-            'canuseunit_set__unit').get(pk=ingredient_id, accepted=True)
-    except Ingredient.DoesNotExist:
-        raise Http404
-    
-    return render(request, 'ingredients/view_ingredient.html', {'ingredient': ingredient})
-
-
-"""
-Ajax calls
-"""
+import json
+from django.http.response import HttpResponse, Http404
+from django.core.exceptions import PermissionDenied
+from ingredients.forms import SearchIngredientForm
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 def ajax_ingredient_name_list(request):
     """
@@ -104,30 +76,3 @@ def ajax_ingredient_availability(request):
         return render(request, 'includes/ingredient_moreinfo.html', {'ingredient': ingredient})
     
     raise PermissionDenied
-
-
-"""
-Administrative Functions only below this comment
-"""
-    
-def list_ingredients(request):
-    """
-    Displays a list of all ingredients currently in the database.
-    
-    """    
-    if not request.user.is_superuser:
-        raise PermissionDenied
-   
-    ingredients = Ingredient.objects.all().order_by('accepted', 'name')
-    ao_ingredients = len(ingredients)
-    ao_accepted = len(filter(lambda x: x.accepted==True, ingredients))
-    perc_accepted = int(ao_accepted/float(ao_ingredients)*100)
-    ao_bramified = len(filter(lambda x: x.bramified==True, ingredients))
-    perc_bramified = int(ao_bramified/float(ao_ingredients)*100)
-    
-    return render(request, 'admin/list_ingredients.html', {'ingredients': ingredients,
-                                                           'ao_ingredients': ao_ingredients,
-                                                           'perc_accepted': perc_accepted,
-                                                           'ao_accepted': ao_accepted,
-                                                           'perc_bramified': perc_bramified,
-                                                           'ao_bramified': ao_bramified,})
