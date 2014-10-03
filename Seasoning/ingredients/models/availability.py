@@ -77,24 +77,6 @@ class AvailableIn(models.Model):
     date_from = models.DateField()
     date_until = models.DateField()
     
-    def footprint(self, date=None):
-        if date is None:
-            date = datetime.date.today()
-            
-        footprint = self.extra_production_footprint + \
-            self.location.distance*self.transport_method.emission_per_km
-        
-        if self.under_preservation(date):
-            footprint += self.days_preserving(date)*self.ingredient.preservation_footprint
-        return footprint
-    
-    def full_footprint(self, date=None):
-        """
-        The total footprint for this ingredient provided by this AvailableIn
-        
-        """
-        return self.ingredient.base_footprint + self.footprint(date)
-    
     def full_date_until(self):
         """
         This function returns the end date of the period in which this AvailableIn
@@ -205,6 +187,24 @@ class AvailableIn(models.Model):
         
         return self.DAYS_IN_BASE_YEAR - (self.date_until - date).days
         
+    def footprint(self, date=None):
+        if date is None:
+            date = datetime.date.today()
+            
+        footprint = self.extra_production_footprint + \
+            self.location.distance*self.transport_method.emission_per_km
+        
+        if self.under_preservation(date):
+            footprint += self.days_preserving(date)*self.ingredient.preservation_footprint
+        return footprint
+    
+    def full_footprint(self, date=None):
+        """
+        The total footprint for this ingredient provided by this AvailableIn
+        
+        """
+        return self.ingredient.base_footprint + self.footprint(date)
+    
          
     def save(self, *args, **kwargs):
         self.date_from = self.date_from.replace(year=self.BASE_YEAR)

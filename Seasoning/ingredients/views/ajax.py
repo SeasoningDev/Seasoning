@@ -8,13 +8,14 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 def ajax_ingredient_name_list(request):
+    # TODO: rewrite javascript using this view
     """
     An ajax call that returns a json list with every ingredient 
     name or synonym containing the given search query
     
     """    
-    if request.is_ajax() and 'term' in request.GET:
-        query = request.GET['term']
+    if request.method == 'POST' and request.is_ajax():
+        query = request.POST.get('query', '')
         
         # Query the database for ingredients with a name of synonym like the query
         names = list(Ingredient.objects.filter(name__icontains=query, accepted=True).values_list('name', flat=True).order_by('name'))
