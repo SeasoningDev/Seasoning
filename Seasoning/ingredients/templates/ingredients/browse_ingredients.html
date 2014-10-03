@@ -3,7 +3,6 @@
 {% block title %}Ingredienten{% endblock %}
 
 {% block extra_script %}
-<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}js/forms.js"></script>
 <script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
 <script type="text/javascript">
@@ -94,18 +93,19 @@
 	<div id="ingredient-summaries-wrapper" class="summaries-wrapper">
 	</div>
 		
-	<div id="ingredients-ajax-loader" style="clear: both; text-align: center; padding-top: 20px; height: 60px;">
+	<div id="ingredients-ajax-loader" style="clear: both; text-align: center; padding-top: 20px; height: 100px;">
 		<div>
 			{% include "includes/ajax-loader.html" %}
 		</div>
 		Ingrediënten laden...
 	</div>
 	
-	<div id="ingredients-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 60px;">
+	<div id="ingredients-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 100px;">
+		<p>Geen verdere ingrediënten gevonden die aan de zoekopdracht voldoen</p>
 		<a href="#top-of-page">Terug naar boven</a>
 	</div>
 	
-	<div id="ingredients-ajax-noresults" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 60px;">
+	<div id="ingredients-ajax-noresults" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 100px;">
 		Je zoekopdracht heeft geen resultaten opgeleverd...
 	</div>
 
