@@ -3,14 +3,14 @@ from django.shortcuts import render
 from ingredients.models import Ingredient
 from django.http.response import Http404
 
-def view_ingredients(request):
+def browse_ingredients(request):
     
     search_form = SearchIngredientForm()
         
     search_form_id = 'browse-ingredients-form'
     
-    return render(request, 'ingredients/view_ingredients.html', {'form': search_form,
-                                                                 'search_form_id': search_form_id})
+    return render(request, 'ingredients/browse_ingredients.html', {'form': search_form,
+                                                                   'search_form_id': search_form_id})
     
 def view_ingredient(request, ingredient_id):
     try:

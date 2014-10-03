@@ -93,7 +93,7 @@
                 <a href="#" onclick="showMobileNav(); return false;"><img id="show-nav-button" src="{{ STATIC_URL }}img/icons/shownav.png" /></a>
                 <div id="nav-container">
                     <div class="{% block recipes-active %}{% endblock %} navlink"><a href="{% url 'browse_recipes' %}">RECEPTEN</a></div>
-                    <div class="{% block ingredients-active %}{% endblock %} navlink"><a href="{% url 'view_ingredients' %}">INGREDIËNTEN</a></div>
+                    <div class="{% block ingredients-active %}{% endblock %} navlink"><a href="{% url 'browse_ingredients' %}">INGREDIËNTEN</a></div>
                     <div class="{% block contribute-active %}{% endblock %} navlink"><a href="{% url 'contribute' %}">BIJDRAGEN</a></div>
                     {% if user.is_authenticated %}
                     <div class="{% block myaccount-active %}{% endblock %} navlink"><a href="{% url 'my_profile' %}">MIJN PROFIEL</a></div>
