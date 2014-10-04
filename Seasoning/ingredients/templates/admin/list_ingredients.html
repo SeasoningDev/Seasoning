@@ -2,6 +2,28 @@
 
 {% block title %}Ingredientenlijst{% endblock %}
 
+{% block extrahead %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready( function () {
+    $('#ingredient-table').DataTable();
+} );
+
+</script>
+
+//-->
+</script>
+{% endblock %}
+
 {% block content %}
 
 <a href="/admin/ingredients/ingredient/add/">Nieuw Ingrediënt</a><br/><br/><br/>
@@ -44,14 +66,16 @@
 	</tr>
 </table>
 
-<table>
+<table id="ingredient-table">
+	<thead>
   <tr align="left">
   	<th width=2%>#</th>
     <th width=20%>Ingrediënt</th>
     <th width=10%>Accepted</th>
-    <th width=5%>Klaar</th>
     <th width=5%>Bramified</th>
   </tr>
+  </thead>
+  <tbody>
 {% for ingredient in ingredients %}
   <tr>
   	{% with acc=ingredient.accepted br=ingredient.bramified %}
@@ -63,6 +87,7 @@
   </tr>
 
 {% endfor %}
+</tbody>
 </table>
 
 {% endblock %}
