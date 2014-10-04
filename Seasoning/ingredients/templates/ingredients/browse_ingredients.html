@@ -28,6 +28,8 @@
     		loader_element: $("#ingredients-ajax-loader"),
     		no_more_data_element_to_show: $("#ingredients-ajax-done"),
     		no_results_element_to_show: $("#ingredients-ajax-noresults"),
+    		continue_ask_after_reloads: 5,
+    		continue_ask_element_to_show: $("#ingredients-ajax-more"),
     	});
 		
     	$("input.keywords-searchbar").focus()
@@ -98,6 +100,10 @@
 			{% include "includes/ajax-loader.html" %}
 		</div>
 		Ingrediënten laden...
+	</div>
+	
+	<div id="ingredients-ajax-more" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 100px;">
+		<a href="#" onclick="$(window).trigger('loadmore.acl');return false;">Meer ingrediënten tonen</a>
 	</div>
 	
 	<div id="ingredients-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 100px;">

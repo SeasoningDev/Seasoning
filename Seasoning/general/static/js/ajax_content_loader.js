@@ -11,7 +11,14 @@
 		   loader_element: null,
 		   no_more_data_element_to_show: null,
 		   no_results_element_to_show: null,
+		   continue_ask_after_reloads: false,
+		   continue_ask_element_to_show: null
 	   }, options );
+	   
+	   var reloads_until_continue_ask = null;
+	   if (settings.continue_ask_after_reloads) {
+		   reloads_until_continue_ask = settings.continue_ask_after_reloads;
+	   }
 	   
 	   // If we are already loading new data, don't try to load more data yet
 	   var loading = false;
@@ -30,6 +37,18 @@
 		   }
 		   if (settings.no_more_data_element_to_show) {
 			   settings.no_more_data_element_to_show.hide();
+		   }
+		   if (settings.continue_ask_element_to_show) {
+			   settings.continue_ask_element_to_show.hide();
+		   }
+		   
+		   if (settings.continue_ask_after_reloads) {
+			   if (reloads_until_continue_ask <= 0) {
+				   if (settings.continue_ask_element_to_show) {
+					   settings.continue_ask_element_to_show.show()
+				   }
+				   return
+			   }
 		   }
 		   
 		   // We are now loading new data
@@ -51,6 +70,7 @@
 				   wrapper.html("");
 			   }
 			   add_data(data);
+			   reloads_until_continue_ask--;
 		   }).done(function() {
 			   loading = false;
 		   }).error(function() {
@@ -72,6 +92,16 @@
 		   load_data(true);
 	   }
 	   
+	   function load_more_data() {
+		   if (settings.continue_ask_after_reloads) {
+			   reloads_until_continue_ask = settings.continue_ask_after_reloads;
+		   }
+		   if (settings.continue_ask_element_to_show) {
+			   settings.continue_ask_element_to_show.hide()
+		   } 
+		   load_data();
+	   }
+	   
 	   if (!settings.ajax_url || !settings.form || !settings.loader_element) {
 		   alert('No valid ajax url was given, ajax load will not work');
 	   } else {
@@ -85,6 +115,7 @@
 
 	   $(window).on("ajax-load-data", load_data);
 	   $(window).on("ajax-clear-and-load-data", clear_and_load_data);
+	   $(window).on("loadmore.acl", load_more_data);
 	   
 	   load_data();
 	   
