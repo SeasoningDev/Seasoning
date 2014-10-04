@@ -16,6 +16,8 @@ $(function() {
 		loader_element: $("#recipes-ajax-loader"),
 		no_more_data_element_to_show: $("#recipes-ajax-done"),
 		no_results_element_to_show: $("#recipes-ajax-noresults"),
+		continue_ask_after_reloads: 5,
+		continue_ask_element_to_show: $("#recipes-ajax-more"),
 	});
 	$("#id_search_string").focus();
 });
@@ -142,6 +144,10 @@ $(function() {
 					{% include "includes/ajax-loader.html" %}
 				</div>
 				Recepten laden...
+			</div>
+	
+			<div id="recipes-ajax-more" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 100px;">
+				<a href="#" onclick="$(window).trigger('loadmore.acl');return false;">Meer recepten tonen</a>
 			</div>
 			
 			<div id="recipes-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none;">
