@@ -383,10 +383,19 @@ class UnknownIngredient(models.Model):
     requested_by = models.ForeignKey(User)
     for_recipe = models.ForeignKey(Recipe)
     
-    real_ingredient = models.ForeignKey(Ingredient)
+    real_ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
     
     def __unicode__(self):
         return self.name
+
+class UnknownUsesIngredient(models.Model):
+    
+    recipe = models.ForeignKey(Recipe)
+    ingredient = models.ForeignKey(UnknownIngredient)
+    amount = models.FloatField()
+    unit = models.ForeignKey(Unit, null=True, blank=True)
+    unknownunit_name = models.CharField(max_length=20)
+    cantuseunit = models.BooleanField(default=False)
     
 class Vote(models.Model):
     class Meta:

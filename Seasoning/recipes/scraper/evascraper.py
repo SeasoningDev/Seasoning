@@ -3,11 +3,14 @@ from recipes.scraper.browse.browser import Browser as raw_browser
 from urllib import urlencode
 import re
 from django.contrib.auth import get_user_model
-from recipes.models import ExternalSite, Recipe, Cuisine
+from recipes.models import ExternalSite, Recipe, Cuisine, UnknownIngredient,\
+    UnknownUsesIngredient
 import difflib
 import tempfile
 import requests
 from django.core import files
+from ingredients.models import Ingredient
+from ingredients.models.units import Unit, CanUseUnit
 
 Browser = lambda: raw_browser('www.evavzw.be')
 
@@ -159,19 +162,54 @@ def scrape_recipes():
     
             # Write image block to temporary file
             lf.write(block)
-                
+        
         recipe = Recipe(name=recipe_page.recipe_name, author=scraper, external=True, external_site=external_site,
                         external_url=recipe_page.url, course=recipe_course, cuisine=recipe_cuisine,
                         description='Een heerlijk vegetarisch receptje van Eva!',
                         portions=recipe_page.recipe_portions, active_time=recipe_page.recipe_preparation_time,
                         passive_time=0, visible=False, accepted=False)
+        
+        try:
+            erecipe = Recipe.objects.get(name=recipe_page.recipe_name, auther=scraper, external_site=external_site)
+            if erecipe.accepted:
+                # Don't fck with accepted recipes
+                continue
+            
+            recipe.id = erecipe.id
+        except Recipe.DoesNotExist:
+            pass
+        
         recipe.image.save(file_name, files.File(lf))
         
-        for ingredient in recipe_page.recipe_ingredients:
-            pass
-        break
-        print('%s - %s - %s - %s - %s - %s' % (recipe_page.recipe_name, recipe_page.recipe_portions,
-                                          recipe_page.recipe_preparation_time, recipe_page.recipe_course,
-                                          recipe_page.recipe_cuisine, recipe_page.recipe_image))
-        for ingredient in recipe_page.recipe_ingredients:
-            print('    %s' % str(ingredient))
+        for recipe_ingredient in recipe_page.recipe_ingredients:
+            parsed_ing_name = recipe_ingredient[0]
+            parsed_ing_name = re.sub('\(.*|)', '', parsed_ing_name).strip()
+            try:
+                ingredient = Ingredient.objects.filter(name__icontains=parsed_ing_name)[0]
+            except IndexError:
+                ingredient = None
+            
+            try:
+                unit = Unit.objects.filter(short_name__icontains=recipe_ingredient[2])[0]
+            except IndexError:
+                unit = None
+            
+            cuu = None
+            if ingredient is not None and unit is not None:
+                try:
+                    cuu = CanUseUnit.objects.get(ingredient=ingredient, unit=unit)
+                except CanUseUnit.DoesNotExist:
+                    pass
+             
+            
+            uingredient = UnknownIngredient(name=recipe_ingredient[0], requested_by=scraper, for_recipe=recipe,
+                                            real_ingredient=ingredient)
+            uingredient.save()
+            if unit is not None:
+                uuses = UnknownUsesIngredient(recipe=recipe, ingredient=uingredient, amount=recipe_ingredient[1],
+                                              unit=unit, cantuseunit=cuu is None)
+            else:
+                uuses = UnknownUsesIngredient(recipe=recipe, ingredient=uingredient, amount=recipe_ingredient[1],
+                                              unknownunit_name=recipe_ingredient[2], cantuseunit=cuu is None)
+            uuses.save()
+        
