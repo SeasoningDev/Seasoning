@@ -15,7 +15,9 @@
 <script type="text/javascript">
 
 $(document).ready( function () {
-    $('#ingredient-table').DataTable();
+    $('#ingredient-table').DataTable({
+    	  "lengthMenu": [ [-1, 10, 25, 50], ["All", 10, 25, 50] ]
+    });
 } );
 
 </script>
