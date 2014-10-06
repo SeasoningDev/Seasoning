@@ -1,5 +1,8 @@
-<p>Beste,
+{% extends "emails/outgoing_email_base.html" %}
 
+{% block aanspreking %}Beste{% endblock %}
+
+{% block body %}
 <p>
 	Enkele ogenblikken geleden werd geprobeerd dit e-mailadres te koppelen aan het profiel van {{ user.givenname }} {{ user.surname }} op Seasoning.
 </p>
@@ -13,15 +16,4 @@
 <p>
 	Indien u dit niet gedaan hebt, kan u deze e-mail gewoon negeren. Het profiel zal dan aan het oorspronkelijke e-mailadres gekoppeld blijven.
 </p>
-
-<p style="margin-top: 40px;">
-	Met vriendelijke groeten,<br />
-
-	Het Seasoning Team
-</p>
-
-<p style="margin-top:50px; text-align: center; font-size: 12px;">
-Denk aan het milieu. Druk deze mail niet onnodig af.
-<br /><br />
-Dit is een automatisch gegenereerde email. Gelieve er niet op te antwoorden.
-</p>
+{% endblock %}

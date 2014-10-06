@@ -11,7 +11,9 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
-from general import validate_image_size
+from general import validate_image_size, send_seasoning_email
+from django.template import loader
+from email.mime.image import MIMEImage
 
 
 def get_image_filename(instance=None, old_filename=None):
@@ -144,19 +146,15 @@ class User(models.Model):
             return 0
         return 2**next_rank - ao_recipes
 
-    def email_user(self, subject, message, from_email=None, html_message=None):
+    def email_user(self, subject_template, text_template, html_template, template_context,
+                   from_email):
         """
         Sends an email to this User.
         
         """
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
+        send_seasoning_email(subject_template, text_template, html_template, template_context, 
+                             from_email, [self.email])
         
-        msg = EmailMultiAlternatives(subject, message, from_email, [self.email])
-        if html_message:
-            msg.attach_alternative(html_message, "text/html")
-        
-        msg.send()
 
     def __unicode__(self):
         return self.get_full_name()
@@ -521,19 +519,9 @@ class RegistrationProfile(models.Model):
         """
         ctx_dict = {'activation_key': self.activation_key,
                     'site': site}
-        subject = render_to_string('emails/activation_email_subject.txt',
-                                   ctx_dict)
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        
-        message_text = render_to_string('emails/activation_email.txt',
-                                        ctx_dict)
-        message_html = render_to_string('emails/activation_email.html',
-                                        ctx_dict)
 
-        msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [self.user.email])
-        msg.attach_alternative(message_html, "text/html")
-        msg.send()
+        self.user.send_email('emails/activation_email_subject.txt', 'emails/activation_email.txt',
+                             'emails/activation_email.html', ctx_dict, settings.DEFAULT_FROM_EMAIL)
 
 class NewEmailManager(models.Manager):
     """
@@ -620,19 +608,10 @@ class NewEmail(models.Model):
         ctx_dict = {'activation_key': self.activation_key,
                     'site': site,
                     'user': self.user}
-        subject = render_to_string('emails/change_email_email_subject.txt',
-                                   ctx_dict)
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
         
-        message_text = render_to_string('emails/change_email_email.txt',
-                                        ctx_dict)
-        message_html = render_to_string('emails/change_email_email.html',
-                                        ctx_dict)
-
-        msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [self.email])
-        msg.attach_alternative(message_html, "text/html")
-        msg.send()
+        send_seasoning_email('emails/change_email_email_subject.txt', 'emails/change_email_email.txt',
+                             'emails/change_email_email.html', ctx_dict, settings.DEFAULT_FROM_EMAIL,
+                             [self.email])
     
     def __unicode__(self):
         return self.email

@@ -1,6 +1,10 @@
-<p>Beste,</p>
+{% extends "emails/outgoing_email_base.html" %}
 
+{% block aanspreking %}Beste{% endblock %}
+
+{% block body %}
 <p>
+
 	U hebt zonet een contactformulier verstuurd op Seasoning met de volgende gegevens:
 </p>
 
@@ -22,13 +26,4 @@
 Wij proberen dit bericht zo spoedig mogelijk te behandelen!
 </p>
 
-<p>
-Bedankt voor uw geduld,<br />
-Het Seasoning Team
-</p>
-
-<p style="margin-top:50px; text-align: center; font-size: 12px;">
-Denk aan het milieu. Druk deze mail niet onnodig af.
-<br /><br />
-Dit is een automatisch gegenereerde email. Gelieve er niet op te antwoorden.
-</p>
+{% endblock %}
