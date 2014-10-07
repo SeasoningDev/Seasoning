@@ -9,7 +9,7 @@ def parse_uwsgi_log():
     lf = open(settings.UWSGI_LOG_FILE, 'r')
     
     try:
-        last_line_no = RequestLog.objects.latest('line')
+        last_line_no = RequestLog.objects.latest('line').line
     except RequestLog.DoesNotExist:
         last_line_no = -1
         
