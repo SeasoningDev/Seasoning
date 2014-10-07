@@ -62,7 +62,7 @@ def get_recipe_portions(request):
             for uses in usess:
                 uses.save_allowed = False
                 uses.amount = ratio * uses.amount
-                uses.footprint = ratio * uses.footprint
+                uses.footprint = ratio * uses.footprint()
             
             data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess}),
                     'new_footprint': new_footprint}
