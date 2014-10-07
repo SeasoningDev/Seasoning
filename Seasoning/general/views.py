@@ -203,4 +203,5 @@ def contact_overview(request):
 # TEST VIEWS FOR TEMPLATE INSPECTION
 @staff_member_required
 def test_500(request):
+    return render(request, '502.html')
     return 1/0

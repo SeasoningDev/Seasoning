@@ -19,11 +19,7 @@ def view_logs(request):
 #     
 #     return render(request, 'logs/view_logs.html', hits)
     
-    days = int(request.GET.get('days', 7))
-    interval = int(request.GET.get('interval', 5))
-    history = RequestLog.objects.history(days, interval)
-    
-    return render(request, 'logs/view_logs.html', history)
+    return render(request, 'logs/view_logs.html')
 
 @csrf_exempt
 def ajax_site_wide_history(request):
@@ -35,9 +31,9 @@ def ajax_site_wide_history(request):
     
     kwargs = {}
     if days is not None:
-        kwargs['days'] = days
+        kwargs['days'] = int(days)
     if interval is not None:
-        kwargs['interval_min'] = interval
+        kwargs['interval_min'] = int(interval)
     
     history_data = RequestLog.objects.history(**kwargs)
     history_data_json = json.dumps(history_data)
