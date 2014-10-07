@@ -128,8 +128,8 @@ class Recipe(models.Model):
                                               help_text=_("The type of course this recipe will provide."))
     cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine', null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
-    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)],
-                                   help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
+    description = models.TextField(_('Description'), validators=[MaxLengthValidator(300)],
+                                   help_text=_("A few sentences describing the recipe (Maximum 300 characters)."))
     portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
     active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
