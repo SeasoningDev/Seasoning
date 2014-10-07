@@ -15,13 +15,15 @@ def parse_logs(request):
 
 def view_logs(request):
     parse_uwsgi_log()
-    hits = RequestLog.objects.page_hits()
+#     hits = RequestLog.objects.page_hits()
+#     
+#     return render(request, 'logs/view_logs.html', hits)
     
-#     days = int(request.GET.get('days', 7))
-#     interval = int(request.GET.get('interval', 5))
-#     history = RequestLog.objects.history(days, interval)
+    days = int(request.GET.get('days', 7))
+    interval = int(request.GET.get('interval', 5))
+    history = RequestLog.objects.history(days, interval)
     
-    return render(request, 'logs/view_logs.html', hits)
+    return render(request, 'logs/view_logs.html', history)
 
 @csrf_exempt
 def ajax_site_wide_history(request):
