@@ -11,6 +11,7 @@ import requests
 from django.core import files
 from ingredients.models import Ingredient
 from ingredients.models.units import Unit, CanUseUnit
+import datetime
 
 Browser = lambda: raw_browser('www.evavzw.be')
 
@@ -65,6 +66,8 @@ class RecipePage(object):
         time_li = self.preview_li.find('li', {'class': 'tijd'})
         if time_li == None:
             return 0
+        if '+' in time_li.text:
+            return int(time_li.split()[0])
         return int(time_li.text[:-1])
     
     @property
@@ -83,6 +86,13 @@ class RecipePage(object):
     @property
     def recipe_image(self):
         return self.content.find('div', {'id': 'recepten-bereiding'}).find('div').find('img')['src']
+    
+    @property
+    def recipe_source(self):
+        source_div = self.content.find('div', {'id': 'recepten-bereiding'}).find_all('div')[-1]
+        if 'Bron' in source_div.text:
+            return source_div.text.replace('Bron', '')
+        return None
     
 def get_recipe_pages():
     params = {'option': 'com_content',
@@ -163,14 +173,25 @@ def scrape_recipes():
             # Write image block to temporary file
             lf.write(block)
         
-        recipe = Recipe(name=recipe_page.recipe_name, author=scraper, external=True, external_site=external_site,
-                        external_url=recipe_page.url, course=recipe_course, cuisine=recipe_cuisine,
+        recipe = Recipe(name=recipe_page.recipe_name, author=scraper, time_added=datetime.datetime.now(),
+                        external=True, external_site=external_site, external_url=recipe_page.url, 
+                        course=recipe_course, cuisine=recipe_cuisine,
                         description='Een heerlijk vegetarisch receptje van Eva!',
                         portions=recipe_page.recipe_portions, active_time=recipe_page.recipe_preparation_time,
                         passive_time=0, visible=False, accepted=False)
         
+        if recipe.course is None:
+            recipe.course = 0
+            recipe.description = 'Course: %s\n' % recipe_page.recipe_course
+        
+        if recipe_page.recipe_cuisine is not None and recipe_cuisine is None:
+            recipe.description += 'Cuisine: %s\n' % recipe_page.recipe_cuisine
+            
+        if recipe_page.recipe_source is not None:
+            recipe.description += 'Source: %s\n' % recipe_page.recipe_source
+        
         try:
-            erecipe = Recipe.objects.get(name=recipe_page.recipe_name, auther=scraper, external_site=external_site)
+            erecipe = Recipe.objects.get(name=recipe_page.recipe_name, author=scraper, external_site=external_site)
             if erecipe.accepted:
                 # Don't fck with accepted recipes
                 continue
@@ -179,11 +200,12 @@ def scrape_recipes():
         except Recipe.DoesNotExist:
             pass
         
+        recipe.save()
         recipe.image.save(file_name, files.File(lf))
         
         for recipe_ingredient in recipe_page.recipe_ingredients:
             parsed_ing_name = recipe_ingredient[0]
-            parsed_ing_name = re.sub('\(.*|)', '', parsed_ing_name).strip()
+            parsed_ing_name = re.sub('\(.*\)', '', parsed_ing_name).strip()
             try:
                 ingredient = Ingredient.objects.filter(name__icontains=parsed_ing_name)[0]
             except IndexError:
@@ -202,7 +224,7 @@ def scrape_recipes():
                     pass
              
             
-            uingredient = UnknownIngredient(name=recipe_ingredient[0], requested_by=scraper, for_recipe=recipe,
+            uingredient = UnknownIngredient(name=parsed_ing_name, requested_by=scraper, for_recipe=recipe,
                                             real_ingredient=ingredient)
             uingredient.save()
             if unit is not None:

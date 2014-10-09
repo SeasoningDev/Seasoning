@@ -122,7 +122,7 @@ class Recipe(models.Model):
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)
-    external_site = models.ForeignKey(ExternalSite, null=True, blank=True)
+    external_site = models.ForeignKey(ExternalSite, null=True, blank=True, related_name='recipes')
     
     course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
@@ -315,6 +315,24 @@ class Recipe(models.Model):
         if (abs(min_footprint - footprints[month-1]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
             return True
         return False
+    
+    
+    
+    # Proofreading functions
+    def course_ok(self):
+        if 'Course: ' in self.description:
+            return False
+        return True
+    
+    def cuisine_ok(self):
+        if 'Cuisine: ' in self.description:
+            return False
+        return True
+    
+    def source(self):
+        if 'Source: ' in self.description:
+            return self.description.split('Source: ')[-1]
+        return ''
 
 class UsesIngredient(models.Model):
     
@@ -390,7 +408,7 @@ class UnknownIngredient(models.Model):
 
 class UnknownUsesIngredient(models.Model):
     
-    recipe = models.ForeignKey(Recipe)
+    recipe = models.ForeignKey(Recipe, related_name='unknowns')
     ingredient = models.ForeignKey(UnknownIngredient)
     amount = models.FloatField()
     unit = models.ForeignKey(Unit, null=True, blank=True)

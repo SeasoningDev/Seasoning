@@ -1,0 +1,87 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}EVA Recepten nakijken{% endblock %}
+
+{% block extrahead %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready( function () {
+    $('#ingredient-table').DataTable({
+    	  "lengthMenu": [ [-1, 10, 25, 50], ["All", 10, 25, 50] ]
+    });
+} );
+
+</script>
+
+//-->
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="meter orange">
+	<span style="width: {{ perc_accepted }}%"></span>
+	<span class="green" style="width: {{ perc_bramified }}%"></span>
+</div>
+
+<table style="margin: 20px 0 40px 5%; font-size: 1.5em;">
+	<tr>
+		<td style="padding-right: 30px;">
+			Aantal recepten van EVA in de databank
+		</td>
+		<td style="">
+			{{ ao_recipes }}
+		</td>
+	</tr>
+	<tr>
+		<td style="color: rgb(241, 161, 101);">
+			Accepted recepten:
+		</td>
+		<td style="color: rgb(241, 161, 101);">
+			{{ ao_accepted_recipes }}
+		</td>
+	</tr>
+	<tr>
+		<td style="color: rgb(43,194,83);">
+			Niet Accepted recepten
+		</td>
+		<td style="color: rgb(43,194,83);">
+			{{ ao_naccepted_recipes }}
+		</td>
+	</tr>
+</table>
+
+<table id="ingredient-table">
+	<thead>
+  <tr align="left">
+  	<th width=2%>#</th>
+    <th width=20%>Titel</th>
+    <th width=5%>Course ok?</th>
+    <th width=5%>Cuisine ok?</th>
+    <th width=10%>Source</th>
+  </tr>
+  </thead>
+  <tbody>
+{% for recipe in recipes %}
+  <tr>
+  	<td>{{ recipe.id }}</td>
+    <td><a href="{% url 'admin:recipes_recipe_change' recipe.id %}">{{ recipe.name }}</a></td>
+    <td>{% if recipe.course_ok %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
+    <td>{% if recipe.cuisine_ok %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
+    <td>{{ recipe.source }}</td>
+  </tr>
+
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
