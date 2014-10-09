@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^admin/ingredients/list/$', 'ingredients.views.list_ingredients', name='list_ingredients'),
     url(r'^admin/contact/(\d*)/$', 'general.views.email_preview', name='email_preview'),
     url(r'^admin/contact/$', 'general.views.contact_overview', name='contact_overview'),
+    url(r'^admin/recipes/pr/$', 'recipes.views.proofread_recipes', name='proofread_recipes'),
     (r'^admin/', include(admin.site.urls)),
     
     # Backup Database
