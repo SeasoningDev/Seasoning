@@ -52,13 +52,19 @@
 			    	{{ recipe.description }}
 			    </div>
 			    
-			    <span id="recipe-actions">
+			    <div id="recipe-actions">
 			        {% if recipe.author == user or user.is_staff %}
 			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Bent u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 			        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
 			    	{% endif %}
-			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Voeg een foto toe aan dit recept"><img src="{{ STATIC_URL }}img/icons/camera.png" alt="" /></a>
-			    </span>
+			    	<form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
+			    		{% csrf_token %}
+						<div id="upload-image-button">
+							<img class="icon" src="{{ STATIC_URL }}img/icons/camera.png" title="Voeg een foto toe aan dit recept" />
+						</div>
+						{{ upload_image_form.image }}
+			    	</form>
+			    </div>
 			</div>
 			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 450px;
 	        	 height: 350px; background: #24262e; overflow: hidden; float: right;">
