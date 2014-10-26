@@ -347,3 +347,14 @@ def get_relative_footprint(request):
         
     raise PermissionDenied
 """
+
+
+@login_required
+def delete_recipe_comment(request, recipe_id, comment_id):
+    comment = get_object_or_404(comments.get_model(), pk=comment_id)
+    if comment.user == request.user:
+        perform_delete(request, comment)
+        messages.add_message(request, messages.INFO, 'Je reactie werd succesvol verwijderd.')
+        return redirect(view_recipe, recipe_id)
+    else:
+        raise PermissionDenied()
