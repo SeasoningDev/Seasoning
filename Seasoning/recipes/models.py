@@ -10,6 +10,7 @@ from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import SmartResize
 from ingredients.models import AvailableIn, Ingredient, Unit
 from general import validate_image_size
+from django.conf import settings
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -144,7 +145,7 @@ class Recipe(models.Model):
     image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
     thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
-    small_image = ImageSpecField([SmartResize(310, 310)], image_field='image', format='JPEG')
+    small_image = ImageSpecField([SmartResize(450, 350)], image_field='image', format='JPEG')
     
     visible = models.BooleanField(default=True)
     
@@ -315,6 +316,18 @@ class Recipe(models.Model):
         if (abs(min_footprint - footprints[month-1]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
             return True
         return False
+
+class RecipeImage(models.Model):
+    
+    recipe = models.ForeignKey(Recipe, related_name='images')
+    
+    default_image_location = 'images/no_image.jpg'
+    image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
+                                help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
+    thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
+    small_image = ImageSpecField([SmartResize(450, 350)], image_field='image', format='JPEG')
+    
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipe_images')
 
 class UsesIngredient(models.Model):
     

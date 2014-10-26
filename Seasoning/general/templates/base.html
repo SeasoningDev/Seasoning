@@ -111,6 +111,7 @@
         	<div id="header-margin"> </div>
         	{% endblock %}
         	
+        	{% block content-container %}
         	<div id="content-container" class="container">
                 {% block messages %}
             	{% if messages %}
@@ -127,6 +128,7 @@
                 {% block content %}{% endblock %}
                 {% endblock %}
 			</div>
+			{% endblock %}
 			<div class="push"> </div>
 		</div>
         

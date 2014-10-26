@@ -7,7 +7,7 @@ from django.forms.util import ErrorDict
 from general.forms import FormContainer
 from markitup.widgets import MarkItUpWidget
 from ingredients.fields import AutoCompleteSelectIngredientField
-from recipes.models import Recipe, UsesIngredient, Cuisine
+from recipes.models import Recipe, UsesIngredient, Cuisine, RecipeImage
 from django.utils.translation import ugettext_lazy as _
 
 class AddRecipeForm(forms.ModelForm):
@@ -209,3 +209,10 @@ class SearchRecipeForm(forms.Form):
 class IngredientInRecipeSearchForm(forms.Form):
     
     name = forms.CharField()
+
+class UploadRecipeImageForm(forms.ModelForm):
+    
+    class Meta:
+        model = RecipeImage
+        fields = ('image', )
+    
