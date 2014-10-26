@@ -8,9 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
-from django.contrib import comments, messages
-from django.contrib.comments.views.moderation import perform_delete
-from django.core.urlresolvers import reverse
+from django.contrib import messages
+
 
 def browse_recipes(request):
     """
