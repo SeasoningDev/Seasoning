@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load comments %}
-{% load markdown_filter %}
 {% load compressed %}
 {% load ratings %}
 
@@ -368,7 +367,7 @@
 	        {% endif %}
 	    </div>
 	    
-	    <span class="recipe-rating">
+	    <span class="recipe-rating">e
 	    	{% rating_display_stars recipe.rating recipe.number_of_votes %}
 	    	<span itemscope itemtype="http://www.schema.org/AggregateRating" itemprop="aggregateRating">
 		    	<meta itemprop="ratingValue" content={{ recipe.rating }} />
@@ -553,7 +552,17 @@
 	        {% endif %}
 	    </div>
 	    
-	    {% if not recipe.external %}
+	    {% if recipe.external %}
+	    <div id="instructions" class="markdown-container">
+			<div id="instructions-warning">
+				Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
+			    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
+			</div>
+			<a href="http://www.seasoning.be{% url 'external_recipe' recipe.id %}">
+			 	<button type="submit" style="margin: 20px 0 0;">Bekijk het volledige recept op {{ recipe.external_site.name }}</button>
+			</a>
+	    </div>
+		{% else %}
 	    <div class="recipe-info-wrapper">
 	        <h3>Bereidingswijze</h3>
 	        <div id="instructions" class="markdown-container">
