@@ -152,6 +152,20 @@ function load_evochart() {
 
 var tab_1_loaded = false;
 $(function() {
+	$("#upload-image-button img").click(function() {
+		$("#upload-image-form input#id_image").click();
+		return false;
+	});
+	
+	$("#upload-image-form input#id_image").change(function() {
+		$("#upload-image-form").submit();
+	}).click(function(event) {
+		event.stopPropagation();
+	});
+    
+    adjust_footprint_percentages();
+    fix_moreinfo_links();
+	
 	$( "#chart-tabs" ).tabs({
 		/* activate: function(event, ui) {
                     if (ui.newTab.index() == 1 && !tab_1_loaded) {
@@ -262,7 +276,4 @@ $(function() {
             });
 	 */
     load_evochart();
-    
-    adjust_footprint_percentages();
-    fix_moreinfo_links();
 });

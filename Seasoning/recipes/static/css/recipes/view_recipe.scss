@@ -63,6 +63,34 @@ h2 {
 
 #recipe-actions img:hover {
   opacity: 1; }
+  
+#recipe-actions #upload-image-form {
+	position: relative;
+	float: right;
+	width: 45px;
+	height: 45px;
+	margin-bottom: 0;
+}
+
+#upload-image-form #upload-image-button {
+	position: absolute;
+	width: 100%;
+	z-index: 100;
+	cursor: pointer;
+}
+
+#upload-image-button .icon {
+	margin: auto;
+}
+
+#upload-image-form input {
+	width: 45px;
+	height: 45px;
+	opacity: 0;
+	cursor: pointer;
+	z-index: 99;
+	margin: 0;
+}
 
 #graphic-information-container {
 	background-color: #629b31;
