@@ -249,6 +249,10 @@ class Recipe(models.Model):
         """
         return self.footprint * 4
     
+    def fp_category(self):
+        return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C],
+                                        value__gte=self.footprint).order_by('name')[0]
+
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)
     save_allowed = True
@@ -420,4 +424,28 @@ class Vote(models.Model):
         ret = super(Vote, self).delete(*args, **kwargs)
         self.recipe.recalculate_rating_aggregates()
         return ret
+
+class AggregateManager(models.Manager):
+    
+    def update_fp_cat_aggregates(self, fp_cats_upper_limits):
+        fp_cats_upper_limits[Aggregate.D] = 1000000
+        for fp_cat, upper_limit in fp_cats_upper_limits.items():
+            try:
+                aggr = self.get(name=fp_cat)
+                aggr.value = upper_limit
+                aggr.save()
+            except Aggregate.DoesNotExist:
+                Aggregate(name=fp_cat, value=upper_limit).save()
+    
+class Aggregate(models.Model):
+    Ap, A, B, C, D = 0, 1, 2, 3, 4
+    AGGREGATE_DICT = {Ap: 'A+', A: 'A', B: 'B', C: 'C', D: 'D'}
+    AGGREGATES = [(cat, AGGREGATE_DICT[cat]) for cat in [Ap, A, B, C, D]]
+    
+    objects = AggregateManager()
+    name = models.PositiveSmallIntegerField(choices=AGGREGATES, unique=True)
+    value = models.FloatField()
+    
+    def get_ribbon_image_name(self):
+        return 'cat-ribbon-{0}.png'.format(self.get_name_display())
     

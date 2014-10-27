@@ -28,17 +28,17 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-#         migrations.CreateModel(
-#             name='RecipeImage',
-#             fields=[
-#                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-#                 ('image', imagekit.models.fields.ProcessedImageField(default=b'images/no_image.jpg', help_text='An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.', upload_to=recipes.models.get_image_filename, validators=[general.validate_image_size])),
-#                 ('added_by', models.ForeignKey(related_name=b'recipe_images', to=settings.AUTH_USER_MODEL)),
-#                 ('recipe', models.ForeignKey(related_name=b'images', to='recipes.Recipe')),
-#             ],
-#             options={
-#             },
-#             bases=(models.Model,),
-#         ),
+        migrations.CreateModel(
+            name='RecipeImage',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('image', imagekit.models.fields.ProcessedImageField(default=b'images/no_image.jpg', help_text='An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.', upload_to=recipes.models.get_image_filename, validators=[general.validate_image_size])),
+                ('added_by', models.ForeignKey(related_name=b'recipe_images', to=settings.AUTH_USER_MODEL)),
+                ('recipe', models.ForeignKey(related_name=b'images', to='recipes.Recipe')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
         migrations.RunPython(create_image_models)
     ]
