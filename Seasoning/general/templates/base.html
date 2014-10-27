@@ -72,7 +72,7 @@
         
 	    <div id="header">
 	    	{% if 'dev.' in request.get_host %}
-	    	<div style="position: absolute;margin:50px 0;font-size:50px;font-weight:bold;width:100%;text-align:center;color:maroon;z-index:3000">DEVELOPMENT VERSION</div>
+	    	<div id="dev-watermark" style="position: absolute;margin:50px 0;font-size:50px;font-weight:bold;width:100%;text-align:center;color:maroon;z-index:3000">DEVELOPMENT VERSION</div>
 	    	{% endif %}
 	        <div id="header-container" class="container">
 	            <div id="logo">
@@ -85,6 +85,9 @@
 	                <a href="{% url 'contact_overview' %}" style="position:absolute;top:40px;right:0;">Contact Overzicht</a>
 	                <a href="/upload/img/" style="position:absolute;top:60px;right:0;">Upload Image</a>
 	                <a href="https://github.com/SeasoningDev/Seasoning/issues/new" style="position:absolute;top:80px;right:0;">Bug report</a>
+	                {% if 'dev.' in request.get_host %}
+	    			<a href="#" onclick="$('#dev-watermark').remove();return false;">Verwijder Rode letters</a>
+	    			{% endif %}
                 </div>
                 {% endif %}
                 <span id="grass-end-left"> </span>
