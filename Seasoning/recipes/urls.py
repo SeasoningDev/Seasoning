@@ -27,6 +27,4 @@ urlpatterns = patterns('',
     url(r'^ajax/$', 'recipes.views.ajax_browse_recipes', name='ajax_browse_recipes'),
     
     url(r'^external/(\d*)/$', 'recipes.views.external_recipe', name='external_recipe'),
-    
-    url(r'^scrape/$', 'recipes.views.scrape_recipes', name='eva_scraper'),
 )

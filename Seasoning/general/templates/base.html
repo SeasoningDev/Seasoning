@@ -85,8 +85,9 @@
 	                <a href="{% url 'contact_overview' %}" style="position:absolute;top:40px;right:0;">Contact Overzicht</a>
 	                <a href="/upload/img/" style="position:absolute;top:60px;right:0;">Upload Image</a>
 	                <a href="https://github.com/SeasoningDev/Seasoning/issues/new" style="position:absolute;top:80px;right:0;">Bug report</a>
+	                <a href="{% url 'proofread_recipes' %}" style="position:absolute;top:100px;right:0;">Recepten Scraper</a>
 	                {% if 'dev.' in request.get_host %}
-	    			<a href="#" onclick="$('#dev-watermark').remove();return false;" style="position:absolute;top:100px;right:0;">Verwijder Rode letters</a>
+	    			<a href="#" onclick="$('#dev-watermark').remove();return false;" style="position:absolute;top:120px;right:0;">Verwijder Rode letters</a>
 	    			{% endif %}
                 </div>
                 {% endif %}

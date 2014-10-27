@@ -161,8 +161,9 @@ class Recipe(models.Model):
      - The calculation of the field requires one or more related models
     
     When any UsesIngredient connected to this recipe is changed, these values are updated.
-    When any Ingredients or AvailableIns connected to this recipe are changed, these values are not updated
-    The entire database of recipes should be updated nightly to reflect these changes, and seasonal changes
+    When any Ingredients or AvailableIns connected to this recipe are changed, these values are not updated:
+     The entire database of recipes should be updated nightly to reflect these changes, and 
+     seasonal changes
     You can update these values for every recipe in the database by issuing the 'update_recipe_aggregates'
      management command.
     
