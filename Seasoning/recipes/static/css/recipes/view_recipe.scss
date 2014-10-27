@@ -92,6 +92,80 @@ h2 {
 	margin: 0;
 }
 
+
+
+
+
+
+
+#recipe-images .recipe-image {
+	width: 450px;
+	height: 350px;
+}
+
+#recipe-images .remove-image-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.remove-image-button img {
+	width: 45px;
+	height: 45px;
+  	opacity: 0.5;
+  	transition: all .3s ease-out;
+}
+
+.remove-image-button img:hover {
+  opacity: 1;	
+}
+/*
+.jssort01 .p           (normal)
+.jssort01 .p:hover     (normal mouseover)
+.jssort01 .pav           (active)
+.jssort01 .pav:hover     (active mouseover)
+.jssort01 .pdn           (mousedown)
+*/
+#recipe-images .jssort01 .w {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+#recipe-images .jssort01 .c {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border: #000 2px solid;
+    box-sizing: border-box;
+}
+
+#recipe-images .jssort01 .p:hover .c, .jssort01 .pav:hover .c, .jssort01 .pav .c {
+    background: url(https://raw.githubusercontent.com/jssor/slider/master/img/t01.png) center center;
+    border-width: 0px;
+    top: 2px;
+    left: 2px;
+    width: 68px;
+    height: 68px;
+}
+
+#recipe-images .jssort01 .p:hover .c, .jssort01 .pav:hover .c {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border: #fff 1px solid;
+}
+
+
+
+
+
+
 #graphic-information-container {
 	background-color: #629b31;
 	height: 80px;
