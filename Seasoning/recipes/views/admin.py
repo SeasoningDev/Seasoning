@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from recipes.models import ExternalSite
+from django.core.urlresolvers import reverse
 
 def proofread_recipes(request):
     try:
@@ -17,3 +18,9 @@ def proofread_recipes(request):
                                                             'ao_accepted_recipes': ao_accepted_recipes,
                                                             'ao_naccepted_recipes': ao_naccepted_recipes,
                                                             'recipes': recipes})
+
+def scrape_recipes(request):
+    from recipes.scraper.evascraper import scrape_recipes
+    scrape_recipes()
+    
+    return redirect(reverse('proofread_recipes'))

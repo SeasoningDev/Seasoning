@@ -118,9 +118,3 @@ def external_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     
     return render(request, 'recipes/external_site_wrapper.html', {'recipe': recipe})
-
-def scrape_recipes(request):
-    from recipes.scraper.evascraper import scrape_recipes
-    scrape_recipes()
-    
-    return redirect('browse_recipes')

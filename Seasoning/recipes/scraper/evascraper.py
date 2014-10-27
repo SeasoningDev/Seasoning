@@ -31,7 +31,7 @@ class RecipePage(object):
     
     @property
     def recipe_name(self):
-        return self.content.find('div', {'class': 'articleHeader'}).find('h1').text
+        return self.preview_li.find('h2').text
     
     @property
     def recipe_portions(self):
@@ -126,6 +126,12 @@ def scrape_recipes():
     recipe_pages = get_recipe_pages()
     
     for recipe_page in recipe_pages:
+        try:
+            Recipe.objects.get(name=recipe_page.recipe_name)
+            continue
+        except Recipe.DoesNotExist:
+            pass
+        
         # Get course
         recipe_course = None
         try:
