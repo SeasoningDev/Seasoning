@@ -1,11 +1,6 @@
-h2 {
-	margin: 50px 0 10px;
-}
-
-.ws-margin {
-	width: 960px;
-	margin-left: auto;
-	margin-right: auto;
+h2.container {
+	margin-top: 50px;
+	margin-bottom: 10px;
 }
 
 #recipe-header-container {
@@ -326,7 +321,7 @@ h2 #portions-changer {
 .footprint-percentage .footprint-fill {
   position: absolute;
   right: 0;
-  width: 20%;
+  width: 0;
   height: 100%;
   background-size: 18px 18px;
   background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
