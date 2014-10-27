@@ -128,7 +128,8 @@
 	    	{% endif %}
 	    </div>
 		<div id="fp-category" class="graphic-information-icon">
-			<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" />
+			<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
+			     title="{{ recipe.fp_category.extra_info }}"/>
 		</div>
 	</div>
 		
