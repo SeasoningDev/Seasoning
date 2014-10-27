@@ -13,6 +13,31 @@ from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+def ajax_recipe_ingredients(request, recipe_id, portions):
+    if request.is_ajax() and portions >= 1:
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+            usess = UsesIngredient.objects.select_related('ingredient', 'unit').filter(recipe=recipe).order_by('group', 'ingredient__name')
+            
+            ratio = float(portions)/recipe.portions
+            new_footprint = ratio * recipe.total_footprint()
+            
+            for uses in usess:
+                uses.save_allowed = False
+                uses.amount = ratio * uses.amount
+                uses.footprint = ratio * uses.footprint()
+            
+            data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess}),
+                    'new_footprint': new_footprint}
+            json_data = json.dumps(data)
+            
+            return HttpResponse(json_data)
+        
+        except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
+            pass
+            
+    raise PermissionDenied
+    
 @csrf_exempt
 @login_required
 def vote(request):

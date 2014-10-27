@@ -23,7 +23,8 @@ jssor_slider1_starter = function (containerId) {
 
 // Correctly display the contributed percentage of each ingredient to the total recipe footprint
 function adjust_footprint_percentages() {
-    var total_footprint = parseFloat($('.footprint-cloud-text').text().replace(',', '.'));
+	var portions = parseInt($("#portions-changer input").val());
+    var total_footprint = parseFloat($("#recipe-footprint-text").text().replace(',', '.'))*portions;
     $('.ingredient').each(function() {
         var footprint = parseFloat($(this).find('.footprint-number').text().replace(',', '.'));
         var percentage = (footprint/total_footprint)*100;
@@ -162,7 +163,33 @@ $(function() {
 	}).click(function(event) {
 		event.stopPropagation();
 	});
+
+
+	$('#portions-changer input').change(function() {
+	    $('#ingredients-loader').show();
+	    var new_portions = $('#custom-portions-input').val();
+	    $.post('/recipes/portions/',
+	           {'recipe': recipe_id,
+	            'portions': new_portions})
+	    .done(function(data) {
+	        if ($('#custom-portions-input').val() != recipe_portions) {
+	            $('#instructions-warning').slideDown('1000');
+	        } else {
+	            $('#instructions-warning').slideUp('1000');
+	        }
+	        var parsed_data = $.parseJSON(data);
+	        $('.footprint-cloud-text').text(parsed_data['new_footprint'].toFixed(2).toString().replace('.', ','));
+	        $('#ingredients').html(parsed_data['ingredient_list']);
+	        adjust_footprint_percentages();
+	        fix_moreinfo_links();
+	        $('#ingredients-loader').hide();
+	    }).fail(function() {
+	       alert('Er is iets misgegaan bij het contacteren van de server. Probeer het later opnieuw...')
+	    });
+	});
     
+	
+	
     adjust_footprint_percentages();
     fix_moreinfo_links();
 	

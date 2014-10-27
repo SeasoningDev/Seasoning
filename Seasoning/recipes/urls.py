@@ -4,6 +4,7 @@ from recipes.views import delete_recipe_comment, EditRecipeWizard
 urlpatterns = patterns('',
     url(r'^$', 'recipes.views.browse_recipes', name='browse_recipes'),
     url(r'^(\d*)/$', 'recipes.views.view_recipe', name='view_recipe'),
+    url(r'^ingredients/(\d*)/(\d*)/$', 'recipes.views.ajax_recipe_ingredients', name='ajax_recipe_ingredients'),
    
     url(r'^portions/$', 'recipes.views.get_recipe_portions'),
     url(r'^vote/$', 'recipes.views.vote'),

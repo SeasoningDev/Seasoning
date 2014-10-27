@@ -254,7 +254,10 @@ class Recipe(models.Model):
     def fp_category(self):
         return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C, Aggregate.D],
                                         value__gte=self.footprint).order_by('name')[0]
-
+                    
+    def total_preparation_time(self):
+        return self.active_time + self.passive_time
+    
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)
     save_allowed = True
