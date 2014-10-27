@@ -102,6 +102,9 @@ class RequestLog(models.Model):
     vsz = models.PositiveIntegerField()
     rss = models.PositiveIntegerField()
     
+    def __unicode__(self):
+        return 'Log entry @ %s' % self.time
+    
     def save(self, *args, **kwargs):
         self.minute = self.time.strftime('%Y%m%d%H%M')
         self.uri = self.uri.split('?')[0]

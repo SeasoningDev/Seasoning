@@ -1,12 +1,8 @@
 # Django settings for Seasoning project.
 import os
 import sys
-from Seasoning import secrets
 from django.core.exceptions import SuspiciousOperation
 
-# Debug settings
-DEBUG = secrets.DEBUG
-TEMPLATE_DEBUG = secrets.DEBUG
 # Determine if we are running in the test environment.
 TEST = False
 manage_command = filter(lambda x: x.find('manage.py') != -1, sys.argv)
@@ -14,6 +10,12 @@ if len(manage_command) != 0:
     command = sys.argv.index(manage_command[0]) + 1
     if command < len(sys.argv):
         TEST = sys.argv[command] == "test"
+
+from Seasoning import secrets
+
+# Debug settings
+DEBUG = secrets.DEBUG
+TEMPLATE_DEBUG = secrets.DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -24,6 +26,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # The file to which the database backed up should be written
 DB_BACKUP_FILE = os.path.join(BASE_DIR, '../../seasoning_db.bak')
+
+# The file containing the small seasoning logo
+SMALL_LOGO_FILE = os.path.join(BASE_DIR, 'general/static/img/logos/circle_leaf.png')
 
 SESSION_COOKIE_DOMAIN = secrets.SESSION_COOKIE_DOMAIN
 

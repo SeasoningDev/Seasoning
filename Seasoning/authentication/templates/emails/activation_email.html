@@ -1,7 +1,8 @@
-<p>
-	Beste,
-</p>
+{% extends "emails/outgoing_email_base.html" %}
 
+{% block aanspreking %}Beste{% endblock %}
+
+{% block body %}
 <p>
 	Dit e-mailadres is enkele ogenblikken geleden gebruikt om een profiel aan te maken op seasoning.be. Indien u dit gedaan hebt, kan u de onderstaande url gebruiken om het profiel te activeren:
 </p>
@@ -11,14 +12,4 @@
 <p>
 	Indien u geen profiel aangemaakt hebt op seasoning.be, kan u deze e-mail gewoon negeren.
 </p>
-
-<p>
-	Met vriendelijke groeten,<br />
-	Het Seasoning Team
-</p>
-
-<p style="margin-top:50px; text-align: center; font-size: 12px;">
-	Denk aan het milieu. Druk deze mail niet onnodig af.
-	<br /><br />
-	Dit is een automatisch gegenereerde email. Gelieve er niet op te antwoorden.
-</p>
+{% endblock %}

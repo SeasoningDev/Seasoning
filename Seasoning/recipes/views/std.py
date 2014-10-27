@@ -1,14 +1,16 @@
 from django.forms.formsets import formset_factory
-from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm
+from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
+    UploadRecipeImageForm
 from django.shortcuts import render, get_object_or_404, redirect
-from recipes.models import Recipe, Vote
+from recipes.models import Recipe, Vote, RecipeImage
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
-from django.contrib import comments, messages
-from django.contrib.comments.views.moderation import perform_delete
+from django.contrib import messages
+from django.core.urlresolvers import reverse
+
 
 def browse_recipes(request):
     """
@@ -73,18 +75,32 @@ def view_recipe(request, recipe_id):
     context['total_time'] = total_time 
     context['comments'] = comments
     
+    if request.method == 'POST':
+        upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)
+        if upload_image_form.is_valid():
+            image = upload_image_form.save(commit=False)
+            image.recipe = recipe
+            image.added_by = request.user
+            image.save()
+            
+            upload_image_form = UploadRecipeImageForm()
+    else:
+        upload_image_form = UploadRecipeImageForm()
+    context['upload_image_form'] = upload_image_form
+    
     return render(request, template, context)
 
 @login_required
-def delete_recipe_comment(request, recipe_id, comment_id):
-    comment = get_object_or_404(comments.get_model(), pk=comment_id)
-    if comment.user == request.user:
-        perform_delete(request, comment)
-        messages.add_message(request, messages.INFO, 'Je reactie werd succesvol verwijderd.')
-        return redirect(view_recipe, recipe_id)
-    else:
-        raise PermissionDenied
-                    
+def delete_recipe_image(request, image_id):
+    image = get_object_or_404(RecipeImage, pk=image_id)
+    
+    if image.added_by == request.user or image.recipe.author == request.user:
+        recipe = image.recipe
+        image.delete()
+        messages.add_message(request, messages.INFO, 'De afbeelding werd met succes verwijderd.')
+        return redirect(reverse('view_recipe', args=(recipe.id, )))
+        
+    raise PermissionDenied()
 
 @login_required
 def delete_recipe(request, recipe_id):
@@ -96,7 +112,7 @@ def delete_recipe(request, recipe_id):
         return redirect('home')
         
         
-    raise PermissionDenied
+    raise PermissionDenied()
 
 def external_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)

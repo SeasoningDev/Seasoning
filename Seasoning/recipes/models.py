@@ -10,6 +10,8 @@ from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import SmartResize
 from ingredients.models import AvailableIn, Ingredient, Unit
 from general import validate_image_size
+from django.conf import settings
+from django.utils.functional import cached_property
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -128,8 +130,8 @@ class Recipe(models.Model):
                                               help_text=_("The type of course this recipe will provide."))
     cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine', null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
-    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)],
-                                   help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
+    description = models.TextField(_('Description'), validators=[MaxLengthValidator(300)],
+                                   help_text=_("A few sentences describing the recipe (Maximum 300 characters)."))
     portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
     active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
@@ -144,7 +146,7 @@ class Recipe(models.Model):
     image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
     thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
-    small_image = ImageSpecField([SmartResize(310, 310)], image_field='image', format='JPEG')
+    small_image = ImageSpecField([SmartResize(450, 350)], image_field='image', format='JPEG')
     
     visible = models.BooleanField(default=True)
     
@@ -248,6 +250,14 @@ class Recipe(models.Model):
         """
         return self.footprint * 4
     
+    @cached_property
+    def fp_category(self):
+        return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C, Aggregate.D],
+                                        value__gte=self.footprint).order_by('name')[0]
+                    
+    def total_preparation_time(self):
+        return self.active_time + self.passive_time
+    
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)
     save_allowed = True
@@ -333,6 +343,18 @@ class Recipe(models.Model):
         if 'Source: ' in self.description:
             return self.description.split('Source: ')[-1]
         return ''
+
+class RecipeImage(models.Model):
+    
+    recipe = models.ForeignKey(Recipe, related_name='images')
+    
+    default_image_location = 'images/no_image.jpg'
+    image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
+                                help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
+    thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
+    small_image = ImageSpecField([SmartResize(450, 350)], image_field='image', format='JPEG')
+    
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipe_images')
 
 class UsesIngredient(models.Model):
     
@@ -434,4 +456,36 @@ class Vote(models.Model):
         ret = super(Vote, self).delete(*args, **kwargs)
         self.recipe.recalculate_rating_aggregates()
         return ret
+
+class AggregateManager(models.Manager):
+    
+    def update_fp_cat_aggregates(self, fp_cats_upper_limits):
+        fp_cats_upper_limits[Aggregate.D] = 1000000
+        for fp_cat, upper_limit in fp_cats_upper_limits.items():
+            try:
+                aggr = self.get(name=fp_cat)
+                aggr.value = upper_limit
+                aggr.extra_info = Aggregate.AGGREGATES_TEXT[fp_cat]
+                aggr.save()
+            except Aggregate.DoesNotExist:
+                Aggregate(name=fp_cat, value=upper_limit, extra_info=Aggregate.AGGREGATES_TEXT[fp_cat]).save()
+    
+class Aggregate(models.Model):
+    Ap, A, B, C, D = 0, 1, 2, 3, 4
+    AGGREGATE_DICT = {Ap: 'A+', A: 'A', B: 'B', C: 'C', D: 'D'}
+    AGGREGATES = [(cat, AGGREGATE_DICT[cat]) for cat in [Ap, A, B, C, D]]
+    AGGREGATES_TEXT = {Ap: 'De voetafdruk van dit recept is lager dan 90% van de recepten op Seasoning.',
+                       A: 'De voetadruk van dit recept is lager dan 75% van de recepten op Seasoning',
+                       B: 'De voetafdruk van dit recept is lager dan 50% van de recepten op Seasoning',
+                       C: 'De voetafdruk van dit recept is hoger dan 50% van de recepten op Seasoning',
+                       D: 'De voetafdruk van dit recept is hoger dan 75% van de recepten op Seasoning'}
+    
+    
+    objects = AggregateManager()
+    name = models.PositiveSmallIntegerField(choices=AGGREGATES, unique=True)
+    value = models.FloatField()
+    extra_info = models.TextField(default='')
+    
+    def get_ribbon_image_name(self):
+        return 'cat-ribbon-{0}.png'.format(self.get_name_display())
     
