@@ -17,6 +17,8 @@
 	<script src="{{ STATIC_URL }}js/highcharts.js"></script>
 	<script type="text/javascript"> 
 	   var recipe_id = {{ recipe.id }};
+	   var recipe_portions = {{ recipe.portions }}
+	   var recipe_portions_url = "{% url 'ajax_recipe_ingredients' recipe.id "0000" %}"
 	   var ingredients_avail_ajax_url = "{% url 'ajax_ingredient_availability' %}";
 	</script>
 	<script src="{{ STATIC_URL }}js/view_recipe.js"></script>
@@ -131,6 +133,14 @@
 			<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
 			     title="{{ recipe.fp_category.extra_info }}"/>
 		</div>
+		<div id="recipe-footprint" class="graphic-information-icon">
+			<img src="{{ STATIC_URL }}img/decoration/footprint.png" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie."/>
+			<span id="recipe-footprint-text" class="text-overlay" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">{{ recipe.footprint|floatformat:2 }}</span>
+		</div>
+		<div id="recipe-duration" class="graphic-information-icon">
+			<img src="{{ STATIC_URL }}img/decoration/clock.png" />
+			<span id="recipe-footprint-text" class="text-overlay" title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">{{ recipe.total_preparation_time }}</span>
+		</div>
 	</div>
 		
 	<div id="content-container" class="container">
@@ -156,6 +166,11 @@
       		<div id="ingredients-loader" style="position:absolute;top:2px;right:-55px;height:50px;display:none;">
        			{% include "includes/ajax-loader.html" %}
        		</div>
+       	</span>
+       	
+       	<span id="portions-changer">
+       		<span>Porties</span>
+       		<input type="number" value={{ recipe.portions }} min="1"/>
        	</span>
 	</h2>
 	        	
