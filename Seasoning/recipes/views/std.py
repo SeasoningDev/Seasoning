@@ -2,15 +2,15 @@ from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
     UploadRecipeImageForm
 from django.shortcuts import render, get_object_or_404, redirect
-from recipes.models import Recipe, Vote
+from recipes.models import Recipe, Vote, RecipeImage
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
-from django.contrib import comments, messages
-from django.contrib.comments.views.moderation import perform_delete
+from django.contrib import messages
 from django.core.urlresolvers import reverse
+
 
 def browse_recipes(request):
     """
@@ -89,6 +89,18 @@ def view_recipe(request, recipe_id):
     context['upload_image_form'] = upload_image_form
     
     return render(request, template, context)
+
+@login_required
+def delete_recipe_image(request, image_id):
+    image = get_object_or_404(RecipeImage, pk=image_id)
+    
+    if image.added_by == request.user or image.recipe.author == request.user:
+        recipe = image.recipe
+        image.delete()
+        messages.add_message(request, messages.INFO, 'De afbeelding werd met succes verwijderd.')
+        return redirect(reverse('view_recipe', args=(recipe.id, )))
+        
+    raise PermissionDenied()
 
 @login_required
 def delete_recipe(request, recipe_id):
