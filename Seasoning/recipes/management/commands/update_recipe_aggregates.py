@@ -22,13 +22,10 @@ class Command(NoArgsCommand):
         
         sorted_footprints = sorted(footprints)
         aor = len(sorted_footprints)
-        print(aor)
-        print(sorted_footprints)
-        cat_percs = [0.125, 0.25, 0.5, 0.75]
+        cat_percs = [0.1, 0.25, 0.5, 0.75]
         fp_cats_upper_limits = {}
         for cat_perc, fp_cat in zip(cat_percs, Aggregate.AGGREGATES):
             cutoff_i = int(math.floor(aor*cat_perc))
-            print(cutoff_i)
             fp_upper_limit = sorted_footprints[cutoff_i-1]
             fp_cats_upper_limits[fp_cat[0]] = fp_upper_limit
         Aggregate.objects.update_fp_cat_aggregates(fp_cats_upper_limits)

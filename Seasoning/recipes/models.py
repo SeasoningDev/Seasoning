@@ -11,6 +11,7 @@ from imagekit.processors.resize import SmartResize
 from ingredients.models import AvailableIn, Ingredient, Unit
 from general import validate_image_size
 from django.conf import settings
+from django.utils.functional import cached_property
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -249,8 +250,9 @@ class Recipe(models.Model):
         """
         return self.footprint * 4
     
+    @cached_property
     def fp_category(self):
-        return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C],
+        return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C, Aggregate.D],
                                         value__gte=self.footprint).order_by('name')[0]
 
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
@@ -433,18 +435,26 @@ class AggregateManager(models.Manager):
             try:
                 aggr = self.get(name=fp_cat)
                 aggr.value = upper_limit
+                aggr.extra_info = Aggregate.AGGREGATES_TEXT[fp_cat]
                 aggr.save()
             except Aggregate.DoesNotExist:
-                Aggregate(name=fp_cat, value=upper_limit).save()
+                Aggregate(name=fp_cat, value=upper_limit, extra_info=Aggregate.AGGREGATES_TEXT[fp_cat]).save()
     
 class Aggregate(models.Model):
     Ap, A, B, C, D = 0, 1, 2, 3, 4
     AGGREGATE_DICT = {Ap: 'A+', A: 'A', B: 'B', C: 'C', D: 'D'}
     AGGREGATES = [(cat, AGGREGATE_DICT[cat]) for cat in [Ap, A, B, C, D]]
+    AGGREGATES_TEXT = {Ap: 'De voetafdruk van dit recept is lager dan 90% van de recepten op Seasoning.',
+                       A: 'De voetadruk van dit recept is lager dan 75% van de recepten op Seasoning',
+                       B: 'De voetafdruk van dit recept is lager dan 50% van de recepten op Seasoning',
+                       C: 'De voetafdruk van dit recept is hoger dan 50% van de recepten op Seasoning',
+                       D: 'De voetafdruk van dit recept is hoger dan 75% van de recepten op Seasoning'}
+    
     
     objects = AggregateManager()
     name = models.PositiveSmallIntegerField(choices=AGGREGATES, unique=True)
     value = models.FloatField()
+    extra_info = models.TextField(default='')
     
     def get_ribbon_image_name(self):
         return 'cat-ribbon-{0}.png'.format(self.get_name_display())
