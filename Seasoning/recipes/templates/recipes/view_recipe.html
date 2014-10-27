@@ -17,7 +17,7 @@
 	<script src="{{ STATIC_URL }}js/highcharts.js"></script>
 	<script type="text/javascript"> 
 	   var recipe_id = {{ recipe.id }};
-	   var recipe_portions = {{ recipe.portions }}
+	   var orig_recipe_portions = {{ recipe.portions }}
 	   var recipe_portions_url = "{% url 'ajax_recipe_ingredients' recipe.id "0000" %}"
 	   var ingredients_avail_ajax_url = "{% url 'ajax_ingredient_availability' %}";
 	</script>
@@ -93,6 +93,13 @@
 		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 		                {% endif %}
 		            </div>
+		            {% empty %}
+		            <div>
+		            	<a href="#">
+		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" style="height: 450px; margin-top: -50px;" />
+		                </a>
+		                <img u="thumb" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
+		            </div>
 		            {% endfor %}
 		        </div>
 		        
@@ -160,12 +167,12 @@
     {% block content-wrapper %}
     {% block content %}
                 
-    <h2 class="ws-margin" style="margin-top: 20px;">
+    <h2 class="container" style="margin-top: 20px;">
       	<span style="position:relative;">
        		Ingrediënten
-      		<div id="ingredients-loader" style="position:absolute;top:2px;right:-55px;height:50px;display:none;">
+      		<span id="ingredients-loader" style="position:absolute;top:-5px;right:-45px;height:40px;display:none;">
        			{% include "includes/ajax-loader.html" %}
-       		</div>
+       		</span>
        	</span>
        	
        	<span id="portions-changer">
@@ -175,11 +182,11 @@
 	</h2>
 	        	
 	<div id="ingredients">
-		{% include "includes/ingredient_list.html" with usess=recipe.uses.all %}
+		
 	</div>
 		        
 	{% if recipe.extra_info %}
-	<div id="extra-info" class="ws-margin">
+	<div id="extra-info" class="container">
 		<h4>Extra info en benodigdheden</h4>
 	    <p>
 	       	{{ recipe.extra_info|linebreaks }}
@@ -188,11 +195,11 @@
 	{% endif %}
 		        
 		        
-	<h2 class="ws-margin">
+	<h2 class="container">
 	   	Bereiding
 	</h2>
 		        
-	<div id="instructions" class="ws-margin markdown-container">
+	<div id="instructions" class="container markdown-container">
 		<div id="instructions-warning">
 			Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
 		    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
@@ -209,9 +216,9 @@
 	    {% endif %}
 	</div>
 	        
-    <h2 class="ws-margin">Grafieken</h2>
+    <h2 class="container">Grafieken</h2>
                 
-    <div id="recipe-charts" class="ws-margin">
+    <div id="recipe-charts" class="container">
 		<div id="chart-tabs">
 	    	<ul>
 	        	<li><a href="#tabs-1">Dynamiek</a></li>
@@ -236,7 +243,7 @@
 		</div>
 	</div>
 	        
-    <h2 class="ws-margin">Reacties</h2>
+    <h2 class="container">Reacties</h2>
 	
 	{% endblock %}
 	{% endblock %}
