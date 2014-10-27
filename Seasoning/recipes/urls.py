@@ -4,6 +4,7 @@ from recipes.views import delete_recipe_comment, EditRecipeWizard
 urlpatterns = patterns('',
     url(r'^$', 'recipes.views.browse_recipes', name='browse_recipes'),
     url(r'^(\d*)/$', 'recipes.views.view_recipe', name='view_recipe'),
+    url(r'^ingredients/(\d*)/(\d*)/$', 'recipes.views.ajax_recipe_ingredients', name='ajax_recipe_ingredients'),
    
     url(r'^portions/$', 'recipes.views.get_recipe_portions'),
     url(r'^vote/$', 'recipes.views.vote'),
@@ -12,6 +13,7 @@ urlpatterns = patterns('',
     
     url(r'^add/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='add_recipe'),
     url(r'^edit/(?P<recipe_id>\d+)/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='edit_recipe'),
+    url(r'^img/delete/(\d*)/$', 'recipes.views.delete_recipe_image', name='delete_recipe_image'),
     url(r'^delete/(\d*)/$', 'recipes.views.delete_recipe', name='delete_recipe'),
     
     # Statistical data about recipes

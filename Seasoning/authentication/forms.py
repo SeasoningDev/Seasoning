@@ -287,13 +287,6 @@ class MultiEmailPasswordResetForm(PasswordResetForm):
                 'token': token_generator.make_token(user),
                 'protocol': use_https and 'https' or 'http',
             }
-            subject = loader.render_to_string('emails/password_reset_subject.txt', c)
-            # Email subject *must not* contain newlines
-            subject = ''.join(subject.splitlines())
-            message_text = loader.render_to_string('emails/password_reset_email.txt', c)
-            message_html = loader.render_to_string('emails/password_reset_email.html', c)            
             
-
-            msg = EmailMultiAlternatives(subject, message_text, settings.DEFAULT_FROM_EMAIL, [user.email])
-            msg.attach_alternative(message_html, "text/html")
-            msg.send()
+            user.send_email('emails/password_reset_subject.txt', 'emails/password_reset_email.txt',
+                            'emails/password_reset_email.html', c, settings.DEFAULT_FROM_EMAIL)

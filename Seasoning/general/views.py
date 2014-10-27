@@ -30,7 +30,7 @@ from general.models import StaticPage, RecipeOfTheWeek
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 import re
-from general import all_templates
+from general import all_templates, send_seasoning_email
 from django.contrib.sites.models import RequestSite
 from django.template.context import RequestContext
 from django.core.mail.message import EmailMultiAlternatives
@@ -102,14 +102,10 @@ def contact_form(request, contact_type):
             
             
             # Send confirmation email to user
-            subject = 'Contact met Seasoning.be'
-            message_text = render_to_string('emails/contact_form_autoreply.txt', ctx_dict)
-            message_html = render_to_string('emails/contact_form_autoreply.html', ctx_dict)            
-            
-
-            msg = EmailMultiAlternatives(subject, message_text, 'noreply@seasoning.be', [email])
-            msg.attach_alternative(message_html, "text/html")
-            msg.send()
+            send_seasoning_email('emails/contact_form_autoreply_subject.txt', 
+                                 'emails/contact_form_autoreply.txt', 
+                                 'emails/contact_form_autoreply.html', 
+                                 ctx_dict, 'noreply@seasoning.be', [email])
             
             messages.add_message(request, messages.INFO, _('Your contact form was submitted succesfully.'))
             
@@ -207,4 +203,5 @@ def contact_overview(request):
 # TEST VIEWS FOR TEMPLATE INSPECTION
 @staff_member_required
 def test_500(request):
+    return render(request, '502.html')
     return 1/0

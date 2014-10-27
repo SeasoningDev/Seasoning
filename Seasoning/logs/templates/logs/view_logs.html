@@ -70,7 +70,7 @@
 		
    }
 
-	var pages = {{ pages|safe }};
+	var pages/*  = {{ pages|safe }};
 	var hits = {{ hits|safe }};
 	var rt = {{ resp_time|safe }};
 	
@@ -125,7 +125,7 @@
 				visible: false
 	        },
 	    });
-	});
+	}); */
 </script>
 
 {% endblock %}
@@ -133,7 +133,8 @@
 {% block content %}
 <a href="#" onclick="show_site_wide_history_graph(); return false;">Site wide history</a>
 <form id="site-wide-graph-form">
-	
+	<input type="hidden" name="days" value="2" />
+	<input type="hidden" name="interval" value="10" />
 </form>
 <div id="container"></div>
 
