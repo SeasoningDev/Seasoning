@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     
     url(r'^add/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='add_recipe'),
     url(r'^edit/(?P<recipe_id>\d+)/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='edit_recipe'),
+    url(r'^img/delete/(\d*)/$', 'recipes.views.delete_recipe_image', name='delete_recipe_image'),
     url(r'^delete/(\d*)/$', 'recipes.views.delete_recipe', name='delete_recipe'),
     
     # Statistical data about recipes
