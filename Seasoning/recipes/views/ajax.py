@@ -2,7 +2,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe, UsesIngredient
 from django.http.response import Http404, HttpResponse
-from general.templatetags.ratings import rating_display_stars
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -44,32 +43,25 @@ def ajax_recipe_ingredients(request, recipe_id, portions):
     
 @csrf_exempt
 @login_required
-def vote(request):
-    
+def upvote(request):
     if request.is_ajax() and request.method == 'POST':
         recipe_id = request.POST.get('recipe', None)
-        score = request.POST.get('score', None)
         
-        if recipe_id and score:
-            try:
-                recipe = Recipe.objects.select_related().get(pk=recipe_id)
-            except Recipe.DoesNotExist:
-                raise Http404
-            recipe.vote(user=request.user, score=int(score))
-            recipe = Recipe.objects.get(pk=recipe_id)
-            data = rating_display_stars(recipe.rating, recipe.number_of_votes)
-            return HttpResponse(data)
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        recipe.upvote(user=request.user)
         
     raise PermissionDenied
     
 
 @login_required
-def remove_vote(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    recipe.unvote(user=request.user)
-    recipe = Recipe.objects.get(pk=recipe_id)
-    data = rating_display_stars(recipe.rating, recipe.number_of_votes)
-    return HttpResponse(data)
+def downvote(request, recipe_id):
+    if request.is_ajax() and request.method == 'POST':
+        recipe_id = request.POST.get('recipe', None)
+        
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        recipe.downvote(user=request.user)
+        
+    raise PermissionDenied
 
 @csrf_exempt
 def get_recipe_portions(request):
