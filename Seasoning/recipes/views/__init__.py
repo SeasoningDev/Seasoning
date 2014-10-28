@@ -19,7 +19,6 @@ from django.conf import settings
 from django import forms
 from django.contrib.formtools.wizard.forms import ManagementForm
 from general.forms import FormContainer
-from recipes.models import UnknownIngredient
 from recipes.forms import EditRecipeBasicInfoForm,\
     EditRecipeIngredientsForm, EditRecipeInstructionsForm
 from ingredients.models import CanUseUnit
@@ -259,8 +258,8 @@ class EditRecipeWizard(SessionWizardView):
                                 ingredient.save()
                             if not ingredient.can_use_unit(ingredient_info['unit']):
                                 CanUseUnit(ingredient=ingredient, unit=ingredient_info['unit'], conversion_factor=0).save()
-                            if not UnknownIngredient.objects.filter(name=ingredient_info['name'], requested_by=self.request.user, real_ingredient=ingredient, for_recipe=self.instance).exists():
-                                UnknownIngredient(name=ingredient_info['name'], requested_by=self.request.user, real_ingredient=ingredient, for_recipe=self.instance).save()
+#                             if not UnknownIngredient.objects.filter(name=ingredient_info['name'], requested_by=self.request.user, real_ingredient=ingredient, for_recipe=self.instance).exists():
+#                                 UnknownIngredient(name=ingredient_info['name'], requested_by=self.request.user, real_ingredient=ingredient, for_recipe=self.instance).save()
                         
                         # revalidate the ingredient forms
                         for form in ing_form:
