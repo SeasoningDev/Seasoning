@@ -11,6 +11,21 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RemoveField(
+            model_name='unknowningredient',
+            name='for_recipe',
+        ),
+        migrations.RemoveField(
+            model_name='unknowningredient',
+            name='real_ingredient',
+        ),
+        migrations.RemoveField(
+            model_name='unknowningredient',
+            name='requested_by',
+        ),
+        migrations.DeleteModel(
+            name='UnknownIngredient',
+        ),
         migrations.AddField(
             model_name='recipe',
             name='complete_information',

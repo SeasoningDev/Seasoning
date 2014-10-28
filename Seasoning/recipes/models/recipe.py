@@ -313,7 +313,8 @@ class Recipe(models.Model):
 
 class RecipeImage(models.Model):
     
-    recipe = models.ForeignKey(Recipe, related_name='images')
+    recipe = models.ForeignKey(Recipe, related_name='images', null=True, blank=True)
+    incomplete_recipe = models.ForeignKey('IncompleteRecipe', related_name='images', null=True, blank=True)
     
     default_image_location = 'images/no_image.jpg'
     image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],

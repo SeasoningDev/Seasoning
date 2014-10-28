@@ -7,15 +7,40 @@ from ingredients.models.ingredients import Ingredient
 from ingredients.models.units import Unit
 from django.utils.translation import ugettext_lazy as _
 
+class TemporaryIngredientManager(models.Manager):
+    
+    def get_queryset(self, *args, **kwargs):
+        return models.Manager.get_queryset(self, *args, **kwargs).select_related('ingredient')
+        
 class TemporaryIngredient(models.Model):
     
+    objects = TemporaryIngredientManager()
+    
     ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
+    
+    def __unicode__(self):
+        if self.ingredient is not None:
+            return self.ingredient.name
+           
+        return u'Unknown: {}'.format(self.name)
+
+class TemporaryUnitManager(models.Manager):
+    
+    def get_queryset(self, *args, **kwargs):
+        return models.Manager.get_queryset(self, *args, **kwargs).select_related('unit')
     
 class TemporaryUnit(models.Model):
+    objects = TemporaryUnitManager()
     
     unit = models.ForeignKey(Unit, null=True, blank=True)
     name = models.CharField(max_length=50)
+    
+    def __unicode__(self):
+        if self.unit is not None:
+            return self.unit.name
+         
+        return u'Unknown: {}'.format(self.name)
     
 
 class IncompleteRecipe(models.Model):
@@ -55,6 +80,17 @@ class IncompleteRecipe(models.Model):
                                   null=True, blank=True)
     instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'),
                                     null=True, blank=True)
+    
+    ignore = models.BooleanField(default=False)
+    
+    def __unicode__(self):
+        return self.name
+    
+    def course_ok(self):
+        return self.course is not None
+    
+    def cuisine_ok(self):
+        return self.cuisine is not None
      
 
     
