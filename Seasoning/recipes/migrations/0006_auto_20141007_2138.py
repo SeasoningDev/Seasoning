@@ -12,21 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='UnknownUsesIngredient',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('amount', models.FloatField()),
-                ('unknownunit_name', models.CharField(max_length=20)),
-                ('cantuseunit', models.BooleanField(default=False)),
-                ('ingredient', models.ForeignKey(to='recipes.UnknownIngredient')),
-                ('recipe', models.ForeignKey(to='recipes.Recipe')),
-                ('unit', models.ForeignKey(blank=True, to='ingredients.Unit', null=True)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
         migrations.AlterField(
             model_name='recipe',
             name='external_site',
@@ -36,10 +21,5 @@ class Migration(migrations.Migration):
             model_name='recipe',
             name='rating',
             field=models.FloatField(default=None, null=True, editable=False, blank=True),
-        ),
-        migrations.AlterField(
-            model_name='unknowningredient',
-            name='real_ingredient',
-            field=models.ForeignKey(blank=True, to='ingredients.Ingredient', null=True),
         ),
     ]
