@@ -2,7 +2,7 @@ from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
     UploadRecipeImageForm
 from django.shortcuts import render, get_object_or_404, redirect
-from recipes.models import Recipe, Vote, RecipeImage
+from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.comments.models import Comment
@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from recipes.models.recipe import Upvote
 
 
 def browse_recipes(request):
@@ -54,7 +55,7 @@ def view_recipe(request, recipe_id):
     user_vote = None
     if request.user.is_authenticated():
         try:
-            user_vote = Vote.objects.get(recipe_id=recipe_id, user=request.user)
+            user_vote = Upvote.objects.get(recipe_id=recipe_id, user=request.user)
         except ObjectDoesNotExist:
             pass
     
