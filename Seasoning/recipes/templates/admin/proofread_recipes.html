@@ -44,19 +44,27 @@ $(document).ready( function () {
 		</td>
 	</tr>
 	<tr>
-		<td style="color: rgb(241, 161, 101);">
+		<td style="color: rgb(43,194,83);">
 			Accepted recepten:
 		</td>
-		<td style="color: rgb(241, 161, 101);">
+		<td style="color: rgb(43,194,83);">
 			{{ ao_accepted_recipes }}
 		</td>
 	</tr>
 	<tr>
-		<td style="color: rgb(43,194,83);">
-			Niet Accepted recepten
+		<td style="color: rgb(241, 161, 101);">
+			Compleet maar Niet Accepted recepten
 		</td>
-		<td style="color: rgb(43,194,83);">
-			{{ ao_naccepted_recipes }}
+		<td style="color: rgb(241, 161, 101);">
+			{{ ao_complete_recipes }}
+		</td>
+	</tr>
+	<tr>
+		<td style="color: rgb(255,50,50);">
+			Incomplete recepten
+		</td>
+		<td style="color: rgb(255,50,50);">
+			{{ ao_incomplete_recipes }}
 		</td>
 	</tr>
 </table>

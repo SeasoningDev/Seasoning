@@ -86,21 +86,6 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.RemoveField(
-            model_name='unknowningredient',
-            name='for_recipe',
-        ),
-        migrations.RemoveField(
-            model_name='unknowningredient',
-            name='real_ingredient',
-        ),
-        migrations.RemoveField(
-            model_name='unknowningredient',
-            name='requested_by',
-        ),
-        migrations.DeleteModel(
-            name='UnknownIngredient',
-        ),
         migrations.AlterUniqueTogether(
             name='vote',
             unique_together=None,

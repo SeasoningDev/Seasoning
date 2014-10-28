@@ -11,12 +11,14 @@ def proofread_recipes(request):
     
     ao_recipes = external_site.recipes.count()
     ao_accepted_recipes = external_site.recipes.filter(accepted=True).count()
-    ao_naccepted_recipes = external_site.recipes.filter(accepted=False).count()
-    recipes = external_site.recipes.prefetch_related('unknowns').filter(accepted=False)
+    ao_complete_recipes = external_site.recipes.filter(accepted=False).count()
+    ao_incomplete_recipes = external_site.incomplete_recipes.all().count()
+    recipes = external_site.recipes.filter(accepted=False)
     
     return render(request, 'admin/proofread_recipes.html', {'ao_recipes': ao_recipes,
                                                             'ao_accepted_recipes': ao_accepted_recipes,
-                                                            'ao_naccepted_recipes': ao_naccepted_recipes,
+                                                            'ao_complete_recipes': ao_complete_recipes,
+                                                            'ao_incomplete_recipes': ao_incomplete_recipes,
                                                             'recipes': recipes})
 
 def scrape_recipes(request):

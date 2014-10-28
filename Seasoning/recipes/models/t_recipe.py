@@ -27,7 +27,8 @@ class IncompleteRecipe(models.Model):
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)
-    external_site = models.ForeignKey(ExternalSite, null=True, blank=True)
+    external_site = models.ForeignKey(ExternalSite, related_name='incomplete_recipes',
+                                      null=True, blank=True)
     
     course = models.PositiveSmallIntegerField(_('Course'), choices=Recipe.COURSES,
                                               help_text=_("The type of course this recipe will provide."),
