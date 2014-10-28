@@ -2,12 +2,6 @@ from std import *
 from ajax import *
 from admin import *
 
-from django.contrib.comments.signals import comment_was_posted
-
-# Inform user when posting a comment was succesfull
-def comment_posted_message(sender, comment=None, request=None, **kwargs):
-    messages.add_message( request, messages.SUCCESS, 'Uw reactie werd succesvol toegevoegd.' )
-comment_was_posted.connect(comment_posted_message)
 
 import os
 from django.core.exceptions import ValidationError
@@ -346,14 +340,3 @@ def get_relative_footprint(request):
         
     raise PermissionDenied
 """
-
-
-@login_required
-def delete_recipe_comment(request, recipe_id, comment_id):
-    comment = get_object_or_404(comments.get_model(), pk=comment_id)
-    if comment.user == request.user:
-        perform_delete(request, comment)
-        messages.add_message(request, messages.INFO, 'Je reactie werd succesvol verwijderd.')
-        return redirect(view_recipe, recipe_id)
-    else:
-        raise PermissionDenied()

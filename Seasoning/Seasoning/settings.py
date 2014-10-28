@@ -167,7 +167,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.humanize',
     'django.contrib.sites',
-    'django.contrib.comments',
     'django.contrib.messages',
     'django.contrib.sitemaps',
     
