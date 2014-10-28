@@ -3,8 +3,7 @@ from recipes.scraper.browse.browser import Browser as raw_browser
 from urllib import urlencode
 import re
 from django.contrib.auth import get_user_model
-from recipes.models import ExternalSite, Recipe, Cuisine, UnknownIngredient,\
-    UnknownUsesIngredient
+from recipes.models import ExternalSite, Recipe, Cuisine, t_recipe
 import difflib
 import tempfile
 import requests
@@ -12,6 +11,9 @@ from django.core import files
 from ingredients.models import Ingredient
 from ingredients.models.units import Unit, CanUseUnit
 import datetime
+from recipes.models.t_recipe import IncompleteRecipe, TemporaryIngredient,\
+    TemporaryUnit, TemporaryUsesIngredient
+from recipes.models.recipe import RecipeImage
 
 Browser = lambda: raw_browser('www.evavzw.be')
 
@@ -31,7 +33,10 @@ class RecipePage(object):
     
     @property
     def recipe_name(self):
-        return self.preview_li.find('h2').text
+        if self._content is None:
+            return self.preview_li.find('h3').text
+        else:
+            return self.content.find('div', {'class': 'articleHeader'}).find('h1').text
     
     @property
     def recipe_portions(self):
@@ -67,7 +72,7 @@ class RecipePage(object):
         if time_li == None:
             return 0
         if '+' in time_li.text:
-            return int(time_li.split()[0])
+            return int(time_li.text.split()[0])
         return int(time_li.text[:-1])
     
     @property
@@ -126,11 +131,16 @@ def scrape_recipes():
     recipe_pages = get_recipe_pages()
     
     for recipe_page in recipe_pages:
+        # If the recipe has already been scraped, skip it
         try:
-            Recipe.objects.get(name=recipe_page.recipe_name)
+            IncompleteRecipe.objects.get(name=recipe_page.recipe_name, author=scraper, external_site=external_site)
             continue
-        except Recipe.DoesNotExist:
-            pass
+        except IncompleteRecipe.DoesNotExist:
+            try:
+                Recipe.objects.get(name=recipe_page.recipe_name, author=scraper, external_site=external_site)
+                continue
+            except Recipe.DoesNotExist:
+                pass
         
         # Get course
         recipe_course = None
@@ -146,20 +156,21 @@ def scrape_recipes():
         
         # Get cuisine
         recipe_cuisine = None
+        recipe_cuisine_proposal = None
         if recipe_page.recipe_cuisine is not None:
             try:
                 best = difflib.get_close_matches(recipe_page.recipe_cuisine, cuisines.keys(), 1, 0.8)[0]
                 
                 recipe_cuisine = cuisines[best]
             except IndexError:
-                pass
+                recipe_cuisine_proposal = recipe_page.recipe_cuisine
         
         # Get Image file
         # Steam the image from the url
         request = requests.get('http://www.evavzw.be%s' % recipe_page.recipe_image, stream=True)
     
         # Was the request OK?
-        if request.status_code != requests.codes.ok:
+        if request.status_code != requests.codes['ok']:
             # Nope, error handling, skip file etc etc etc
             continue
     
@@ -179,35 +190,26 @@ def scrape_recipes():
             # Write image block to temporary file
             lf.write(block)
         
-        recipe = Recipe(name=recipe_page.recipe_name, author=scraper, time_added=datetime.datetime.now(),
-                        external=True, external_site=external_site, external_url=recipe_page.url, 
-                        course=recipe_course, cuisine=recipe_cuisine,
-                        description='Een heerlijk vegetarisch receptje van Eva!',
-                        portions=recipe_page.recipe_portions, active_time=recipe_page.recipe_preparation_time,
-                        passive_time=0, visible=False, accepted=False)
+        recipe = IncompleteRecipe(name=recipe_page.recipe_name, author=scraper,
+                                  external=True, external_site=external_site, external_url=recipe_page.url, 
+                                  course=recipe_course, cuisine=recipe_cuisine, cuisine_proposal=recipe_cuisine_proposal,
+                                  description='Een heerlijk vegetarisch receptje van Eva!',
+                                  portions=recipe_page.recipe_portions, active_time=recipe_page.recipe_preparation_time,
+                                  passive_time=0)
         
         if recipe.course is None:
             recipe.course = 0
-            recipe.description = 'Course: %s\n' % recipe_page.recipe_course
+            recipe.instructions = 'Course: %s\n' % recipe_page.recipe_course
         
-        if recipe_page.recipe_cuisine is not None and recipe_cuisine is None:
-            recipe.description += 'Cuisine: %s\n' % recipe_page.recipe_cuisine
-            
         if recipe_page.recipe_source is not None:
-            recipe.description += 'Source: %s\n' % recipe_page.recipe_source
-        
-        try:
-            erecipe = Recipe.objects.get(name=recipe_page.recipe_name, author=scraper, external_site=external_site)
-            if erecipe.accepted:
-                # Don't fck with accepted recipes
-                continue
-            
-            recipe.id = erecipe.id
-        except Recipe.DoesNotExist:
-            pass
+            if recipe.instructions is None:
+                recipe.instructions = ''
+            recipe.instructions += 'Source: %s\n' % recipe_page.recipe_source.strip()
         
         recipe.save()
-        recipe.image.save(file_name, files.File(lf))
+        
+        image = RecipeImage(incomplete_recipe=recipe, added_by=scraper)
+        image.image.save(file_name, files.File(lf))
         
         for recipe_ingredient in recipe_page.recipe_ingredients:
             parsed_ing_name = recipe_ingredient[0]
@@ -222,22 +224,12 @@ def scrape_recipes():
             except IndexError:
                 unit = None
             
-            cuu = None
-            if ingredient is not None and unit is not None:
-                try:
-                    cuu = CanUseUnit.objects.get(ingredient=ingredient, unit=unit)
-                except CanUseUnit.DoesNotExist:
-                    pass
-             
+            t_ingredient = TemporaryIngredient(ingredient=ingredient, name=recipe_ingredient[0])
+            t_ingredient.save()
             
-            uingredient = UnknownIngredient(name=parsed_ing_name, requested_by=scraper, for_recipe=recipe,
-                                            real_ingredient=ingredient)
-            uingredient.save()
-            if unit is not None:
-                uuses = UnknownUsesIngredient(recipe=recipe, ingredient=uingredient, amount=recipe_ingredient[1],
-                                              unit=unit, cantuseunit=cuu is None)
-            else:
-                uuses = UnknownUsesIngredient(recipe=recipe, ingredient=uingredient, amount=recipe_ingredient[1],
-                                              unknownunit_name=recipe_ingredient[2], cantuseunit=cuu is None)
-            uuses.save()
-        
+            t_unit = TemporaryUnit(unit=unit, name=recipe_ingredient[2])
+            t_unit.save()
+            
+            t_uses = TemporaryUsesIngredient(recipe=recipe, ingredient=t_ingredient, amount=recipe_ingredient[1],
+                                             unit=t_unit)
+            t_uses.save()
