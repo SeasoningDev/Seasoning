@@ -1,5 +1,5 @@
 from django.contrib import admin
-from recipes.models import Recipe, Cuisine, UsesIngredient, UnknownIngredient, ExternalSite,\
+from recipes.models import Recipe, Cuisine, UsesIngredient, ExternalSite,\
     RecipeImage
 
 class UsesIngredientInline(admin.TabularInline):
@@ -25,5 +25,4 @@ class RecipeAdmin(admin.ModelAdmin):
 admin.site.register(ExternalSite)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Cuisine)
-admin.site.register(UnknownIngredient)
 admin.site.register(RecipeImage)
