@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('recipes', '0006_auto_20141007_2043'),
+        ('recipes', '0006_auto_20141007_2138'),
     ]
 
     operations = [

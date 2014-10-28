@@ -266,11 +266,6 @@ class Recipe(models.Model):
         self.footprint = self._footprint()
         self.save()
     
-    def recalculate_rating_aggregates(self):
-        self.rating = self._rating()
-        self.no_of_ratings = self._no_of_ratings()
-        self.save()
-    
     def monthly_footprint(self):
         """
         Returns an array of 12 elements containing the footprint of this recipe
@@ -289,7 +284,7 @@ class Recipe(models.Model):
     def upvote(self, user):
         try:
             # Check if the user already voted on this recipe
-            vote = self.votes.get(user=user)
+            vote = self.upvote_set.get(user=user)
         except Upvote.DoesNotExist:
             # The given user has not voted on this recipe yet
             vote = Upvote(recipe=self, user=user)
@@ -297,7 +292,7 @@ class Recipe(models.Model):
     
     def downvote(self, user):
         try:
-            vote = self.votes.get(user=user)
+            vote = self.upvote_set.get(user=user)
             vote.delete()
         except Upvote.DoesNotExist:
             pass
@@ -387,6 +382,6 @@ class Upvote(models.Model):
     class Meta:
         unique_together = (("recipe", "user"),)
     
-    recipe = models.ForeignKey(Recipe, related_name='votes')
+    recipe = models.ForeignKey(Recipe)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     time = models.DateTimeField(auto_now_add=True, editable=False)

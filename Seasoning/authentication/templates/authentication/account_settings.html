@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load ratings %}
 
 {% block title %}{% if viewing_other %}Publiek Profiel{% else %}Mijn Profiel{% endif %}{% endblock %}
 
@@ -53,11 +52,6 @@ $(document).ready(function() {
 	            
 	           <div class="account-info-stat">
 		        	<strong>Gemiddelde waardering</strong>
-		        	{% if average_rating %}
-		        	<span class="account-info-stat-img" title="De recepten toegevoegd door deze gebruiker hebben een gemiddelde waardering van {{ average_rating|floatformat:"-2" }} op 5">{% mean_rating average_rating %}</span>
-		        	{% else %}
-		        	<span class="account-info-stat-img" title="Deze gebruiker heeft nog geen recepten toegevoegd">{% mean_rating average_rating %}</span>
-		        	{% endif %}
 		        </div>
 				
 				 <div class="account-info-stat">

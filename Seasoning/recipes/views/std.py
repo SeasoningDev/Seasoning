@@ -5,7 +5,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -67,14 +66,11 @@ def view_recipe(request, recipe_id):
         context['active_time_perc'] = active_time_perc
         context['passive_time_perc'] = passive_time_perc
     
-    comments = Comment.objects.filter(content_type=ContentType.objects.get_for_model(Recipe), object_pk=recipe.id, is_removed=False, is_public=True).select_related('user')
-    
     template = 'recipes/view_recipe.html'
     
     context['recipe'] = recipe
     context['user_vote'] = user_vote
-    context['total_time'] = total_time 
-    context['comments'] = comments
+    context['total_time'] = total_time
     
     if request.method == 'POST':
         upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)

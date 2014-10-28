@@ -19,8 +19,6 @@ urlpatterns = patterns('',
     # Registration pages
     (r'^profile/', include('authentication.urls')),
     
-     # Comments
-    (r'^comments/', include('django.contrib.comments.urls')),
     # FAQ
     (r'^faq/', include('faq.urls')),
     # Logs
