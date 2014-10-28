@@ -1,32 +1,23 @@
 import time
-import datetime
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator,\
-    MaxLengthValidator
-from django.core.exceptions import ValidationError, PermissionDenied
-from django.utils.translation import ugettext_lazy as _
-from authentication.models import User
-from imagekit.models.fields import ProcessedImageField, ImageSpecField
+from django.core.exceptions import PermissionDenied, ValidationError
+from ingredients.models.units import Unit
+from django.core.validators import MinValueValidator, MaxLengthValidator
 from imagekit.processors.resize import SmartResize
-from ingredients.models import AvailableIn, Ingredient, Unit
-from general import validate_image_size
+from imagekit.models.fields import ImageSpecField, ProcessedImageField
 from django.conf import settings
+from general import validate_image_size
+import datetime
+from ingredients.models.ingredients import Ingredient
+from ingredients.models.availability import AvailableIn
 from django.utils.functional import cached_property
+from recipes.models.std import Aggregate, ExternalSite
+from django.utils.translation import ugettext_lazy as _
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
     filename = '%s.%s' % (str(time.time()), extension)
     return 'images/recipes/' + filename
-
-class ExternalSite(models.Model):
-    
-    name = models.CharField(_('Name'), max_length=200,
-                            help_text=_('The names of the external website.'))
-    url = models.CharField(_('URL'), max_length=200,
-                            help_text=_('The home url of the external website'))
-    
-    def __unicode__(self):
-        return self.name
 
 class Cuisine(models.Model):
     
@@ -119,7 +110,7 @@ class Recipe(models.Model):
     
     name = models.CharField(_('Name'), max_length=100,
                             help_text=_('The names of the recipe.'))
-    author = models.ForeignKey(User, related_name='recipes', null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipes', null=True)
     time_added = models.DateTimeField(auto_now_add=True, editable=False)
     
     external = models.BooleanField(default=False)
@@ -182,11 +173,6 @@ class Recipe(models.Model):
     # This field gives the current footprint of this recipe
     footprint = models.FloatField(default=0, editable=False)
     
-    # The current rating of this recipe
-    rating = models.FloatField(null=True, blank=True, default=None, editable=False)
-    # The number of people who gave a rating for this recipe
-    no_of_ratings = models.IntegerField(default=0)
-    
     def __unicode__(self):
         return self.name
     
@@ -196,6 +182,10 @@ class Recipe(models.Model):
     @property
     def total_time(self):
         return self.active_time + self.passive_time
+    
+    @property
+    def upvotes(self):
+        return self.upvote_set.all().count()
     
     def _compelete_information(self):
         for uses in self.uses.all():
@@ -231,14 +221,6 @@ class Recipe(models.Model):
             total_footprint += uses.footprint()
             
         return total_footprint / self.portions
-    
-    def _rating(self):
-        if self._no_of_ratings() <= 0:
-            return None
-        return self.votes.all().aggregate(models.Avg('score'))['score__avg']
-    
-    def _no_of_ratings(self):
-        return self.votes.all().aggregate(models.Count('score'))['score__count']        
     
     def total_footprint(self):
         return self.footprint * self.portions
@@ -303,19 +285,21 @@ class Recipe(models.Model):
         footprints = [float('%.2f' % (4*footprint/self.portions)) for footprint in footprints]
         return footprints
     
-    def vote(self, user, score):
+    def upvote(self, user):
         try:
             # Check if the user already voted on this recipe
             vote = self.votes.get(user=user)
-            vote.score = score
-        except Vote.DoesNotExist:
+        except Upvote.DoesNotExist:
             # The given user has not voted on this recipe yet
-            vote = Vote(recipe=self, user=user, score=score)
-        vote.save()
+            vote = Upvote(recipe=self, user=user)
+            vote.save()
     
-    def unvote(self, user):
-        vote = self.votes.get(user=user)
-        vote.delete()
+    def downvote(self, user):
+        try:
+            vote = self.votes.get(user=user)
+            vote.delete()
+        except Upvote.DoesNotExist:
+            pass
         
     def has_lowest_footprint_in_month(self, month=None):
         if month is None:
@@ -396,69 +380,11 @@ class UsesIngredient(models.Model):
             self.recipe.recalculate_ingredient_aggregates()
         
         return ret
-
-class UnknownIngredient(models.Model):
-    class Meta:
-        db_table = 'unknown_ingredient'
     
-    name = models.CharField(max_length=50L)
-    requested_by = models.ForeignKey(User)
-    for_recipe = models.ForeignKey(Recipe)
-    
-    real_ingredient = models.ForeignKey(Ingredient)
-    
-    def __unicode__(self):
-        return self.name
-    
-class Vote(models.Model):
+class Upvote(models.Model):
     class Meta:
         unique_together = (("recipe", "user"),)
     
     recipe = models.ForeignKey(Recipe, related_name='votes')
-    user = models.ForeignKey(User)
-    score = models.PositiveIntegerField(validators=[MaxValueValidator(5)])
-    time_added = models.DateTimeField(auto_now_add=True, editable=False)
-    time_changed = models.DateTimeField(auto_now=True, editable=False)
-    
-    def save(self, *args, **kwargs):
-        ret = super(Vote, self).save(*args, **kwargs)
-        self.recipe.recalculate_rating_aggregates()
-        return ret
-    
-    def delete(self, *args, **kwargs):
-        ret = super(Vote, self).delete(*args, **kwargs)
-        self.recipe.recalculate_rating_aggregates()
-        return ret
-
-class AggregateManager(models.Manager):
-    
-    def update_fp_cat_aggregates(self, fp_cats_upper_limits):
-        fp_cats_upper_limits[Aggregate.D] = 1000000
-        for fp_cat, upper_limit in fp_cats_upper_limits.items():
-            try:
-                aggr = self.get(name=fp_cat)
-                aggr.value = upper_limit
-                aggr.extra_info = Aggregate.AGGREGATES_TEXT[fp_cat]
-                aggr.save()
-            except Aggregate.DoesNotExist:
-                Aggregate(name=fp_cat, value=upper_limit, extra_info=Aggregate.AGGREGATES_TEXT[fp_cat]).save()
-    
-class Aggregate(models.Model):
-    Ap, A, B, C, D = 0, 1, 2, 3, 4
-    AGGREGATE_DICT = {Ap: 'A+', A: 'A', B: 'B', C: 'C', D: 'D'}
-    AGGREGATES = [(cat, AGGREGATE_DICT[cat]) for cat in [Ap, A, B, C, D]]
-    AGGREGATES_TEXT = {Ap: 'De voetafdruk van dit recept is lager dan 90% van de recepten op Seasoning.',
-                       A: 'De voetadruk van dit recept is lager dan 75% van de recepten op Seasoning',
-                       B: 'De voetafdruk van dit recept is lager dan 50% van de recepten op Seasoning',
-                       C: 'De voetafdruk van dit recept is hoger dan 50% van de recepten op Seasoning',
-                       D: 'De voetafdruk van dit recept is hoger dan 75% van de recepten op Seasoning'}
-    
-    
-    objects = AggregateManager()
-    name = models.PositiveSmallIntegerField(choices=AGGREGATES, unique=True)
-    value = models.FloatField()
-    extra_info = models.TextField(default='')
-    
-    def get_ribbon_image_name(self):
-        return 'cat-ribbon-{0}.png'.format(self.get_name_display())
-    
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    time = models.DateTimeField(auto_now_add=True, editable=False)
