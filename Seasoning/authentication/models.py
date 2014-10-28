@@ -121,6 +121,9 @@ class User(models.Model):
         # if a users has changed his name.
         self.__cached_givenname__ = self.givenname
         self.__cached_surname__ = self.surname
+    
+    def __unicode__(self):
+        return self.get_full_name()
 
     def get_full_name(self):
         return ' '.join((self.givenname, self.surname))
@@ -146,7 +149,7 @@ class User(models.Model):
             return 0
         return 2**next_rank - ao_recipes
 
-    def email_user(self, subject_template, text_template, html_template, template_context,
+    def send_email(self, subject_template, text_template, html_template, template_context,
                    from_email):
         """
         Sends an email to this User.
@@ -154,10 +157,6 @@ class User(models.Model):
         """
         send_seasoning_email(subject_template, text_template, html_template, template_context, 
                              from_email, [self.email])
-        
-
-    def __unicode__(self):
-        return self.get_full_name()
 
     def natural_key(self):
         return (self.email,)

@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.sites.models import RequestSite
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import Http404
 from django.views.decorators.debug import sensitive_post_parameters
 from django.contrib.auth.views import login as django_login, logout
@@ -34,7 +34,7 @@ def account_settings(request, user_id=None):
         raise Http404
     
     try:
-        averages = user.recipes.accepted().aggregate(Avg('footprint'), Avg('rating'))
+        averages = user.recipes.accepted().aggregate(Avg('footprint'))
         averages['footprint__avg'] = 4*averages['footprint__avg']
         most_used_veganism = max(user.recipes.accepted().values('veganism').annotate(dcount=Count('veganism')), key=lambda i: i['dcount'])['veganism']
     except (ValueError, TypeError):
@@ -43,7 +43,6 @@ def account_settings(request, user_id=None):
     return render(request, 'authentication/account_settings.html', {'viewed_user': user,
                                                                     'viewing_other': not viewing_self,
                                                                     'average_fp': averages['footprint__avg'],
-                                                                    'average_rating': averages['rating__avg'],
                                                                     'most_used_veganism': most_used_veganism})
 
 @login_required
@@ -126,8 +125,8 @@ def change_password(request,
             form.save()
             
             # Send email to user
-            request.user.email_user('emails/password_changed_subject.txt', 'emails/password_changed_email.txt'
-                                    'emails/password_changed_email.html', 'info@seasoning.be')
+            request.user.send_email('emails/password_changed_subject.txt', 'emails/password_changed_email.txt',
+                            'emails/password_changed_email.html', {}, 'info@seasoning.be')
             messages.add_message(request, messages.INFO, _('Your password has been successfully changed.'))
             return redirect(account_settings)
     
