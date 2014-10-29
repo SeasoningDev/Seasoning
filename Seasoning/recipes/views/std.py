@@ -5,7 +5,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -51,12 +50,7 @@ def view_recipe(request, recipe_id):
     except Recipe.DoesNotExist:
         raise Http404
     
-    user_vote = None
-    if request.user.is_authenticated():
-        try:
-            user_vote = Upvote.objects.get(recipe_id=recipe_id, user=request.user)
-        except ObjectDoesNotExist:
-            pass
+    user_has_upvoted = Upvote.objects.filter(recipe_id=recipe_id, user=request.user).exists()
     
     total_time = recipe.active_time + recipe.passive_time
     if total_time > 0:
@@ -69,7 +63,7 @@ def view_recipe(request, recipe_id):
     template = 'recipes/view_recipe.html'
     
     context['recipe'] = recipe
-    context['user_vote'] = user_vote
+    context['user_has_upvote'] = user_has_upvoted
     context['total_time'] = total_time
     
     if request.method == 'POST':

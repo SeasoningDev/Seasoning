@@ -163,19 +163,16 @@ h2.container {
 
 #graphic-information-container {
 	background-color: #e9e9e9;
-	height: 80px;
-	/* border-top: 1px solid #5b6553;
-	border-bottom: 1px solid #5b6553;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-	 */text-align: center;    
+	height: 80px;   
 }
 
 #graphic-information-container .graphic-information-icon {
 	position: relative;
-	display: inline-block;
-	padding: 10px 30px;
-	width: 60px;
+	padding: 10px 0;
+	width: 20%;
 	height: 60px;
+	float: left;
+	text-align: center;
 }
 
 .graphic-information-icon img {
@@ -193,6 +190,35 @@ h2.container {
 	line-height: 30px;
 	font-family: 'Lobster', cursif;
 	cursor: default;
+}
+  
+.upvote-bubble {
+	position: absolute;
+	top: 0;
+	right: 0x;
+	width: 60px;
+	height: 22px;
+	padding: 0px;
+	background: #FFFFFF;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	font-family: 'lobster', cursive;
+	font-size: 18px;
+	line-height: 22px;
+}
+
+.upvote-bubble:after {
+	content: '';
+	position: absolute;
+	border-style: solid;
+	border-width: 7px 5px 0;
+	border-color: #FFFFFF transparent;
+	display: block;
+	width: 0;
+	z-index: 1;
+	bottom: -6px;
+	left: 25px;
 }
 
 
@@ -403,7 +429,7 @@ h2 #portions-changer {
   clear: left;
   width: 100%;
   height: 350px;
-  padding: 0;
+  margin-left: -3px;
 }
 
 #recipe-charts #chart-tabs ul {

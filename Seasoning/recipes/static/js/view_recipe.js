@@ -19,6 +19,26 @@ jssor_slider1_starter = function (containerId) {
 };
 
 
+function upvote() {
+	$.ajax({
+		url: upvote_url,
+	}).success(function(data) {
+		$("#upvote-count").text(data);
+		$("#upvote-button").hide();
+		$("#downvote-button").show();
+	});
+}
+
+function downvote() {
+	$.ajax({
+		url: downvote_url,
+	}).success(function(data) {
+		$("#upvote-count").text(data);
+		$("#downvote-button").hide();
+		$("#upvote-button").show();
+	});
+}
+
 
 
 

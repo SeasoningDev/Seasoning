@@ -6,9 +6,8 @@ urlpatterns = patterns('',
     url(r'^(\d*)/$', 'recipes.views.view_recipe', name='view_recipe'),
     url(r'^ingredients/(\d*)/(\d*)/$', 'recipes.views.ajax_recipe_ingredients', name='ajax_recipe_ingredients'),
    
-    url(r'^portions/$', 'recipes.views.get_recipe_portions'),
-    url(r'^vote/$', 'recipes.views.upvote'),
-    url(r'^removevote/(\d*)/$', 'recipes.views.downvote'),
+    url(r'^ajax/upvote/(\d*)/$', 'recipes.views.upvote', name='upvote_recipe'),
+    url(r'^ajax/downvote/(\d*)/$', 'recipes.views.downvote', name='downvote_recipe'),
     
     url(r'^add/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='add_recipe'),
     url(r'^edit/(?P<recipe_id>\d+)/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='edit_recipe'),
