@@ -43,54 +43,22 @@ def ajax_recipe_ingredients(request, recipe_id, portions):
     
 @csrf_exempt
 @login_required
-def upvote(request):
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-        
+def upvote(request, recipe_id):
+    if request.is_ajax():
         recipe = get_object_or_404(Recipe, pk=recipe_id)
         recipe.upvote(user=request.user)
+        return HttpResponse(recipe.upvotes)
         
     raise PermissionDenied
     
 
 @login_required
 def downvote(request, recipe_id):
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-        
+    if request.is_ajax():
         recipe = get_object_or_404(Recipe, pk=recipe_id)
         recipe.downvote(user=request.user)
+        return HttpResponse(recipe.upvotes)
         
-    raise PermissionDenied
-
-@csrf_exempt
-def get_recipe_portions(request):
-    
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-        portions = request.POST.get('portions', None)
-        
-        if recipe_id is not None and portions is not None and portions > 0:
-            try:
-                recipe = Recipe.objects.get(pk=recipe_id)
-                usess = UsesIngredient.objects.select_related('ingredient', 'unit').filter(recipe=recipe).order_by('group', 'ingredient__name')
-            except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
-                raise Http404
-            
-            ratio = float(portions)/recipe.portions
-            new_footprint = ratio * recipe.total_footprint()
-            
-            for uses in usess:
-                uses.save_allowed = False
-                uses.amount = ratio * uses.amount
-                uses.footprint = ratio * uses.footprint()
-            
-            data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess}),
-                    'new_footprint': new_footprint}
-            json_data = json.dumps(data)
-            
-            return HttpResponse(json_data)
-    
     raise PermissionDenied
 
 @csrf_exempt
