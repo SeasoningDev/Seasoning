@@ -43,19 +43,6 @@
 			        {% endif %}
 			    </div>
 			    
-			    <div id="recipe-category">
-			    	{% if recipe.cuisine %}
-	                	<span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
-	                	<span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
-	                {% else %}
-	                	<span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
-	                {% endif %}
-			    </div>
-			        
-			    <div id="recipe-description">
-			    	{{ recipe.description }}
-			    </div>
-			    
 			    <div id="recipe-actions">
 			        {% if recipe.author == user or user.is_staff %}
 			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
@@ -71,7 +58,7 @@
 			    </div>
 			</div>
 			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 450px;
-	        	 height: 350px; background: #24262e; overflow: hidden; float: right;">
+	        	 height: 350px; background: #24262e; overflow: hidden; float: right; border: 1px solid #444;">
 	        	 
 		        <!-- Loading Screen -->
 		        <div u="loading" style="position: absolute; top: 0px; left: 0px;">
@@ -128,7 +115,7 @@
 		</div>
 	</div>
 	
-	<div id="graphic-information-container">
+	<div id="graphic-information-container" class="container">
 		<div id="graphic-information" class="container">
 			<div id="veganism" class="graphic-information-icon">
 				{% if recipe.veganism == 2 %}
@@ -192,7 +179,7 @@
        	</span>
 	</h2>
 	        	
-	<div id="ingredients">
+	<div id="ingredients" class="container">
 		
 	</div>
 		        
