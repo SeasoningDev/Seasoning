@@ -1,4 +1,5 @@
 h2 {
+	font-family: 'Lobster Two', cursive;
 	margin-top: 50px;
 	margin-bottom: 10px;
 	border-top: 1px solid #ddd;
@@ -26,11 +27,10 @@ h2 {
 }
 
 #recipe-basic-info #recipe-name {
-	font-family: 'Lobster', cursive;
-	text-decoration: underline;
 	margin: 0;
 	border: none;
 	padding: 0;
+	text-align: left;
 }
 
 #recipe-basic-info #add-info {
@@ -167,7 +167,8 @@ h2 {
 
 
 #graphic-information-container {
-	background-color: #e9e9e9;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
 	height: 80px;
 	margin-top: 10px; 
 }
@@ -194,7 +195,7 @@ h2 {
 	font-weight: bold;
 	font-size: 30px;
 	line-height: 30px;
-	font-family: 'Lobster', cursif;
+	font-family: 'Lobster Two', cursif;
 	cursor: default;
 }
   
@@ -205,11 +206,11 @@ h2 {
 	width: 60px;
 	height: 22px;
 	padding: 0px;
-	background: #FFFFFF;
+	background-color: #e9e9e9;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	font-family: 'lobster', cursive;
+	font-family: 'Lobster Two', cursive;
 	font-size: 18px;
 	line-height: 22px;
 }
@@ -219,11 +220,11 @@ h2 {
 	position: absolute;
 	border-style: solid;
 	border-width: 7px 5px 0;
-	border-color: #FFFFFF transparent;
+	border-color: #e9e9e9 transparent;
 	display: block;
 	width: 0;
 	z-index: 1;
-	bottom: -6px;
+	bottom: -7px;
 	left: 25px;
 }
 
@@ -417,7 +418,6 @@ h2 #portions-changer {
   
 #external-instructions {
   text-align: center;
-  background-color: #f5f5f5;
 }
 
 #external-instructions button {
