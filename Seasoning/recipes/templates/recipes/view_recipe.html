@@ -57,8 +57,8 @@
 			    	</form>
 			    </div>
 			</div>
-			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 450px;
-	        	 height: 350px; background: #24262e; overflow: hidden; float: right; border: 1px solid #444;">
+			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 482px;
+	        	 height: 352px; background: #24262e; overflow: hidden; float: right;">
 	        	 
 		        <!-- Loading Screen -->
 		        <div u="loading" style="position: absolute; top: 0px; left: 0px;">
@@ -71,7 +71,7 @@
 		        </div>
 		
 		        <!-- Slides Container -->
-		        <div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 450px; height: 350px; overflow: hidden;">
+		        <div u="slides" style="cursor: move; position: absolute; left: 1px; top: 1px; width: 480px; height: 350px; overflow: hidden;">
 		        	{% for image in recipe.images.all %}
 		            <div>
 		            	<a href="#">
@@ -85,7 +85,7 @@
 		            {% empty %}
 		            <div>
 		            	<a href="#">
-		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" style="height: 450px; margin-top: -50px;" />
+		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" style="height: 480px; margin-top: -50px;" />
 		                </a>
 		                <img u="thumb" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		            </div>
@@ -93,7 +93,7 @@
 		        </div>
 		        
 		        <!-- Thumbnail Navigator Skin Begin -->
-		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 450px; height: 80px; left:0px; bottom: 0px;">
+		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 480px; height: 80px; left:0px; bottom: 0px;">
 		        
 		            <!-- Thumbnail Item Skin Begin -->
 		            <div u="slides" style="cursor: move;">
