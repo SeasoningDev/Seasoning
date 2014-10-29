@@ -4,11 +4,12 @@ from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from recipes.models.recipe import Upvote
+from recipes.models.t_recipe import IncompleteRecipe
 
 
 def browse_recipes(request):
@@ -82,6 +83,25 @@ def view_recipe(request, recipe_id):
     return render(request, template, context)
 
 @login_required
+def view_incomplete_recipe(request, recipe_id):
+    recipe = get_object_or_404(IncompleteRecipe, id=recipe_id, author=request.user)
+    
+    if request.method == 'POST':
+        upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)
+        if upload_image_form.is_valid():
+            image = upload_image_form.save(commit=False)
+            image.recipe = recipe
+            image.added_by = request.user
+            image.save()
+            
+            upload_image_form = UploadRecipeImageForm()
+    else:
+        upload_image_form = UploadRecipeImageForm()
+    
+    return render(request, 'recipe/view_recipe.html', {'recipe': recipe,
+                                                       'upload_image_form': upload_image_form})
+
+@login_required
 def delete_recipe_image(request, image_id):
     image = get_object_or_404(RecipeImage, pk=image_id)
     
@@ -109,3 +129,32 @@ def external_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     
     return render(request, 'recipes/external_site_wrapper.html', {'recipe': recipe})
+
+
+@login_required
+def add_recipe(request):
+    new_recipe = IncompleteRecipe(author=request.user)
+    new_recipe.save()
+    
+    return redirect(reverse('edit_incomplete_recipe', args=(new_recipe.id, )))
+
+@login_required
+def edit_recipe(request, recipe_id, incomplete=False):
+    if incomplete:
+        recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+    else:
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        
+    if recipe.author == request.user or request.user.is_staff:
+        return render(request, 'recipes/edit_recipe.html', {'recipe': recipe})
+    
+    raise PermissionDenied()
+
+@login_required
+def save_recipe(request, recipe_id):
+    recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+    
+    if recipe.author == request.user or request.user.is_staff:
+        return redirect(reverse('view_recipe', args=(recipe.id, )))
+    
+    raise PermissionDenied()

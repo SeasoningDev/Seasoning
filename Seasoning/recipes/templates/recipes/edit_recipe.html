@@ -10,7 +10,6 @@
 	<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
 	<script src="{{ STATIC_URL }}js/plugins/jssor_slider/jssor.slider.mini.js"></script>
 	<script src="{{ STATIC_URL }}js/ingredient_availability.js"></script>
-	<script src="{{ STATIC_URL }}js/highcharts.js"></script>
 	<script type="text/javascript"> 
 	   var recipe_id = {{ recipe.id }};
 	   var upvote_url = "{% url 'upvote_recipe' recipe.id %}";
@@ -25,10 +24,20 @@
 
 
 {% block content-container %}
+	<div id="finish-editing-container">
+		{% if recipe.incomplete_class %}
+		<a href="{% url 'save_recipe' recipe.id %}">
+		{% else %}
+		<a href="{% url 'view_recipe' recipe.id %}">
+		{% endif %}
+			<input id="finish-editing-button" type="submit" value="Recept Opslaan" />
+		</a>
+	</div>
+	
 	<div id="recipe-header-container">
 		<div id="recipe-header">
 			<div id="recipe-basic-info">
-				<h2 id="recipe-name">{{ recipe.name }}</h2>
+				<h2 id="recipe-name" class="editable-field">{{ recipe.name }}</h2>
 	    
 			    <div id="add-info">
 			    	{% if recipe.external %}
@@ -41,37 +50,17 @@
 			    
 			    <div id="recipe-category">
 			    	{% if recipe.cuisine %}
-	                	<span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
-	                	<span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
+	                	<span class="editable-field">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
+	                	<span class="editable-field">{{ recipe.get_course_display|lower }}</span>
 	                {% else %}
-	                	<span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
+	                	<span class="editable-field">{{ recipe.get_course_display }}</span>
 	                {% endif %}
 			    </div>
 			        
-			    <div id="recipe-description">
+			    <div id="recipe-description" class="editable-field">
 			    	{{ recipe.description }}
 			    </div>
 			    
-			    <div id="recipe-actions">
-			        {% if recipe.author == user or user.is_staff %}
-			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
-			    	
-			    	{% if recipe.incomplete_class %}
-			    	<a href="{% url 'edit_incomplete_recipe' recipe.id %}" title="Wijzig dit recept">
-			    	{% else %}
-			        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"> 
-			        {% endif %}
-			        <img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
-			    	
-			    	{% endif %}
-			    	<form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
-			    		{% csrf_token %}
-						<div id="upload-image-button">
-							<img class="icon" src="{{ STATIC_URL }}img/icons/camera.png" title="Voeg een foto toe aan dit recept" />
-						</div>
-						{{ upload_image_form.image }}
-			    	</form>
-			    </div>
 			</div>
 			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 450px;
 	        	 height: 350px; background: #24262e; overflow: hidden; float: right;">
@@ -94,9 +83,6 @@
 		                	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
 		                </a>
 		                <img u="thumb" src="{{ image.thumbnail.url }}" />
-		                {% if image.added_by == user or recipe.author == user %}
-		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
-		                {% endif %}
 		            </div>
 		            {% empty %}
 		            <div>
@@ -133,34 +119,7 @@
 	
 	<div id="graphic-information-container">
 		<div id="graphic-information" class="container">
-			<div id="veganism" class="graphic-information-icon">
-				{% if recipe.veganism == 2 %}
-		    	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Dit is een veganistisch recept" alt="" />
-		        {% elif recipe.veganism == 1 %}
-		    	<img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Dit is een vegetarisch recept" alt="" />
-		        {% elif recipe.veganism == 0 %}
-		    	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Dit is een niet-vegetarisch recept" alt="" />
-		    	{% endif %}
-		    </div>
-			<div id="fp-category" class="graphic-information-icon">
-				<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
-				     title="{{ recipe.fp_category.extra_info }}"/>
-			</div>
-			<div id="recipe-footprint" class="graphic-information-icon">
-				<img src="{{ STATIC_URL }}img/decoration/footprint.png" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie."/>
-				<span id="recipe-footprint-text" class="text-overlay" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">{{ recipe.footprint|floatformat:2 }}</span>
-			</div>
-			<div id="recipe-duration" class="graphic-information-icon">
-				<img src="{{ STATIC_URL }}img/decoration/clock.png" />
-				<span id="recipe-footprint-text" class="text-overlay" title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">{{ recipe.total_preparation_time }}</span>
-			</div>
-			<div id="recipe-upvotes" class="graphic-information-icon">
-				<div style="position: relative; display: inline-block; width: 60px; height: 100%;">
-					<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
-					<a id="upvote-button" href="#" onclick="upvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
-					<a id="downvote-button" href="#" onclick="downvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
-				</div>
-			</div>
+			
 		</div>
 	</div>
 		
@@ -202,9 +161,9 @@
 	{% if recipe.extra_info %}
 	<div id="extra-info" class="container">
 		<h4>Extra info en benodigdheden</h4>
-	    <p>
+	    <div class="editable-field">
 	       	{{ recipe.extra_info|linebreaks }}
-	    </p>
+	    </div>
 	</div>
 	{% endif %}
 		        
@@ -213,48 +172,8 @@
 	   	Bereiding
 	</h2>
 		        
-	<div id="instructions" class="container markdown-container">
-		<div id="instructions-warning">
-			Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
-		    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
-		</div>
-		{% if recipe.external %}
-	</div>
-	
-	<div id="external-instructions">
-		<a href="http://www.seasoning.be{% url 'external_recipe' recipe.id %}">
-		 	<button type="submit">Bekijk het volledige recept op {{ recipe.external_site.name }}</button>
-		</a>
-		{% else %}
-		<span itemprop="recipeInstructions">{{ recipe.instructions|markdown|safe }}</span>
-	    {% endif %}
-	</div>
-	        
-    <h2 class="container">Grafieken</h2>
-                
-    <div id="recipe-charts" class="container">
-		<div id="chart-tabs">
-	    	<ul>
-	        	<li><a href="#tabs-1">Dynamiek</a></li>
-	            <!-- <li><a href="#tabs-2">Verhoudingen</a></li>-->
-	        </ul>
-	        <div id="tabs-1">
-	            <div id="recipe-fpevo-chart">            
-	            	       
-	            </div>
-	        </div>
-	        <!-- 
-	        <div id="tabs-2">
-	        	<div id="recipe-fprel-chart">
-	                
-	            </div>
-	        </div>
-	        -->
-	    </div>
-	        
-		<div id="charts-ajax-loader">
-		    {% include "includes/big-ajax-loader.html" %}
-		</div>
+	<div id="instructions" class="container markdown-container editable-field">
+		<span>{{ recipe.instructions|markdown|safe }}</span>
 	</div>
 	
 	{% endblock %}

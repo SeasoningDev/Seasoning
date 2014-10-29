@@ -86,6 +86,9 @@ class IncompleteRecipe(models.Model):
     def __unicode__(self):
         return self.name
     
+    def incomplete_class(self):
+        return True
+    
     def course_ok(self):
         return self.course is not None
     
