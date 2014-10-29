@@ -76,7 +76,7 @@ def account_settings_profile(request):
         form = AccountSettingsForm(instance=user)
     
     try:
-        new_email = NewEmail.objects.get(user=request.user)
+        new_email = NewEmail.objects.get(user=request.user.id)
         context['new_email'] = new_email.email
     except NewEmail.DoesNotExist:
         pass
