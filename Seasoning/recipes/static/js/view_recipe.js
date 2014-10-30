@@ -66,12 +66,16 @@ function load_ingredient_list() {
         var parsed_data = $.parseJSON(data);
         
         // Update the ingredient list
-        $('#ingredients').html(parsed_data['ingredient_list']);
-        
-        adjust_footprint_percentages();
-        fix_moreinfo_links();
-        
         $("#ingredients-wrapper").removeClass('loading');
+        
+        $('#ingredients').fadeOut(400, function() {
+        	$(this).html(parsed_data['ingredient_list'])
+        	       .fadeIn(400, function() {
+        
+		        adjust_footprint_percentages();
+		        fix_moreinfo_links();
+		    });
+        });
     }).fail(function() {
        alert('Er is iets misgegaan bij het contacteren van de server. Probeer het later opnieuw...')
     });
