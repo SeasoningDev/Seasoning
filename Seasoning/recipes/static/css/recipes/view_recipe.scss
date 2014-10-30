@@ -318,8 +318,7 @@
 	opacity: .5;
 }
 
-#ingredients h4,
-#extra-info h4 {
+#ingredients h4 {
   margin-top: 10px;
   font-weight: bold;
 }
@@ -471,8 +470,15 @@
   margin-top: 20px;
 }
 
+#extra-info h4 {
+	margin-top: 10px;
+	text-align: center;
+  	font-weight: bold;
+}
+
 #extra-info p {
 	margin: 0;
+	text-align: center;
 }
 
 #instructions #instructions-warning {
