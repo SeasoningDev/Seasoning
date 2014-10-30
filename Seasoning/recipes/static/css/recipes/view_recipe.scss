@@ -1,10 +1,30 @@
-h2.container {
+h2 {
+	position: relative;
+	font-family: 'Lobster Two', cursive;
 	margin-top: 50px;
 	margin-bottom: 10px;
+	text-align: center;
+	padding: 10px 0;
+}
+
+h2:before {
+	content: "";
+	display: block;
+	border-top: 1px solid #ddd;
+	width: 100%;
+	height: 1px;
+	position: absolute;
+	top: 55%;
+	z-index: -1;
+}
+
+h2 span {
+	background-color: white;
+	padding: 0 10px;
 }
 
 #recipe-header-container {
-	margin-top: -20px;
+	margin-top: -10px;
 	/* background-color: #bada9e; */
 }
 
@@ -17,15 +37,20 @@ h2.container {
 #recipe-header #recipe-basic-info {
 	width: 450px;
 	float: left;
-	padding-top: 20px;
 	height: 330px;
 	position: relatie;
 }
 
 #recipe-basic-info #recipe-name {
-	font-family: 'Lobster', cursive;
-	text-decoration: underline;
 	margin: 0;
+	border: none;
+	padding: 0;
+	text-align: left;
+	background-color: transparent;
+}
+
+#recipe-name:before {
+	content: none;
 }
 
 #recipe-basic-info #add-info {
@@ -47,24 +72,37 @@ h2.container {
 
 #recipe-basic-info #recipe-actions {
 	position: absolute;
-	bottom: 20px;
+	bottom: 0;
 }
 
-#recipe-actions img {
+#recipe-actions img,
+#upload-image-form img {
   height: 45px;
   opacity: 0.5;
   transition: all .3s ease-out;
   float: right; }
 
-#recipe-actions img:hover {
+#recipe-actions img:hover,
+#upload-image-form img:hover {
   opacity: 1; }
+
+
+
+
+
+
+
+#recipe-images .recipe-image {
+	width: 480px;
+	height: 350px;
+}
   
-#recipe-actions #upload-image-form {
-	position: relative;
-	float: right;
+#recipe-images #upload-image-form {
+	position: absolute;
 	width: 45px;
 	height: 45px;
-	margin-bottom: 0;
+	top: 0;
+	left: 10px;
 }
 
 #upload-image-form #upload-image-button {
@@ -85,17 +123,6 @@ h2.container {
 	cursor: pointer;
 	z-index: 99;
 	margin: 0;
-}
-
-
-
-
-
-
-
-#recipe-images .recipe-image {
-	width: 450px;
-	height: 350px;
 }
 
 #recipe-images .remove-image-button {
@@ -162,8 +189,11 @@ h2.container {
 
 
 #graphic-information-container {
-	background-color: #e9e9e9;
-	height: 80px;   
+	/* border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd; */
+	background-color: #f7f7f7;
+	height: 80px;
+	margin-top: 10px; 
 }
 
 #graphic-information-container .graphic-information-icon {
@@ -188,7 +218,7 @@ h2.container {
 	font-weight: bold;
 	font-size: 30px;
 	line-height: 30px;
-	font-family: 'Lobster', cursif;
+	font-family: 'Lobster Two', cursif;
 	cursor: default;
 }
   
@@ -199,11 +229,11 @@ h2.container {
 	width: 60px;
 	height: 22px;
 	padding: 0px;
-	background: #FFFFFF;
+	background-color: #ddd;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	font-family: 'lobster', cursive;
+	font-family: 'Lobster Two', cursive;
 	font-size: 18px;
 	line-height: 22px;
 }
@@ -213,11 +243,11 @@ h2.container {
 	position: absolute;
 	border-style: solid;
 	border-width: 7px 5px 0;
-	border-color: #FFFFFF transparent;
+	border-color: #ddd transparent;
 	display: block;
 	width: 0;
 	z-index: 1;
-	bottom: -6px;
+	bottom: -7px;
 	left: 25px;
 }
 
@@ -225,23 +255,65 @@ h2.container {
 
 
 
-h2 #portions-changer {
-	font-size: 16px;
-	float: right;
-	font-weight: bold;
-	padding-top: 8px;
+#portions-changer {
+	text-align: center;
+	margin: 0 auto 20px auto;
+	width: 150px;
 }
 
-#portions-changer span {
+#portions-changer h3 {
 	float: left;
-	line-height: 16px;
-	padding-top: 5px;
+	padding-right: 10px;
+	margin: 0;
+	height: 26px;
+	line-height: 26px;
+	font-size: 18px;
 }
 
-#portions-changer input {
-	width: 50px;
-	text-align: right;
-	margin-left: 10px;
+#portions-changer #portions-changer-input {
+	float: right;
+}
+
+#portions-changer #portions-changer-input input {
+	width: 40px;
+	text-align: left;
+}
+
+#ingredients-wrapper {
+	position: relative;
+}
+
+#ingredients-wrapper #ingredients-darkener {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .2);
+	text-align: center;
+	display: none;
+}
+
+#ingredients-wrapper.loading #ingredients-darkener {
+	display: block;
+}
+
+#ingredients-darkener #ingredients-loader {
+	position: static;
+	display: none;
+	margin-top: 10px;
+}
+
+#ingredients-wrapper.loading #ingredients-loader {
+	display: inline-block;
+}
+
+#ingredients {
+	min-height: 100px;
+}
+
+#ingredients-wrapper.loading #ingredients {
+	opacity: .5;
 }
 
 #ingredients h4,
@@ -261,7 +333,7 @@ h2 #portions-changer {
   
 .ingredient {
 	position: relative;
-	padding: 10px 0;
+	padding: 10px 0 10px 10px;;
 }
 
 .ingredient.endangered {
@@ -410,7 +482,6 @@ h2 #portions-changer {
   display: none; }
   
 #external-instructions {
-  background-color: #f5f5f5;
   text-align: center;
 }
 

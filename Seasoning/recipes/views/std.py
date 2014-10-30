@@ -51,7 +51,7 @@ def view_recipe(request, recipe_id):
     except Recipe.DoesNotExist:
         raise Http404
     
-    user_has_upvoted = Upvote.objects.filter(recipe_id=recipe_id, user=request.user).exists()
+    user_has_upvoted = Upvote.objects.filter(recipe_id=recipe_id, user=request.user.id).exists()
     
     total_time = recipe.active_time + recipe.passive_time
     if total_time > 0:
