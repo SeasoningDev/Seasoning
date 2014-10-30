@@ -9,7 +9,15 @@ from django.core.urlresolvers import reverse
 class RecipeViewsTestCase(TestCase):
     
     def setUp(self):
-        pass
+        self.user = G(User, is_active=True)
+        self.user.set_password('test')
+        self.user.save()
+        self.cuisine = G(Cuisine, name='Andere')
+        ing = G(Ingredient, name='Aardappel', accepted=True)
+        unit = G(Unit)
+        G(CanUseUnit, ingredient=ing, unit=unit)
+        ing2 = G(Ingredient, name='Aardbei', accepted=True)
+        G(CanUseUnit, ingredient=ing2, unit=unit)
     
     # BROWSE RECIPES
     def test_browse_recipes(self):
@@ -53,6 +61,30 @@ class RecipeViewsTestCase(TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
             self.assertEqual(resp.status_code, 200)
             print(resp.content)
+    
+    def test_voting(self):
+        recipe = G(Recipe)
+        
+        self.client.post(reverse('login'), {'username': self.user.email,
+                                            'password': 'test'})
+        
+        resp = self.client.get(reverse('upvote_recipe', args=(recipe.id, )))
+        self.assertEqual(resp.status_code, 403)
+        
+        resp = self.client.get(reverse('upvote_recipe', args=(recipe.id, )),
+                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content, '1')
+        
+        resp = self.client.get(reverse('downvote_recipe', args=(recipe.id, )))
+        self.assertEqual(resp.status_code, 403)
+        
+        resp = self.client.get(reverse('downvote_recipe', args=(recipe.id, )),
+                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content, '0')
+        
+        
     
 #    def test_edit_recipe(self):
 #        location = '/recipes/add/'

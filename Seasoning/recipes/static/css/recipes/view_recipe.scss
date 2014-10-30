@@ -28,15 +28,30 @@ h2 span {
 	/* background-color: #bada9e; */
 }
 
-#recipe-header-container #recipe-name {
+#recipe-header-container #recipe-header {
+	position: relative;
+	margin: auto;
+	width: 960px;
+}
+
+#recipe-header .recipe-image-overlay {
 	position: absolute;
-	top: 0;
+	z-index: 800;
+	background-color: rgba(20, 20, 20, .5);
 	width: 100%;
+	
+}
+
+#recipe-header #recipe-name {
+	top: 0;
 	font-family: 'Lobster Two', cursive;
 	text-align: center;
-	z-index: 800;
-	background-color: rgba(255, 255, 255, .8);
-	padding: 5px 0;
+	padding: 10px 0;
+	color: white;
+}
+
+#recipe-name a {
+	color: white;
 }
 
 #recipe-name #add-info {
@@ -50,31 +65,10 @@ h2 span {
 	font-size: .75em;
 }
 
-#recipe-header {
-	position: relative;
-	margin: auto;
-	width: 960px;
-}
-
-#recipe-header #recipe-basic-info {
-	width: 450px;
-	float: left;
-	height: 330px;
-	position: relatie;
-}
-
-#recipe-basic-info #recipe-category {
-	margin-top: 80px;
-	font-weight: bold;
-}
-
-#recipe-basic-info #recipe-description {
-	margin-top: 0px;  
-}
-
-#recipe-basic-info #recipe-actions {
+#recipe-name #recipe-actions {
 	position: absolute;
-	bottom: 0;
+	top: 10px;
+	right: 5px;
 }
 
 #recipe-actions img,
@@ -82,11 +76,13 @@ h2 span {
   height: 45px;
   opacity: 0.8;
   transition: all .3s ease-out;
-  float: right; }
+  float: right;
+}
 
 #recipe-actions img:hover,
 #upload-image-form img:hover {
-  opacity: 1; }
+  opacity: 1;
+}
 
 
 
@@ -99,7 +95,7 @@ h2 span {
 	position: absolute;
 	width: 45px;
 	height: 45px;
-	top: 0;
+	top: 75px;
 	left: 10px;
 }
 
@@ -124,14 +120,14 @@ h2 span {
 }
 
 #recipe-images .recipe-image {
-	width: 958px;
+	width: 960px;
 	height: 460px;
 }
   
 #recipe-images .remove-image-button {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 120px;
+	left: 5px;
 }
 
 .remove-image-button img {
@@ -198,10 +194,7 @@ h2 span {
 
 
 #recipe-header #graphic-information {
-	position: absolute;
 	bottom: 0;
-	width: 100%;
-	background-color: rgba(255, 255, 255, .8);
 }
 
 #recipe-header .graphic-information-icon {
@@ -228,6 +221,7 @@ h2 span {
 	line-height: 30px;
 	font-family: 'Lobster Two', cursif;
 	cursor: default;
+	color: white;
 }
   
 .upvote-bubble {
@@ -237,7 +231,7 @@ h2 span {
 	width: 60px;
 	height: 22px;
 	padding: 0px;
-	background-color: #ddd;
+	background-color: #fff;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
@@ -251,7 +245,7 @@ h2 span {
 	position: absolute;
 	border-style: solid;
 	border-width: 7px 5px 0;
-	border-color: #ddd transparent;
+	border-color: #fff transparent;
 	display: block;
 	width: 0;
 	z-index: 1;

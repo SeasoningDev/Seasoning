@@ -288,15 +288,15 @@ class Recipe(models.Model):
     def upvote(self, user):
         try:
             # Check if the user already voted on this recipe
-            vote = self.upvote_set.get(user=user)
+            vote = self.upvote_set.get(user=user.id)
         except Upvote.DoesNotExist:
             # The given user has not voted on this recipe yet
-            vote = Upvote(recipe=self, user=user)
+            vote = Upvote.objects.create(recipe=self, user_id=user.id)
             vote.save()
     
     def downvote(self, user):
         try:
-            vote = self.upvote_set.get(user=user)
+            vote = self.upvote_set.get(user=user.id)
             vote.delete()
         except Upvote.DoesNotExist:
             pass
