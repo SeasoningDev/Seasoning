@@ -45,11 +45,12 @@ function downvote() {
 // Load the ingredient list
 function load_ingredient_list() {
 	// Show loader icon
-	$('#ingredients-loader').show();
+    $("#ingredients-wrapper").addClass('loading');
 	
 	// Get required parameters for ajax request
 	var portions = $('#portions-changer input').val();
     var updated_recipe_portions_url = recipe_portions_url.replace('/0000/', '/' + portions + '/');
+    
     
     // Do ajax
     $.ajax(updated_recipe_portions_url,
@@ -69,7 +70,8 @@ function load_ingredient_list() {
         
         adjust_footprint_percentages();
         fix_moreinfo_links();
-        $('#ingredients-loader').hide();
+        
+        $("#ingredients-wrapper").removeClass('loading');
     }).fail(function() {
        alert('Er is iets misgegaan bij het contacteren van de server. Probeer het later opnieuw...')
     });
@@ -209,6 +211,7 @@ function load_evochart() {
 
 
 var tab_1_loaded = false;
+var ingredient_reload_timer;
 $(function() {
 	$("#upload-image-button img").click(function() {
 		$("#upload-image-form input#id_image").click();
@@ -221,8 +224,19 @@ $(function() {
 		event.stopPropagation();
 	});
 
+	$("#portions-spinner").spinner({
+		min: 1,
+		change: function() {
+			clearTimeout(ingredient_reload_timer);
+			ingredient_reload_timer = setTimeout(load_ingredient_list, 1000);
+		},
+		spin: function() {
+			clearTimeout(ingredient_reload_timer);
+			ingredient_reload_timer = setTimeout(load_ingredient_list, 1000);
+		},
+	});
 
-	$('#portions-changer input').change(function() {
+	$('#portions-spinner').change(function() {
 		load_ingredient_list();
 	});
     
