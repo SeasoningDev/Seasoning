@@ -235,8 +235,12 @@ class Recipe(models.Model):
     
     @cached_property
     def fp_category(self):
-        return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C, Aggregate.D],
-                                        value__gte=self.footprint).order_by('name')[0]
+        try:
+            return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C, Aggregate.D],
+                                            value__gte=self.footprint).order_by('name')[0]
+        except IndexError:
+            # Aggregates have not yet been added
+            return None
                     
     def total_preparation_time(self):
         return self.active_time + self.passive_time

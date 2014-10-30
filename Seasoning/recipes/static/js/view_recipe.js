@@ -87,7 +87,7 @@ function load_ingredient_list() {
 // Correctly display the contributed percentage of each ingredient to the total recipe footprint
 function adjust_footprint_percentages() {
 	var portions = parseInt($("#portions-changer input").val());
-    var total_footprint = parseFloat($("#recipe-total-footprint").val())*portions;
+    var total_footprint = parseFloat($("#recipe-total-footprint").val().replace(',', '.'))*portions;
     $('.ingredient').each(function() {
         var footprint = parseFloat($(this).find('.footprint-number').text().replace(',', '.'));
         var percentage = (footprint/total_footprint)*100;
@@ -246,8 +246,6 @@ $(function() {
     
 	
 	load_ingredient_list();
-    adjust_footprint_percentages();
-    fix_moreinfo_links();
 	
 	$( "#chart-tabs" ).tabs({
 		/* activate: function(event, ui) {

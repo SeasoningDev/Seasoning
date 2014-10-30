@@ -3,6 +3,8 @@ from django_dynamic_fixture import G
 from authentication.models import User
 from ingredients.models import Ingredient, Unit, CanUseUnit
 from recipes.models import Cuisine
+from recipes.models.recipe import Recipe
+from django.core.urlresolvers import reverse
 
 class RecipeViewsTestCase(TestCase):
     
@@ -18,11 +20,16 @@ class RecipeViewsTestCase(TestCase):
         G(CanUseUnit, ingredient=ing2, unit=unit)
         
     
-#    def test_view_recipe(self):
-#        resp = self.client.get('/recipes/1/')
-#        self.assertEqual(resp.status_code, 200)
-#        
-#        self.assertNumQueries(4, lambda: self.client.get('/recipes/1/'))
+    def test_view_recipe(self):
+        resp = self.client.get(reverse('view_recipe', args=(1, )))
+        self.assertEqual(resp.status_code, 404)
+        
+        recipe = G(Recipe)
+        
+        resp = self.client.get(reverse('view_recipe', args=(recipe.id, )))
+        self.assertEqual(resp.status_code, 200)
+        
+        self.assertNumQueries(5, lambda: self.client.get('/recipes/1/'))
     
 #    def test_edit_recipe(self):
 #        location = '/recipes/add/'
