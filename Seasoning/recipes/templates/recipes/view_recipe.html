@@ -20,7 +20,7 @@
 	   var ingredients_avail_ajax_url = "{% url 'ajax_ingredient_availability' %}";
 	</script>
 	<script src="{{ STATIC_URL }}js/view_recipe.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
 {% endblock %}
 
 
@@ -35,21 +35,7 @@
 			    	<span id="author">Recept van <a href="{{ recipe.external_site.url }}" target="_blank">{{ recipe.external_site.name }}</a></span>
 			    	{% else %}
 			        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
-			        <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
 			        {% endif %}
-			    </div>
-			    
-			    <div id="recipe-category">
-			    	{% if recipe.cuisine %}
-	                	<span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
-	                	<span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
-	                {% else %}
-	                	<span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
-	                {% endif %}
-			    </div>
-			        
-			    <div id="recipe-description">
-			    	{{ recipe.description }}
 			    </div>
 			    
 			    <div id="recipe-actions">
@@ -64,18 +50,19 @@
 			        <img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
 			    	
 			    	{% endif %}
-			    	<form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
-			    		{% csrf_token %}
-						<div id="upload-image-button">
-							<img class="icon" src="{{ STATIC_URL }}img/icons/camera.png" title="Voeg een foto toe aan dit recept" />
-						</div>
-						{{ upload_image_form.image }}
-			    	</form>
 			    </div>
 			</div>
-			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 450px;
-	        	 height: 350px; background: #24262e; overflow: hidden; float: right;">
+			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 482px;
+	        	 height: 352px; background: #24262e; overflow: hidden; float: right;">
 	        	 
+		        <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
+			   		{% csrf_token %}
+					<div id="upload-image-button">
+						<img class="icon" src="{{ STATIC_URL }}img/icons/camera+.png" title="Voeg een foto toe aan dit recept" />
+					</div>
+					{{ upload_image_form.image }}
+			 	</form>
+
 		        <!-- Loading Screen -->
 		        <div u="loading" style="position: absolute; top: 0px; left: 0px;">
 		            <div style="filter: alpha(opacity=70); opacity:0.7; position: absolute; display: block;
@@ -87,21 +74,21 @@
 		        </div>
 		
 		        <!-- Slides Container -->
-		        <div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 450px; height: 350px; overflow: hidden;">
-		        	{% for image in recipe.images.all %}
+		        <div u="slides" style="cursor: move; position: absolute; left: 1px; top: 1px; width: 480px; height: 350px; overflow: hidden;">
+				    {% for image in recipe.images.all %}
 		            <div>
 		            	<a href="#">
 		                	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
 		                </a>
 		                <img u="thumb" src="{{ image.thumbnail.url }}" />
-		                {% if image.added_by == user or recipe.author == user %}
+		                {% if image.added_by == user or recipe.author == user or user.is_staff %}
 		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 		                {% endif %}
 		            </div>
 		            {% empty %}
 		            <div>
 		            	<a href="#">
-		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" style="height: 450px; margin-top: -50px;" />
+		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" style="height: 480px; margin-top: -50px;" />
 		                </a>
 		                <img u="thumb" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		            </div>
@@ -109,7 +96,7 @@
 		        </div>
 		        
 		        <!-- Thumbnail Navigator Skin Begin -->
-		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 450px; height: 80px; left:0px; bottom: 0px;">
+		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 480px; height: 80px; left:0px; bottom: 0px;">
 		        
 		            <!-- Thumbnail Item Skin Begin -->
 		            <div u="slides" style="cursor: move;">
@@ -181,22 +168,30 @@
     {% block content-wrapper %}
     {% block content %}
                 
-    <h2 class="container" style="margin-top: 50px;">
+    <h2 style="margin-top: 50px;">
       	<span style="position:relative;">
        		Ingrediënten
-      		<span id="ingredients-loader" style="position:absolute;top:-5px;right:-45px;height:40px;display:none;">
-       			{% include "includes/ajax-loader.html" %}
-       		</span>
-       	</span>
-       	
-       	<span id="portions-changer">
-       		<span>Porties</span>
-       		<input type="number" value={{ recipe.portions }} min="1"/>
        	</span>
 	</h2>
-	        	
-	<div id="ingredients">
-		
+	
+    <div>  	
+       	<div id="portions-changer">
+       		<h3>Porties</h3>
+       		<span id="portions-changer-input">
+       			<input id="portions-spinner" type="text" value={{ recipe.portions }} />
+       		</span>
+       		<br class="clear" />
+       	</div>
+	</div>
+	   
+	<div id="ingredients-wrapper" class="container">
+		<div id="ingredients">
+		</div>
+		<div id="ingredients-darkener">
+	      	<span id="ingredients-loader">
+	       		{% include "includes/big-ajax-loader.html" %}
+	       	</span>
+       	</div>
 	</div>
 		        
 	{% if recipe.extra_info %}
@@ -209,8 +204,8 @@
 	{% endif %}
 		        
 		        
-	<h2 class="container">
-	   	Bereiding
+	<h2>
+	   	<span>Bereiding</span>
 	</h2>
 		        
 	<div id="instructions" class="container markdown-container">
@@ -230,7 +225,7 @@
 	    {% endif %}
 	</div>
 	        
-    <h2 class="container">Grafieken</h2>
+    <h2><span>Grafieken</span></h2>
                 
     <div id="recipe-charts" class="container">
 		<div id="chart-tabs">
