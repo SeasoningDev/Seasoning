@@ -117,6 +117,7 @@ def ajax_browse_recipes(request):
         include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
         exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
         
+        recipes_list = []
         if search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid():
             data = search_form.cleaned_data
             include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
@@ -126,7 +127,7 @@ def ajax_browse_recipes(request):
                                                 veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
                                                 include_ingredients_operator=data['include_ingredients_operator'],
                                                 include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
-        page = search_form.cleaned_data['page']
+        page = search_form.cleaned_data.get('page', 1)
         
         # Split the result by 12
         paginator = Paginator(recipes_list, 12, allow_empty_first_page=False)

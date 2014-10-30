@@ -3,21 +3,36 @@ from django_dynamic_fixture import G
 from authentication.models import User
 from ingredients.models import Ingredient, Unit, CanUseUnit
 from recipes.models import Cuisine
-from recipes.models.recipe import Recipe
+from recipes.models.recipe import Recipe, UsesIngredient
 from django.core.urlresolvers import reverse
 
 class RecipeViewsTestCase(TestCase):
     
     def setUp(self):
-        self.user = G(User, is_active=True)
-        self.user.set_password('test')
-        self.user.save()
-        self.cuisine = G(Cuisine, name='Andere')
-        ing = G(Ingredient, name='Aardappel', accepted=True)
-        unit = G(Unit)
-        G(CanUseUnit, ingredient=ing, unit=unit)
-        ing2 = G(Ingredient, name='Aardbei', accepted=True)
-        G(CanUseUnit, ingredient=ing2, unit=unit)
+        pass
+    
+    # BROWSE RECIPES
+    def test_browse_recipes(self):
+        with self.assertNumQueries(1):
+            resp = self.client.get(reverse('browse_recipes'))
+            self.assertEqual(resp.status_code, 200)
+        
+        G(Recipe)
+        
+        # test ajax calls
+        with self.assertNumQueries(0):
+            resp = self.client.get(reverse('ajax_browse_recipes'),
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            self.assertEqual(resp.status_code, 403)
+            resp = self.client.post(reverse('ajax_browse_recipes'))
+            self.assertEqual(resp.status_code, 403)
+            
+            # No post data -> empty page
+            resp = self.client.post(reverse('ajax_browse_recipes'),
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            self.assertEqual(resp.status_code, 404)
+            
+        # TODO: check form posting
         
     
     def test_view_recipe(self):
@@ -25,11 +40,19 @@ class RecipeViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 404)
         
         recipe = G(Recipe)
+        uses = G(UsesIngredient, recipe=recipe)
+        print(uses.unit)
+        G(UsesIngredient, recipe=recipe)
         
-        resp = self.client.get(reverse('view_recipe', args=(recipe.id, )))
-        self.assertEqual(resp.status_code, 200)
+        with self.assertNumQueries(5):
+            resp = self.client.get(reverse('view_recipe', args=(recipe.id, )))
+            self.assertEqual(resp.status_code, 200)
         
-        self.assertNumQueries(5, lambda: self.client.get('/recipes/1/'))
+        with self.assertNumQueries(0):
+            resp = self.client.get(reverse('ajax_recipe_ingredients', args=(recipe.id, 1)),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            self.assertEqual(resp.status_code, 200)
+            print(resp.content)
     
 #    def test_edit_recipe(self):
 #        location = '/recipes/add/'
