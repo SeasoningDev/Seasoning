@@ -61,6 +61,10 @@ class RecipeViewsTestCase(TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
             self.assertEqual(resp.status_code, 200)
             print(resp.content)
+        
+        # To upload an image, the user must be logged in
+        resp = self.client.post(reverse('view_recipe', args=(recipe.id, )))
+        self.assertRedirects(resp, reverse('login'))
     
     def test_voting(self):
         recipe = G(Recipe)
