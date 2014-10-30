@@ -5,6 +5,7 @@ from ingredients.models import Ingredient, Unit, CanUseUnit
 from recipes.models import Cuisine
 from recipes.models.recipe import Recipe, UsesIngredient
 from django.core.urlresolvers import reverse
+from ingredients.models.availability import AvailableInCountry
 
 class RecipeViewsTestCase(TestCase):
     
@@ -13,11 +14,12 @@ class RecipeViewsTestCase(TestCase):
         self.user.set_password('test')
         self.user.save()
         self.cuisine = G(Cuisine, name='Andere')
-        ing = G(Ingredient, name='Aardappel', accepted=True)
-        unit = G(Unit)
-        G(CanUseUnit, ingredient=ing, unit=unit)
-        ing2 = G(Ingredient, name='Aardbei', accepted=True)
-        G(CanUseUnit, ingredient=ing2, unit=unit)
+        self.ing1 = G(Ingredient, name='Aardappel', accepted=True, type=Ingredient.SEASONAL)
+        self.unit = G(Unit)
+        G(CanUseUnit, ingredient=self.ing1, unit=self.unit)
+        G(AvailableInCountry, ingredient=self.ing1)
+        self.ing2 = G(Ingredient, name='Aardbei', accepted=True)
+        G(CanUseUnit, ingredient=self.ing2, unit=self.unit)
     
     # BROWSE RECIPES
     def test_browse_recipes(self):
@@ -48,23 +50,28 @@ class RecipeViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 404)
         
         recipe = G(Recipe)
-        uses = G(UsesIngredient, recipe=recipe)
-        print(uses.unit)
         G(UsesIngredient, recipe=recipe)
         
         with self.assertNumQueries(5):
             resp = self.client.get(reverse('view_recipe', args=(recipe.id, )))
             self.assertEqual(resp.status_code, 200)
         
-        with self.assertNumQueries(0):
+        with self.assertNumQueries(7):
             resp = self.client.get(reverse('ajax_recipe_ingredients', args=(recipe.id, 1)),
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
             self.assertEqual(resp.status_code, 200)
-            print(resp.content)
         
+        G(UsesIngredient, recipe=recipe, ingredient=self.ing1, unit=self.unit)
+        G(UsesIngredient, recipe=recipe, ingredient=self.ing2, unit=self.unit)
+        
+        with self.assertNumQueries(10):
+            resp = self.client.get(reverse('ajax_recipe_ingredients', args=(recipe.id, 1)),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            self.assertEqual(resp.status_code, 200)
+            
         # To upload an image, the user must be logged in
         resp = self.client.post(reverse('view_recipe', args=(recipe.id, )))
-        self.assertRedirects(resp, reverse('login'))
+        self.assertRedirects(resp, '{}?next={}'.format(reverse('login'), reverse('view_recipe', args=(recipe.id,))))
     
     def test_voting(self):
         recipe = G(Recipe)
