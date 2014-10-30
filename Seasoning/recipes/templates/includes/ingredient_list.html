@@ -1,3 +1,4 @@
+{% load future %}
 <input id="recipe-total-footprint" type="hidden" value="{{ total_footprint }}" />
 {% regroup usess by group as groups %}
 {% for group in groups %}

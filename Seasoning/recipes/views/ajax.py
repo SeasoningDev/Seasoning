@@ -17,16 +17,24 @@ def ajax_recipe_ingredients(request, recipe_id, portions):
         portions = int(portions)
         if request.is_ajax() and portions >= 1:
             try:
-                recipe = Recipe.objects.get(pk=recipe_id)
-                usess = UsesIngredient.objects.select_related('ingredient', 'unit').filter(recipe=recipe).order_by('group', 'ingredient__name')
+                recipe = Recipe.objects.select_related(
+                    'author', 'cuisine').prefetch_related(
+                    'uses__unit',
+                    'uses__ingredient__canuseunit_set__unit',
+                    'uses__ingredient__available_in_country__location',
+                    'uses__ingredient__available_in_country__transport_method',
+                    'uses__ingredient__available_in_sea__location',
+                    'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
                 
                 ratio = float(portions)/recipe.portions
                 total_footprint = portions * recipe.footprint
                 
-                for uses in usess:
+                usess = []
+                for uses in recipe.uses.all():
                     uses.save_allowed = False
                     uses.amount = ratio * uses.amount
                     uses.footprint = ratio * uses.footprint()
+                    usess.append(uses)
                 
                 data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess,
                                                                                               'total_footprint': total_footprint})}
@@ -35,7 +43,7 @@ def ajax_recipe_ingredients(request, recipe_id, portions):
                 return HttpResponse(json_data)
             
             except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
-                pass
+                raise Http404
     except TypeError:
         pass
     

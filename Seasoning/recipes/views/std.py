@@ -61,11 +61,13 @@ def view_recipe(request, recipe_id):
     context['total_time'] = total_time
     
     if request.method == 'POST':
+        if not request.user.is_authenticated():
+            return redirect('{}?next={}'.format(reverse('login'), reverse('view_recipe', args=(recipe.id,))))
         upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)
         if upload_image_form.is_valid():
             image = upload_image_form.save(commit=False)
             image.recipe = recipe
-            image.added_by = request.user
+            image.added_by_id = request.user
             image.save()
             
             upload_image_form = UploadRecipeImageForm()
