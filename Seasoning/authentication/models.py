@@ -5,15 +5,11 @@ from django.contrib.auth.hashers import make_password, check_password, is_passwo
 from django.contrib.auth.models import BaseUserManager
 from django.core import validators
 from django.core.exceptions import ValidationError
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField
 from imagekit.processors.resize import ResizeToFill
 from general import validate_image_size, send_seasoning_email
-from django.template import loader
-from email.mime.image import MIMEImage
 
 
 def get_image_filename(instance=None, old_filename=None):

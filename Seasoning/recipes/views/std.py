@@ -40,14 +40,7 @@ def view_recipe(request, recipe_id):
     context = {}
     
     try:
-        recipe = Recipe.objects.select_related(
-            'author', 'cuisine').prefetch_related(
-            'uses__unit',
-            'uses__ingredient__canuseunit_set__unit',
-            'uses__ingredient__available_in_country__location',
-            'uses__ingredient__available_in_country__transport_method',
-            'uses__ingredient__available_in_sea__location',
-            'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
+        recipe = Recipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
     except Recipe.DoesNotExist:
         raise Http404
     
@@ -64,7 +57,7 @@ def view_recipe(request, recipe_id):
     template = 'recipes/view_recipe.html'
     
     context['recipe'] = recipe
-    context['user_has_upvote'] = user_has_upvoted
+    context['user_has_upvoted'] = user_has_upvoted
     context['total_time'] = total_time
     
     if request.method == 'POST':

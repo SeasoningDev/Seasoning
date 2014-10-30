@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, url
-from recipes.views import EditRecipeWizard
 
 urlpatterns = patterns('',
     # BROWSE RECIPES

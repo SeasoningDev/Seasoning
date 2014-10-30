@@ -3,14 +3,13 @@ from recipes.scraper.browse.browser import Browser as raw_browser
 from urllib import urlencode
 import re
 from django.contrib.auth import get_user_model
-from recipes.models import ExternalSite, Recipe, Cuisine, t_recipe
+from recipes.models import ExternalSite, Recipe, Cuisine
 import difflib
 import tempfile
 import requests
 from django.core import files
 from ingredients.models import Ingredient
-from ingredients.models.units import Unit, CanUseUnit
-import datetime
+from ingredients.models.units import Unit
 from recipes.models.t_recipe import IncompleteRecipe, TemporaryIngredient,\
     TemporaryUnit, TemporaryUsesIngredient
 from recipes.models.recipe import RecipeImage
