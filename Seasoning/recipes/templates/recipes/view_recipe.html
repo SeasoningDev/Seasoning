@@ -27,7 +27,7 @@
 {% block content-container %}
 	<div id="recipe-header-container">
 		<div id="recipe-header">
-			<h1 id="recipe-name">
+			<h1 id="recipe-name" class="recipe-image-overlay">
 				{{ recipe.name }}
 				<span id="add-info">
 				    	{% if recipe.external %}
@@ -36,11 +36,8 @@
 				        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
 				        {% endif %}
 				</span>
-			</h1>
-	    
-	    	<!-- <div id="recipe-basic-info">
 			    
-			    <div id="recipe-actions">
+			    <span id="recipe-actions">
 			        {% if recipe.author == user or user.is_staff %}
 			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 			    	
@@ -52,7 +49,10 @@
 			        <img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
 			    	
 			    	{% endif %}
-			    </div>
+			    </span>
+			</h1>
+	    
+	    	<!-- <div id="recipe-basic-info">
 			</div> -->
 			<div id="recipe-images" style="position: relative; width: 960px;
 	        	 height: 460px; background: #a2a2a2; overflow: hidden;">
@@ -76,38 +76,34 @@
 		        </div>
 		
 		        <!-- Slides Container -->
-		        <div u="slides" style="cursor: move; position: absolute; left: 1px; top: 1px; width: 958px; height: 460px; overflow: hidden;">
+		        <div u="slides" style="cursor: move; position: absolute; left: 0; top: 0; width: 960px; height: 460px; overflow: hidden;">
 				    {% for image in recipe.images.all %}
 		            <div>
-		            	<a href="#">
-		                	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
-		                </a>
-		                <!-- <img u="thumb" src="{{ image.thumbnail.url }}" /> -->
+		            	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
+		                <img u="thumb" src="{{ image.thumbnail.url }}" />
 		                {% if image.added_by == user or recipe.author == user or user.is_staff %}
 		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 		                {% endif %}
 		            </div>
 		            {% empty %}
 		            <div>
-		            	<a href="#">
-		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
-		                </a>
+		            	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		                <img u="thumb" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		            </div>
 		            {% endfor %}
 		        </div>
 		        
 		        <!-- Thumbnail Navigator Skin Begin -->
-		        <!-- <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 960px; height: 80px; left:0px; bottom: 0px;">
+		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 960px; height: 50px; left:0px; bottom: 80px;">
 		        
 		            <div u="slides" style="cursor: move;">
-		                <div u="prototype" class="p" style="position: absolute; width: 72px; height: 72px; top: 0; left: 0;">
+		                <div u="prototype" class="p" style="position: absolute; width: 42px; height: 42px; top: 0; left: 0;">
 		                    <div class=w><thumbnailtemplate style="width: 100%; height: 100%; border: none;position:absolute; top: 0; left: 0;"></thumbnailtemplate></div>
 		                    <div class=c>
 		                    </div>
 		                </div>
 		            </div>
-		        </div> -->
+		        </div>
 		        <!-- Thumbnail Navigator Skin End -->
 		        <!-- Trigger -->
 		        <script>
@@ -116,7 +112,7 @@
 		    </div>
 		    <br class="clear" />
 			
-			<div id="graphic-information">
+			<div id="graphic-information" class="recipe-image-overlay">
 				<div id="veganism" class="graphic-information-icon">
 					{% if recipe.veganism == 2 %}
 			    	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Dit is een veganistisch recept" alt="" />
@@ -141,8 +137,8 @@
 				<div id="recipe-upvotes" class="graphic-information-icon">
 					<div style="position: relative; display: inline-block; width: 60px; height: 100%;">
 						<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
-						<a id="upvote-button" href="#" onclick="upvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
-						<a id="downvote-button" href="#" onclick="downvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
+						<a id="upvote-button" href="#" onclick="upvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
+						<a id="downvote-button" href="#" onclick="downvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
 					</div>
 				</div>
 				<br class="clear" />

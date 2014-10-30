@@ -41,25 +41,24 @@ def ajax_recipe_ingredients(request, recipe_id, portions):
     
     raise PermissionDenied
     
-@csrf_exempt
 @login_required
 def upvote(request, recipe_id):
     if request.is_ajax():
         recipe = get_object_or_404(Recipe, pk=recipe_id)
-        recipe.upvote(user=request.user.id)
+        recipe.upvote(user=request.user)
         return HttpResponse(recipe.upvotes)
         
-    raise PermissionDenied
+    raise PermissionDenied()
     
 
 @login_required
 def downvote(request, recipe_id):
     if request.is_ajax():
         recipe = get_object_or_404(Recipe, pk=recipe_id)
-        recipe.downvote(user=request.user.id)
+        recipe.downvote(user=request.user)
         return HttpResponse(recipe.upvotes)
         
-    raise PermissionDenied
+    raise PermissionDenied()
 
 @csrf_exempt
 def get_recipe_footprint_evolution(request):
