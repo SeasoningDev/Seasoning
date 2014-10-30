@@ -39,7 +39,6 @@
 			    	<span id="author">Recept van <a href="{{ recipe.external_site.url }}" target="_blank">{{ recipe.external_site.name }}</a></span>
 			    	{% else %}
 			        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
-			        <span id="time-added">{{ recipe.time_added|date:"j F Y, G" }}u{{ recipe.time_added|date:"i" }}</span>
 			        {% endif %}
 			    </div>
 			    
@@ -48,18 +47,19 @@
 			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 			        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"><img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
 			    	{% endif %}
-			    	<form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
-			    		{% csrf_token %}
-						<div id="upload-image-button">
-							<img class="icon" src="{{ STATIC_URL }}img/icons/camera.png" title="Voeg een foto toe aan dit recept" />
-						</div>
-						{{ upload_image_form.image }}
-			    	</form>
 			    </div>
 			</div>
 			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 482px;
 	        	 height: 352px; background: #24262e; overflow: hidden; float: right;">
 	        	 
+		        <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
+			   		{% csrf_token %}
+					<div id="upload-image-button">
+						<img class="icon" src="{{ STATIC_URL }}img/icons/camera+.png" title="Voeg een foto toe aan dit recept" />
+					</div>
+					{{ upload_image_form.image }}
+			 	</form>
+
 		        <!-- Loading Screen -->
 		        <div u="loading" style="position: absolute; top: 0px; left: 0px;">
 		            <div style="filter: alpha(opacity=70); opacity:0.7; position: absolute; display: block;
@@ -72,13 +72,13 @@
 		
 		        <!-- Slides Container -->
 		        <div u="slides" style="cursor: move; position: absolute; left: 1px; top: 1px; width: 480px; height: 350px; overflow: hidden;">
-		        	{% for image in recipe.images.all %}
+				    {% for image in recipe.images.all %}
 		            <div>
 		            	<a href="#">
 		                	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
 		                </a>
 		                <img u="thumb" src="{{ image.thumbnail.url }}" />
-		                {% if image.added_by == user or recipe.author == user %}
+		                {% if image.added_by == user or recipe.author == user or user.is_staff %}
 		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 		                {% endif %}
 		            </div>
@@ -168,20 +168,27 @@
     <h2 style="margin-top: 50px;">
       	<span style="position:relative;">
        		Ingrediënten
-      		<span id="ingredients-loader" style="position:absolute;top:-5px;right:-45px;height:40px;display:none;">
-       			{% include "includes/ajax-loader.html" %}
-       		</span>
        	</span>
 	</h2>
 	
-       	
-       	<span id="portions-changer">
-       		<span>Porties</span>
-       		<input type="number" value={{ recipe.portions }} min="1"/>
-       	</span>
-	        	
-	<div id="ingredients" class="container">
-		
+    <div>  	
+       	<div id="portions-changer">
+       		<h3>Porties</h3>
+       		<span id="portions-changer-input">
+       			<input id="portions-spinner" type="text" value={{ recipe.portions }} />
+       		</span>
+       		<br class="clear" />
+       	</div>
+	</div>
+	   
+	<div id="ingredients-wrapper" class="container">
+		<div id="ingredients">
+		</div>
+		<div id="ingredients-darkener">
+	      	<span id="ingredients-loader">
+	       		{% include "includes/big-ajax-loader.html" %}
+	       	</span>
+       	</div>
 	</div>
 		        
 	{% if recipe.extra_info %}
@@ -195,7 +202,7 @@
 		        
 		        
 	<h2>
-	   	Bereiding
+	   	<span>Bereiding</span>
 	</h2>
 		        
 	<div id="instructions" class="container markdown-container">
@@ -215,7 +222,7 @@
 	    {% endif %}
 	</div>
 	        
-    <h2>Grafieken</h2>
+    <h2><span>Grafieken</span></h2>
                 
     <div id="recipe-charts" class="container">
 		<div id="chart-tabs">
