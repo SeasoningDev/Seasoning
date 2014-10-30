@@ -27,16 +27,18 @@
 {% block content-container %}
 	<div id="recipe-header-container">
 		<div id="recipe-header">
-			<div id="recipe-basic-info">
-				<h2 id="recipe-name">{{ recipe.name }}</h2>
+			<h1 id="recipe-name">
+				{{ recipe.name }}
+				<span id="add-info">
+				    	{% if recipe.external %}
+				    	<span id="author">Recept van <a href="{{ recipe.external_site.url }}" target="_blank">{{ recipe.external_site.name }}</a></span>
+				    	{% else %}
+				        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
+				        {% endif %}
+				</span>
+			</h1>
 	    
-			    <div id="add-info">
-			    	{% if recipe.external %}
-			    	<span id="author">Recept van <a href="{{ recipe.external_site.url }}" target="_blank">{{ recipe.external_site.name }}</a></span>
-			    	{% else %}
-			        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
-			        {% endif %}
-			    </div>
+	    	<!-- <div id="recipe-basic-info">
 			    
 			    <div id="recipe-actions">
 			        {% if recipe.author == user or user.is_staff %}
@@ -51,9 +53,9 @@
 			    	
 			    	{% endif %}
 			    </div>
-			</div>
-			<div id="recipe-images" style="position: relative; top: 0px; right: 0px; width: 482px;
-	        	 height: 352px; background: #24262e; overflow: hidden; float: right;">
+			</div> -->
+			<div id="recipe-images" style="position: relative; width: 960px;
+	        	 height: 460px; background: #a2a2a2; overflow: hidden;">
 	        	 
 		        <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
 			   		{% csrf_token %}
@@ -64,7 +66,7 @@
 			 	</form>
 
 		        <!-- Loading Screen -->
-		        <div u="loading" style="position: absolute; top: 0px; left: 0px;">
+		        <div class="loading" u="loading" style="position: absolute; top: 0px; left: 0px;">
 		            <div style="filter: alpha(opacity=70); opacity:0.7; position: absolute; display: block;
 		                background-color: #000000; top: 0px; left: 0px;width: 100%;height:100%;">
 		            </div>
@@ -74,13 +76,13 @@
 		        </div>
 		
 		        <!-- Slides Container -->
-		        <div u="slides" style="cursor: move; position: absolute; left: 1px; top: 1px; width: 480px; height: 350px; overflow: hidden;">
+		        <div u="slides" style="cursor: move; position: absolute; left: 1px; top: 1px; width: 958px; height: 460px; overflow: hidden;">
 				    {% for image in recipe.images.all %}
 		            <div>
 		            	<a href="#">
 		                	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
 		                </a>
-		                <img u="thumb" src="{{ image.thumbnail.url }}" />
+		                <!-- <img u="thumb" src="{{ image.thumbnail.url }}" /> -->
 		                {% if image.added_by == user or recipe.author == user or user.is_staff %}
 		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 		                {% endif %}
@@ -88,7 +90,7 @@
 		            {% empty %}
 		            <div>
 		            	<a href="#">
-		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" style="height: 480px; margin-top: -50px;" />
+		                	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		                </a>
 		                <img u="thumb" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		            </div>
@@ -96,9 +98,8 @@
 		        </div>
 		        
 		        <!-- Thumbnail Navigator Skin Begin -->
-		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 480px; height: 80px; left:0px; bottom: 0px;">
+		        <!-- <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 960px; height: 80px; left:0px; bottom: 0px;">
 		        
-		            <!-- Thumbnail Item Skin Begin -->
 		            <div u="slides" style="cursor: move;">
 		                <div u="prototype" class="p" style="position: absolute; width: 72px; height: 72px; top: 0; left: 0;">
 		                    <div class=w><thumbnailtemplate style="width: 100%; height: 100%; border: none;position:absolute; top: 0; left: 0;"></thumbnailtemplate></div>
@@ -106,8 +107,7 @@
 		                    </div>
 		                </div>
 		            </div>
-		            <!-- Thumbnail Item Skin End -->
-		        </div>
+		        </div> -->
 		        <!-- Thumbnail Navigator Skin End -->
 		        <!-- Trigger -->
 		        <script>
@@ -115,38 +115,37 @@
 		        </script>
 		    </div>
 		    <br class="clear" />
-		</div>
-	</div>
-	
-	<div id="graphic-information-container">
-		<div id="graphic-information" class="container">
-			<div id="veganism" class="graphic-information-icon">
-				{% if recipe.veganism == 2 %}
-		    	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Dit is een veganistisch recept" alt="" />
-		        {% elif recipe.veganism == 1 %}
-		    	<img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Dit is een vegetarisch recept" alt="" />
-		        {% elif recipe.veganism == 0 %}
-		    	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Dit is een niet-vegetarisch recept" alt="" />
-		    	{% endif %}
-		    </div>
-			<div id="fp-category" class="graphic-information-icon">
-				<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
-				     title="{{ recipe.fp_category.extra_info }}"/>
-			</div>
-			<div id="recipe-footprint" class="graphic-information-icon">
-				<img src="{{ STATIC_URL }}img/decoration/footprint.png" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie."/>
-				<span id="recipe-footprint-text" class="text-overlay" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">{{ recipe.footprint|floatformat:2 }}</span>
-			</div>
-			<div id="recipe-duration" class="graphic-information-icon">
-				<img src="{{ STATIC_URL }}img/decoration/clock.png" />
-				<span id="recipe-footprint-text" class="text-overlay" title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">{{ recipe.total_preparation_time }}</span>
-			</div>
-			<div id="recipe-upvotes" class="graphic-information-icon">
-				<div style="position: relative; display: inline-block; width: 60px; height: 100%;">
-					<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
-					<a id="upvote-button" href="#" onclick="upvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
-					<a id="downvote-button" href="#" onclick="downvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
+			
+			<div id="graphic-information">
+				<div id="veganism" class="graphic-information-icon">
+					{% if recipe.veganism == 2 %}
+			    	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Dit is een veganistisch recept" alt="" />
+			        {% elif recipe.veganism == 1 %}
+			    	<img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Dit is een vegetarisch recept" alt="" />
+			        {% elif recipe.veganism == 0 %}
+			    	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Dit is een niet-vegetarisch recept" alt="" />
+			    	{% endif %}
+			    </div>
+				<div id="fp-category" class="graphic-information-icon">
+					<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
+					     title="{{ recipe.fp_category.extra_info }}"/>
 				</div>
+				<div id="recipe-footprint" class="graphic-information-icon">
+					<img src="{{ STATIC_URL }}img/decoration/footprint.png" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie."/>
+					<span id="recipe-footprint-text" class="text-overlay" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">{{ recipe.footprint|floatformat:2 }}</span>
+				</div>
+				<div id="recipe-duration" class="graphic-information-icon">
+					<img src="{{ STATIC_URL }}img/decoration/clock.png" />
+					<span id="recipe-footprint-text" class="text-overlay" title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">{{ recipe.total_preparation_time }}</span>
+				</div>
+				<div id="recipe-upvotes" class="graphic-information-icon">
+					<div style="position: relative; display: inline-block; width: 60px; height: 100%;">
+						<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
+						<a id="upvote-button" href="#" onclick="upvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
+						<a id="downvote-button" href="#" onclick="downvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
+					</div>
+				</div>
+				<br class="clear" />
 			</div>
 		</div>
 	</div>
@@ -168,7 +167,7 @@
     {% block content-wrapper %}
     {% block content %}
                 
-    <h2 style="margin-top: 50px;">
+    <h2 style="margin-top: 30px;">
       	<span style="position:relative;">
        		Ingrediënten
        	</span>

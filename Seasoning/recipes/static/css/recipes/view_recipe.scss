@@ -24,8 +24,30 @@ h2 span {
 }
 
 #recipe-header-container {
-	margin-top: -10px;
+	margin-top: -20px;
 	/* background-color: #bada9e; */
+}
+
+#recipe-header-container #recipe-name {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	font-family: 'Lobster Two', cursive;
+	text-align: center;
+	z-index: 800;
+	background-color: rgba(255, 255, 255, .8);
+	padding: 5px 0;
+}
+
+#recipe-name #add-info {
+	display: block;
+	line-height: 16px;
+	font-size: 12px;
+	font-family: "HelveticaNeue","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#recipe-name #add-info #time-added {
+	font-size: .75em;
 }
 
 #recipe-header {
@@ -39,26 +61,6 @@ h2 span {
 	float: left;
 	height: 330px;
 	position: relatie;
-}
-
-#recipe-basic-info #recipe-name {
-	margin: 0;
-	border: none;
-	padding: 0;
-	text-align: left;
-	background-color: transparent;
-}
-
-#recipe-name:before {
-	content: none;
-}
-
-#recipe-basic-info #add-info {
-	position: absolute;
-}
-
-#recipe-basic-info #add-info #time-added {
-	font-size: .75em;
 }
 
 #recipe-basic-info #recipe-category {
@@ -78,7 +80,7 @@ h2 span {
 #recipe-actions img,
 #upload-image-form img {
   height: 45px;
-  opacity: 0.5;
+  opacity: 0.8;
   transition: all .3s ease-out;
   float: right; }
 
@@ -90,13 +92,9 @@ h2 span {
 
 
 
-
-
-#recipe-images .recipe-image {
-	width: 480px;
-	height: 350px;
+#recipe-images {
+	margin: auto;
 }
-  
 #recipe-images #upload-image-form {
 	position: absolute;
 	width: 45px;
@@ -125,6 +123,11 @@ h2 span {
 	margin: 0;
 }
 
+#recipe-images .recipe-image {
+	width: 958px;
+	height: 460px;
+}
+  
 #recipe-images .remove-image-button {
 	position: absolute;
 	top: 0;
@@ -134,7 +137,7 @@ h2 span {
 .remove-image-button img {
 	width: 45px;
 	height: 45px;
-  	opacity: 0.5;
+  	opacity: 0.8;
   	transition: all .3s ease-out;
 }
 
@@ -168,7 +171,7 @@ h2 span {
     left: 0px;
     width: 100%;
     height: 100%;
-    border: #000 2px solid;
+    border: #a2a2a2 1px solid;
     box-sizing: border-box;
 }
 
@@ -186,7 +189,7 @@ h2 span {
     left: 0px;
     width: 100%;
     height: 100%;
-    border: #fff 1px solid;
+    border: #d9d9d9 1px solid;
 }
 
 
@@ -194,15 +197,14 @@ h2 span {
 
 
 
-#graphic-information-container {
-	/* border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd; */
-	background-color: #f7f7f7;
-	height: 80px;
-	margin-top: 10px; 
+#recipe-header #graphic-information {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background-color: rgba(255, 255, 255, .8);
 }
 
-#graphic-information-container .graphic-information-icon {
+#recipe-header .graphic-information-icon {
 	position: relative;
 	padding: 10px 0;
 	width: 20%;
