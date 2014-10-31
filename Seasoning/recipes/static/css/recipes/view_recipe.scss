@@ -48,6 +48,7 @@
 	text-align: center;
 	padding: 10px 0;
 	color: white;
+	min-height: 60px;
 }
 
 #recipe-name a {
@@ -258,6 +259,7 @@
 
 
 #portions-changer {
+	position: relative;
 	text-align: center;
 	margin: 0 auto 20px auto;
 	width: 150px;
@@ -268,7 +270,7 @@
 	padding-right: 10px;
 	margin: 0;
 	height: 26px;
-	line-height: 27px;
+	line-height: 28px;
 	font-size: 18px;
 }
 
@@ -278,7 +280,7 @@
 
 #portions-changer #portions-changer-input input {
 	width: 40px;
-	text-align: left;
+	text-align: right;
 }
 
 #ingredients-wrapper {
@@ -468,20 +470,19 @@
 #extra-info {
   text-align: left; 
   margin-top: 20px;
+  text-align: center;
 }
 
 #extra-info h4 {
 	margin-top: 10px;
-	text-align: center;
   	font-weight: bold;
 }
 
 #extra-info p {
 	margin: 0;
-	text-align: center;
 }
 
-#instructions #instructions-warning {
+#instructions-container #instructions-warning {
   padding: 5px;
   margin: 0 0 20px 0;
   background-color: rgba(98, 155, 49, 0.5);
@@ -489,12 +490,18 @@
   box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.3);
   display: none; }
   
-#external-instructions {
+#instructions-container #external-link {
+  display: block;
   text-align: center;
+  margin-bottom: 30px;
 }
 
-#external-instructions button {
-	margin: 10px 0 0;
+#external-link button {
+	margin: 0;
+}
+
+#instructions-container #instructions {
+	margin-bottom: 30px;
 }
 
 

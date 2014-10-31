@@ -10,6 +10,16 @@ from ingredients.fields import AutoCompleteSelectIngredientField
 from recipes.models import Recipe, UsesIngredient, Cuisine, RecipeImage
 from django.utils.translation import ugettext_lazy as _
 
+class EditRecipeForm(forms.ModelForm):
+    
+    class Meta:
+        model = Recipe
+        fields = ('name', 'active_time', 'passive_time', 'portions', 'extra_info',
+                  'instructions')
+        widgets = {
+            'portions': forms.widgets.TextInput(),
+        }
+
 class AddRecipeForm(forms.ModelForm):
     
     class Meta:

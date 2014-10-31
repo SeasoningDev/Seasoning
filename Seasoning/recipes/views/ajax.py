@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe, UsesIngredient
-from django.http.response import Http404, HttpResponse
+from django.http.response import Http404, HttpResponse, HttpResponseServerError
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
@@ -9,8 +9,12 @@ import json
 import datetime
 from ingredients.models import Ingredient, Unit
 from django.forms.formsets import formset_factory
-from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm
+from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
+    EditRecipeForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from recipes.models.t_recipe import IncompleteRecipe
+from django.template import defaultfilters
+from general.templatetags.markdown_filter import markdown
 
 def ajax_recipe_ingredients(request, recipe_id, portions):
     try:
@@ -111,6 +115,32 @@ def ajax_markdown_preview(request):
     if request.method == 'POST' and request.is_ajax():
         markdown = request.POST.get('data', '')
         return render(request, 'recipes/markdown_preview.html', {'markdown_text': markdown})
+    raise PermissionDenied()
+
+def ajax_edit_recipe(request, recipe_id, incomplete=False):
+    if request.is_ajax() and request.method == 'POST':
+        if incomplete:
+            recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+        else:
+            recipe = get_object_or_404(Recipe, id=recipe_id)
+            form = EditRecipeForm(request.POST, instance=recipe)
+        
+        if form.is_valid():
+            form.save()
+            if incomplete:
+                recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+            else:
+                recipe = get_object_or_404(Recipe, id=recipe_id)
+                
+            resp_txt = ''
+            if len(form.changed_data) > 0:
+                if form.changed_data[0] == 'extra_info':
+                    resp_txt = defaultfilters.linebreaks(getattr(recipe, form.changed_data[0]))
+                if form.changed_data[0] == 'instructions':
+                    resp_txt = markdown(getattr(recipe, form.changed_data[0]))
+            return HttpResponse(resp_txt)
+        return HttpResponseServerError(form.errors[form.changed_data[0]])
+        
     raise PermissionDenied()
 
 def ajax_browse_recipes(request):

@@ -203,20 +203,19 @@
 	   	<span>Bereiding</span>
 	</h2>
 		        
-	<div id="instructions" class="container markdown-container">
+	<div id="instructions-container" class="container markdown-container">
 		<div id="instructions-warning">
 			Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
 		    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
 		</div>
 		{% if recipe.external %}
-	</div>
-	
-	<div id="external-instructions">
-		<a href="http://www.seasoning.be{% url 'external_recipe' recipe.id %}">
+		<a id="external-link" href="http://www.seasoning.be{% url 'external_recipe' recipe.id %}">
 		 	<button type="submit">Bekijk het volledige recept op {{ recipe.external_site.name }}</button>
 		</a>
 		{% else %}
-		<span itemprop="recipeInstructions">{{ recipe.instructions|markdown|safe }}</span>
+		<div id="instructions" itemprop="recipeInstructions">
+			{{ recipe.instructions|markdown|safe }}
+		</div>
 	    {% endif %}
 	</div>
 	        
