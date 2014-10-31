@@ -1,6 +1,6 @@
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    UploadRecipeImageForm
+    UploadRecipeImageForm, EditRecipeForm
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
@@ -139,9 +139,11 @@ def edit_recipe(request, recipe_id, incomplete=False):
         recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
     else:
         recipe = get_object_or_404(Recipe, id=recipe_id)
+        form = EditRecipeForm(instance=recipe)
         
     if recipe.author == request.user or request.user.is_staff:
-        return render(request, 'recipes/edit_recipe.html', {'recipe': recipe})
+        return render(request, 'recipes/edit_recipe.html', {'recipe': recipe,
+                                                            'form': form})
     
     raise PermissionDenied()
 

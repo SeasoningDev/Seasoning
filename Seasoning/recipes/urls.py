@@ -25,6 +25,11 @@ urlpatterns = patterns('',
     url(r'^edit/(\d*)/$', 'recipes.views.edit_recipe', name='edit_recipe'),
     url(r'^edit/i/(\d*)/$', 'recipes.views.edit_recipe', kwargs={'incomplete': True},
         name='edit_incomplete_recipe'),
+                       
+    url(r'^ajax/edit/(\d*)/$', 'recipes.views.ajax_edit_recipe', name='ajax_edit_recipe'),
+    url(r'^ajax/edit/i/(\d*)/$', 'recipes.views.ajax_edit_recipe', kwargs={'incomplete': True},
+        name='ajax_edit_incomplete_recipe'),
+    
     url(r'^save/(\d*)/$', 'recipes.views.save_recipe', name='save_recipe'),
     
 #     url(r'^add/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='add_recipe'),
