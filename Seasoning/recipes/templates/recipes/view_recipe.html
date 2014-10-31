@@ -150,6 +150,21 @@
 			</div>
 		</div>
 	</div>
+	
+	<div id="basic-information" class="container">
+		<h4>
+			{% if recipe.cuisine %}
+		    <span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
+		    <span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
+		    {% else %}
+		    <span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
+		    {% endif %}
+	    </h4>
+	    
+	    <p>
+	    	{{ recipe.description }}
+	    </p>
+	</div>
 		
 	<div id="content-container" class="container">
     	{% block messages %}
