@@ -205,6 +205,15 @@
 	height: 60px;
 	float: left;
 	text-align: center;
+	position: relative;
+}
+
+.graphic-information-icon#fp-category .positioner {
+	position: absolute;
+	top: 3px;
+	left: 0;
+	right: 0;
+	height: 110px;
 }
 
 .graphic-information-icon img {
@@ -213,7 +222,7 @@
 
 .graphic-information-icon .text-overlay {
 	position: absolute;
-	top: 25px;
+	top: 15px;
 	left: 0;
 	right: 0;
 	text-align: center;

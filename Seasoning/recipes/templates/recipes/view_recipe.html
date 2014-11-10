@@ -124,16 +124,25 @@
 			    	{% endif %}
 			    </div>
 				<div id="fp-category" class="graphic-information-icon">
-					<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
-					     title="{{ recipe.fp_category.extra_info }}"/>
+					<span class="positioner">
+						<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
+						     title="{{ recipe.fp_category.extra_info }}"/>
+					</span>
 				</div>
 				<div id="recipe-footprint" class="graphic-information-icon">
-					<img src="{{ STATIC_URL }}img/decoration/footprint.png" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie."/>
-					<span id="recipe-footprint-text" class="text-overlay" title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">{{ recipe.footprint|floatformat:2 }}</span>
+					<span id="recipe-footprint-text" class="text-overlay" 
+					      title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">
+					      	{{ recipe.footprint|floatformat:2 }}
+					      	<span style="display: block;font-size:16px">kgCO₂ p.p.</span>
+					</span>
 				</div>
 				<div id="recipe-duration" class="graphic-information-icon">
 					<img src="{{ STATIC_URL }}img/decoration/clock.png" />
-					<span id="recipe-footprint-text" class="text-overlay" title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">{{ recipe.total_preparation_time }}</span>
+					<span id="recipe-footprint-text" class="text-overlay" 
+					      title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">
+					      {{ recipe.total_preparation_time }}
+					      <span style="display: block;font-size:18px;line-height:15px;">min</span>
+					</span>
 				</div>
 				<div id="recipe-upvotes" class="graphic-information-icon">
 					<div style="position: relative; display: inline-block; width: 60px; height: 100%;">
