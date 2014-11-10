@@ -217,10 +217,6 @@ function load_evochart() {
 var tab_1_loaded = false;
 var ingredient_reload_timer;
 $(function() {
-	$("#upload-image-button img").click(function() {
-		$("#upload-image-form input#id_image").click();
-		return false;
-	});
 	
 	$("#upload-image-form input#id_image").change(function() {
 		$("#upload-image-form").submit();
@@ -357,4 +353,21 @@ $(function() {
             });
 	 */
     load_evochart();
+    
+    $("#recipe-images .jssort01 .jssort01 > div:nth-child(2)").each(function () {
+    	$(this).width($(this).width() + 50);
+    	$(this).append(
+    			'<div style="width: 42px; height: 42px; top: 0px; right: 0; position: absolute; overflow: hidden;">' +
+    				'<div class="p" style="position: absolute; width: 42px; height: 42px; top: 0; left: 0;" u="prototype">' + 
+    					'<div class="w">' + 
+    						'<img class="add-image-thumb" src="' + static_url + 'img/decoration/add_image.png" u="thumb" ' + 
+    						     'style="width: 100%; height: 100%; border: medium none; position: absolute; top: 0px; left: 0px;cursor:pointer" />' +
+    			'</div></div></div>')
+    	
+    });
+    
+    $(".add-image-thumb").click(function() {
+		$("#upload-image-form input#id_image").click();
+		return false;
+    })
 });

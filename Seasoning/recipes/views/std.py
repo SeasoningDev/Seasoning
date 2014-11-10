@@ -100,7 +100,7 @@ def view_incomplete_recipe(request, recipe_id):
 def delete_recipe_image(request, image_id):
     image = get_object_or_404(RecipeImage, pk=image_id)
     
-    if image.added_by == request.user or image.recipe.author == request.user:
+    if image.added_by == request.user or image.recipe.author == request.user or request.user.is_staff:
         recipe = image.recipe
         image.delete()
         messages.add_message(request, messages.INFO, 'De afbeelding werd met succes verwijderd.')

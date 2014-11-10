@@ -18,6 +18,7 @@
 	   var orig_recipe_portions = {{ recipe.portions }}
 	   var recipe_portions_url = "{% url 'ajax_recipe_ingredients' recipe.id "0000" %}"
 	   var ingredients_avail_ajax_url = "{% url 'ajax_ingredient_availability' %}";
+	   var static_url = {{ STATIC_URL }};
 	</script>
 	<script src="{{ STATIC_URL }}js/view_recipe.js"></script>
 	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
@@ -89,7 +90,6 @@
 		            {% empty %}
 		            <div>
 		            	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
-		                <img u="thumb" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
 		            </div>
 		            {% endfor %}
 		        </div>
