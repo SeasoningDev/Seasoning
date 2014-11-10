@@ -1,4 +1,4 @@
-pillow==2.0.0
+pillow==2.6.0
 django==1.7
 django-imagekit==2.0.2
 django-recaptcha==0.0.5
