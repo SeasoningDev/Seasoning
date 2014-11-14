@@ -80,32 +80,30 @@
 	top: 10px;
 	right: 5px;
 	display: inline-block;
-    vertical-align: middle;
 }
 
-#recipe-actions .btn {
+#recipe-actions button {
+	background: none;
+	text-shadow: none;
 	float: left;
-    position: relative;
     background-color: $green-main;
     border-color: $green-dark;
     border-radius: 4px;
-    text-shadow: 0 1px 0 #fff;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 1px rgba(0, 0, 0, 0.075);
-    color: #333;
-    -moz-user-select: none;
+    color: #fff;
     cursor: pointer;
     display: inline-block;
     font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857;
+    font-weight: normal;
     margin-bottom: 0;
     padding: 2px 8px;
     text-align: center;
-    vertical-align: middle;
-    white-space: nowrap;
 }
 
-#recipe-actions .btn .caret {
+#recipe-actions button:hover {
+	background-color: $green-dark;
+}
+
+#recipe-actions button .caret {
 	border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 4px solid;
@@ -116,7 +114,37 @@
     margin-left: 10px;
 }
 
+#recipe-actions .dropdown-menu {
+	text-align: right;
+	position: absolute;
+	right: 0;
+	top: 25px;
+	padding: 0;
+	background-color: $green-main;
+	border: 1px solid $green-dark;
+	border-radius: 4px;
+	display: none;
+}
 
+#recipe-actions .dropdown-menu.open {
+	display: inherit;
+}
+
+#recipe-actions .dropdown-menu li {
+	margin: 0;
+}
+
+#recipe-actions .dropdown-menu a {
+	display: block;
+	font-size: 14px;
+	text-decoration: none;
+	white-space: nowrap;
+	padding: 8px;
+}
+
+#recipe-actions .dropdown-menu a:hover {
+	background-color: $green-dark;
+}
 
 
 
