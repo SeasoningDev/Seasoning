@@ -1,0 +1,7 @@
+Gebruiker: {{ user.email }}
+
+Heeft zonet een recept ({{ recipe.name }}) aangepast:
+
+{% url 'view_recipe' recipe.id %}
+
+Veel plezier ermee jij glorieuze controlefreak!

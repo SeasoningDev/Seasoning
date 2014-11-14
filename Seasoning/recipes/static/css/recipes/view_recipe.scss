@@ -1,3 +1,5 @@
+@import "variables";
+
 #recipe-container h2 {
 	position: relative;
 	font-family: 'Lobster Two', cursive;
@@ -44,11 +46,16 @@
 
 #recipe-header #recipe-name {
 	top: 0;
-	font-family: 'Lobster Two', cursive;
 	text-align: center;
 	padding: 10px 0;
 	color: white;
 	min-height: 60px;
+}
+
+#recipe-name h1 {
+	font-family: 'Lobster Two', cursive;
+	color: white;
+	margin: 0;
 }
 
 #recipe-name a {
@@ -66,23 +73,47 @@
 	font-size: .75em;
 }
 
+
+
 #recipe-name #recipe-actions {
 	position: absolute;
 	top: 10px;
 	right: 5px;
+	display: inline-block;
+    vertical-align: middle;
 }
 
-#recipe-actions img,
-#upload-image-form img {
-  height: 45px;
-  opacity: 0.8;
-  transition: all .3s ease-out;
-  float: right;
+#recipe-actions .btn {
+	float: left;
+    position: relative;
+    background-color: $green-main;
+    border-color: $green-dark;
+    border-radius: 4px;
+    text-shadow: 0 1px 0 #fff;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 1px rgba(0, 0, 0, 0.075);
+    color: #333;
+    -moz-user-select: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857;
+    margin-bottom: 0;
+    padding: 2px 8px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
 }
 
-#recipe-actions img:hover,
-#upload-image-form img:hover {
-  opacity: 1;
+#recipe-actions .btn .caret {
+	border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid;
+    display: inline-block;
+    height: 0;
+    vertical-align: middle;
+    width: 0;
+    margin-left: 10px;
 }
 
 

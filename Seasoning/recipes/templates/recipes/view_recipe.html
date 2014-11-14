@@ -29,8 +29,8 @@
 <div id="recipe-container">
 	<div id="recipe-header-container">
 		<div id="recipe-header">
-			<h1 id="recipe-name" class="recipe-image-overlay">
-				{{ recipe.name }}
+			<div id="recipe-name" class="recipe-image-overlay">
+				<h1>{{ recipe.name }}</h1>
 				<span id="add-info">
 				    	{% if recipe.external %}
 				    	<span id="author">Recept van <a href="{{ recipe.external_site.url }}" target="_blank">{{ recipe.external_site.name }}</a></span>
@@ -38,8 +38,18 @@
 				        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
 				        {% endif %}
 				</span>
+							 	
+			    <div id="recipe-actions" class="btn-group">
+			        <button type="button" class="btn btn-default">Opties <span class="caret"></span></button>
+			        <ul class="dropdown-menu">
+			            <li><a href="#">Action</a></li>
+			            <li><a href="#">Another action</a></li>
+			            <li class="divider"></li>
+			            <li><a href="#">Separated link</a></li>
+			        </ul>
+			    </div>
 			    
-			    <span id="recipe-actions">
+			    <span id="recipe-actions-bak">
 			        {% if recipe.author == user or user.is_staff %}
 			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
 			    	
@@ -52,7 +62,7 @@
 			    	
 			    	{% endif %}
 			    </span>
-			</h1>
+			</div>
 	    
 	    	<!-- <div id="recipe-basic-info">
 			</div> -->
@@ -61,9 +71,6 @@
 	        	 
 		        <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
 			   		{% csrf_token %}
-					<div id="upload-image-button">
-						<img class="icon" src="{{ STATIC_URL }}img/icons/camera+.png" title="Voeg een foto toe aan dit recept" />
-					</div>
 					{{ upload_image_form.image }}
 			 	</form>
 
