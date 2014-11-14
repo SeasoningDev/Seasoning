@@ -38,30 +38,26 @@
 				        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
 				        {% endif %}
 				</span>
-							 	
-			    <div id="recipe-actions" class="btn-group">
-			        <button type="button" class="btn btn-default">Opties <span class="caret"></span></button>
-			        <ul class="dropdown-menu">
-			            <li><a href="#">Action</a></li>
-			            <li><a href="#">Another action</a></li>
-			            <li class="divider"></li>
-			            <li><a href="#">Separated link</a></li>
+				
+				{% if recipe.author == user or user.is_staff %}
+			    <div id="recipe-actions" class="">
+			        <button type="button" id="recipe-actions-btn">Opties <span class="caret"></span></button>
+			        <ul id="recipe-actions-menu" class="dropdown-menu">
+			            <li>
+			            	{% if recipe.incomplete_class %}
+					    	<a href="{% url 'edit_incomplete_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
+					    	{% else %}
+					        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
+					        {% endif %}
+			            </li>
+			            <li>
+			            	<a href="{% url 'delete_recipe' recipe.id %}" 
+			            	   title="Verwijder dit recept" 
+			            	   onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')">Recept Verwijderen</a>
+			            </li>
 			        </ul>
 			    </div>
-			    
-			    <span id="recipe-actions-bak">
-			        {% if recipe.author == user or user.is_staff %}
-			    	<a href="{% url 'delete_recipe' recipe.id %}" title="Verwijder dit recept" onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
-			    	
-			    	{% if recipe.incomplete_class %}
-			    	<a href="{% url 'edit_incomplete_recipe' recipe.id %}" title="Wijzig dit recept">
-			    	{% else %}
-			        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept"> 
-			        {% endif %}
-			        <img src="{{ STATIC_URL }}img/icons/edit.png" alt="" /></a>
-			    	
-			    	{% endif %}
-			    </span>
+			    {% endif %}
 			</div>
 	    
 	    	<!-- <div id="recipe-basic-info">

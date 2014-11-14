@@ -370,4 +370,13 @@ $(function() {
 		$("#upload-image-form input#id_image").click();
 		return false;
     })
+    
+    $("#recipe-actions-btn").click(function(e) {
+    	$("#recipe-actions-menu").toggleClass('open');
+    	e.stopPropagation();
+    })
+    
+    $("body").click(function() {
+    	$("#recipe-actions-menu").removeClass('open');
+    })
 });
