@@ -15,6 +15,9 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from recipes.models.t_recipe import IncompleteRecipe
 from django.template import defaultfilters
 from general.templatetags.markdown_filter import markdown
+from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 
 def ajax_recipe_ingredients(request, recipe_id, portions):
     try:
@@ -127,6 +130,18 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
         
         if form.is_valid():
             form.save()
+            
+            if not settings.DEBUG:
+                # Notify Bram of non-admins changing a recipe
+                if not request.user.is_staff:
+                    subject = 'Oh nee! Iemand heeft een recept aangepast :O'
+                    message = 'Recept \"{}\" (<a href="https://www.seasoning.be{}">link</a>) aangepast door {}'.format(recipe.name,
+                                                                                                          reverse('view_recipe', args=[recipe.id]),
+                                                                                                          request.user.get_full_name())
+                    send_mail(subject, '', 
+                              'bramspammer@seasoning.be',
+                              ['bram@seasoning.be'], fail_silently=False, html_message=message)
+            
             if incomplete:
                 recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
             else:
