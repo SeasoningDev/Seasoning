@@ -33,7 +33,6 @@ import re
 from general import all_templates, send_seasoning_email
 from django.contrib.sites.models import RequestSite
 from django.template.context import RequestContext
-from django.core.mail.message import EmailMultiAlternatives
 
 def home(request):
     if request.user.is_authenticated():

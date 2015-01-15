@@ -306,9 +306,9 @@ if TEST:
 PIPELINE_CSS = {
     'global': {
         'source_filenames': (
-            'css/base/reset.scss',
+#             'css/base/reset.scss',
             'css/base/global.scss',
-            'css/base/skeleton.scss',
+#             'css/base/skeleton.scss',
             'css/base/base.scss',
             'css/base/forms.scss',
             'css/includes/*.scss',
