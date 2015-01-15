@@ -162,3 +162,16 @@ form #keywords-submit {
   background-image: url("/static/img/icons/search.png");
   background-size: 26px 26px;
   border: none; }
+ 
+.btn {
+    transition: background .2s ease;
+}
+.btn-success {
+	border-color:#4F7C27;
+    background-color: #629B31;
+}
+.btn-success:hover, 
+.btn-success:focus, .btn-success.focus, 
+.btn-success:active, .btn-success.active {
+    background-color: #4F7C27;
+}
