@@ -15,6 +15,9 @@
 		
 		{% block moar_meta_tags %}{% endblock %}
 		
+		<!-- Bootstrap Core CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+		
 		{% block default_static_stuff %}
         <link rel="icon" href="{{ STATIC_URL }}img/logos/favicon.png" type="image/png" />
 		{% compressed_css 'global' %}
@@ -70,6 +73,7 @@
         <a id="top-of-page" style="position:absolute;left:0px;top:0px"></a>
         {% block body-hook %}{% endblock %}
         
+        {% block body %}
 	    <div id="header">
 	    	{% if 'dev.' in request.get_host %}
 	    	<div id="dev-watermark" style="position: absolute;margin:50px 0;font-size:50px;font-weight:bold;width:100%;text-align:center;color:maroon;z-index:3000">DEVELOPMENT VERSION</div>
@@ -91,9 +95,11 @@
 	    			{% endif %}
                 </div>
                 {% endif %}
-                <span id="grass-end-left"> </span>
-                <span id="grass"> </span>
-                <span id="grass-end-right"> </span>
+                <span id="grass-container">
+	                <span id="grass-end-left"> </span>
+	                <span id="grass"> </span>
+	                <span id="grass-end-right"> </span>
+	            </span>
                 <a href="#" onclick="showMobileNav(); return false;"><img id="show-nav-button" src="{{ STATIC_URL }}img/icons/shownav.png" /></a>
                 <div id="nav-container">
                     <div class="{% block recipes-active %}{% endblock %} navlink"><a href="{% url 'browse_recipes' %}">RECEPTEN</a></div>
@@ -180,5 +186,6 @@
                 </div>
    			</div>
 		</div>
+		{% endblock %}
 	</body>
 </html>

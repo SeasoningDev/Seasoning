@@ -6,6 +6,7 @@
 $green-very-light: #F7FCF7;
 $green-light: #ABD883;
 $green-main: #629B31;
+$green-main-rgba: rgba(98, 155, 49, .5);
 $green-dark: #4F7C27;
 $green-grey: #5B6553;
 
@@ -14,6 +15,8 @@ $light-border-color: #DDD;
 
 
 $font-stack: Verdana,Geneva,sans-serif;
+$title-font-stack: Lobster, cursive;
+$normal-font-stack: 'Pontano Sans', sans-serif;
 
 $static: /static;
 $img: $static/img;
