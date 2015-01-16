@@ -186,19 +186,20 @@ class EditRecipeInstructionsForm(forms.ModelForm):
 
 class SearchRecipeForm(forms.Form):
     
-    SORT_CHOICES = (('active_time', 'Actieve Kooktijd'), ('time_added', 'Datum toegevoegd'), 
-                    ('name', 'Naam'), ('tot_time', 'Totale Kooktijd'), ('footprint', 'Voetafdruk'),                    
-                    ('rating', 'Waardering'))
-    SORT_ORDER_CHOICES = (('', 'Van Laag naar Hoog'), ('-', 'Van Hoog naar Laag'))
+    SORT_CHOICES = (('footprint', 'Voetafdruk (Laagste eerst)'), ('-footprint', 'Voetafdruk (Hoogste eerst)'),                    
+                    ('name', 'Naam (Alfabetisch)'), ('-name', 'Naam (Omgekeerd alfabetisch)'), 
+                    ('rating', 'Waardering (Hoogste eerst)'), ('-rating', 'Waardering (Laagste eerst)'), 
+                    ('active_time', 'Actieve kooktijd (Kortste eerst)'), ('-active_time', 'Actieve kooktijd (Langste eerst)'), 
+                    ('tot_time', 'Totale kooktijd (Kortste eerst)'), ('-tot_time', 'Totale kooktijd (Langste eerst)'),
+                    ('time_added', 'Datum toegevoegd (Jongste eerst)'), ('-time_added', 'Datum toegevoegd (Oudste eerst)'))
     OPERATOR_CHOICES = (('and', 'Allemaal'), ('or', 'Minstens 1'))
     
     search_string = forms.CharField(required=False, label='Zoektermen',
                                     widget=forms.TextInput(attrs={'placeholder': 'Zoek recepten', 'class': 'keywords-searchbar'}))
     
-    advanced_search = forms.BooleanField(initial=True, required=False)
+    advanced_search = forms.BooleanField(initial=False, required=False)
     
-    sort_field = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[1][0])
-    sort_order = forms.ChoiceField(widget=RadioSelect, choices=SORT_ORDER_CHOICES, required=False, initial=SORT_ORDER_CHOICES[1][0])
+    sort_field = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[0][0])
     
     inseason = forms.BooleanField(initial=False, required=False)
     

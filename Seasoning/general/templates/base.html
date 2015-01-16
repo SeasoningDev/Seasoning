@@ -121,6 +121,10 @@
         	<div id="header-margin"> </div>
         	{% endblock %}
         	
+        	{% block before-content %}
+        	<div id="content-margin"> </div>
+        	{% endblock %}
+        	
         	{% block content-container %}
         	<div id="content-container" class="container">
                 {% block messages %}
