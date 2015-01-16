@@ -1,14 +1,98 @@
 @import "variables";
 
-#recipe-search-container {
-  margin-bottom: 20px;
-  position: relative; }
+#base-recipe-search-container {
+	width: 100%;
+	height: 250px;
+	background: url('/static/img/decoration/brownie.jpg') no-repeat center center;
+	background-size: cover;
+	display: table;
+}
+
+#base-recipe-search-container #base-recipe-search {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#base-recipe-search input {
+	height: 40px;
+	width: 350px;
+	max-width: 90%;
+	padding-left: 40px;
+}
+
+#base-recipe-search #keywords-submit {
+	background-size: 30px;
+	left: 2px;
+	top: -8px;
+}
+
+#recipe-search-options {
+	width: 100%;
+	background-color: $green-main;
+}
+
+#recipe-search-options a {
+	border-radius: 0;
+	height: 50px;
+	line-height: 32px;
+	color: #fff;
+	border-right: 1px solid rgba(255,255,255, .3);
+	overflow: hidden;
+	position: relative;
+}
+
+#recipe-search-options a:first-of-type {
+	border-left: 1px solid rgba(255,255,255, .3);
+	line-height: 16px;
+	font-size: 14px;
+}
+
+#recipe-search-options a:hover {
+	background-color: rgba(0, 0, 0, .3);
+}
+
+#recipe-search-options select {
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 10px;
+	border: none;
+	background: none;
+	width: 114%;
+	height: 100%;
+	text-align: center;
+	padding-top: 10px;
+	margin-left: -6%;
+	cursor: pointer;
+}
+
+#recipe-search-options a select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #fff;
+}
+
+
+
+#advanced-search-options {
+	border-bottom: 1px solid #ddd;
+	text-align: center;
+	display: none;
+}
+
+#advanced-search-options p {
+	margin: 30px 0;
+}
+
+
+
+#recipe-search-results-container {
+  margin: 20px 0;
+  position: relative;
+  min-height: 400px; }
   
  #recipe-search-container hr {
   margin-bottom: 10px; }
-
-form.keywords {
-  margin: 20px 0 0; }
   
 #add-recipe-button {
   margin-top: 9px;
@@ -208,10 +292,7 @@ form.keywords {
 #browse-recipe-summaries-wrapper.advanced { }
 
 #browse-recipe-summaries-wrapper #search-result-count {
-  position: absolute;
-  right: 0;
-  top: -21px;
-  font-size: 12px; }
+}
 
 #browse-recipe-summaries-wrapper p.sorry {
   max-width: 500px;

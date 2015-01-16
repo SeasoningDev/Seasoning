@@ -33,7 +33,7 @@ class Cuisine(models.Model):
 class RecipeManager(models.Manager):
     
     def query(self, search_string='', advanced_search=False, sort_field='time_added', 
-              sort_order='-', inseason=False, ven=True, veg=True, nveg=True, cuisines=[], 
+              inseason=False, ven=True, veg=True, nveg=True, cuisines=[], 
               courses=[], include_ingredients_operator='and', include_ingredient_names=[],
               exclude_ingredient_names=[]):
         
@@ -83,7 +83,6 @@ class RecipeManager(models.Manager):
         if sort_field:
             if 'tot_time' in sort_field:
                 recipes_list = recipes_list.extra(select={'tot_time': 'active_time + passive_time'})
-            sort_field = sort_order + sort_field
             recipes_list = recipes_list.order_by(sort_field)
         
         return recipes_list.distinct()

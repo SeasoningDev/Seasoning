@@ -175,7 +175,7 @@ def ajax_browse_recipes(request):
             include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
             exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
             recipes_list = Recipe.objects.query(search_string=data['search_string'], advanced_search=data['advanced_search'],
-                                                sort_field=data['sort_field'], sort_order=data['sort_order'], inseason=data['inseason'], ven=data['ven'], 
+                                                sort_field=data['sort_field'], inseason=data['inseason'], ven=data['ven'], 
                                                 veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
                                                 include_ingredients_operator=data['include_ingredients_operator'],
                                                 include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
@@ -189,7 +189,7 @@ def ajax_browse_recipes(request):
         except PageNotAnInteger:
             recipes = paginator.page(1)
         except EmptyPage:
-            raise Http404()
+            raise Http404(search_form.errors)
         
         search_form_id = 'recipe-search-form'
     

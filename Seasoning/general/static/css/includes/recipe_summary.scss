@@ -3,34 +3,35 @@
 .recipe-summary-link {
 	position: relative;
 	display: inline-block;
+	width: 100%;
+	max-width: 300px;
 	text-decoration: none;
-	margin: 10px 8px;
-  transition: all 0.25s ease-in-out;
-  -webkit-transition: all 0.25s ease-in-out;
-  -moz-transition: all 0.25s ease-in-out;
-  border-radius: 16px;
-  -moz-border-radius: 16px;
-  border: 1px solid #DDD;
+  	transition: all 0.25s ease-in-out;
+  	-webkit-transition: all 0.25s ease-in-out;
+  	-moz-transition: all 0.25s ease-in-out;
+  	border-radius: 16px;
+  	-moz-border-radius: 16px;
+  	border: 1px solid #DDD;
+  	margin-top: 20px;
+  	color: inherit;
 }
 
-.recipe-summary-link:hover {
-box-shadow: 0 0 5px black;
-  -webkit-box-shadow: 0 0 5px black;
-  -moz-box-shadow: 0 0 5px black;
-  border: 1px solid rgba(0, 0, 0, 0.5);
+.recipe-summary-link:hover,
+.recipe-summary-link:active,
+.recipe-summary-link:focus {
+	box-shadow: 0 0 5px black;
+  	-webkit-box-shadow: 0 0 5px black;
+  	-moz-box-shadow: 0 0 5px black;
+  	border: 1px solid rgba(0, 0, 0, 0.5);
+  	text-decoration: none;
+  	color: inherit;
 }
 
 .recipe-summary-link .corner-ribbon {
-  position: absolute;
-  top: -3px;
-  left: -3px;
+  	position: absolute;
+  	top: -3px;
+  	left: -3px;
 }
-
-.recipe-summary {
-  width: 216px; }
-
-.recipe-summary:hover {
-   }
 
 .recipe-summary img {
   display: block;
@@ -38,17 +39,30 @@ box-shadow: 0 0 5px black;
   border-top-left-radius: 15px;
   -moz-border-radius-topright: 15px;
   -moz-border-radius-topleft: 15px;
-  width: 216px;
-  height: 216px; }
+  width: 100%;
+  height: 100%;
+}
 
 .recipe-summary .recipe-title {
-  height: 70px;
+  height: 80px;
   display: block;
-  padding: 25px 10px 0;
+  padding: 10px 10px 0;
   background-color: #F7FCF7;
   position: relative;
   border-top: 1px solid #DDD;
-  border-bottom: 1px solid #DDD; }
+  border-bottom: 1px solid #DDD;
+  font-family: "Lobster Two", cursive;
+}
+
+.recipe-title .title {
+  margin: 0; }
+
+.recipe-title .title h3 {
+  color: #333;
+  height: 65px;
+  overflow: hidden;
+  margin: 0;
+  font-size: 26px; }
 
 .recipe-summary .fp-category-ribbon {
 	position: absolute;
@@ -81,14 +95,6 @@ box-shadow: 0 0 5px black;
   font-weight: bold;
   text-align: center; }
 
-.recipe-title .title {
-  margin-top: 10px; }
-
-.recipe-title .title h3 {
-  color: #333;
-  height: 65px;
-  overflow: hidden; }
-
 .recipe-description {
   display: block;
   height: 55px;
@@ -102,7 +108,7 @@ box-shadow: 0 0 5px black;
   background-color: #333333;
   padding: 5px 10px;
   font-size: 11px;
-  height: 20px;
+  height: 26px;
   border-bottom-right-radius: 15px;
   border-bottom-left-radius: 15px;
   -moz-border-radius-bottomright: 15px;

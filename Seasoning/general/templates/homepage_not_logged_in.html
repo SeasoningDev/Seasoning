@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
-{% block header-margin %}
+{% block before-content %}
 {% endblock %}
+
 {% block content-container %}
 <!-- Custom Fonts -->
 <link href='https://fonts.googleapis.com/css?family=Lobster|Lobster+Two|Cabin' rel='stylesheet' type='text/css'>
@@ -15,7 +16,6 @@
   	-moz-background-size: cover;
   	-o-background-size: cover;
   	background-size: cover;
-  	margin-top:160px;
   	position: relative;
 }
 
@@ -375,9 +375,9 @@ $(function() {
 			}
 		}
 	}
-	
+
 	if ($(window).scrollTop() <= 0)
-		$("html").scrollTop(160);
+		$("html").scrollTop($("#header-margin").outerHeight() - $("#nav-container").height());
 	
 	$(window).scroll(set_about_bg);
 	set_about_bg();
