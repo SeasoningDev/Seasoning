@@ -16,6 +16,22 @@ jssor_slider1_starter = function (containerId) {
 	};
 
 	var jssor_slider1 = new $JssorSlider$(containerId, options);
+	
+	//responsive code begin
+	//you can remove responsive code if you don't want the slider scales while window resizes
+	function ScaleSlider() {
+	    var parentWidth = jssor_slider1.$Elmt.parentNode.clientWidth;
+	    if (parentWidth)
+	        jssor_slider1.$ScaleWidth(Math.min(parentWidth, 1920));
+	    else
+	        window.setTimeout(ScaleSlider, 30);
+	}
+	ScaleSlider();
+
+	$(window).bind("load", ScaleSlider);
+	$(window).bind("resize", ScaleSlider);
+	$(window).bind("orientationchange", ScaleSlider);
+	//responsive code end
 };
 
 
@@ -354,29 +370,13 @@ $(function() {
 	 */
     load_evochart();
     
-    $("#recipe-images .jssort01 .jssort01 > div:nth-child(2)").each(function () {
-    	$(this).width($(this).width() + 50);
-    	$(this).append(
-    			'<div style="width: 42px; height: 42px; top: 0px; right: 0; position: absolute; overflow: hidden;">' +
-    				'<div class="p" style="position: absolute; width: 42px; height: 42px; top: 0; left: 0;" u="prototype">' + 
-    					'<div class="w">' + 
-    						'<img class="add-image-thumb" src="' + static_url + 'img/decoration/add_image.png" u="thumb" ' + 
-    						     'style="width: 100%; height: 100%; border: medium none; position: absolute; top: 0px; left: 0px;cursor:pointer" />' +
-    			'</div></div></div>')
-    	
-    });
-    
     $(".add-image-thumb").click(function() {
 		$("#upload-image-form input#id_image").click();
 		return false;
     })
     
-    $("#recipe-actions-btn").click(function(e) {
-    	$("#recipe-actions-menu").toggleClass('open');
+    $(".remove-image-button").click(function(e) {
     	e.stopPropagation();
-    })
-    
-    $("body").click(function() {
-    	$("#recipe-actions-menu").removeClass('open');
+    	return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?');
     })
 });
