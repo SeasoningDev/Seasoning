@@ -24,12 +24,16 @@
 	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
 {% endblock %}
 
+{% block before-content %}{% endblock %}
 
-{% block content-container %}
-<div id="recipe-container">
-	<div id="recipe-header-container">
-		<div id="recipe-header">
-			<div id="recipe-name" class="recipe-image-overlay">
+{% block content %}
+
+{% block messages %}{% endblock %}
+
+<div id="recipe-header-container" class="row">
+	<div id="recipe-header" class="col-xs-12">
+		<div id="recipe-header-top" class="recipe-image-overlay row">
+			<div id="recipe-name-info" class="col-xs-12 text-center">
 				<h1>{{ recipe.name }}</h1>
 				<span id="add-info">
 				    	{% if recipe.external %}
@@ -38,84 +42,104 @@
 				        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
 				        {% endif %}
 				</span>
-				
-				{% if recipe.author == user or user.is_staff %}
-			    <div id="recipe-actions" class="">
-			        <button type="button" id="recipe-actions-btn">Opties <span class="caret"></span></button>
-			        <ul id="recipe-actions-menu" class="dropdown-menu">
-			            <li>
-			            	{% if recipe.incomplete_class %}
-					    	<a href="{% url 'edit_incomplete_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
-					    	{% else %}
-					        <a href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
-					        {% endif %}
-			            </li>
-			            <li>
-			            	<a href="{% url 'delete_recipe' recipe.id %}" 
-			            	   title="Verwijder dit recept" 
-			            	   onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')">Recept Verwijderen</a>
-			            </li>
-			        </ul>
-			    </div>
-			    {% endif %}
 			</div>
-	    
-	    	<!-- <div id="recipe-basic-info">
-			</div> -->
-			<div id="recipe-images" style="position: relative; width: 960px;
-	        	 height: 460px; background: #a2a2a2; overflow: hidden;">
-	        	 
-		        <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
-			   		{% csrf_token %}
-					{{ upload_image_form.image }}
-			 	</form>
-
-		        <!-- Loading Screen -->
-		        <div class="loading" u="loading" style="position: absolute; top: 0px; left: 0px;">
-		            <div style="filter: alpha(opacity=70); opacity:0.7; position: absolute; display: block;
-		                background-color: #000000; top: 0px; left: 0px;width: 100%;height:100%;">
-		            </div>
-		            <div style="position: absolute; display: block; background: url('http://www.theratchetshop.com/skin/frontend/default/default/images/ajaxcart/loading.gif') no-repeat center center;
-		                top: 50%; left: 50%;width: 30px;height:30px;">
-		            </div>
-		        </div>
+				
+			{% if recipe.author == user or user.is_staff %}
+			<div id="recipe-actions" class="dropdown">
+				<button class="btn btn-default dropdown-toggle pull-right" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+			    	Opties
+			    	<span class="caret"></span>
+				</button>
+			  	<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+			    	<li role="presentation">
+			    		{% if recipe.incomplete_class %}
+				    	<a role="menuitem" tabindex="-1" href="{% url 'edit_incomplete_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
+				   		{% else %}
+				    	<a role="menuitem" tabindex="-1" href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
+				    	{% endif %}
+				    </li>
+				    <li role="presentation">
+				    	<a role="menuitem" tabindex="-1"
+				    	   href="{% url 'delete_recipe' recipe.id %}" 
+			               title="Verwijder dit recept" 
+			               onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')">Recept Verwijderen</a>
+				    </li>
+			  	</ul>
+			</div>
+		    {% endif %}
+		</div>
 		
-		        <!-- Slides Container -->
-		        <div u="slides" style="cursor: move; position: absolute; left: 0; top: 0; width: 960px; height: 460px; overflow: hidden;">
-				    {% for image in recipe.images.all %}
-		            <div>
-		            	<img class="recipe-image" u="image" src="{{ image.small_image.url }}" />
-		                <img u="thumb" src="{{ image.thumbnail.url }}" />
-		                {% if image.added_by == user or recipe.author == user or user.is_staff %}
-		                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding" onclick="return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?')"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
-		                {% endif %}
-		            </div>
-		            {% empty %}
-		            <div>
-		            	<img class="recipe-image" u="image" src="{{ MEDIA_URL }}images/recipes/no-image.png" />
-		            </div>
+		{% if messages %}
+	    <div id="recipe-messages">
+		    <ul class="messages">
+			   	{% for message in messages %}
+		        <li class="{{ message.tags }}">
+		         	{{ message }}
+		        </li>
+		        {% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+	    
+		<div class="row">
+	        	 
+		    <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ upload_image_form.image }}
+		 	</form>
+		
+			<div id="recipe-images-carousel" class="carousel slide" 
+				 data-ride="carousel"
+			 	 data-interval="false">
+		  
+		    	<!-- Indicators -->
+		  		<ol class="carousel-indicators">
+		  			{% for image in recipe.images.all %}
+		  			<li data-target="#recipe-images-carousel" 
+		  			    data-slide-to="{{ forloop.counter0 }}" 
+		  			    {% if forloop.first %}class="active"{% endif %}>
+		  				
+		  				<span style="position:relative;">
+			                {% if image.added_by == user or recipe.author == user or user.is_staff %}
+			                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
+			                {% endif %}
+		                	<img class="slide-thumb" src="{{ image.thumbnail.url }}" />
+		                </span>
+		  			</li>
+		  			{% endfor %}
+		  			<li onclick="$('#upload-image-form input#id_image').click();return false;"
+		  				title="Voeg een nieuwe afbeelding toe">
+		  				<span style="position:relative;">
+			                <img class="slide-thumb" src="{{ STATIC_URL }}img/decoration/add_image.png" />
+		                </span>
+		  			</li>
+		  		</ol>
+		
+		  		<!-- Wrapper for slides -->
+		  		<div class="carousel-inner" role="listbox">
+		  			{% for image in recipe.images.all %}
+		  			<div class="item{% if forloop.first %} active{% endif %}" style="background-image: url('{{ image.image.url }}');">
+		    		</div>
+		            {% empty %}	
+		  			<div class="item{% if forloop.first %} active{% endif %}" style="background-image: url('{{ MEDIA_URL }}images/recipes/no-image.png');">
+		    		</div>	            
 		            {% endfor %}
-		        </div>
-		        
-		        <!-- Thumbnail Navigator Skin Begin -->
-		        <div u="thumbnavigator" class="jssort01" style="position: absolute; width: 960px; height: 50px; left:0px; bottom: 80px;">
-		        
-		            <div u="slides" style="cursor: move;">
-		                <div u="prototype" class="p" style="position: absolute; width: 42px; height: 42px; top: 0; left: 0;">
-		                    <div class=w><thumbnailtemplate style="width: 100%; height: 100%; border: none;position:absolute; top: 0; left: 0;"></thumbnailtemplate></div>
-		                    <div class=c>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		        <!-- Thumbnail Navigator Skin End -->
-		        <!-- Trigger -->
-		        <script>
-		            jssor_slider1_starter('recipe-images');
-		        </script>
-		    </div>
+		            
+		  		</div>
+		
+		  		<!-- Controls -->
+		  		<a class="left carousel-control" href="#recipe-images-carousel" role="button" data-slide="prev">
+		    		<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+		    		<span class="sr-only">Previous</span>
+		  		</a>
+		  		<a class="right carousel-control" href="#recipe-images-carousel" role="button" data-slide="next">
+		    		<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+		    		<span class="sr-only">Next</span>
+		  		</a>
+			</div>
+		</div>
 			
-			<div id="graphic-information" class="recipe-image-overlay" style="clear: both;">
+		<div id="graphic-information" class="recipe-image-overlay row" style="clear: both;">
 				<div id="veganism" class="graphic-information-icon">
 					{% if recipe.veganism == 2 %}
 			    	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Dit is een veganistisch recept" alt="" />
@@ -176,20 +200,6 @@
 	    	{{ recipe.description }}
 	    </p>
 	</div>
-		
-	<div id="content-container" class="container">
-    	{% block messages %}
-        {% if messages %}
-        <ul class="messages">
-        	{% for message in messages %}
-            <li class="{{ message.tags }}">
-            	{{ message }}
-            </li>
-            {% endfor %}
-		</ul>
-        {% endif %}
-        {% endblock %}
-    </div>
                 
     <h2>
       	<span>Ingrediënten</span>
@@ -273,6 +283,5 @@
 		    {% include "includes/big-ajax-loader.html" %}
 		</div>
 	</div>
-</div>	
 
 {% endblock %}

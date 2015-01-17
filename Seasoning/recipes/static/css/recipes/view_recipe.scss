@@ -1,6 +1,12 @@
 @import "variables";
 
-#recipe-container h2 {
+h1 {
+	font-family: 'Lobster Two', cursive;
+	color: white;
+	margin: 0;
+}
+
+h2 {
 	position: relative;
 	font-family: 'Lobster Two', cursive;
 	margin-top: 50px;
@@ -9,7 +15,7 @@
 	padding: 10px 0;
 }
 
-#recipe-container h2:before {
+h2:before {
 	content: "";
 	display: block;
 	border-top: 1px solid #ddd;
@@ -20,20 +26,9 @@
 	z-index: -1;
 }
 
-#recipe-container h2 span {
+h2 span {
 	background-color: white;
 	padding: 0 10px;
-}
-
-#recipe-container #recipe-header-container {
-	margin-top: -20px;
-	/* background-color: #bada9e; */
-}
-
-#recipe-header-container #recipe-header {
-	position: relative;
-	margin: auto;
-	width: 960px;
 }
 
 #recipe-header .recipe-image-overlay {
@@ -44,208 +39,121 @@
 	
 }
 
-#recipe-header #recipe-name {
+#recipe-header #recipe-name-info {
 	top: 0;
-	text-align: center;
 	padding: 10px 0;
 	color: white;
 	min-height: 60px;
 }
 
-#recipe-name h1 {
-	font-family: 'Lobster Two', cursive;
-	color: white;
-	margin: 0;
-}
-
-#recipe-name a {
-	color: white;
-}
-
-#recipe-name #add-info {
+#recipe-name-info #add-info {
 	display: block;
 	line-height: 16px;
 	font-size: 12px;
-	font-family: "HelveticaNeue","Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: $normal-font-stack;
+	margin-top: 10px;
 }
 
-#recipe-name #add-info #time-added {
-	font-size: .75em;
+#recipe-name-info #add-info a {
+	color: white;
 }
 
 
 
-#recipe-name #recipe-actions {
+#recipe-header-top #recipe-actions {
 	position: absolute;
-	top: 10px;
-	right: 5px;
+	top: 20px;
+	right: 20px;
 	display: inline-block;
 }
 
-#recipe-actions button {
-	background: none;
-	text-shadow: none;
-	float: left;
-    background-color: $green-main;
-    border-color: $green-dark;
-    border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-    font-weight: normal;
-    margin-bottom: 0;
-    padding: 2px 8px;
-    text-align: center;
+#recipe-actions .btn {
+	background-color: rgba(255, 255, 255, 1);
 }
 
-#recipe-actions button:hover {
-	background-color: $green-dark;
+#recipe-actions .dropdown-menu > li > a:hover,
+#recipe-actions .dropdown-menu > li > a:focus {
+	background-color: rgba(0, 0, 0, .5);
 }
 
-#recipe-actions button .caret {
-	border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid;
-    display: inline-block;
-    height: 0;
-    vertical-align: middle;
-    width: 0;
-    margin-left: 10px;
-}
 
-#recipe-actions .dropdown-menu {
-	text-align: right;
+
+#recipe-messages {
+	width: 100%;
 	position: absolute;
-	right: 0;
-	top: 25px;
+	top: 90px;
+	left: 0;
+	z-index: 500;
+}
+
+#recipe-messages .messages {
 	padding: 0;
-	background-color: $green-main;
-	border: 1px solid $green-dark;
-	border-radius: 4px;
+	margin: 10px auto;
+	width: 95%;
+}
+
+
+#recipe-images-carousel .item {
+	width: 100%;
+	height: 400px;
+  	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+  	background-position: center center;
+}
+
+#recipe-images-carousel .carousel-indicators {
+	bottom: 80px;
+}
+
+#recipe-images-carousel .carousel-indicators li {
+	text-indent: inherit;
+	border: none;
+	border-radius: 0;
+	background: none;
+	width: auto;
+	height: auto;
+	opacity: .6
+}
+
+#recipe-images-carousel .carousel-indicators li.active,
+#recipe-images-carousel .carousel-indicators li:hover {
+	opacity: 1
+}
+
+#recipe-images-carousel .slide-thumb {
+	width: 40px;
+	height: 40px;
+}
+
+#recipe-images-carousel .remove-image-button {
+	position: absolute;
+	top: -35px;
+	left: 8px;
+	opacity: .6;
+	transition: opacity .3s ease;
 	display: none;
 }
 
-#recipe-actions .dropdown-menu.open {
-	display: inherit;
+#recipe-images-carousel .active .remove-image-button {
+	display: inline;
 }
 
-#recipe-actions .dropdown-menu li {
-	margin: 0;
-}
-
-#recipe-actions .dropdown-menu a {
-	display: block;
-	font-size: 14px;
-	text-decoration: none;
-	white-space: nowrap;
-	padding: 8px;
-}
-
-#recipe-actions .dropdown-menu a:hover {
-	background-color: $green-dark;
-}
-
-
-
-#recipe-images {
-	margin: auto;
-}
-#recipe-images #upload-image-form {
+#recipe-images-carousel .remove-image-button:hover {
 	position: absolute;
-	width: 45px;
-	height: 45px;
-	top: 75px;
-	left: 10px;
-}
-
-#upload-image-form #upload-image-button {
-	position: absolute;
-	width: 100%;
-	z-index: 100;
-	cursor: pointer;
-}
-
-#upload-image-button .icon {
-	margin: auto;
-}
-
-#upload-image-form input {
-	width: 45px;
-	height: 45px;
-	opacity: 0;
-	cursor: pointer;
-	z-index: 99;
-	margin: 0;
-}
-
-#recipe-images .recipe-image {
-	width: 960px;
-	height: 460px;
-}
-  
-#recipe-images .remove-image-button {
-	position: absolute;
-	top: 120px;
-	left: 5px;
-}
-
-.remove-image-button img {
-	width: 45px;
-	height: 45px;
-  	opacity: 0.8;
-  	transition: all .3s ease-out;
-}
-
-.remove-image-button img:hover {
-  opacity: 1;	
-}
-/*
-.jssort01 .p           (normal)
-.jssort01 .p:hover     (normal mouseover)
-.jssort01 .pav           (active)
-.jssort01 .pav:hover     (active mouseover)
-.jssort01 .pdn           (mousedown)
-*/
-#recipe-images .jssort01 .w {
-	opacity: .5;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-}
-
-#recipe-images .jssort01 .p:hover .w, 
-#recipe-images .jssort01 .pav .w {
+	top: -35px;
+	left: 8px;
 	opacity: 1;
 }
 
-#recipe-images .jssort01 .c {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    border: #a2a2a2 1px solid;
-    box-sizing: border-box;
+#recipe-images-carousel .remove-image-button img {
+	width: 24px;
+	height: 24px;
 }
 
-#recipe-images .jssort01 .p:hover .c, .jssort01 .pav:hover .c, .jssort01 .pav .c {
-	opacity: 1;
-    border-width: 0px;
-    top: 2px;
-    left: 2px;
-    width: 68px;
-    height: 68px;
-}
-
-#recipe-images .jssort01 .p:hover .c, .jssort01 .pav:hover .c {
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    border: #d9d9d9 1px solid;
+#upload-image-form {
+	display: none;
 }
 
 
@@ -261,7 +169,7 @@
 	position: relative;
 	padding: 10px 0;
 	width: 20%;
-	height: 60px;
+	height: 80px;
 	float: left;
 	text-align: center;
 	position: relative;
