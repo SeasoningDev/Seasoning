@@ -1,3 +1,15 @@
+#edit-recipe-form input {
+	color: #333;
+}
+
+#edit-recipe-form #recipe-images-carousel .carousel-indicators {
+	bottom: 90px;
+}
+
+#edit-recipe-form #recipe-header-container {
+	margin-bottom: 50px;
+}
+
 .editable-field {
   	cursor: url(/static/img/icons/edit.cur), -moz-zoom-in;
   	transition: background-color .3s ease;
@@ -16,6 +28,7 @@
 	padding-top: 10px;
 	width: 100%;
 	left: 0;
+	top: 100%;
 	z-index: 997;
 	text-align: center;
 }
@@ -36,6 +49,10 @@
 
 
 
+#recipe-name .editable-field {
+	display: inline-block;
+}
+
 #recipe-name input {
 	display: inline;
 	font: inherit;
@@ -48,41 +65,81 @@
 	margin-bottom: 0;
 }
 
-#portions-changer #portions-changer-input.editable-field {
+
+.field-changer {
+	margin-top: 10px;
+	text-align: left;
+	position: relative;
+}
+
+.field-changer h3 {
+    float: left;
+    font-size: 22px;
+    margin: 0;
+    padding-right: 20px;
+    width: 50%;
+    text-align: right;
+    line-height: 28px;
+}
+
+.field-changer .editable-field {
 	display: inline-block;
-	height: 26px;
+	height: 32px;
 	min-width: 30px;
-	text-align: right;
+	text-align: left;
 	line-height: 26px;
 	font-size: 18px;
 }
 
-#portions-changer.edit .ui-spinner {
+.field-changer select {
 	display: none;
-	float: right;
-	margin-top: -1px;
-	margin-right: -17px;
+	height: 32px;
+}
+
+.spinner-changer .ui-spinner {
+	display: none;
+	float: left;
 	border: 2px dashed #ddd;
 }
 
-#portions-changer.edit input {
+.spinner-changer input {
 	display: inline;
 	width: 30px;
 	text-align: right;
 	font-size: 18px;
+	margin: 0 20px 0 10px;
+	height: 100%;
 }
 
-#portions-changer .edit-recipe-buttons {
-	top: 30px;
+#active-time-changer .edit-recipe-buttons {
+	padding-top: 60px;
+}
+
+#passive-time-changer .edit-recipe-buttons {
+	padding-top: 19px;
+}
+
+#cuisine-changer .edit-recipe-buttons {
+	padding-top: 60px;
+}
+
+#course-changer .edit-recipe-buttons {
+	padding-top: 19px;
+}
+
+
+#description-changer {
+	width: 100%;
+	padding: 5px;
 }
 
 
 
 
 
+#description-container textarea,
 #extra-info textarea {
 	width: 100%;
-	height: 30px;
 	display: none;
 	border: 2px dashed #ddd;
 	text-align: center;
@@ -96,42 +153,36 @@
 
 
 
-#instructions-container #instructions.editable-field {
-	margin-bottom: 80px;
+#instructions-container {
+	margin-bottom: 100px;
 }
 
 #instructions-container textarea {
 	width: 100%;
-	height: 300px;
 	display: none;
 	border: 2px dashed #ddd;
 	margin: auto;
 	font: 14px/21px Verdana,Geneva,sans-serif;
 	box-sizing: border-box;
 	color: #444;
-	padding: 5px;
+	padding: 0 5px;
 	box-shadow: none;
-	margin-bottom: 80px;
-}
-
-#instructions-container .edit-recipe-buttons {
-	bottom: -50px;
+	margin-bottom: 30px;
 }
 
 
 #finish-editing-container {
 	position: fixed;
+	left: 0;
 	bottom: 0;
 	width: 100%;
 	height: 60px;
-	background-color: rgba(98, 155, 49, .8);
+	background-color: rgba(255, 255, 255, .8);
 	border-top: 2px dashed #444;
 	z-index: 1000;
 	text-align: center;
 }
 
-#finish-editing-container #finish-editing-button {
-	width: 200px;
-	height: 40px;
+#finish-editing-container .btn {
 	margin: 10px;
 }

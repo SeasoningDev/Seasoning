@@ -10,7 +10,7 @@ import datetime
 from ingredients.models import Ingredient, Unit
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    EditRecipeForm
+    EditRecipeForm, UploadRecipeImageForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from recipes.models.t_recipe import IncompleteRecipe
 from django.template import defaultfilters
@@ -18,6 +18,7 @@ from general.templatetags.markdown_filter import markdown
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.conf import settings
+from recipes.models.recipe import RecipeImage
 
 def ajax_recipe_ingredients(request, recipe_id, portions):
     try:
@@ -163,7 +164,7 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
                 
             resp_txt = ''
             if len(form.changed_data) > 0:
-                if form.changed_data[0] == 'extra_info':
+                if form.changed_data[0] == 'extra_info' or form.changed_data[0] == 'description':
                     resp_txt = defaultfilters.linebreaks(getattr(recipe, form.changed_data[0]))
                 if form.changed_data[0] == 'instructions':
                     resp_txt = markdown(getattr(recipe, form.changed_data[0]))
@@ -211,3 +212,39 @@ def ajax_browse_recipes(request):
                                                                   'search_form_id': search_form_id})
         
     raise PermissionDenied()
+
+@login_required
+def ajax_upload_recipe_image(request, recipe_id):
+    if request.method == 'POST':
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)
+        
+        if upload_image_form.is_valid():
+            image = upload_image_form.save(commit=False)
+            image.recipe = recipe
+            image.added_by = request.user
+            image.save()
+            
+            return HttpResponse(json.dumps({'url': image.image.url,
+                                            'image_id': image.id}))
+    
+    raise PermissionDenied()
+
+@login_required
+@csrf_exempt
+def ajax_finish_recipe_image(request, recipe_image_id):
+    if request.method == 'POST':
+        if 'x' in request.POST and 'y' in request.POST and 'w' in request.POST and 'h' in request.POST:
+            recipe_image = get_object_or_404(RecipeImage, id=recipe_image_id)
+            
+            recipe_image.x = request.POST['x']
+            recipe_image.y = request.POST['y']
+            recipe_image.w = request.POST['w']
+            recipe_image.h = request.POST['h']
+            
+            recipe_image.visible = True
+            recipe_image.save()
+            
+            return HttpResponse(0)
+    
+    raise PermissionDenied()    

@@ -6,11 +6,23 @@
 
 {% block title %}{{ recipe.name }}{% endblock %}
 
+{% block extra_link %}
+	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+{% endblock %}
+
 {% block extra_script %}
+	{% if edit %}
 	<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
-	<script src="{{ STATIC_URL }}js/plugins/jssor_slider/jssor.slider.mini.js"></script>
+	<script src="{{ STATIC_URL }}js/edit_recipe.js"></script>
+	{% else %}
+	<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+	
+	<script src="//oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js"></script>
+	
+	<link  href="{{ STATIC_URL }}css/plugins/jquery.Jcrop.min.css" rel="stylesheet">
+	<script src="{{ STATIC_URL }}js/plugins/jquery.Jcrop.js"></script>
+	
 	<script src="{{ STATIC_URL }}js/ingredient_availability.js"></script>
-	<script src="{{ STATIC_URL }}js/highcharts.js"></script>
 	<script type="text/javascript"> 
 	   var recipe_id = {{ recipe.id }};
 	   var upvote_url = "{% url 'upvote_recipe' recipe.id %}";
@@ -19,9 +31,10 @@
 	   var recipe_portions_url = "{% url 'ajax_recipe_ingredients' recipe.id "0000" %}"
 	   var ingredients_avail_ajax_url = "{% url 'ajax_ingredient_availability' %}";
 	   var static_url = {{ STATIC_URL }};
+	   var finish_recipe_image_url = "{% url 'ajax_finish_recipe_image' '0000' %}";
 	</script>
 	<script src="{{ STATIC_URL }}js/view_recipe.js"></script>
-	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+	{% endif %}
 {% endblock %}
 
 {% block before-content %}{% endblock %}
@@ -30,10 +43,21 @@
 
 {% block messages %}{% endblock %}
 
+{% if edit %}
+<form id="edit-recipe-form" action="{% url 'ajax_edit_recipe' recipe.id %}" method="post">
+	{% csrf_token %}
+{% endif %}
+
 <div id="recipe-header-container" class="row">
 	<div id="recipe-header" class="col-xs-12">
 		<div id="recipe-header-top" class="recipe-image-overlay row">
 			<div id="recipe-name-info" class="col-xs-12 text-center">
+				{% if edit %}
+				<h1 id="recipe-name">
+					<span class="editable-field" default="(Naam van het recept)">{{ recipe.name }}</span>
+					{{ form.name }}
+				</h1>
+				{% else %}
 				<h1>{{ recipe.name }}</h1>
 				<span id="add-info">
 				    	{% if recipe.external %}
@@ -42,9 +66,11 @@
 				        <span id="author">Toegevoegd door <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a></span><br />
 				        {% endif %}
 				</span>
+				{% endif %}
 			</div>
 				
 			{% if recipe.author == user or user.is_staff %}
+			{% if not edit %}
 			<div id="recipe-actions" class="dropdown">
 				<button class="btn btn-default dropdown-toggle pull-right" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
 			    	Opties
@@ -66,62 +92,74 @@
 				    </li>
 			  	</ul>
 			</div>
+			{% endif %}
 		    {% endif %}
 		</div>
 		
-		{% if messages %}
-	    <div id="recipe-messages">
-		    <ul class="messages">
-			   	{% for message in messages %}
-		        <li class="{{ message.tags }}">
-		         	{{ message }}
-		        </li>
-		        {% endfor %}
-			</ul>
+		<div id="extra-stuff" class="col-xs-12">
+			{% if messages %}
+			{% for message in messages %}
+			<div class="alert alert-dismissable alert-{{ message.tags }}">
+			  	<button type="button" class="close" data-dismiss="alert">×</button>
+			  	<p>{{ message }}</p>
+			</div>
+		   	{% endfor %}
+			{% endif %}
+			
+			<div id="image-upload-progress" class="progress progress-striped active">
+			  	<div class="progress-bar progress-bar-success" style="width: 0%">
+			  		<span class="progress-text">Afbeelding wordt geupload (<span id="image-upload-progress-text"></span>)</span>
+			  	</div>
+			</div>
 		</div>
-		{% endif %}
 	    
 		<div class="row">
 	        	 
-		    <form id="upload-image-form" action="" method="POST" enctype="multipart/form-data">
+	       	{% if not edit %}
+		    <form id="upload-image-form" action="{% url 'ajax_upload_recipe_image' recipe.id %}" method="POST" enctype="multipart/form-data">
 				{% csrf_token %}
 				{{ upload_image_form.image }}
 		 	</form>
-		
+			{% endif %}
+			
 			<div id="recipe-images-carousel" class="carousel slide" 
 				 data-ride="carousel"
 			 	 data-interval="false">
 		  
 		    	<!-- Indicators -->
 		  		<ol class="carousel-indicators">
-		  			{% for image in recipe.images.all %}
+		  			{% for image in recipe.images.visible %}
 		  			<li data-target="#recipe-images-carousel" 
 		  			    data-slide-to="{{ forloop.counter0 }}" 
 		  			    {% if forloop.first %}class="active"{% endif %}>
 		  				
 		  				<span style="position:relative;">
 			                {% if image.added_by == user or recipe.author == user or user.is_staff %}
+			                {% if not edit %}
 			                <a class="remove-image-button" href="{% url 'delete_recipe_image' image.id %}" title="Verwijder deze afbeelding"><img src="{{ STATIC_URL }}img/icons/delete.png" alt="" /></a>
+			                {% endif %}
 			                {% endif %}
 		                	<img class="slide-thumb" src="{{ image.thumbnail.url }}" />
 		                </span>
 		  			</li>
 		  			{% endfor %}
+		  			{% if not edit %}
 		  			<li onclick="$('#upload-image-form input#id_image').click();return false;"
 		  				title="Voeg een nieuwe afbeelding toe">
 		  				<span style="position:relative;">
 			                <img class="slide-thumb" src="{{ STATIC_URL }}img/decoration/add_image.png" />
 		                </span>
 		  			</li>
+		  			{% endif %}
 		  		</ol>
 		
 		  		<!-- Wrapper for slides -->
 		  		<div class="carousel-inner" role="listbox">
-		  			{% for image in recipe.images.all %}
-		  			<div class="item{% if forloop.first %} active{% endif %}" style="background-image: url('{{ image.image.url }}');">
+		  			{% for image in recipe.images.visible %}
+		  			<div class="item{% if forloop.first %} active{% endif %}" style="background-image: url('{{ image.image.url }}');background-size: {{ image.bg_width }}% {{ image.bg_height }}%;background-position: {{ image.bg_x }}% {{ image.bg_y }}%;">
 		    		</div>
 		            {% empty %}	
-		  			<div class="item{% if forloop.first %} active{% endif %}" style="background-image: url('{{ MEDIA_URL }}images/recipes/no-image.png');">
+		  			<div class="item active" style="background-image: url('{{ MEDIA_URL }}images/recipes/no-image.png');background-repeat:no-repeat;background-size: auto;background-position: center; center;">
 		    		</div>	            
 		            {% endfor %}
 		            
@@ -140,6 +178,23 @@
 		</div>
 			
 		<div id="graphic-information" class="recipe-image-overlay row" style="clear: both;">
+			{% if edit %}
+			<div style="text-align: left; color: white; margin-bottom: 10px;">
+		   		<div id="active-time-changer" class="field-changer spinner-changer">
+			    	<h3>Actieve Kooktijd</h3>
+			    	<span id="active-time-changer-input" class="editable-field">{{ recipe.active_time }}</span>
+			    	{{ form.active_time }}
+			    	<br class="clear" />
+			    </div>
+			    <div id="passive-time-changer" class="field-changer spinner-changer">
+			    	<h3>Passieve Kooktijd</h3>
+			    	<span id="passive-time-changer-input" class="editable-field">{{ recipe.passive_time }}</span>
+			    	{{ form.passive_time }}
+			    	<br class="clear" />
+			    </div>
+			</div>
+			
+			{% else %}
 			<div id="veganism" class="graphic-information-icon">
 				{% if recipe.veganism == 2 %}
 			    <img src="{{ STATIC_URL }}img/icons/vegan.png" class="popover-element"
@@ -197,11 +252,28 @@
 				</div>
 			</div>
 			<br class="clear" />
+			{% endif %}
 		</div>
 	</div>
 </div>
 	
 <div id="basic-information" class="row">
+	{% if edit %}
+	<div class="col-xs-12" style="margin-bottom: 60px;">
+		<div id="cuisine-changer" class="field-changer">
+			<h3>Herkomst van het recept</h3>
+			<span class="editable-field" default="(Herkomst van het recept)">{{ recipe.cuisine }}</span>
+			{{ form.cuisine }}
+			<br class="clear" />
+		</div>
+		<div id="course-changer" class="field-changer">
+			<h3>Soort recept</h3>
+			<span class="editable-field" default="(Soort recept)">{{ recipe.get_course_display }}</span>
+			{{ form.course }}
+			<br class="clear" />
+		</div>
+	</div>
+	{% else %}
 	<h4 class="col-xs-12">
 		{% if recipe.cuisine %}
 	    <span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
@@ -209,11 +281,22 @@
 	    {% else %}
 	    <span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
 	    {% endif %}
-    </h4>
+	</h4>
+    {% endif %}
     
-    <p class="col-xs-12">
-    	{{ recipe.description }}
-    </p>
+    <div id="description-container" class="col-xs-12">
+    	{% if edit %}
+		<div class="editable-field" style="padding-top: 5px; padding-bottom: 5px;"
+		     default="(Korte beschrijving van het recept)">
+		  	{{ recipe.description|linebreaks }}
+		</div>
+    	{{ form.description }}
+		{% else %}
+		<p>
+    		{{ recipe.description }}
+    	</p>
+    	{% endif %}
+    </div>
 </div>
                 
 <h2 class="row">
@@ -222,10 +305,20 @@
 	
 <div class="row">  	
    	<div id="portions-changer" class="col-xs-12">
+   		{% if edit %}
+   		<div id="portions-changer-edit" class="field-changer spinner-changer">
+	    	<h3>Porties</h3>
+	    	<span id="portions-changer-input" class="editable-field">{{ recipe.portions }}</span>
+	    	{{ form.portions }}
+	    	<br class="clear" />
+	    </div>
+	       	
+	    {% else %}
    		<span>Porties</span>
    		<span id="portions-changer-input">
    			<input id="portions-spinner" type="text" value={{ recipe.portions }} />
    		</span>
+   		{% endif %}
    		<br class="clear" />
    	</div>
 </div>
@@ -245,9 +338,17 @@
 {% if recipe.extra_info %}
 <div id="extra-info" class="row">
 	<h4>Extra info en benodigdheden</h4>
+	{% if edit %}
+	<div class="editable-field" style="padding-top: 5px; padding-bottom: 5px;"
+	     default="(Extra informatie en benodigdheden voor de bereiding van het recept)">
+	  	{{ recipe.extra_info|linebreaks }}
+	</div>
+	{{ form.extra_info }}
+	{% else %}
     <div>
        	{{ recipe.extra_info|linebreaks }}
     </div>
+    {% endif %}
 </div>
 {% endif %}
 		        
@@ -257,6 +358,12 @@
 </h2>
 		        
 <div id="instructions-container" class="row markdown-container">
+	{% if edit %}
+	<div id="instructions" class="editable-field">
+		{{ recipe.instructions|markdown|safe }}
+	</div>
+	{{ form.instructions }}
+	{% else %}
 	<div id="instructions-warning" class="col-xs-12">
 		Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
 	    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
@@ -272,8 +379,23 @@
 		{{ recipe.instructions|markdown|safe }}
 	</div>
     {% endif %}
+    {% endif %}
 </div>
-	        
+
+{% if edit %}
+		
+<div class="edit-recipe-buttons">
+	<a class="accept-button" href="#"><img src="{{ STATIC_URL }}img/icons/accept.png" /></a>
+	<a class="reject-button" href="#"><img src="{{ STATIC_URL }}img/icons/decline.png" /></a>
+</div>
+
+</form>
+
+<div id="finish-editing-container">
+	<a href="{% url 'view_recipe' recipe.id %}" class="btn btn-success">Klik hier als je klaar bent met dit recept te wijzigenc</a>
+</div>
+
+{% else %}   
 <h2 class="row">
    	<span>Grafieken</span>
 </h2>
@@ -307,7 +429,7 @@
     		var data = google.visualization.arrayToDataTable(jsonData.data);
 
 			var options = {
-	          	curveType: 'function',
+	          	curveType: 'none',
 	          	vAxis: { 
 	          		minValue: 0,
 	          		title: 'Voetafdruk (per portie)'},
@@ -395,5 +517,29 @@
     </div>
     -->
 </div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="image-upload-crop-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" onclick="close_uploaded_image_crop();" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title" id="myModalLabel">Selecteer het zichtbare deel van de afbeelding</h4>
+      		</div>
+      		<div class="modal-body">
+      			<img id="uploaded-image-preview" src="" />
+    		</div>
+   			<div class="modal-footer">
+    			<button type="button" class="btn btn-default" onclick="close_uploaded_image_crop();">Close</button>
+        		<button type="button" class="btn btn-success" onclick="finish_uploaded_image_crop();">Save changes</button>
+      		</div>
+    	</div>
+  	</div>
+</div>
+{% endif %}
 
 {% endblock %}
