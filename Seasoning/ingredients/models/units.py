@@ -29,11 +29,30 @@ class Unit(models.Model):
     
     def __unicode__(self):
         return self.name
-        
-    def short(self):
-        if self.short_name:
-            return self.short_name
+    
+    def singular_name(self):
+        if '(' in self.name:
+            return self.name.split('(')[0]
         return self.name
+
+    def plural_name(self):
+        if '(' not in self.name:
+            return self.name
+        return self.name.replace('(', '').replace(')', '')
+    
+    def name_needed(self):
+        return not 'stuk' in self.name
+        
+    def short(self, plural=False):
+        if self.short_name and not self.name == self.short_name:
+            return self.short_name
+        
+        if plural:
+            return self.plural_name()
+        return self.singular_name()
+    
+    def short_plural(self):
+        return self.short(True)
     
 class CanUseUnit(models.Model):
     """

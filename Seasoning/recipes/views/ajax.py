@@ -40,7 +40,6 @@ def ajax_recipe_ingredients(request, recipe_id, portions):
                 for uses in recipe.uses.all():
                     uses.save_allowed = False
                     uses.amount = ratio * uses.amount
-                    uses.footprint = ratio * uses.footprint()
                     usess.append(uses)
                 
                 data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess,
@@ -75,12 +74,8 @@ def downvote(request, recipe_id):
         
     raise PermissionDenied()
 
-@csrf_exempt
-def get_recipe_footprint_evolution(request):
-    
-    if request.is_ajax() and request.method == 'POST':
-        recipe_id = request.POST.get('recipe', None)
-    
+def get_recipe_footprint_evolution(request, recipe_id):
+    if request.is_ajax() and request.method == 'GET':
         if recipe_id is not None:
             try:
                 recipe = Recipe.objects.prefetch_related('uses__unit',
@@ -89,10 +84,12 @@ def get_recipe_footprint_evolution(request):
                                                          'uses__ingredient__available_in_country__transport_method',
                                                          'uses__ingredient__available_in_sea__location',
                                                          'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
-                footprints = recipe.monthly_footprint()
-                footprints.append(footprints[-1])
-                footprints.insert(0, footprints[0])
-                data = {'footprints': footprints,
+                footprints = recipe.monthly_footprint(with_dates=True)
+                data = [['Maand', 'Voetafdruk', {'role': 'tooltip', 'p': {'html': True}}]]
+                for point in footprints:
+                    data.append((point[0].strftime('%b'), point[1], '<div style="padding:5px;"><b>{}</b><p style="white-space:nowrap;">{:.2f} kgCO2 per portie</p></div>'.format(point[0].strftime('%B'), point[1])))
+                
+                data = {'data': data,
                         'doy': datetime.date.today().timetuple().tm_yday}
                 json_data = json.dumps(data)
             
@@ -101,6 +98,23 @@ def get_recipe_footprint_evolution(request):
                 raise Http404
         
     raise PermissionDenied
+
+# def get_recipe_footprint_distribution(request, parameter, subset, recipe_id):
+#     if request.is_ajax() and request.method == 'GET':
+#         try:
+#             recipe = Recipe.objects.get(pk=recipe_id)
+#             
+#             data = [['Footprint', 'Probability']]
+#             data.extend(recipe.distribution_data())
+#             
+#             data = {'data': data}
+#             
+#             return HttpResponse(json.dumps(data))
+#         
+#         except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
+#             raise Http404
+#         
+#     raise PermissionDenied()
 
 @csrf_exempt
 def ajax_ingredient_units(request):
