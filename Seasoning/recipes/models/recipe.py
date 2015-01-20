@@ -177,7 +177,7 @@ class Recipe(models.Model):
     footprint = models.FloatField(default=0, editable=False)
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
     
     def publish(self):
         return self.complete_information and self.visible and self.accepted
@@ -337,8 +337,16 @@ class Recipe(models.Model):
         
         raise NotImplemented('Distribution of footprint data is currently unknown')
         return points
+    
+
+class RecipeImageManager(models.Manager):
+    
+    def visible(self):
+        return self.filter(visible=True)
 
 class RecipeImage(models.Model):
+    
+    objects = RecipeImageManager()
     
     recipe = models.ForeignKey(Recipe, related_name='images', null=True, blank=True)
     incomplete_recipe = models.ForeignKey('IncompleteRecipe', related_name='images', null=True, blank=True)
@@ -350,6 +358,41 @@ class RecipeImage(models.Model):
     small_image = ImageSpecField([SmartResize(960, 460)], image_field='image', format='JPEG')
     
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipe_images')
+    visible = models.BooleanField(default=False)
+    
+    x = models.FloatField(null=True, blank=True)
+    y = models.FloatField(null=True, blank=True)
+    w = models.FloatField(null=True, blank=True)
+    h = models.FloatField(null=True, blank=True)
+    
+    def __unicode__(self):
+        return 'Image for recipe #{} from user {}'.format(self.recipe.id if self.recipe is not None else '?', self.added_by)
+    
+    def bg_width(self):
+        """
+        self.w is the width of the subrectangle we want from the image to show as background on the recipe
+        page. This means that we will need to scale this image to 1/self.w to have the subrectangle as a 100%
+        width
+        
+        """
+        return int(round(100/self.w))
+    
+    def bg_height(self):
+        """
+        Same as for width
+        
+        """
+        return int(round(100/self.h))
+    
+    def bg_x(self):
+        if self.w == 1:
+            return 0
+        return int(round(100*(self.x/(1 - self.w))))
+    
+    def bg_y(self):
+        if self.h == 1:
+            return 0;
+        return int(round(100*(self.y/(1 - self.h))))
 
 class UsesIngredient(models.Model):
     

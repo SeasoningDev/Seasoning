@@ -36,6 +36,10 @@ urlpatterns = patterns('',
 #     url(r'^edit/(?P<recipe_id>\d+)/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='edit_recipe'),
     url(r'^delete/(\d*)/$', 'recipes.views.delete_recipe', name='delete_recipe'),
     
+    # Upload a recipe image
+    url(r'^ajax/img/(\d+)/$', 'recipes.views.ajax_upload_recipe_image', name='ajax_upload_recipe_image'),
+    url(r'^ajax/img/f/(\d+)/$', 'recipes.views.ajax_finish_recipe_image', name='ajax_finish_recipe_image'),
+    
     # Statistical data about recipes
     url(r'^data/fpevo/(\d+)/$', 'recipes.views.get_recipe_footprint_evolution', name='graph_rfe'),
     # Unused for now

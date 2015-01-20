@@ -60,19 +60,7 @@ def view_recipe(request, recipe_id):
     context['user_has_upvoted'] = user_has_upvoted
     context['total_time'] = total_time
     
-    if request.method == 'POST':
-        if not request.user.is_authenticated():
-            return redirect('{}?next={}'.format(reverse('login'), reverse('view_recipe', args=(recipe.id,))))
-        upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)
-        if upload_image_form.is_valid():
-            image = upload_image_form.save(commit=False)
-            image.recipe = recipe
-            image.added_by = request.user
-            image.save()
-            
-            upload_image_form = UploadRecipeImageForm()
-    else:
-        upload_image_form = UploadRecipeImageForm()
+    upload_image_form = UploadRecipeImageForm()
     context['upload_image_form'] = upload_image_form
     
     return render(request, template, context)
@@ -103,7 +91,7 @@ def delete_recipe_image(request, image_id):
     if image.added_by == request.user or image.recipe.author == request.user or request.user.is_staff:
         recipe = image.recipe
         image.delete()
-        messages.add_message(request, messages.INFO, 'De afbeelding werd met succes verwijderd.')
+        messages.add_message(request, messages.SUCCESS, 'De afbeelding werd met succes verwijderd.')
         return redirect(reverse('view_recipe', args=(recipe.id, )))
         
     raise PermissionDenied()
@@ -142,8 +130,9 @@ def edit_recipe(request, recipe_id, incomplete=False):
         form = EditRecipeForm(instance=recipe)
         
     if recipe.author == request.user or request.user.is_staff:
-        return render(request, 'recipes/edit_recipe.html', {'recipe': recipe,
-                                                            'form': form})
+        return render(request, 'recipes/view_recipe.html', {'recipe': recipe,
+                                                            'form': form,
+                                                            'edit': True})
     
     raise PermissionDenied()
 

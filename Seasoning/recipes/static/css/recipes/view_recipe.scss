@@ -31,6 +31,10 @@ h2 span {
 	padding: 0 10px;
 }
 
+#recipe-header {
+	position: relative;
+}
+
 #recipe-header .recipe-image-overlay {
 	position: absolute;
 	z-index: 800;
@@ -78,18 +82,24 @@ h2 span {
 
 
 
-#recipe-messages {
+#extra-stuff {
 	width: 100%;
 	position: absolute;
-	top: 90px;
+	top: 100px;
 	left: 0;
 	z-index: 500;
 }
 
-#recipe-messages .messages {
-	padding: 0;
-	margin: 10px auto;
-	width: 95%;
+#image-upload-progress {
+	display: none;
+	position: relative;
+	opacity: .8;
+}
+
+#image-upload-progress .progress-text {
+	position: absolute;
+	display: block;
+	width: 100%;
 }
 
 
@@ -262,7 +272,7 @@ h2 span {
 	font-weight: bold;
 }
 
-#portions-changer #portions-changer-input {
+#portions-changer > #portions-changer-input {
 	margin-left: 10px;
 }
 
@@ -409,10 +419,10 @@ h2 span {
   padding-top: 30px; }
 
 #extra-info {
-  text-align: left; 
   margin-top: 20px;
   text-align: center;
   clear: both;
+  position: relative;
 }
 
 #extra-info h4 {
@@ -420,8 +430,13 @@ h2 span {
   	font-weight: bold;
 }
 
+#description-container p,
 #extra-info p {
 	margin: 0;
+}
+
+#instructions-container {
+	position: relative;
 }
 
 #instructions-container #instructions-warning {
@@ -482,4 +497,18 @@ h2 span {
 #recipe-charts h4 {
 	text-align: center;
 	margin-bottom: 30px;
+}
+
+
+#image-upload-crop-modal .jcrop-holder {
+	margin: auto;
+}
+
+#image-upload-crop-modal .modal-body div,
+#image-upload-crop-modal .modal-body #uploaded-image-preview {
+	max-width: 100%;
+}
+
+#image-upload-crop-modal #uploaded-image-preview {
+
 }

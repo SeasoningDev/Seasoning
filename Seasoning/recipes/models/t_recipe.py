@@ -84,7 +84,7 @@ class IncompleteRecipe(models.Model):
     ignore = models.BooleanField(default=False)
     
     def __unicode__(self):
-        return self.name
+        return self.name or 'Unnamed recipe by {}'.format(self.author)
     
     def incomplete_class(self):
         return True

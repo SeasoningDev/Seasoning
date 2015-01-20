@@ -8,8 +8,22 @@
     height: 100%;
   }
   
+  html {
+    overflow-y: scroll;
+  }
+    
+  
   body {
     font: 14px/21px $font-stack;
+  }
+   
+  .clear {
+  	clear: both;
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    width: 0;
+    height: 0;
   }
   
   div.spacer {
@@ -174,4 +188,9 @@ form #keywords-submit {
 .btn-success:focus, .btn-success.focus, 
 .btn-success:active, .btn-success.active {
     background-color: #4F7C27;
+}
+
+.alert-success {
+    background-color: rgba(98, 155, 49, .6);
+    border-color: rgba(79, 124, 39, .6);
 }
