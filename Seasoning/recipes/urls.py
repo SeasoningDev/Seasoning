@@ -37,8 +37,9 @@ urlpatterns = patterns('',
     url(r'^delete/(\d*)/$', 'recipes.views.delete_recipe', name='delete_recipe'),
     
     # Statistical data about recipes
-    url(r'^data/fpevo/$', 'recipes.views.get_recipe_footprint_evolution'),
+    url(r'^data/fpevo/(\d+)/$', 'recipes.views.get_recipe_footprint_evolution', name='graph_rfe'),
     # Unused for now
+#     url(r'^data/fpdist/(\d+)/(\d+)/(\d+)/$', 'recipes.views.get_recipe_footprint_distribution', name='graph_rfd'),
 #     url(r'^data/fprel/$', 'recipes.views.get_relative_footprint'),
     
     url(r'^ingunits/$', 'recipes.views.ajax_ingredient_units'),

@@ -13,6 +13,7 @@ from ingredients.models.availability import AvailableIn
 from django.utils.functional import cached_property
 from recipes.models.std import Aggregate, ExternalSite
 from django.utils.translation import ugettext_lazy as _
+import math
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -237,10 +238,9 @@ class Recipe(models.Model):
     @cached_property
     def fp_category(self):
         try:
-            return Aggregate.objects.filter(name__in=[Aggregate.Ap, Aggregate.A, Aggregate.B, Aggregate.C, Aggregate.D],
-                                            value__gte=self.footprint).order_by('name')[0]
+            return Aggregate.objects.recipe_categories().filter(value__gte=self.footprint).order_by('name')[0]
         except IndexError:
-            # Aggregates have not yet been added
+            # Aggregates have not yet been added or this recipe has a footprint greater than the 
             return None
                     
     def total_preparation_time(self):
@@ -271,7 +271,7 @@ class Recipe(models.Model):
         self.footprint = self._footprint()
         self.save()
     
-    def monthly_footprint(self):
+    def monthly_footprint(self, with_dates=False):
         """
         Returns an array of 12 elements containing the footprint of this recipe
         for every month of the year
@@ -283,7 +283,10 @@ class Recipe(models.Model):
         for uses in self.uses.all():
             for i in range(12):
                 footprints[i] += uses.footprint(date=dates[i])
-        footprints = [float('%.2f' % (4*footprint/self.portions)) for footprint in footprints]
+        footprints = [float('%.2f' % (footprint/self.portions)) for footprint in footprints]
+        
+        if with_dates:
+            return zip(dates, footprints)
         return footprints
     
     def upvote(self, user):
@@ -310,6 +313,30 @@ class Recipe(models.Model):
         if (abs(min_footprint - footprints[month-1]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
             return True
         return False
+    
+    def distribution_data(self, parameter=Aggregate.FOOTPRINT, subset=Aggregate.GLOBAL):
+        subset_value = None
+        if subset == Aggregate.VEGANISM:
+            subset_value = self.veganism
+        elif subset == Aggregate.COURSE:
+            subset_value = self.course
+            
+        mean = Aggregate.objects.get_mean(parameter=parameter, subset=subset, subset_value=subset_value)
+        std_dev = Aggregate.objects.get_std_dev(parameter=parameter, subset=subset, subset_value=subset_value)
+        
+        ao_points = 10
+        step = (mean * 2) / float(ao_points - 1)
+        
+        points = []
+        if std_dev > 0:
+            for point in range(ao_points):
+                x = point * step
+                prob = (1 / (std_dev * math.sqrt(2 * math.pi))) * math.exp((-((x - mean)**2))/(2 * std_dev**2))
+                
+                points.append([x, prob])
+        
+        raise NotImplemented('Distribution of footprint data is currently unknown')
+        return points
 
 class RecipeImage(models.Model):
     

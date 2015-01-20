@@ -140,148 +140,260 @@
 		</div>
 			
 		<div id="graphic-information" class="recipe-image-overlay row" style="clear: both;">
-				<div id="veganism" class="graphic-information-icon">
-					{% if recipe.veganism == 2 %}
-			    	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Dit is een veganistisch recept" alt="" />
-			        {% elif recipe.veganism == 1 %}
-			    	<img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Dit is een vegetarisch recept" alt="" />
-			        {% elif recipe.veganism == 0 %}
-			    	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Dit is een niet-vegetarisch recept" alt="" />
-			    	{% endif %}
-			    </div>
-				<div id="fp-category" class="graphic-information-icon">
-					<span class="positioner">
-						<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" 
-						     title="{{ recipe.fp_category.extra_info }}"/>
-					</span>
-				</div>
-				<div id="recipe-footprint" class="graphic-information-icon">
-					<span id="recipe-footprint-text" class="text-overlay" 
-					      title="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">
-					      	{{ recipe.footprint|floatformat:2 }}
-					      	<span style="display: block;font-size:16px">kgCO₂ p.p.</span>
-					</span>
-				</div>
-				<div id="recipe-duration" class="graphic-information-icon">
-					<img src="{{ STATIC_URL }}img/decoration/clock.png" />
-					<span id="recipe-footprint-text" class="text-overlay" 
-					      title="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">
-					      {{ recipe.total_preparation_time }}
-					      <span style="display: block;font-size:18px;line-height:15px;">min</span>
-					</span>
-				</div>
-				<div id="recipe-upvotes" class="graphic-information-icon">
-					<div style="position: relative; display: inline-block; width: 60px; height: 100%;">
-						<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
-						{% if user.is_authenticated %}
-						<a id="upvote-button" href="#" onclick="upvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
-						<a id="downvote-button" href="#" onclick="downvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
-						{% else %}
-						<a id="upvote-button" href="{% url 'login' %}?next={{ request.get_full_path }}"><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
-						{% endif %}
-					</div>
-				</div>
-				<br class="clear" />
+			<div id="veganism" class="graphic-information-icon">
+				{% if recipe.veganism == 2 %}
+			    <img src="{{ STATIC_URL }}img/icons/vegan.png" class="popover-element"
+			     	 data-toggle="popover" data-trigger="click hover" data-placement="top"
+			         data-title="Veganistisch" data-content="Dit recept bevat geen vlees, vis of afgeleide dierlijke producten." />
+			    {% elif recipe.veganism == 1 %}
+		    	<img src="{{ STATIC_URL }}img/icons/vegetarian.png" class="popover-element"
+			     	 data-toggle="popover" data-trigger="click hover" data-placement="top"
+			         data-title="Vegetarisch" data-content="Dit recept bevat geen vless of vis, maar eventueel wel afgeleide dierlijke producten (bv. ei, koemelk, ...)." />
+		        {% elif recipe.veganism == 0 %}
+		    	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" class="popover-element"
+			     	 data-toggle="popover" data-trigger="click hover" data-placement="top"
+			         data-title="Niet-vegetarisch" data-content="Dit recept bevat kan vlees, vis of afgeleide dierlijke producten (bv. ei, koemelk, ...) bevatten." />
+		    	{% endif %}
+		    </div>
+			<div id="fp-category" class="graphic-information-icon">
+				<span class="positioner">
+					<img src="{{ STATIC_URL }}img/decoration/{{ recipe.fp_category.get_ribbon_image_name }}" class="popover-element"
+			     	 	 data-toggle="popover" data-trigger="click hover" data-placement="top" 
+					     data-title="Categorie {{ recipe.fp_category.get_name_display }}"
+					     data-content="{{ recipe.fp_category.extra_info }}" />
+				</span>
 			</div>
+			<div id="recipe-footprint" class="graphic-information-icon">
+				<span id="recipe-footprint-text" class="text-overlay popover-element" 
+				      data-toggle="popover" data-trigger="click hover" data-placement="top" 
+					  data-title="Ecologische Voetafdruk"
+					  data-content="Dit recept heeft een voetafdruk van {{ recipe.footprint|floatformat:2 }} kgCO&#8322; per portie.">
+			      	{{ recipe.footprint|floatformat:2 }}
+			      	<span style="display: block;font-size:16px">kgCO₂ p.p.</span>
+				</span>
+			</div>
+			<div id="recipe-duration" class="graphic-information-icon">
+				<img src="{{ STATIC_URL }}img/decoration/clock.png" />
+				<span id="recipe-footprint-text" class="text-overlay popover-element" 
+				      data-toggle="popover" data-trigger="click hover" data-placement="top" 
+					  data-title="Bereidingstijd"
+					  data-content="Dit recept duurt {{ recipe.total_preparation_time }} minuten om klaar te maken (waarvan je {{ recipe.active_time }} minuten actief bezig zal zijn).">
+				      {{ recipe.total_preparation_time }}
+				      <span style="display: block;font-size:18px;line-height:15px;">min</span>
+				</span>
+			</div>
+			<div id="recipe-upvotes" class="graphic-information-icon">
+				<div style="position: relative; display: inline-block; width: 60px; height: 100%;" class="popover-element"
+					 data-toggle="popover" data-trigger="click hover" data-placement="top" 
+					 data-title="Waardering"
+					 data-content="{% if recipe.upvotes <= 0 %}Nog niemand heeft aangegeven dit gerecht lekker te vinden.{% else %}{{ recipe.upvotes }} mensen vinden dit gerecht lekker.{% endif %}">
+					<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
+					{% if user.is_authenticated %}
+					<a id="upvote-button" href="#" onclick="upvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
+					<a id="downvote-button" href="#" onclick="downvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
+					{% else %}
+					<a id="upvote-button" href="{% url 'login' %}?next={{ request.get_full_path }}"><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
+					{% endif %}
+				</div>
+			</div>
+			<br class="clear" />
 		</div>
 	</div>
+</div>
 	
-	<div id="basic-information" class="container">
-		<h4>
-			{% if recipe.cuisine %}
-		    <span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
-		    <span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
-		    {% else %}
-		    <span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
-		    {% endif %}
-	    </h4>
-	    
-	    <p>
-	    	{{ recipe.description }}
-	    </p>
-	</div>
-                
-    <h2>
-      	<span>Ingrediënten</span>
-	</h2>
-	
-    <div>  	
-       	<div id="portions-changer">
-       		<h3>Porties</h3>
-       		<span id="portions-changer-input">
-       			<input id="portions-spinner" type="text" value={{ recipe.portions }} />
-       		</span>
-       		<br class="clear" />
-       	</div>
-	</div>
-	   
-	<div id="ingredients-wrapper" class="container">
-		<div id="ingredients">
-		</div>
-		<div id="ingredients-darkener">
-	      	<span id="ingredients-loader">
-	       		{% include "includes/big-ajax-loader.html" %}
-	       	</span>
-       	</div>
-	</div>
-		        
-	{% if recipe.extra_info %}
-	<div id="extra-info" class="container">
-		<h4>Extra info en benodigdheden</h4>
-	    <div>
-	       	{{ recipe.extra_info|linebreaks }}
-	    </div>
-	</div>
-	{% endif %}
-		        
-		        
-	<h2>
-	   	<span>Bereiding</span>
-	</h2>
-		        
-	<div id="instructions-container" class="container markdown-container">
-		<div id="instructions-warning">
-			Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
-		    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
-		</div>
-		{% if recipe.external %}
-		<a id="external-link" href="http://www.seasoning.be{% url 'external_recipe' recipe.id %}">
-		 	<button type="submit">Bekijk het volledige recept op {{ recipe.external_site.name }}</button>
-		</a>
-		{% else %}
-		<div id="instructions" itemprop="recipeInstructions">
-			{{ recipe.instructions|markdown|safe }}
-		</div>
+<div id="basic-information" class="row">
+	<h4 class="col-xs-12">
+		{% if recipe.cuisine %}
+	    <span itemprop="recipeCuisine">{{ recipe.cuisine }}</span>{% if recipe.course == 4 or recipe.course == 6 or recipe.course == 8 or recipe.course == 9 %}e{% endif %} 
+	    <span itemprop="recipeCategory">{{ recipe.get_course_display|lower }}</span>
+	    {% else %}
+	    <span itemprop="recipeCategory">{{ recipe.get_course_display }}</span>
 	    {% endif %}
-	</div>
-	        
-    <h2>
-    	<span>Grafieken</span>
-    </h2>
+    </h4>
+    
+    <p class="col-xs-12">
+    	{{ recipe.description }}
+    </p>
+</div>
                 
-    <div id="recipe-charts" class="container">
-		<div id="chart-tabs">
-	    	<ul>
-	        	<li><a href="#tabs-1">Dynamiek</a></li>
-	            <!-- <li><a href="#tabs-2">Verhoudingen</a></li>-->
-	        </ul>
-	        <div id="tabs-1">
-	            <div id="recipe-fpevo-chart">            
-	            	       
-	            </div>
-	        </div>
-	        <!-- 
-	        <div id="tabs-2">
-	        	<div id="recipe-fprel-chart">
-	                
-	            </div>
-	        </div>
-	        -->
-	    </div>
-	        
-		<div id="charts-ajax-loader">
-		    {% include "includes/big-ajax-loader.html" %}
-		</div>
+<h2 class="row">
+   	<span class="">Ingrediënten</span>
+</h2>
+	
+<div class="row">  	
+   	<div id="portions-changer" class="col-xs-12">
+   		<span>Porties</span>
+   		<span id="portions-changer-input">
+   			<input id="portions-spinner" type="text" value={{ recipe.portions }} />
+   		</span>
+   		<br class="clear" />
+   	</div>
+</div>
+  
+<div id="ingredients-wrapper">
+	<div id="ingredients">
+		
 	</div>
+
+	<div id="ingredients-darkener" class="row">
+      	<span id="ingredients-loader">
+       		{% include "includes/big-ajax-loader.html" %}
+       	</span>
+   	</div>
+</div>
+
+{% if recipe.extra_info %}
+<div id="extra-info" class="row">
+	<h4>Extra info en benodigdheden</h4>
+    <div>
+       	{{ recipe.extra_info|linebreaks }}
+    </div>
+</div>
+{% endif %}
+		        
+		        
+<h2 class="row">
+   	<span>Bereiding</span>
+</h2>
+		        
+<div id="instructions-container" class="row markdown-container">
+	<div id="instructions-warning" class="col-xs-12">
+		Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
+	    is dat deze instructies niet meer volledig accuraat zijn. Hou hier rekening mee.
+	</div>
+	{% if recipe.external %}
+	<div class="col-xs-12 col-sm-6 col-sm-offset-3">
+		<a id="external-link" class="btn btn-success" href="http://www.seasoning.be{% url 'external_recipe' recipe.id %}">
+		 	Bekijk het volledige recept op {{ recipe.external_site.name }}
+		</a>
+	</div>
+	{% else %}
+	<div id="instructions" itemprop="recipeInstructions" class="col-xs-12">
+		{{ recipe.instructions|markdown|safe }}
+	</div>
+    {% endif %}
+</div>
+	        
+<h2 class="row">
+   	<span>Grafieken</span>
+</h2>
+                
+<div id="recipe-charts" class="row">
+	
+	<script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+
+    <script type="text/javascript">
+    	google.setOnLoadCallback(drawCharts);
+    	
+    	jsonData = null;
+		
+		function drawCharts() {
+		
+			if (!jsonData) {
+				jsonData = $.ajax({
+		        	url: "{% url 'graph_rfe' recipe.id %}",
+		            dataType:"json",
+		            async: false
+		        }).responseJSON;
+			}
+
+    		var data = google.visualization.arrayToDataTable(jsonData.data);
+
+			var options = {
+	          	curveType: 'function',
+	          	vAxis: { 
+	          		minValue: 0,
+	          		title: 'Voetafdruk (per portie)'},
+	          	legend: { position: 'none' },
+	          	tooltip: {isHtml: true},
+	          	pointSize: 5,
+	          	colors: ['#629b31'],
+				chartArea: {'width': '85%', 'height': '80%'},
+	        };
+
+			var chart = new google.visualization.LineChart(document.getElementById('recipe-fpevo-chart'));
+
+        	google.visualization.events.addOneTimeListener(chart, 'ready', function () {
+        		
+        	    var container = document.querySelector('#recipe-fpevo-chart > div:last-child');
+        	    
+        	    function setPosition(e) {
+        	    	if (e && e.target) {
+        	        	var tooltip = $(e.target);
+        	          	setTimeout(function () {
+        	            	var left = parseFloat(tooltip.css('left')) - 49;
+        	            	var top = parseFloat(tooltip.css('top')) - 40;
+        	            	tooltip.css('left', left + 'px');
+        	            	tooltip.css('top', top + 'px');
+        	            	$(".google-visualization-tooltip").fadeIn(200);
+        	          	}, 1);
+        	      	} else {
+        	        	var tooltip = container.querySelector('.google-visualization-tooltip');
+        	        	var left = parseFloat(tooltip.style.left) - 49;
+        	        	var top = parseFloat(tooltip.style.top) - 40;
+        	        	tooltip.style.left = left + 'px';
+        	        	tooltip.style.top = top + 'px';
+        	        	$(".google-visualization-tooltip").fadeIn(200);
+        	      	}
+        	    }
+        	    
+        	    if (typeof MutationObserver === 'function') {
+        	    	var observer = new MutationObserver(function (m) {
+        	        	if (m.length && m[0].addedNodes.length) {
+        	          		setPosition(m);
+        	        	}
+        	      	});
+        	      	observer.observe(container, {
+        	        	childList: true
+        	      	});
+        	    } else if (document.addEventListener) {
+        	    	container.addEventListener('DOMNodeInserted', setPosition);
+        	    } else {
+        	    	container.attachEvent('onDOMNodeInserted', setPosition);
+        	    }
+			});
+        	
+        	chart.draw(data, options);
+        	
+      	}
+        
+      	$(window).resize(function(){
+			drawCharts();
+      	});
+    </script>
+	
+	
+	
+    <h4>Verloop van de voetafdruk doorheen het jaar</h4>
+    <div id="recipe-fpevo-chart">            
+    </div>
+     
+    <!-- 
+    <h4>In vergelijking met andere recepten</h4>
+	<div id="chart-tabs" class="col-xs-12">
+    	<ul>
+        	<li><a href="#tabs-1">Alle {{ recipe.get_course_display }}</a></li>
+            <li><a href="#tabs-2">Alle {{ recipe.get_veganism_display|lower }}e recepten</a></li>
+            <li><a href="#tabs-3">Alle recepten</a></li>
+        </ul>
+        <div id="tabs-1">
+        	<div id="recipe-fpdist-chart">
+        	
+        	</div>
+        </div>
+        <div id="tabs-2">
+        </div>
+        <div id="tabs-3">
+        </div>
+    </div>
+    -->
+</div>
 
 {% endblock %}

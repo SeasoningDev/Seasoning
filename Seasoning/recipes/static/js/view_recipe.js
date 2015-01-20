@@ -1,40 +1,3 @@
-//Image Slider starting function
-jssor_slider1_starter = function (containerId) {
-	var options = {
-			$AutoPlay: false,                                   //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
-			$SlideDuration: 500,                                //[Optional] Specifies default duration (swipe) for slide in milliseconds, default value is 500
-
-			$ThumbnailNavigatorOptions: {                       //[Optional] Options to specify and enable thumbnail navigator or not
-				$Class: $JssorThumbnailNavigator$,              //[Required] Class to create thumbnail navigator instance
-				$ChanceToShow: 2,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
-
-				$ActionMode: 1,                                 //[Optional] 0 None, 1 act by click, 2 act by mouse hover, 3 both, default value is 1
-				$SpacingX: 8,                                   //[Optional] Horizontal space between each thumbnail in pixel, default value is 0
-				$DisplayPieces: 10,                             //[Optional] Number of pieces to display, default value is 1
-				$ParkingPosition: 360                           //[Optional] The offset position to park thumbnail
-			}
-	};
-
-	var jssor_slider1 = new $JssorSlider$(containerId, options);
-	
-	//responsive code begin
-	//you can remove responsive code if you don't want the slider scales while window resizes
-	function ScaleSlider() {
-	    var parentWidth = jssor_slider1.$Elmt.parentNode.clientWidth;
-	    if (parentWidth)
-	        jssor_slider1.$ScaleWidth(Math.min(parentWidth, 1920));
-	    else
-	        window.setTimeout(ScaleSlider, 30);
-	}
-	ScaleSlider();
-
-	$(window).bind("load", ScaleSlider);
-	$(window).bind("resize", ScaleSlider);
-	$(window).bind("orientationchange", ScaleSlider);
-	//responsive code end
-};
-
-
 function upvote() {
 	$.ajax({
 		url: upvote_url,
@@ -54,7 +17,6 @@ function downvote() {
 		$("#upvote-button").show();
 	});
 }
-
 
 
 
@@ -103,12 +65,12 @@ function load_ingredient_list() {
 // Correctly display the contributed percentage of each ingredient to the total recipe footprint
 function adjust_footprint_percentages() {
 	var portions = parseInt($("#portions-changer input").val());
-    var total_footprint = parseFloat($("#recipe-total-footprint").val().replace(',', '.'))*portions;
+    var total_footprint = parseFloat($("#recipe-total-footprint").val().replace(',', '.'));
     $('.ingredient').each(function() {
         var footprint = parseFloat($(this).find('.footprint-number').text().replace(',', '.'));
         var percentage = (footprint/total_footprint)*100;
         $(this).find('.percentage-number').text(parseInt(percentage) + '%');
-        $(this).find('.footprint-fill').animate({
+        $(this).find('.progress-bar').animate({
             width: percentage + "%"
         }, 1000);
     });
@@ -119,12 +81,17 @@ function adjust_footprint_percentages() {
 //Make sure the '+' icons behind ingredients do their job
 function fix_moreinfo_links() {
     $('.ingredient-moreinfo-link, .endangered-icon').click(function() {
-        var ing_id = $(this).parents('.ingredient').find('.ingredient-id').text();
-        var $moreinfo = $(this).parents('.ingredient').find('.moreinfo');
+    	var $ing = $(this).parents('.ingredient');
+    	
+        var ing_id = $ing.find('.ingredient-id').text();
+        var $moreinfo = $ing.find('.moreinfo');
+        
         if ($moreinfo.is(':hidden')) {
-            $moreinfo.slideDown(500);
-            $(this).children('img').attr('src', '/static/img/icons/less.png');
+            $(this).children('.more').hide();
+            $(this).children('.less').show();
+            
             if (!$moreinfo.hasClass('loaded')) {
+            	$moreinfo.height('70px');
                 $.ajax({
                     url: ingredients_avail_ajax_url,
                     type: "POST",
@@ -133,13 +100,13 @@ function fix_moreinfo_links() {
                         $moreinfo.html(data);
                         fix_ingredient_availabilities();
                         update_tooltips();
-                        $(".basic-moreinfo").each(function() {
+                        $moreinfo.find(".basic-moreinfo").each(function() {
                             var height = 0;
                             $(this).parent(".moreinfo").children().each(function() {
                                 height = height + $(this).height();
                             })
                             $(this).parent(".moreinfo").animate({
-                                height: height + 30,
+                                height: height + 35,
                             });
                         });
                         $moreinfo.addClass('loaded');
@@ -147,91 +114,40 @@ function fix_moreinfo_links() {
                 });
             }
         } else {
-            $moreinfo.slideUp(500);
-            $(this).children('img').attr('src', '/static/img/icons/add.png');
+            $(this).children('.less').hide();
+            $(this).children('.more').show();
         }
-        return false;
     });
 }
 
-
-
-
-// Graph Loading Functions
-function load_evochart() {
-	$("#charts-ajax-loader").show();
-	$.ajax({
-		url: '/recipes/data/fpevo/',
-		type: "POST",
-		dataType: "json",
-		data : {recipe : recipe_id},
-		success: function(data) {
-			evochart.addSeries({
-				name: "Vandaag",
-				data: [[12*(data.doy/365), 100], [12*(data.doy/365), -5]],
-				color: "#000",
-				tooltip: {
-					headerFormat: "",
-					pointFormat: "Vandaag (" + $.datepicker.formatDate('dd-mm-yy', new Date()) + ")"
-				}
-			});
-			evochart.addSeries({
-				name: "Voetafdruk",
-				data: data.footprints
-			});
-			evochart.yAxis[0].setExtremes(0, Math.max.apply(Math, data.footprints)*1.1);
-			$("#charts-ajax-loader").hide();
-		},
-		cache: false
-	});
-}
-
 /**
-        Unused for now
-        function load_relchart() {
-            $("#charts-ajax-loader").show();
-            $.ajax({
-                url: '/recipes/data/fprel/',
-                type: "POST",
-                dataType: "json",
-                data : {recipe : recipe_id},
-                success: function(data) {
-                    relchart.addSeries({
-                    	name: "De voetafdruk van dit recept",
-                    	data: [[data.fp, 100], [data.fp, -5]],
-                    	tooltip: {
-                    		headerFormat: "",
-                    		pointFormat: "De voetafdruk van dit recept (" + Math.round(data.fp*100)/100 + "kgCO²)"
-                    	}
-                    });
-                    relchart.addSeries({
-                      name: "Alle recepten",
-                      data: data.all_fps,
-                      pointInterval: data.interval_length,
-                    });
-                    relchart.addSeries({
-                      name: "Enkel {{ recipe.get_course_display }}en",
-                      data: data.cat_fps,
-                      pointInterval: data.interval_length,
-                    });
-                    relchart.addSeries({
-                      name: "Enkel {{ recipe.get_veganism_display }}e gerechten",
-                      data: data.veg_fps,
-                      pointInterval: data.interval_length,
-                    });
-                    relchart.xAxis[0].setExtremes(0, data.max_fp, true);
-                    relchart.yAxis[0].setExtremes(0, data.all_fps[0]*1.1);
-                    $("#charts-ajax-loader").hide();
-                },
-                cache: false
-            });
-        }
+ * A function that detects if a user presses the enter key when in the applied element
  */
+$.fn.pressEnter = function(fn) {
+
+    return this.each(function() {
+    	$(this).unbind('enterPress');
+        $(this).bind('enterPress', fn);
+        $(this).keydown(function(e) {
+            if(e.keyCode == 13)
+            {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $(this).keyup(function(e){
+            if(e.keyCode == 13)
+            {
+              $(this).trigger("enterPress");
+            }
+        });
+    });  
+ };
 
 
-
-var tab_1_loaded = false;
 var ingredient_reload_timer;
+var tab_1_loaded = false;
+
 $(function() {
 	
 	$("#upload-image-form input#id_image").change(function() {
@@ -242,18 +158,20 @@ $(function() {
 
 	$("#portions-spinner").spinner({
 		min: 1,
-		change: function() {
+		change: load_ingredient_list,
+		stop: function() {
+			$this = $(this);
 			clearTimeout(ingredient_reload_timer);
-			ingredient_reload_timer = setTimeout(load_ingredient_list, 1000);
+			ingredient_reload_timer = setTimeout(function() {
+				$this.blur();
+			}, 1000);
 		},
-		spin: function() {
-			clearTimeout(ingredient_reload_timer);
-			ingredient_reload_timer = setTimeout(load_ingredient_list, 1000);
-		},
-	});
-
-	$('#portions-spinner').change(function() {
-		load_ingredient_list();
+	}).pressEnter(function() {
+		$this = $(this);
+		clearTimeout(ingredient_reload_timer);
+		ingredient_reload_timer = setTimeout(function() {
+			$this.blur();
+		}, 1000);
 	});
     
 	
@@ -267,108 +185,6 @@ $(function() {
                     }
                 } */
 	});
-	
-	evochart = new Highcharts.Chart({
-		chart: {
-			renderTo: 'recipe-fpevo-chart',
-			type: 'spline',
-		},
-		plotOptions: {
-			spline: {
-				//pointPlacement: "on"
-			}
-		},
-		title: {
-			text: 'Verloop voetafdruk doorheen het jaar',
-			style: {
-				color: '#333'
-			}
-		},
-		legend: {
-			enabled: false
-		},
-		xAxis: {
-			title: {
-				text: 'Maand',
-				style: {
-					fontWeight: 'normal',
-					color: '#333'
-				}
-			},
-			min: 1,
-			max: 12,
-			categories: ['prejan', 'Jan', 'Feb', 'Maa', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec', 'postdec']
-		},
-		yAxis: {
-			title: {
-				text: 'Voetafdruk (kgCO2)',
-				style: {
-					fontWeight: 'normal',
-					color: '#333'
-				}
-			},
-			min: 0
-		},
-		tooltip: {
-			valueSuffix: ' kgCO2 per 4 porties'
-		},
-		colors: [
-		         '#629B31'
-		         ],
-	});
-	/**
-        	Unused for now
-            relchart = new Highcharts.Chart({
-                chart: {
-                    renderTo: 'recipe-fprel-chart',
-                    type: 'line',
-                },
-                title: {
-                    text: 'Voetafdruk relatief t.o.v. andere recepten',
-                    style: {
-                        color: '#333'
-                    }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'top',
-                    floating: true,
-                    y: 30,
-                    backgroundColor: "#FFF"
-                },
-                xAxis: {
-                    title: {
-                        text: 'Voetafdruk (kgCO2)',
-                        style: {
-                            fontWeight: 'normal',
-                            color: '#333'
-                        }
-                    },
-                    min: 0,
-                    max: 1,
-                },
-                yAxis: {
-                    title: {
-                        text: 'Aantal recepten met deze voetafdruk',
-                        style: {
-                            fontWeight: 'normal',
-                            color: '#333'
-                        }
-                    },
-                    min: 0,
-                    tickInterval: 10,
-                },
-                tooltip: {
-                    headerFormat: "",
-                    pointFormat: '<span style="color:{series.color}">{series.name}</span>'
-                },
-                colors: [
-                    "#000", '#629B31', '#386312', '#C0E2A2'
-                ]
-            });
-	 */
-    load_evochart();
     
     $(".add-image-thumb").click(function() {
 		$("#upload-image-form input#id_image").click();
@@ -379,4 +195,8 @@ $(function() {
     	e.stopPropagation();
     	return confirm('Weet u zeker dat u deze afbeelding wil verwijderen?');
     })
+    
+    $(".popover-element").popover({
+    	container: '#graphic-information'
+    });
 });

@@ -413,3 +413,10 @@ SSL_CERTIFICATE_FILE = secrets.SSL_CERTIFICATE_FILE
 UWSGI_LOG_FILE = secrets.UWSGI_LOG_FILE
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+
+# This is an array with, for each category (A+, A, B, C, D), the percentage of
+# recipes with the lowest footprints that should fall under this category
+# If a negative percentage is given, all recipes will fall under this category
+#                              A+   A     B    C     D
+RECIPE_CATEGORY_PERCENTAGES = [0.1, 0.25, 0.5, 0.75, -1]
