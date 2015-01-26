@@ -4,7 +4,7 @@
 
 {% block meta_description %}{{ recipe.description }}{% endblock %}
 
-{% block title %}{{ recipe.name }}{% endblock %}
+{% block title %}{% if edit %}Recept {% if recipe.is_temp %}toevoegen{% else %}wijzigen{% endif %}{% else %}{{ recipe.name }}{% endif %}{% endblock %}
 
 {% block extra_link %}
 	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
@@ -12,8 +12,14 @@
 
 {% block extra_script %}
 	{% if edit %}
+	<script type="text/javascript"> 
+		var ingredient_list_url = "{% url 'ajax_ingredient_name_list' %}";
+		var ingredient_units_url = "{% url 'ajax_ingredient_units' %}"
+	</script>
 	<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
+	<script src="{{ STATIC_URL }}js/forms.js"></script>
 	<script src="{{ STATIC_URL }}js/edit_recipe.js"></script>
+	<script src="{{ STATIC_URL }}js/edit_recipe_ingredients.js"></script>
 	{% else %}
 	<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
 	
@@ -44,7 +50,7 @@
 {% block messages %}{% endblock %}
 
 {% if edit %}
-<form id="edit-recipe-form" action="{% url 'ajax_edit_recipe' recipe.id %}" method="post">
+<form id="edit-recipe-form" action="{% if recipe.is_temp %}{% url 'ajax_edit_incomplete_recipe' recipe.id %}{% else %}{% url 'ajax_edit_recipe' recipe.id %}{% endif %}" method="post">
 	{% csrf_token %}
 {% endif %}
 
@@ -55,7 +61,7 @@
 				{% if edit %}
 				<h1 id="recipe-name">
 					<span class="editable-field" default="(Naam van het recept)">{{ recipe.name }}</span>
-					{{ form.name }}
+					{{ form.name|default_if_none:'' }}
 				</h1>
 				{% else %}
 				<h1>{{ recipe.name }}</h1>
@@ -260,16 +266,20 @@
 <div id="basic-information" class="row">
 	{% if edit %}
 	<div class="col-xs-12" style="margin-bottom: 60px;">
-		<div id="cuisine-changer" class="field-changer">
-			<h3>Herkomst van het recept</h3>
-			<span class="editable-field" default="(Herkomst van het recept)">{{ recipe.cuisine }}</span>
-			{{ form.cuisine }}
+		<div id="cuisine-changer" class="field-changer row">
+			<h3 class="col-xs-12 col-sm-6">Herkomst van het recept</h3>
+			<div class="col-xs-12-col-sm-6">
+				<span class="editable-field" default="(Herkomst van het recept)">{{ recipe.cuisine|default_if_none:'---------' }}</span>
+				{{ form.cuisine }}
+			</div>
 			<br class="clear" />
 		</div>
-		<div id="course-changer" class="field-changer">
-			<h3>Soort recept</h3>
-			<span class="editable-field" default="(Soort recept)">{{ recipe.get_course_display }}</span>
-			{{ form.course }}
+		<div id="course-changer" class="field-changer row">
+			<h3 class=" col-xs-12 col-sm-6">Soort recept</h3>
+			<div class="col-xs-12-col-sm-6">
+				<span class="editable-field" default="(Soort recept)">{{ recipe.get_course_display|default_if_none:'---------' }}</span>
+				{{ form.course }}
+			</div>
 			<br class="clear" />
 		</div>
 	</div>
@@ -322,8 +332,25 @@
    		<br class="clear" />
    	</div>
 </div>
-  
-<div id="ingredients-wrapper">
+
+{% if edit %}
+<div id="swaplist" class="ingredients-wrapper" style="position: relative;"></div>
+{% endif %}
+
+<div id="ingredients-wrapper" class="ingredients-wrapper row">
+	{% if edit %}
+	
+	<div id="edit-ingredients-container">
+	
+	{% include "includes/edit_ingredients_list.html" %}
+	
+	</div>
+	
+
+	<div id="ingredient-buttons" class="col-xs-12 text-center">
+		<a id="add-ingredient-button" class="btn btn-success" href="#">Ingredïënt toevoegen</a>
+	</div>
+	{% else %}
 	<div id="ingredients">
 		
 	</div>
@@ -333,6 +360,7 @@
        		{% include "includes/big-ajax-loader.html" %}
        	</span>
    	</div>
+   	{% endif %}
 </div>
 
 {% if recipe.extra_info %}
@@ -359,10 +387,16 @@
 		        
 <div id="instructions-container" class="row markdown-container">
 	{% if edit %}
-	<div id="instructions" class="editable-field">
-		{{ recipe.instructions|markdown|safe }}
+	<div class="col-xs-12">
+		<div id="instructions" class="editable-field">
+			{% if recipe.instructions %}
+			<div>{{ recipe.instructions|markdown|safe }}</div>
+			{% else %}
+			(Bereidingsinstructies voor het recept)
+			{% endif %}
+		</div>
+		{{ form.instructions }}
 	</div>
-	{{ form.instructions }}
 	{% else %}
 	<div id="instructions-warning" class="col-xs-12">
 		Opgelet! De onderstaande instructies zijn opgesteld voor {{ recipe.portions }} porties. Je hebt het aantal porties aangepast waardoor het mogelijk
@@ -392,7 +426,7 @@
 </form>
 
 <div id="finish-editing-container">
-	<a href="{% url 'view_recipe' recipe.id %}" class="btn btn-success">Klik hier als je klaar bent met dit recept te wijzigenc</a>
+	<a href="{% url 'view_recipe' recipe.id %}" class="btn btn-success">Klik hier als je klaar bent met dit recept te wijzigen</a>
 </div>
 
 {% else %}   

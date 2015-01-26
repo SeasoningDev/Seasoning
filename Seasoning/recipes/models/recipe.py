@@ -1,6 +1,7 @@
 import time
 from django.db import models
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError,\
+    ObjectDoesNotExist
 from ingredients.models.units import Unit
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from imagekit.processors.resize import SmartResize
@@ -14,6 +15,8 @@ from django.utils.functional import cached_property
 from recipes.models.std import Aggregate, ExternalSite
 from django.utils.translation import ugettext_lazy as _
 import math
+from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -126,10 +129,12 @@ class Recipe(models.Model):
                                 help_text=_("The type of cuisine this recipe represents."))
     description = models.TextField(_('Description'), validators=[MaxLengthValidator(300)],
                                    help_text=_("A few sentences describing the recipe (Maximum 300 characters)."))
-    portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
+    portions = models.PositiveIntegerField(_('Portions'), validators=[MinValueValidator(1)], 
+                                           help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
-    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
-    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
+    active_time = models.PositiveIntegerField(_('Active time'), validators=[MinValueValidator(1)], 
+                                              help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
+    passive_time = models.PositiveIntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
     
     ingredients = models.ManyToManyField(Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
@@ -178,6 +183,9 @@ class Recipe(models.Model):
     
     def __unicode__(self):
         return unicode(self.name)
+    
+    def is_temp(self):
+        return False
     
     def publish(self):
         return self.complete_information and self.visible and self.accepted
@@ -396,6 +404,8 @@ class RecipeImage(models.Model):
 
 class UsesIngredient(models.Model):
     
+    UNKNOWN_INGREDIENT_FIELD = 'unknown_ingredient_name'
+    
     class Meta:
         db_table = 'usesingredient'
     
@@ -403,12 +413,24 @@ class UsesIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, related_name='used_in', db_column='ingredient')
     
     group = models.CharField(max_length=100, blank=True)
-    amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
+    amount = models.FloatField(default=0, validators=[MinValueValidator(0.001)])
     unit = models.ForeignKey(Unit, db_column='unit')
     
     # Set this to false if this object should not be saved (e.g. when certain fields have been 
     # overwritten for portions calculations)
     save_allowed = True
+    
+    def is_dummy(self):
+        return self.ingredient.is_dummy()
+    
+    def ingredient_display(self):
+        print(self.is_dummy())
+        if self.is_dummy():
+            return self.temporary_ingredient.name
+        
+        if self.amount == 1 or not self.ingredient.plural_name:
+            return self.ingredient.name
+        return self.ingredient.plural_name
     
     def footprint(self, date=None):
         if not self.ingredient.accepted:
@@ -435,11 +457,10 @@ class UsesIngredient(models.Model):
             # If the ingredient is not accepted, it might not have any useable units. To prevent
             # unwanted errors, skip the validation
             return self
-        try:
-            self.ingredient.useable_units.get(pk=self.unit.pk)
+        if self.ingredient.can_use_unit(self.unit):
             return self
-        except Unit.DoesNotExist:
-            raise ValidationError('This unit cannot be used for measuring this Ingredient.')
+        else:
+            raise ValidationError(_('This unit cannot be used for measuring this Ingredient.'))
         
     
     def save(self, update_recipe_aggregates=True, *args, **kwargs):
@@ -447,6 +468,28 @@ class UsesIngredient(models.Model):
             raise PermissionDenied('Saving this object has been disallowed')
         
         ret = super(UsesIngredient, self).save(*args, **kwargs)
+        
+        if self.ingredient.is_dummy():
+            # This means there should be a TemporaryIngredient referencing this UsesIngredient
+            try:
+                temp_ing = self.temporary_ingredient
+            except ObjectDoesNotExist:
+                from t_recipe import TemporaryIngredient
+                temp_ing = TemporaryIngredient(used_by=self)
+                if not settings.DEBUG:
+                    subject = 'Ingredient aangevraagd'
+                    message = 'Er is een ingredient ({}) aangevraagd voor het recept \"{}\" (<a href="https://www.seasoning.be{}">link</a>) aangepast door {}'.format(
+                                    getattr(self, self.UNKNOWN_INGREDIENT_FIELD),
+                                    self.recipe.name,
+                                    reverse('view_recipe', args=[self.recipe.id]),
+                                    self.recipe.author.get_full_name())
+                    send_mail(subject, '', 
+                              'ingredients@seasoning.be',
+                              ['bram@seasoning.be'], fail_silently=False, html_message=message)
+            temp_ing.name = getattr(self, self.UNKNOWN_INGREDIENT_FIELD)
+            temp_ing.save()
+        elif hasattr(self, 'temporary_ingredient'):
+            self.temporary_ingredient.delete()
         
         if update_recipe_aggregates:
             self.recipe.recalculate_ingredient_aggregates()

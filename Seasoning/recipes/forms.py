@@ -1,14 +1,9 @@
-import recipes
 from django import forms
 from django.forms.widgets import RadioSelect, CheckboxSelectMultiple
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from django.core.exceptions import ValidationError
-from django.forms.util import ErrorDict
-from general.forms import FormContainer
-from markitup.widgets import MarkItUpWidget
 from ingredients.fields import AutoCompleteSelectIngredientField
-from recipes.models import Recipe, UsesIngredient, Cuisine, RecipeImage
-from django.utils.translation import ugettext_lazy as _
+from recipes.models import Recipe, Cuisine, RecipeImage
+from recipes.models.t_recipe import IncompleteRecipe
+from recipes.models.recipe import UsesIngredient
 
 class EditRecipeForm(forms.ModelForm):
     
@@ -25,53 +20,23 @@ class EditRecipeForm(forms.ModelForm):
 class AddRecipeForm(forms.ModelForm):
     
     class Meta:
-        model = Recipe
-        exclude = ['author', 'time_added',
-                   'rating', 'number_of_votes',
-                   'thumbnail', 'accepted']
-    
-    class Media:
-        css = {
-            'all': ('css/forms.css',)
+        model = IncompleteRecipe
+        fields = ('name', 'active_time', 'passive_time', 'course', 'cuisine', 
+                  'description', 'portions', 'extra_info', 'instructions')
+        widgets = {
+            'active_time': forms.widgets.TextInput(),
+            'passive_time': forms.widgets.TextInput(),
+            'portions': forms.widgets.TextInput(),
         }
-    
-    def save(self, author, commit=True):
-        recipe = super(AddRecipeForm, self).save(commit=False)
-        recipe.author = author
-        return recipe.save()
-
-class EditRecipeBasicInfoForm(forms.ModelForm):
-    
-    class Meta:
-        model = Recipe
-        fields = ['name', 'course', 'cuisine',
-                  'description', 'image']
-    
-    class Media:
-        css = {
-            'all': ('css/forms.css',)
-        }
-
-class EditRecipeIngredientInfoForm(forms.ModelForm):
-    
-    class Meta:
-        model = Recipe
-        fields = ['portions', 'extra_info']
-    
-    class Media:
-        css = {
-            'all': ('css/forms.css',)
-        }
-    
-    request_unknown_ingredients = forms.BooleanField(required=False)
-    
+        
 class MultipleSeparatorsFloatField(forms.FloatField):
     
-    def to_python(self, value):
+    def clean(self, value):
         value = value.replace(',', '.')
-        return forms.FloatField.to_python(self, value)
+        return super(MultipleSeparatorsFloatField, self).clean(value)
 
-class UsesIngredientForm(forms.ModelForm):    
+class UsesIngredientForm(forms.ModelForm):
+    
     class Meta:
         model = UsesIngredient
         exclude = []
@@ -80,110 +45,37 @@ class UsesIngredientForm(forms.ModelForm):
     group = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput(attrs={'class': 'group'}))
     amount = MultipleSeparatorsFloatField(widget=forms.TextInput(attrs={'class': 'amount'}))
     
-    def __init__(self, *args, **kwargs):
-        form = super(UsesIngredientForm, self).__init__(*args, **kwargs)
-        if self.instance.pk is not None:
-            self.fields['unit'].queryset = self.instance.ingredient.useable_units.all()
-        return form
-
-    def _get_changed_data(self, *args, **kwargs):
-        super(UsesIngredientForm, self)._get_changed_data(*args, **kwargs)
-        # If group is in changed_data, but no other fields are filled in, remove group so
-        # the form will not be validated or saved
-        if 'group' in self._changed_data and len(self._changed_data) == 1:
-            contains_data = False
-            for name in ['ingredient', 'amount', 'unit']:
-                field = self.fields[name]
-                prefixed_name = self.add_prefix(name)
-                data_value = field.widget.value_from_datadict(self.data, self.files, prefixed_name)
-                if data_value:
-                    contains_data = True
-                    break
-            if not contains_data:
-                self._changed_data.remove('group')
-        return self._changed_data
-    changed_data = property(_get_changed_data)
-
-class IngredientsFormSet(BaseInlineFormSet):
-    """
-    Require at least one form in the formset to be completed.
-    
-    """
-    unknown_ingredients = []
-    unknown_ingredients_allowed = False
-    
-    def clean(self):
-        # TODO: fix so that when a certain parameter is given, unknown ingredient errors are ignored
-        super(IngredientsFormSet, self).clean()
-        if any(len(errors) > 0 for errors in self.errors):
-            # Check if any errors were made except unknown ingredient errors
-            for form in self.forms:
-                errors = dict(form.errors)
-                if len(errors) <= 0:
-                    continue
-                if not 'ingredient' in errors:
-                    # Ingredient doesn't have errors
-                    return self
-                unknown_ing_error_msg = form['ingredient'].field.unknown_ingredient_error_message
-                if len(errors) > 1:
-                    # Multiple fields have errors
-                    if 'ingredient' in errors:
-                        for i in range(len(errors['ingredient'])):
-                            if unknown_ing_error_msg in errors['ingredient'][i]:
-                                del form.errors['ingredient'][i]
-                                break
-                    return self
-                if len(errors['ingredient']) > 1 or not unknown_ing_error_msg in errors['ingredient'][0]:
-                    # Ingredient field has multiple errors, or not the error we are looking for
-                    return self
-            
-            # Only unknown ingredient errors after this point
-            unknown_ingredients = []
-            for form in self.forms:
-                if form.errors:
-                    # If the form has errors, we known its an unknown ingredient error
-                    unknown_ingredients.append({'name': form['ingredient'].value(),
-                                                'unit': form.cleaned_data['unit']})
-                    form._errors = ErrorDict()
-            self._errors = self.error_class()
-            self.unknown_ingredients = unknown_ingredients
-            if self.unknown_ingredients_allowed:
-                return self
-            raise ValidationError(_('Unknown ingredients found'))
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(UsesIngredientForm, self).clean(*args, **kwargs)
         
-        # Check that at least one form has been completed.
-        completed = 0
-        for cleaned_data in self.cleaned_data:
-            # form has data and we aren't deleting it.
-            if cleaned_data and not cleaned_data.get('DELETE', False):
-                completed += 1
-
-        if completed < 1:
-            raise forms.ValidationError(_("At least one Ingredient is required."))
-
-class EditRecipeIngredientsForm(FormContainer):
+        if cleaned_data['ingredient'].is_dummy():
+            cleaned_data[UsesIngredient.UNKNOWN_INGREDIENT_FIELD] = self.data['{}-ingredient-text'.format(self.prefix)]
+            
+        return cleaned_data
     
-    ingredients_general_info = EditRecipeIngredientInfoForm
-    ingredients = inlineformset_factory(Recipe, UsesIngredient, extra=1,
-                                        form=UsesIngredientForm, formset=IngredientsFormSet)
+    def save(self, *args, **kwargs):
+        if UsesIngredient.UNKNOWN_INGREDIENT_FIELD in self.cleaned_data:
+            setattr(self.instance, UsesIngredient.UNKNOWN_INGREDIENT_FIELD, self.cleaned_data[UsesIngredient.UNKNOWN_INGREDIENT_FIELD])
+        return super(UsesIngredientForm, self).save(*args, **kwargs)
     
-    def is_valid(self):
-        valid = self.forms['ingredients_general_info'].is_valid()
-        if valid and 'request_unknown_ingredients' in self.forms['ingredients_general_info'].cleaned_data and self.forms['ingredients_general_info'].cleaned_data['request_unknown_ingredients']:
-            self.forms['ingredients'].unknown_ingredients_allowed = True
-        return valid & self.forms['ingredients'].is_valid()
-
-
-class EditRecipeInstructionsForm(forms.ModelForm):
     
-    class Meta:
-        model = Recipe
-        fields = ['active_time', 'passive_time', 'instructions']
-    
-    instructions = forms.CharField(label=_('Instructions'), widget=MarkItUpWidget(markitup_set='js/recipes'))
-    
-    def save(self):
-        super(EditRecipeInstructionsForm, self).save()
+#     def _get_changed_data(self, *args, **kwargs):
+#         super(UsesIngredientForm, self)._get_changed_data(*args, **kwargs)
+#         # If group is in changed_data, but no other fields are filled in, remove group so
+#         # the form will not be validated or saved
+#         if 'group' in self._changed_data and len(self._changed_data) == 1:
+#             contains_data = False
+#             for name in ['ingredient', 'amount', 'unit']:
+#                 field = self.fields[name]
+#                 prefixed_name = self.add_prefix(name)
+#                 data_value = field.widget.value_from_datadict(self.data, self.files, prefixed_name)
+#                 if data_value:
+#                     contains_data = True
+#                     break
+#             if not contains_data:
+#                 self._changed_data.remove('group')
+#         return self._changed_data
+#     changed_data = property(_get_changed_data)
     
 
 class SearchRecipeForm(forms.Form):
@@ -212,7 +104,7 @@ class SearchRecipeForm(forms.Form):
     cuisine = forms.ModelMultipleChoiceField(queryset=Cuisine.objects.all(), required=False, label='Keuken',
                                              widget=CheckboxSelectMultiple())
     
-    course = forms.MultipleChoiceField(required=False, choices=recipes.models.Recipe.COURSES, label='Maaltijd',
+    course = forms.MultipleChoiceField(required=False, choices=Recipe.COURSES, label='Maaltijd',
                                        widget=CheckboxSelectMultiple())
     
     include_ingredients_operator = forms.ChoiceField(widget=RadioSelect, choices=OPERATOR_CHOICES, label='', initial=OPERATOR_CHOICES[1][0], required=False)

@@ -6,23 +6,24 @@ from ingredients.forms import SearchIngredientForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from ingredients.models.units import Unit
 
+@csrf_exempt
 def ajax_ingredient_name_list(request):
-    # TODO: rewrite javascript using this view
     """
     An ajax call that returns a json list with every ingredient 
     name or synonym containing the given search query
     
     """    
-    if request.method == 'POST' and request.is_ajax():
-        query = request.POST.get('query', '')
+    if request.method == 'GET' and request.is_ajax():
+        query = request.GET.get('term', '')
         
-        # Query the database for ingredients with a name of synonym like the query
-        names = list(Ingredient.objects.filter(name__icontains=query, accepted=True).values_list('name', flat=True).order_by('name'))
-        names.extend(Synonym.objects.filter(name__icontains=query, ingredient__accepted=True).values_list('name', flat=True).order_by('name'))
+        # Query the database for ingredients with a name or synonym like the query
+        ingredients = list(Ingredient.objects.filter(name__icontains=query, accepted=True).values_list('id', 'name').order_by('name'))
+        ingredients.extend(Synonym.objects.filter(name__icontains=query, ingredient__accepted=True).values_list('ingredient_id', 'name').order_by('name'))
         
         # Convert results to dict
-        result = [dict(zip(['value', 'label'], [name, name])) for name in sorted(names)]
+        result = [{'label': name, 'value': ing_id} for (ing_id, name) in sorted(ingredients, key=lambda x: x[1])]
         
         # Serialize to json
         ingredients_json = json.dumps(result)
@@ -31,7 +32,22 @@ def ajax_ingredient_name_list(request):
         return HttpResponse(ingredients_json, content_type='application/javascript')
     
     # If this is not an ajax request, permission is denied
-    raise PermissionDenied
+    raise PermissionDenied()
+
+@csrf_exempt
+def ajax_ingredient_units(request):
+    if request.method == 'POST' and request.is_ajax():
+        ing_id = request.POST.get('ing_id', None)
+        
+        if ing_id is not None:
+            if ing_id == '':
+                useable_units = Unit.objects.all()
+            else:
+                useable_units = Unit.objects.filter(useable_by__ingredient_id=ing_id)
+            data = json.dumps({unit.id: unit.name for unit in useable_units})
+            return HttpResponse(data)
+        
+    raise PermissionDenied()
 
 def ajax_ingredient_list(request):
     """

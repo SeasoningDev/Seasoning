@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from recipes.models.std import ExternalSite
-from recipes.models.recipe import Recipe, Cuisine
+from recipes.models.recipe import Recipe, Cuisine, UsesIngredient
 from django.core.validators import MaxLengthValidator, MinValueValidator
 from ingredients.models.ingredients import Ingredient
 from ingredients.models.units import Unit
@@ -18,6 +18,9 @@ class TemporaryIngredient(models.Model):
     
     ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
     name = models.CharField(max_length=500)
+    
+    # Field for existing recipes using an unknown ingredient
+    used_by = models.OneToOneField(UsesIngredient, null=True, blank=True, related_name='temporary_ingredient')
     
     def __unicode__(self):
         if self.ingredient is not None:
@@ -45,10 +48,10 @@ class TemporaryUnit(models.Model):
 
 class IncompleteRecipe(models.Model):
     
-    name = models.CharField(_('Name'), max_length=100,
+    name = models.CharField(_('Name'), max_length=100, default='',
                             help_text=_('The names of the recipe.'),
                             null=True, blank=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='incomplete_recipes', null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='incomplete_recipes')
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)
@@ -63,28 +66,37 @@ class IncompleteRecipe(models.Model):
                                 null=True, blank=True)
     cuisine_proposal = models.CharField(max_length=50, null=True, blank=True)
     
-    description = models.TextField(_('Description'), validators=[MaxLengthValidator(300)],
+    description = models.TextField(_('Description'), 
+                                   default='',
+                                   validators=[MaxLengthValidator(300)],
                                    help_text=_("A few sentences describing the recipe (Maximum 300 characters)."),
                                    null=True, blank=True)
-    portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
+    portions = models.PositiveIntegerField(_('Portions'), default=0,
+                                           help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'),
                                            null=True, blank=True)
-    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'),
+    active_time = models.IntegerField(_('Active time'), default=0, 
+                                      help_text=_('The time needed to prepare this recipe where you are actually doing something.'),
                                       null=True, blank=True)
-    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
+    passive_time = models.IntegerField(_('Passive time'), default=0, 
+                                       help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
                                        null=True, blank=True)
     
     ingredients = models.ManyToManyField(TemporaryIngredient, through='TemporaryUsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='',
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'),
                                   null=True, blank=True)
-    instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'),
+    instructions = models.TextField(_('Instructions'), default='', 
+                                    help_text=_('Detailed instructions for preparing this recipe.'),
                                     null=True, blank=True)
     
     ignore = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.name or 'Unnamed recipe by {}'.format(self.author)
+    
+    def is_temp(self):
+        return True
     
     def incomplete_class(self):
         return True

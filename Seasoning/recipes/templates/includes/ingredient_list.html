@@ -18,11 +18,7 @@
 					    {{ uses.amount|floatformat:"-2" }}{% if uses.unit.name_needed %}{% if uses.amount == 1 %} {{ uses.unit.short }}{% else %} {{ uses.unit.short_plural }}{% endif %}{% endif %}  
 						<span class="ingredient-name">
 							<a href="{% url 'view_ingredient' uses.ingredient.id %}">
-								{% if uses.amount == 1 or not uses.ingredient.plural_name %}
-								{{ uses.ingredient.name }}
-								{% else %}
-								{{ uses.ingredient.plural_name }}
-								{% endif %}
+								{{ uses.ingredient_display }}
 							</a>
 							{% if uses.ingredient.coming_from_endangered %}
 							<img class="endangered-icon" src="{{ STATIC_URL }}img/icons/attention.png" title="Opgelet! Deze vissoort wordt mogelijk slecht beheerd in bepaalde gebieden. Klik hier voor meer informatie." />
@@ -59,7 +55,7 @@
 {% endfor %}
 
 
-<div class="col-xs-12 col-sm-6 col-sm-offset-5" style="margin-top: 10px;margin-bottom: 50px;">
+<div class="col-xs-12 col-sm-6 col-sm-offset-5" style="margin-top: 10px;margin-bottom: 30px;">
 	<h4 class="pull-right" style="font-size:18px;">{{ total_footprint|floatformat:2 }} kgCO<sub>2</sub></h4>
 	<h4 style="font-size:18px;">Totale voetafdruk: </h4>
 </div>

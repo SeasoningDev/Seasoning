@@ -46,6 +46,5 @@ urlpatterns = patterns('',
 #     url(r'^data/fpdist/(\d+)/(\d+)/(\d+)/$', 'recipes.views.get_recipe_footprint_distribution', name='graph_rfd'),
 #     url(r'^data/fprel/$', 'recipes.views.get_relative_footprint'),
     
-    url(r'^ingunits/$', 'recipes.views.ajax_ingredient_units'),
     url(r'^markdownpreview/$', 'recipes.views.ajax_markdown_preview'),
 )

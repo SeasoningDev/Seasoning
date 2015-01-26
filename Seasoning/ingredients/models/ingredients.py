@@ -20,6 +20,11 @@ def get_image_filename(instance, old_filename):
 
 class IngredientManager(models.Manager):
     
+    DUMMY_NAME = 'Dummy'
+    
+    def accepted(self):
+        return self.filter(accepted=True)
+    
     def with_name(self, name):
         name_filter = models.Q(name__iexact=name) | models.Q(synonyms__name__iexact=name)
         return self.distinct().get(name_filter)
@@ -35,6 +40,9 @@ class IngredientManager(models.Manager):
     def accepted_with_name_like(self, name):
         name_filter = models.Q(name__icontains=name) | models.Q(synonyms__name__icontains=name)
         return self.distinct().filter(name_filter, accepted=True)
+    
+    def dummy(self):
+        return self.get(name=self.DUMMY_NAME)
 
 class Ingredient(models.Model):
     """
@@ -109,6 +117,9 @@ class Ingredient(models.Model):
     
     def __unicode__(self):
         return self.name
+    
+    def is_dummy(self):
+        return self.name == IngredientManager.DUMMY_NAME
 
     @property
     def primary_unit(self):
