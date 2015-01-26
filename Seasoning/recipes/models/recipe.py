@@ -397,12 +397,12 @@ class RecipeImage(models.Model):
         return int(round(100/self.h))
     
     def bg_x(self):
-        if self.w == 1:
+        if self.w == 1 or self.w is None:
             return 0
         return int(round(100*(self.x/(1 - self.w))))
     
     def bg_y(self):
-        if self.h == 1:
+        if self.h == 1 or self.h is None:
             return 0;
         return int(round(100*(self.y/(1 - self.h))))
 
