@@ -82,7 +82,6 @@ class AutoCompleteSelectIngredientWidget(forms.widgets.HiddenInput):
         text_input_name = '{}-text'.format(name)
         text_input_html = self.text_input.render(text_input_name, ingredient_name, {'id': 'id_{}'.format(text_input_name)})
         
-        print(text_input_html + id_input_html)
         return text_input_html + id_input_html
         
     
