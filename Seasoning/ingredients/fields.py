@@ -59,48 +59,59 @@ class LastOfMonthWidget(MonthWidget):
             return '%d-%02d-%02d' % (2000, m, calendar.monthrange(2000, int(m))[1])
         return data.get(name, None)
     
-class AutoCompleteSelectIngredientWidget(forms.widgets.TextInput):
-
-    def render(self, name, value, attrs=None):
-        value = value or ''
-        if value:
-            try:
-                ingredient_pk = int(value)
-                value = Ingredient.objects.get(pk=ingredient_pk).name
-            except ValueError:
-                # If we cannot cast the value into an int, it's probably the name of
-                # the ingredient already, so we don't need to do anything
-                pass
-            except ObjectDoesNotExist:
-                raise Exception("Cannot find ingredient with id: %s" % value)
-        return super(AutoCompleteSelectIngredientWidget, self).render(name, value, attrs)
+class AutoCompleteSelectIngredientWidget(forms.widgets.HiddenInput):
     
-class AutoCompleteSelectIngredientField(forms.fields.CharField):
+    text_input = forms.widgets.TextInput(attrs={'placeholder': 'Zoek Ingredienten', 'class': 'keywords-searchbar'})
 
-    """
-    Form field to select a model for a ForeignKey db field
-    """
-    
-    unknown_ingredient_error_message = 'The given ingredient was not found.'
-    
-    def __init__(self, *args, **kwargs):
-        widget = kwargs.get('widget', False)
-        if not widget or not isinstance(widget, AutoCompleteSelectIngredientWidget):
-            kwargs['widget'] = AutoCompleteSelectIngredientWidget(attrs={'placeholder': 'Zoek Ingredienten', 'class': 'keywords-searchbar'})
-        self.unaccepted_ingredients_allowed = kwargs.pop('unaccepted_ingredients_allowed', False)
-        super(AutoCompleteSelectIngredientField, self).__init__(*args, **kwargs)
-
-    def to_python(self, value):
-        value = super(AutoCompleteSelectIngredientField, self).to_python(value)
-        if value == '':
-            # If the field is not filled in, the parent class will do the validation
-            return value
+    def render(self, name, value, attrs={}):
+        """
+        We render this field as a hidden id input field and a text input field
+        
+        If the id is given, the text field should be filled in with the name of the
+        corresponding ingredient
+        
+        """
+        attrs['class'] = '{} ingredient-id-input'.format(attrs.get('class', ''))
+        id_input_html = super(AutoCompleteSelectIngredientWidget, self).render(name, value, attrs)
+        
         try:
-            if self.unaccepted_ingredients_allowed:
-                ingredient = Ingredient.objects.with_name(value)
-            else:
-                ingredient = Ingredient.objects.accepted_with_name(value)
-        except (ValueError, Ingredient.DoesNotExist):
-            raise ValidationError(self.unknown_ingredient_error_message)
-        return ingredient
+            ingredient_name = Ingredient.objects.get(id=value)
+        except Ingredient.DoesNotExist:
+            ingredient_name = ''
+        
+        text_input_name = '{}-text'.format(name)
+        text_input_html = self.text_input.render(text_input_name, ingredient_name, {'id': 'id_{}'.format(text_input_name)})
+        
+        print(text_input_html + id_input_html)
+        return text_input_html + id_input_html
+        
+    
+class AutoCompleteSelectIngredientField(forms.ModelChoiceField):
+    """
+    Form field that shows a text input in which the name of the ingredient
+    should be typed and a hidden text input that should hold the id of the
+    ingredient or no value if it represents an ingredient not present in
+    the database.
+    
+    """
+    
+    def __init__(self, queryset=None, empty_label="---------", cache_choices=False, 
+                       required=True, widget=None, label=None, initial=None, 
+                       help_text='', to_field_name=None, limit_choices_to=None, *args, **kwargs):
+        
+        if queryset is None:
+            queryset = Ingredient.objects.all()
+        
+        if widget is None:
+            widget = AutoCompleteSelectIngredientWidget()
             
+        super(AutoCompleteSelectIngredientField, self).__init__(queryset, empty_label, cache_choices,
+                                                                required, widget, label, initial, 
+                                                                help_text, to_field_name, limit_choices_to,
+                                                                *args, **kwargs)
+    
+    def clean(self, value):
+        if value == '':
+            return Ingredient.objects.dummy()
+        return super(AutoCompleteSelectIngredientField, self).clean(value)
+    

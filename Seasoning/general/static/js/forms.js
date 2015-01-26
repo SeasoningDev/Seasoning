@@ -45,28 +45,6 @@ function add_form(formset_prefix, newforms_callback) {
 }
 
 /**
- * Functions for autocomplete fields
- * 
- * To make an input field autocomplete ingredient names, give it the following attributes:
- * 
- * 	Class: autocomplete-ingredient
- */
-$(document).ready(function() {
-	/*
-	 * Autcomplete Ingredient field
-	 */
-	$( "input.autocomplete-ingredient" ).each(function() {
-		$(this).autocomplete({
-			source: "/ingredients/ing_list/",
-			minLength: 2
-		});
-	});
-});
-
-
-
-
-/**
  * -------- Extended Jquery Functions
  */
 

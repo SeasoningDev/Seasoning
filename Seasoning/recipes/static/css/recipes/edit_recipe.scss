@@ -1,3 +1,5 @@
+@import "variables";
+
 #edit-recipe-form input {
 	color: #333;
 }
@@ -94,6 +96,7 @@
 .field-changer select {
 	display: none;
 	height: 32px;
+	padding-left: 2px;
 }
 
 .spinner-changer .ui-spinner {
@@ -148,6 +151,88 @@
 	box-sizing: border-box;
 	color: #444;
 	padding: 5px;
+}
+.ingredients-wrapper .panel-heading.edit-ingredient:not(.editing) {
+  	cursor: url(/static/img/icons/edit.cur), -moz-zoom-in;
+  	transition: background-color .3s ease;
+}
+
+.ingredients-wrapper .panel-heading.edit-ingredient:not(.editing):hover {
+	background-color: rgba(200, 255, 200, .2);
+}
+
+.ingredients-wrapper .panel-heading.edit-ingredient.editing {
+	background-color: white;
+}
+
+.edit-ingredient .group-editable-field {
+	font-size: 18px;
+	display: inline-block;
+	border: 2px dashed #ddd;
+	padding-left: 5px;
+	padding-right: 5px;
+	height: 32px;
+	min-width: 30px;
+	text-align: left;
+	line-height: 26px;
+}
+
+@media (max-width: 767px) {
+	.edit-ingredient .edit-ingredient-name .group-editable-field {
+		display: block;
+	}
+}
+
+.ingredients-wrapper,
+ .ingredients {
+	position: static;
+}
+.ingredients-wrapper #ingredient-buttons {
+	clear: both;
+	margin: 50px 0 50px;
+}
+
+.ingredients-wrapper #ingredient-buttons > div.col-xs-12 {
+	margin-top: 10px;
+}
+
+.ingredients-wrapper .field-changer {
+	margin-top: 0;
+}
+
+.ingredients-wrapper input {
+	display: none;
+	border: 2px dashed #ddd;
+	padding: 0 5px;
+}
+
+.ingredients-wrapper .edit-ingredient-name .edit-recipe-buttons {
+	padding: 0;
+	right: 0;
+	left: auto;
+	top: 0;
+	width: auto;
+}
+
+.ingredients-wrapper .edit-ingredient-amount input {
+	text-align: right;
+	padding-right: 5px;
+	width: 100px;
+}
+
+.ingredients-wrapper .edit-ingredient-amount .edit-recipe-buttons {
+	padding: 0;
+	left: 0;
+	top: 0;
+	width: auto;
+}
+
+.ingredients-wrapper .edit-ingredient-unit .edit-recipe-buttons {
+	padding: 0;
+	right: 0;
+	left: auto;
+	top: 0;
+	width: auto;
 }
 
 

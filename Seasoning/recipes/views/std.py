@@ -1,6 +1,6 @@
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    UploadRecipeImageForm, EditRecipeForm
+    UploadRecipeImageForm, EditRecipeForm, AddRecipeForm, UsesIngredientForm
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
@@ -8,8 +8,11 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from recipes.models.recipe import Upvote
-from recipes.models.t_recipe import IncompleteRecipe
+from recipes.models.recipe import Upvote, UsesIngredient
+from recipes.models.t_recipe import IncompleteRecipe, TemporaryIngredient,\
+    TemporaryUsesIngredient
+from django.forms.models import inlineformset_factory
+from ingredients.models.ingredients import Ingredient
 
 
 def browse_recipes(request):
@@ -125,13 +128,19 @@ def add_recipe(request):
 def edit_recipe(request, recipe_id, incomplete=False):
     if incomplete:
         recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+        form = AddRecipeForm(instance=recipe)
+        UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, extra=0)
+        ing_formset = UsesIngredientFormset(instance=recipe)
     else:
         recipe = get_object_or_404(Recipe, id=recipe_id)
         form = EditRecipeForm(instance=recipe)
+        UsesIngredientFormset = inlineformset_factory(Recipe, UsesIngredient, form=UsesIngredientForm, extra=0)
+        ing_formset = UsesIngredientFormset(instance=recipe)
         
     if recipe.author == request.user or request.user.is_staff:
         return render(request, 'recipes/view_recipe.html', {'recipe': recipe,
                                                             'form': form,
+                                                            'ing_formset': ing_formset,
                                                             'edit': True})
     
     raise PermissionDenied()

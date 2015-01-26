@@ -65,6 +65,7 @@ class CanUseUnit(models.Model):
     """    
     class Meta:
         db_table = 'canuseunit'
+        unique_together = (('ingredient', 'unit'), )
         
     ingredient = models.ForeignKey('Ingredient', db_column='ingredient')
     unit = models.ForeignKey('Unit', related_name='useable_by', db_column='unit', limit_choices_to=models.Q(parent_unit__exact=None))

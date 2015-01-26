@@ -10,15 +10,16 @@ import datetime
 from ingredients.models import Ingredient, Unit
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    EditRecipeForm, UploadRecipeImageForm
+    EditRecipeForm, UploadRecipeImageForm, AddRecipeForm, UsesIngredientForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from recipes.models.t_recipe import IncompleteRecipe
+from recipes.models.t_recipe import IncompleteRecipe, TemporaryUsesIngredient
 from django.template import defaultfilters
 from general.templatetags.markdown_filter import markdown
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from recipes.models.recipe import RecipeImage
+from django.forms.models import inlineformset_factory
 
 def ajax_recipe_ingredients(request, recipe_id, portions):
     try:
@@ -117,18 +118,6 @@ def get_recipe_footprint_evolution(request, recipe_id):
 #         
 #     raise PermissionDenied()
 
-@csrf_exempt
-def ajax_ingredient_units(request):
-    if request.method == 'POST' and request.is_ajax():
-        name = request.POST.get('ingredient_name', '')
-        try:
-            units = Ingredient.objects.accepted_with_name(name).useable_units.all().values('id', 'name')
-        except Ingredient.DoesNotExist:
-            units = Unit.objects.all().values('id', 'name')
-        data = json.dumps({unit['id']: unit['name'] for unit in units})
-        return HttpResponse(data)
-    raise PermissionDenied()
-
 def ajax_markdown_preview(request):
     if request.method == 'POST' and request.is_ajax():
         markdown = request.POST.get('data', '')
@@ -139,12 +128,18 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
     if request.is_ajax() and request.method == 'POST':
         if incomplete:
             recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+            form = AddRecipeForm(request.POST, instance=recipe)
+            UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, extra=0)
+            ing_formset = UsesIngredientFormset(request.POST, instance=recipe)
         else:
             recipe = get_object_or_404(Recipe, id=recipe_id)
             form = EditRecipeForm(request.POST, instance=recipe)
+            UsesIngredientFormset = inlineformset_factory(Recipe, UsesIngredient, form=UsesIngredientForm, extra=0)
+            ing_formset = UsesIngredientFormset(request.POST, instance=recipe)
         
-        if form.is_valid():
+        if form.is_valid() and ing_formset.is_valid():
             form.save()
+            ing_formset.save()
             
             if not settings.DEBUG:
                 # Notify Bram of non-admins changing a recipe
@@ -168,8 +163,18 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
                     resp_txt = defaultfilters.linebreaks(getattr(recipe, form.changed_data[0]))
                 if form.changed_data[0] == 'instructions':
                     resp_txt = markdown(getattr(recipe, form.changed_data[0]))
+            elif ing_formset.has_changed():
+                ing_formset = UsesIngredientFormset(instance=recipe)
+                resp_txt = render_to_string('includes/edit_ingredients_list.html', {'ing_formset': ing_formset})
+                
             return HttpResponse(resp_txt)
-        return HttpResponseServerError(form.errors[form.changed_data[0]])
+        
+        print(form.errors)
+        print(ing_formset.errors)
+        if form.errors:
+            return HttpResponseServerError(form.errors[form.changed_data[0]])
+        else:
+            return HttpResponseServerError(ing_formset.errors[0].values()[0])
         
     raise PermissionDenied()
 
