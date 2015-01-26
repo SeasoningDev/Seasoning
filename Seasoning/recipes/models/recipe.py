@@ -383,6 +383,8 @@ class RecipeImage(models.Model):
         width
         
         """
+        if self.w is None:
+            return None
         return int(round(100/self.w))
     
     def bg_height(self):
@@ -390,6 +392,8 @@ class RecipeImage(models.Model):
         Same as for width
         
         """
+        if self.h is None:
+            return None
         return int(round(100/self.h))
     
     def bg_x(self):
