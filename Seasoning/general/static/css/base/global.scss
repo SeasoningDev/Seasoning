@@ -40,17 +40,6 @@
     margin: 40px 0;  
   }
   
-  .checkbox {
-    display: inline-block;
-    height: 15px;
-    width: 12px;
-    background-image: url('#{$icons}/checkbox.png');
-    background-position: bottom;
-    background-repeat: no-repeat;
-    background-size: 12px 15px;
-    margin-left: 10px;
-  }
-  
   hr.leaf-line:after {
     background: url('#{$logos}/facebook icoon.png') no-repeat top center;
     background-size: 30px;

@@ -12,7 +12,9 @@
   -moz-border-radius: 15px;
   transition: all 0.25s ease-in-out;
   -webkit-transition: all 0.25s ease-in-out;
-  -moz-transition: all 0.25s ease-in-out; }
+  -moz-transition: all 0.25s ease-in-out;
+  color: #333;
+}
 
 #help-seasoning .help-type:hover {
   box-shadow: 0 0 5px black;

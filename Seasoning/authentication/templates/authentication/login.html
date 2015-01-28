@@ -4,53 +4,65 @@
 
 {% block login-active %}active{% endblock %}
 
+{% block extra_script %}
+<script type="text/javascript">
+$(function() {
+	$('#id_username').focus();
+});
+</script>
+{% endblock %}
+
+{% block before-content %}{% endblock %}
+
 {% block content %}
+<div id="login-wrapper" class="row">
 
-<div id="seasoning-login">
-	<form action="{% url 'login' %}" method="post" class="login-form">
-		{% csrf_token %}
-
-		<div class="non-field-errors">
-			{{ form.non_field_errors }}
-		</div>
-		
-		<div class="field-wrapper{% if form.username.errors %} field-with-error{% endif %}">
-			{{ form.username.label_tag }}
-			{{ form.username }}
-			<div class="login-error">{{ form.username.errors }}</div>
-		</div>
-		
-		<div class="field-wrapper{% if form.password.errors %} field-with-error{% endif %}">
-			{{ form.password.label_tag }}
-			{{ form.password }}
-			<a class="under-field-link" href="{% url 'django.contrib.auth.views.password_reset' %}" id="forgotpw">Wachtwoord vergeten?</a>
-			<div class="login-error">{{ form.password.errors }}</div>
-		</div>
-		
-		<input type="hidden" name="next" value="{{ next }}" />
-		
-		<input type="submit" value="Aanmelden" id="login-submit"/>
-	</form>
-
-	<script type="text/javascript">
-		document.getElementById('username').focus()
-	</script>
+	<div id="seasoning-login" class="col-xs-12 col-sm-6">
+		<form action="{% url 'login' %}" method="post" class="">
+			{% csrf_token %}
+	
+			<div class="non-field-errors">
+				{{ form.non_field_errors }}
+			</div>
+			
+			<div class="form-group{% if form.username.errors %} has-error{% endif %}">
+				<label for="id_username">{{ form.username.label }}</label>
+				<input id="id_username" class="form-control" type="text" name="username" maxlength="254">
+				{% for error in form.username.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+			</div>
+			
+			<div class="form-group{% if form.password.errors %} has-error{% endif %}">
+				<label for="id_password">{{ form.password.label }}</label>
+				<input id="id_password" class="form-control" type="password" name="password">
+				{% for error in form.username.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+				
+				<a class="under-field-link" href="{% url 'django.contrib.auth.views.password_reset' %}" id="forgotpw">Wachtwoord vergeten?</a>
+				
+			</div>
+			
+			<input type="hidden" name="next" value="{{ next }}" />
+			
+			<input id="login-submit" class="btn btn-block btn-default" type="submit" value="Aanmelden" />
+		</form>
+	</div>
+	
+	<div id="social-login" class="col-xs-12 col-sm-6 text-center">
+		{% include "includes/fb-button.html" %}
+		<br/>
+	    {% include "includes/google-button.html" %}
+	</div>
 </div>
 
-<div id="social-login">
-	{% include "includes/fb-button.html" %}
-	<br/>
-    {% include "includes/google-button.html" %}
-</div>
-
-<br class="clear" />
-
-<div id="login-page-register">
-    <h2>
+<div id="login-page-register" class="row text-center">
+    <h2 class="col-xs-12">
         Nog niet geregistreerd?
     </h2>
-    <form action="{% url 'registration' %}" method="get">
-        <input id="register-button" type="submit" value="Registreer Nu!" />
+    <form class="col-xs-12" action="{% url 'registration' %}" method="get">
+        <input id="register-button" class="btn btn-lg btn-default" type="submit" value="Registreer Nu!" />
     </form>
 </div>
 {% endblock %}
