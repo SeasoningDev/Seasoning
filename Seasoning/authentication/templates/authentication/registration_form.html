@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load addcss %}
 
 {% block title %}Registreren{% endblock %}
 
@@ -19,7 +20,7 @@ $(function() {
         },
         position: {
             my: "left top",
-            at: "right+10 top-2"
+            at: "left bottom+5"
         },
         tooltipClass: "form-tooltip",
     }).off("mouseover mouseout");
@@ -37,112 +38,131 @@ $(function() {
 {% endblock %}
 
 {% block content %}
-<h2>Registreren</h2>
-<p>
-	Registreren op Seasoning hoeft slechts één keer en is heel eenvoudig. Je kan een persoonlijk profiel aanmaken via de verschillende portaalwebsites (Facebook en Google) of via Seasoning zelf.
-</p>
+<div id="registration-wrapper" class="row">
 
-<div id="social-register">
-    {% include "includes/fb-button.html" with register=True %}
-    <br/>
-    {% include "includes/google-button.html" with register=True %}
-</div>
+	<h2 class="col-xs-12 text-center">Registreren</h2>
+	
+	<p class="col-xs-12">
+		Registreren op Seasoning is gratis en heel eenvoudig. Je kan een persoonlijk profiel aanmaken via de verschillende portaalwebsites (Facebook en Google) of via Seasoning zelf.
+	</p>
+	
+	<div id="social-register" class="col-xs-12 col-sm-6 pull-right text-center">
+	    {% include "includes/fb-button.html" with register=True %}
+	    <br/>
+	    {% include "includes/google-button.html" with register=True %}
+	</div>
+	
+	<div id="register-mobile-separator" class="col-xs-12">
+		<hr />
+		<h3>Of registreer via Seasoning:</h3>
+	</div>
+	
+	<div id="seasoning-register" class="col-xs-12 col-sm-6 pull-left">
+	    <form action="/profile/register/" method="post" id="registration-form">
+	    	{% csrf_token %}
+	    	
+	    	{% if form.errors %}
+	    		<div class="form-errors-notice">
+	    			Er is een probleem opgetreden bij het versturen van het registratieformulier. Gelieve onderstaande fouten te verbeteren.
+	    		</div>
+	    		<br />
+	    	{% endif %}
+	      	
+	    	<div class="form-group tooltip-field{% if form.givenname.errors %} has-error{% endif %}">
+	            <label for="{{ form.givenname.id_for_label }}">{{ form.givenname.label }}</label>
+	            {{ form.givenname|addcss:"class,form-control" }}
+	            <div class="tooltip">{{ form.givenname.help_text }}</div>
+	            
+	            {% for error in form.givenname.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	
+	    	<div class="form-group tooltip-field{% if form.surname.errors %} has-error{% endif %}">
+	            <label for="{{ form.surname.id_for_label }}">{{ form.surname.label }}</label>
+	            {{ form.surname|addcss:"class,form-control" }}
+	            <div class="tooltip">{{ form.surname.help_text }}</div>
+	            
+	            {% for error in form.surname.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	
+	    	<div class="form-group tooltip-field{% if form.email.errors %} has-error{% endif %}">
+	            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+	            {{ form.email|addcss:"class,form-control" }}
+	            <div class="tooltip">{{ form.email.help_text }}</div>
+	            
+	            {% for error in form.email.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	
+	    	<br />
+	    	
+	    	<div class="form-group{% if form.password.errors %} has-error{% endif %}">
+	            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+	            {{ form.password|addcss:"class,form-control" }}
+	            
+	            {% for error in form.password.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	
+	    	<div class="form-group tooltip-field{% if form.password2.errors %} has-error{% endif %}">
+	            <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+	            {{ form.password2|addcss:"class,form-control" }}
+	            <div class="tooltip">{{ form.password2.help_text }}</div>
+	            
+	            {% for error in form.password.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	            {% for error in form.non_field_errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	
+	    	<br />
+	    	
+	    	<div class="form-group tooltip-field{% if form.date_of_birth.errors %} has-error{% endif %}">
+	            <label for="{{ form.date_of_birth.id_for_label }}">{{ form.date_of_birth.label }}</label>
+	            {{ form.date_of_birth|addcss:"class,form-control" }}
+	            <div class="tooltip">{{ form.date_of_birth.help_text }}</div>
+	            
+	            {% for error in form.date_of_birth.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	
+	    	<div class="form-group captcha-wrapper{% if form.captcha.errors %} has-error{% endif %}" id="captcha-wrapper">
+	            <div id="captcha-height-reserver">
+	            	{{ form.captcha }}
+	            </div>
 
-<div id="register-mobile-separator">
-	<hr />
-	<h3>Of registreer via Seasoning:</h3>
-</div>
+				{% for error in form.captcha.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	    	</div>
+	    	<br />
+	    	
+	    	<div class="form-group{% if form.tos.errors %} has-error{% endif %}" id="terms-wrapper">
+	            
+	            <div class="checkbox-inline">
+		            {{ form.tos }}
+		            <label for="{{ form.tos.id_for_label }}">
+		            	{{ form.tos.label }}
+		            </label>
+		        </div>
+	            
+	            {% for error in form.tos.errors %}
+				<div class="help-block">{{ error }}</div>
+				{% endfor %}
+	            
+	        </div>
+	        
+	        <input id="register-button" class="btn btn-block btn-lg btn-default" type="submit" value="Registreer Nu!" />
+	    </form>
+	</div>
 
-<div id="seasoning-register">
-    <form action="/profile/register/" method="post" id="registration-form">
-    	{% csrf_token %}
-    	
-    	{% if form.errors %}
-    		<div class="form-errors-notice">
-    			Er is een probleem opgetreden bij het versturen van het registratieformulier. Gelieve onderstaande fouten te verbeteren.
-    		</div>
-    	{% endif %}
-      	
-    	<div class="field-wrapper tooltip-field{% if form.givenname.errors %} field-with-error{% endif %}">
-            {{ form.givenname.label_tag }}
-            {{ form.givenname }}
-            <div class="tooltip">{{ form.givenname.help_text }}</div>
-            
-            {% if form.givenname.errors %}        
-    			{{ form.givenname.errors }}	
-            {% endif %}
-    	</div>
-    	
-    	<div class="field-wrapper tooltip-field{% if form.surname.errors %} field-with-error{% endif %}">
-            {{ form.surname.label_tag }}
-            {{ form.surname }}
-            <div class="tooltip">{{ form.surname.help_text }}</div>
-            
-            {% if form.surname.errors %}        
-    			{{ form.surname.errors }}
-            {% endif %}
-    	</div>
-    	
-    	<div class="field-wrapper tooltip-field{% if form.email.errors %} field-with-error{% endif %}">
-            {{ form.email.label_tag }}
-            {{ form.email }}
-            <div class="tooltip">{{ form.email.help_text }}</div>
-            
-            {% if form.email.errors %}        
-    			{{ form.email.errors }}	
-            {% endif %}
-    	</div>
-    	
-    	<div class="field-wrapper{% if form.password.errors %} field-with-error{% endif %}">
-            {{ form.password.label_tag }}
-            {{ form.password }}
-            
-            {% if form.password.errors %}        
-    			{{ form.password.errors }}	
-            {% endif %}
-    	</div>
-    	
-    	<div class="field-wrapper tooltip-field{% if form.password2.errors %} field-with-error{% endif %}">
-            {{ form.password2.label_tag }}
-            {{ form.password2 }}
-            <div class="tooltip">{{ form.password2.help_text }}</div>
-            
-            {% if form.password2.errors %}        
-    			{{ form.password2.errors }}	
-            {% endif %}
-            {% if form.non_field_errors %}
-            {{ form.non_field_errors }}
-            {% endif %}
-    	</div>
-    	
-    	<div class="field-wrapper tooltip-field{% if form.date_of_birth.errors %} field-with-error{% endif %}">
-            {{ form.date_of_birth.label_tag }}
-            {{ form.date_of_birth }}
-            <div class="tooltip">{{ form.date_of_birth.help_text }}</div>
-            
-            {% if form.date_of_birth.errors %}        
-    			{{ form.date_of_birth.errors }}
-            {% endif %}
-    	</div>
-    	
-    	<div class="field-wrapper captcha-wrapper{% if form.captcha.errors %} field-with-error{% endif %}" id="captcha-wrapper">
-            <div id="captcha-height-reserver">
-            	{{ form.captcha }}
-            </div>
-            {{ form.captcha.errors }}
-    	</div>
-    	
-    	<div class="field-wrapper{% if form.tos.errors %} field-with-error{% endif %}" id="terms-wrapper">
-            {{ form.tos }}
-            {{ form.tos.label_tag}}
-    	   
-    	   {% if form.tos.errors %}        
-                {{ form.tos.errors }}
-            {% endif %}
-            
-        </div>
-        
-        <input id="register-button" type="submit" value="Registreer Nu!" />
-    </form>
 </div>
 {% endblock %}

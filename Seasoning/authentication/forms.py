@@ -6,11 +6,9 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.forms.models import ModelForm
 from django.forms.widgets import ClearableFileInput
 from django.utils.html import format_html
-from django.template import loader
 from django.utils.http import int_to_base36
 from django.contrib.sites.models import get_current_site
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 from authentication.models import User
 from captcha.fields import ReCaptchaField
@@ -97,6 +95,8 @@ class RegistrationForm(forms.ModelForm):
                              label=mark_safe(_(u'I have read and agree to the <a target="_blank" href="/terms/">Terms of Service</a>')),
                              error_messages={'required': _("You must agree to the terms to register")})
     
+    def __init__(self, *args, **kwargs):
+        return super(RegistrationForm, self).__init__(*args, **kwargs)
     def clean(self):
         """
         Verifiy that the values entered into the two password fields
