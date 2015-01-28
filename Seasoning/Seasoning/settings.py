@@ -10,6 +10,9 @@ if len(manage_command) != 0:
     command = sys.argv.index(manage_command[0]) + 1
     if command < len(sys.argv):
         TEST = sys.argv[command] == "test"
+        
+# Determine if we are running a development version on localhost
+LOCAL_TEST = (sys.argv[1] == 'runserver')
 
 from Seasoning import secrets
 
@@ -137,6 +140,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.core.context_processors.request",
     'django.contrib.messages.context_processors.messages',
+    'Seasoning.local_test_context_processor',
 )
 
 

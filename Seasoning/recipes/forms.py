@@ -80,12 +80,12 @@ class UsesIngredientForm(forms.ModelForm):
 
 class SearchRecipeForm(forms.Form):
     
-    SORT_CHOICES = (('footprint', 'Voetafdruk (Laagste eerst)'), ('-footprint', 'Voetafdruk (Hoogste eerst)'),                    
+    SORT_CHOICES = (('time_added', 'Datum toegevoegd (Jongste eerst)'), ('-time_added', 'Datum toegevoegd (Oudste eerst)'),
+                    ('footprint', 'Voetafdruk (Laagste eerst)'), ('-footprint', 'Voetafdruk (Hoogste eerst)'),                    
                     ('name', 'Naam (Alfabetisch)'), ('-name', 'Naam (Omgekeerd alfabetisch)'), 
                     ('rating', 'Waardering (Hoogste eerst)'), ('-rating', 'Waardering (Laagste eerst)'), 
                     ('active_time', 'Actieve kooktijd (Kortste eerst)'), ('-active_time', 'Actieve kooktijd (Langste eerst)'), 
-                    ('tot_time', 'Totale kooktijd (Kortste eerst)'), ('-tot_time', 'Totale kooktijd (Langste eerst)'),
-                    ('time_added', 'Datum toegevoegd (Jongste eerst)'), ('-time_added', 'Datum toegevoegd (Oudste eerst)'))
+                    ('tot_time', 'Totale kooktijd (Kortste eerst)'), ('-tot_time', 'Totale kooktijd (Langste eerst)'))
     OPERATOR_CHOICES = (('and', 'Allemaal'), ('or', 'Minstens 1'))
     
     search_string = forms.CharField(required=False, label='Zoektermen',

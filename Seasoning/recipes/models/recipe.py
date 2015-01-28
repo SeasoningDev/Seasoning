@@ -368,10 +368,10 @@ class RecipeImage(models.Model):
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipe_images')
     visible = models.BooleanField(default=False)
     
-    x = models.FloatField(null=True, blank=True)
-    y = models.FloatField(null=True, blank=True)
-    w = models.FloatField(null=True, blank=True)
-    h = models.FloatField(null=True, blank=True)
+    x = models.FloatField(default=0, null=True, blank=True)
+    y = models.FloatField(default=0, null=True, blank=True)
+    w = models.FloatField(default=1, null=True, blank=True)
+    h = models.FloatField(default=None, null=True, blank=True)
     
     def __unicode__(self):
         return 'Image for recipe #{} from user {}'.format(self.recipe.id if self.recipe is not None else '?', self.added_by)
