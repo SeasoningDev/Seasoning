@@ -6,9 +6,7 @@
 var timer;
 
 function update_recipe_page() {
-	$("#browse-recipe-summaries-wrapper").html("");
-	$("#id_page").val(0);
-	$(window).trigger("ajax-load-data");
+	$(window).trigger("ajax-clear-and-load-data");
 }
 
 $(document).ready(function() {

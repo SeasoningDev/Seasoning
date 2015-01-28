@@ -18,6 +18,12 @@
 	   var reloads_until_continue_ask = null;
 	   if (settings.continue_ask_after_reloads) {
 		   reloads_until_continue_ask = settings.continue_ask_after_reloads;
+		   if (settings.continue_ask_element_to_show) {
+			   settings.continue_ask_element_to_show.click(function() {
+				   $(window).trigger('loadmore.acl');
+				   return false;
+			   })
+		   }
 	   }
 	   
 	   // If we are already loading new data, don't try to load more data yet
@@ -58,6 +64,10 @@
 		   if (settings.page_field_to_update) {
 			   settings.page_field_to_update.val(parseInt(settings.page_field_to_update.val()) + 1);
 		   }
+		   
+		   if (clear) {
+			   wrapper.html("");
+		   }
 
 		   settings.loader_element.show();
 		   
@@ -66,9 +76,6 @@
 			   type : "POST",
 			   data: settings.form.serialize(),
 		   }).success(function(data) {
-			   if (clear) {
-				   wrapper.html("");
-			   }
 			   add_data(data);
 			   reloads_until_continue_ask--;
 		   }).done(function() {
@@ -89,6 +96,14 @@
 	   }
 	   
 	   function clear_and_load_data() {
+		   if (settings.continue_ask_after_reloads) {
+			   reloads_until_continue_ask = settings.continue_ask_after_reloads;
+		   }
+		   
+		   // Get the next page
+		   if (settings.page_field_to_update) {
+			   settings.page_field_to_update.val(0);
+		   }
 		   load_data(true);
 	   }
 	   

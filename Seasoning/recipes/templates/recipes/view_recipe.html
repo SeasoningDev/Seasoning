@@ -7,7 +7,11 @@
 {% block title %}{% if edit %}Recept {% if recipe.is_temp %}toevoegen{% else %}wijzigen{% endif %}{% else %}{{ recipe.name }}{% endif %}{% endblock %}
 
 {% block extra_link %}
-	<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+{% if LOCAL_TEST %}
+<link href='{{ STATIC_URL }}dev/LobsterTwo.css' rel='stylesheet' type='text/css'>
+{% else %}
+<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+{% endif %}
 {% endblock %}
 
 {% block extra_script %}
