@@ -1,6 +1,7 @@
 @import "variables";
 
 #base-recipe-search-container {
+	display: inline-block;
 	width: 100%;
 	height: 160px;
 	background: url('/static/img/decoration/brownie.jpg') no-repeat center center;
@@ -8,22 +9,25 @@
 }
 
 #base-recipe-search-container #base-recipe-search {
-	padding-top: 30px;
+	margin-top: 30px;
+	padding: 0;
 	text-align: center;
-	margin: 0;
+	margin: 30px auto;
+	width: 95%;
+	max-width: 400px;
+	position: relative;
 }
 
 #base-recipe-search input {
 	height: 40px;
-	width: 350px;
-	max-width: 90%;
 	padding-left: 40px;
+	width: 100%;
 }
 
 #base-recipe-search #keywords-submit {
 	background-size: 30px;
 	left: 2px;
-	top: -8px;
+	top: 1px;
 }
 
 #recipe-search-options {

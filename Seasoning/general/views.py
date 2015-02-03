@@ -33,6 +33,7 @@ import re
 from general import all_templates, send_seasoning_email
 from django.contrib.sites.models import RequestSite
 from django.template.context import RequestContext
+from recipes.models.recipe import Recipe
 
 def home(request):
     if request.user.is_authenticated():
@@ -43,7 +44,11 @@ def home(request):
                                                                'nveg_recipe_otw': recipes_otw[0].recipe})
         except IndexError:
             return render(request, 'homepage_logged_in.html')
-    return render(request, 'homepage_not_logged_in.html')
+    
+    recipe_fish = Recipe.objects.filter(endangered=True)[0]
+    recipe_season = Recipe.objects.filter(inseason=True)[0]
+    return render(request, 'homepage_not_logged_in.html', {'recipe_fish': recipe_fish,
+                                                           'recipe_season': recipe_season})
 
 def contribute(request):
     return render(request, 'contribute/contribute.html')
