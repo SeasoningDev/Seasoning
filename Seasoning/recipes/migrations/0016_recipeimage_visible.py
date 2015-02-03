@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='recipeimage',
             name='visible',
-            field=models.BooleanField(default=False),
+            field=models.BooleanField(default=True),
             preserve_default=True,
         ),
     ]
