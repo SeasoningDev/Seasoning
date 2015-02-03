@@ -11,12 +11,14 @@
 #intro-div-1 {
 	text-align: center;
 	height:100vh;
-	background:url('{{ STATIC_URL }}img/decoration/intro2.jpg') no-repeat center center; 
+	background:url('{{ STATIC_URL }}img/decoration/landing1.jpg') no-repeat center center;
+	background-clip: content-box; 
   	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
   	background-size: cover;
   	position: relative;
+  	padding-bottom: 50px;
 }
 
 #intro-div-1 h1 {
@@ -39,19 +41,22 @@
 #about {
 	text-align: center;
 	position: relative;
+	margin-top: -50px;
 	padding-top: 140px;
 }
 
 #about #about-bg {
 	width: 100%;
 	height:100vh;
-	background:url('{{ STATIC_URL }}img/decoration/intro.jpg') repeat-y center center; 
+	background:url('{{ STATIC_URL }}img/decoration/landing2.jpg') repeat-y center center;
+	background-clip: content-box; 
   	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
   	background-size: cover;
   	position: absolute;
   	top:0;
+  	padding-bottom: 50px;
 }
 
 #about-bg h1 {
@@ -64,7 +69,7 @@
 	margin: 0 0 30px;
 	position: absolute;
 	top: 0;
-	z-index: 2000;
+	z-index: 900;
 	width: 100%;
 }
 
@@ -84,9 +89,18 @@
 	font-family: 'Cabin', Helvetica, Arial, sans-serif;
 }
 
+#about .explain p {
+	margin: 0;
+}
+
 #about .image {
 	height: 350px;
 	padding: 20px 10px;
+	overflow: hidden;
+}
+
+#about .image .recipe-summary-wrapper:first-child {
+	margin-right: 40px;
 }
 
 #about #about-slide-2,
@@ -96,14 +110,14 @@
 
 
 #more {
-	min-height: 100vh;
-	background:url('{{ STATIC_URL }}img/decoration/fruit2.jpg') repeat-y center center; 
+	min-height: 650px;
+	background:url('{{ STATIC_URL }}img/decoration/landing3.jpg') repeat-y center center;
   	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
   	background-size: cover;
-  	padding-top: 100px;
   	margin-bottom: -59px;
+  	padding-top:100px;
 }
 
 .centerer-container {
@@ -140,6 +154,7 @@
     text-align: right;
     display: block;
     margin-top: 60px;
+    margin-bottom: 40px;
     background-color: rgba(255, 255, 255, .5);
     min-height: 350px;
     position: relative;
@@ -209,19 +224,22 @@
 						</p>
 						<br />
 						<p>
-							Dit is belangrijk voor de toekomst. Wist je dat één derde van onze totale
-							uitstoot aan broeikasgassen afkomstig is van voeding?
+							Omdat je hierbij met zoveel dingen rekening moet houden (het seizoen,
+							de productiewijze, de transportmethode, het land van herkomst, ...), kan
+							het soms moeilijk zijn om door de bomen het bos nog te zien.
 						</p>
 						<br />
 						<p>
-							Enkele kleine wijzigingen aan je manier van eten kunnen je impact
-							op het milieu al drastisch doen dalen!
+							Seasoning vat al deze informatie samen en geeft ze op een duidelijke
+							en toegankelijke manier weer. Zo wordt het voor jou gemakkelijker een
+							duurzame maaltijd te kiezen!
 						</p>
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-6">
 					<div class="image">
-						<div style="height:100%;background-color: rgba(255,255,255,.8)"></div>
+						<img src="http://www.naturalawakeningsmag.com/images/cache/cache_e/cache_c/cache_8/Sustainable-Food-Options-20b438ce.jpeg?ver=1421306080&aspectratio=1.5350877192982" 
+							 style="height:100%;"/>
 					</div>
 				</div>
 			</div>
@@ -234,20 +252,21 @@
 			<div id="about-slide-2" class="row slide">
 				<div class="col-xs-12 col-sm-6">
 					<div class="image">
-						<div style="height:100%;background-color: rgba(255,255,255,.8)"></div>
+						{% include 'includes/recipe_summary.html' with recipe=recipe_fish %}
+						{% include 'includes/recipe_summary.html' with recipe=recipe_season %}
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-6">
 					<div class="explain" style="">
 						<p>
-							Onze database bevat informatie over de ecologische
-							voetafdruk van meer dan 1000 ingrediënten.
-						</p>
+							Onze recepten worden opgedeeld in 5 categorieën naargelang hoe duurzaam ze 
+							zijn ten opzichte van alle andere recepten. Zo kan ze makkelijk onderling
+							vergelijken.
+						</p> 
 						<br />
-						<p>
-							Bovendien worden deze voetafdrukken doorheen het jaar aangepast, naargelang
-							bepaalde groenten bijvoorbeeld in seizoen zijn, of wanneer een product vooral
-							uit een bepaald land geïmporteerd zal worden.
+						<p>	
+							Wanneer een recept een speciale eigenschap heeft, wordt dit aangegeven door
+							een lintje in de linkerbovenhoek.
 						</p>
 					</div>
 				</div>
@@ -262,24 +281,15 @@
 				<div class="col-xs-12 col-sm-6">
 					<div class="explain" style="">
 						<p>
-							Door verschillende ingredïenten te combineren tot recepten, kunnen we vervolgens
-							de ecologische voetafdruk van zowat elk denkbaar recept automatisch berekenen.
-						</p>
-						<br />
-						<p>
-							Omdat we zelf niet de ambitie hebben een kooksite te zijn, werken we samen met een
-							aantal blogs en echte kooksites.
-						</p>
-						<br />
-						<p>Wij voegen hun recepten toe aan onze database en
-							berekenen zo de voetafdruk. Om het volledige recept te zien zal je echter naar
-							de website van de originele auteur moeten surfen.
+							Seasoning biedt nog veel meer functionaliteit en informatie, maar we raden je aan
+							zelf op verkenning te gaan!
 						</p>
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-6">
 					<div class="image">
-						<div style="height:100%;background-color: rgba(255,255,255,.8)"></div>
+						<img src="http://sspp.proquest.com/static_content/vol9iss2/1204-021.fig2.jpg"
+							 style="height:100%;" />
 					</div>
 				</div>
 			</div>
@@ -299,9 +309,10 @@
 	                    <span class="glyphicon glyphicon-leaf"></span>
 	                </div>
 	                <div class="info">
-	                    <h4 class="text-center">Recepten bekijken</h4>
+	                    <h4 class="text-center">Recepten vergelijken</h4>
 	                    <p>
-	                    	Bekijk onze uitgebreide verzameling recepten en ontdek meteen welke bereidingen nu
+	                    	Ontdek onze uitgebreide verzameling recepten en ondervind meteen dewelke op
+	                    	dit moment 
 	                 		een lage ecologische impact hebben. Geen registratie vereist!
 	                    </p>
 	                    <a href="{% url 'browse_recipes' %}" class="btn btn-block btn-success">Recepten</a>
@@ -319,7 +330,7 @@
 	                    	Wil je meer te weten komen over de verschillende functies van Seasoning? Raadpleeg
 	                    	dan onze uitgebreide en duidelijke help-pagina.
 	                    </p>
-	                    <a href="" class="btn btn-block btn-success">Meer over Seasoning</a>
+	                    <a href="{% url 'faq' %}" class="btn btn-block btn-success">Meer over Seasoning</a>
 	                </div>
 	            </div>
 	        </div>
@@ -365,7 +376,7 @@ $(function() {
 				$("#about-bg").css('bottom', -nav_height + 'px');
 			}
 		} else {
-			if ((scrollpos > $("#about").offset().top - nav_height) && (scrollpos +scrh < $("#more").offset().top)) {
+			if ((scrollpos > $("#about").offset().top - nav_height) && (scrollpos + scrh < $("#more").offset().top)) {
 				$("#about-bg").css('position', 'fixed');
 				$("#about-bg").css('top', nav_height + 'px');
 			} else if ((scrollpos + scrh > $("#more").offset().top) && ($("#about-bg").css('top') != 'auto')) {
