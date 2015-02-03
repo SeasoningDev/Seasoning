@@ -13,11 +13,14 @@ def create_image_models(apps, schema_editor):
     fields from the recipe models
     
     """
-    all_recipes = recipes.models.Recipe.objects.all()
+    Recipe = apps.get_model('recipes', 'Recipe')
+    RecipeImage = apps.get_model('recipes', 'RecipeImage')
+    
+    all_recipes = Recipe.objects.all()
     for recipe in all_recipes:
-        default_image = recipes.models.RecipeImage(recipe=recipe,
-                                                   image=recipe.image,
-                                                   added_by=recipe.author)
+        default_image = RecipeImage(recipe=recipe,
+                                    image=recipe.image,
+                                    added_by=recipe.author)
         default_image.save()
 
 class Migration(migrations.Migration):
@@ -35,7 +38,6 @@ class Migration(migrations.Migration):
                 ('image', imagekit.models.fields.ProcessedImageField(default=b'images/no_image.jpg', help_text='An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.', upload_to=recipes.models.get_image_filename, validators=[general.validate_image_size])),
                 ('added_by', models.ForeignKey(related_name=b'recipe_images', to=settings.AUTH_USER_MODEL)),
                 ('recipe', models.ForeignKey(related_name=b'images', to='recipes.Recipe')),
-                ('incomplete_recipe', models.ForeignKey(related_name=b'images', to='recipes.IncompleteRecipe')),
             ],
             options={
             },
