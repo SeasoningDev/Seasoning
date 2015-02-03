@@ -35,6 +35,7 @@ class Migration(migrations.Migration):
                 ('image', imagekit.models.fields.ProcessedImageField(default=b'images/no_image.jpg', help_text='An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.', upload_to=recipes.models.get_image_filename, validators=[general.validate_image_size])),
                 ('added_by', models.ForeignKey(related_name=b'recipe_images', to=settings.AUTH_USER_MODEL)),
                 ('recipe', models.ForeignKey(related_name=b'images', to='recipes.Recipe')),
+                ('incomplete_recipe', models.ForeignKey(related_name=b'images', to='recipes.IncompleteRecipe')),
             ],
             options={
             },
