@@ -16,7 +16,6 @@
   	transition: all 0.25s ease-in-out;
   	-webkit-transition: all 0.25s ease-in-out;
   	-moz-transition: all 0.25s ease-in-out;
-  	border: 1px solid transparent;
   	color: inherit;
 }
 
@@ -55,8 +54,6 @@
   border-top-left-radius: 15px;
   -moz-border-radius-topright: 15px;
   -moz-border-radius-topleft: 15px; */
-  border: 1px solid $light-border-color;
-  border-bottom: none;
 }
 
 .recipe-summary .recipe-title {
