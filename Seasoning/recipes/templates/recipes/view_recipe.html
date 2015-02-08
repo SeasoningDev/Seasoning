@@ -38,7 +38,11 @@
 	   var upvote_url = "{% url 'upvote_recipe' recipe.id %}";
 	   var downvote_url = "{% url 'downvote_recipe' recipe.id %}";
 	   var orig_recipe_portions = {{ recipe.portions }}
+	   {% if recipe.is_temp %}
+	   var recipe_portions_url = "{% url 'ajax_incomplete_recipe_ingredients' recipe.id "0000" %}"
+	   {% else %}
 	   var recipe_portions_url = "{% url 'ajax_recipe_ingredients' recipe.id "0000" %}"
+	   {% endif %}
 	   var ingredients_avail_ajax_url = "{% url 'ajax_ingredient_availability' %}";
 	   var static_url = {{ STATIC_URL }};
 	   var finish_recipe_image_url = "{% url 'ajax_finish_recipe_image' '0000' %}";
@@ -88,17 +92,24 @@
 				</button>
 			  	<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
 			    	<li role="presentation">
-			    		{% if recipe.incomplete_class %}
+			    		{% if recipe.is_temp %}
 				    	<a role="menuitem" tabindex="-1" href="{% url 'edit_incomplete_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
 				   		{% else %}
 				    	<a role="menuitem" tabindex="-1" href="{% url 'edit_recipe' recipe.id %}" title="Wijzig dit recept">Recept Wijzigen</a>
 				    	{% endif %}
 				    </li>
 				    <li role="presentation">
+				    	{% if recipe.is_temp %}
+				    	<a role="menuitem" tabindex="-1"
+				    	   href="{% url 'delete_incomplete_recipe' recipe.id %}" 
+			               title="Verwijder dit recept" 
+			               onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')">Recept Verwijderen</a>
+				    	{% else %}
 				    	<a role="menuitem" tabindex="-1"
 				    	   href="{% url 'delete_recipe' recipe.id %}" 
 			               title="Verwijder dit recept" 
 			               onclick="return confirm('Weet u zeker dat u dit recept wil verwijderen?')">Recept Verwijderen</a>
+			            {% endif %}
 				    </li>
 			  	</ul>
 			</div>
@@ -204,6 +215,8 @@
 			    </div>
 			</div>
 			
+			{% elif recipe.is_temp %}
+			<br /><br /><br /><br />
 			{% else %}
 			<div id="veganism" class="graphic-information-icon">
 				{% if recipe.veganism == 2 %}
@@ -326,7 +339,12 @@
 	    	{{ form.portions }}
 	    	<br class="clear" />
 	    </div>
-	       	
+	    {% elif recipe.is_temp %}
+   		<div id="portions-changer-edit" class="field-changer spinner-changer">
+	    	<h3>Porties</h3>
+	    	<h3 id="t-portions-display" style="text-align:left;'">{{ recipe.portions }}</h3>
+	    	<br class="clear" />
+	    </div>
 	    {% else %}
    		<span>Porties</span>
    		<span id="portions-changer-input">
@@ -430,10 +448,18 @@
 </form>
 
 <div id="finish-editing-container">
+	{% if recipe.is_temp %}
+	<a href="{% url 'save_incomplete_recipe' recipe.id %}" class="btn btn-success">Klik hier als je klaar bent met dit recept te wijzigen</a>
+	{% else %}
 	<a href="{% url 'view_recipe' recipe.id %}" class="btn btn-success">Klik hier als je klaar bent met dit recept te wijzigen</a>
+	{% endif %}
+	
+	{% if recipe.external and user.is_staff %}
+	<a href="{{ recipe.external_url }}" target=_blank" class="btn btn-default pull-right">Open het originele recept</a>
+	{% endif %}
 </div>
 
-{% else %}   
+{% elif not recipe.is_temp %}   
 <h2 class="row">
    	<span>Grafieken</span>
 </h2>

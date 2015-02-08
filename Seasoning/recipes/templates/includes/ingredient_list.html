@@ -25,6 +25,8 @@
 							{% endif %}
 						</span>
 					</span>
+					
+					{% if not incomplete %}
 					<span class="col-xs-6 col-sm-1 pull-right text-right">
 						<a class="collapsed ingredient-moreinfo-link" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter0 }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter0 }}">
 				    	    <span class="more glyphicon glyphicon-plus"></span>
@@ -41,6 +43,7 @@
 							</span>
 						</span>
 					</span>
+					{% endif %}
 			    </h4>
 			</div>
 			<div id="collapse{{ forloop.counter0 }}" class="panel-collapse collapse row" role="tabpanel" aria-labelledby="heading{{ forloop.counter0 }}">
@@ -54,8 +57,9 @@
 </div>
 {% endfor %}
 
-
+{% if not incomplete %}
 <div class="col-xs-12 col-sm-6 col-sm-offset-5" style="margin-top: 10px;margin-bottom: 30px;">
 	<h4 class="pull-right" style="font-size:18px;">{{ total_footprint|floatformat:2 }} kgCO<sub>2</sub></h4>
 	<h4 style="font-size:18px;">Totale voetafdruk: </h4>
 </div>
+{% endif %}

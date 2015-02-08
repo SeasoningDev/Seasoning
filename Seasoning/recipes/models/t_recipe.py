@@ -6,6 +6,7 @@ from django.core.validators import MaxLengthValidator, MinValueValidator
 from ingredients.models.ingredients import Ingredient
 from ingredients.models.units import Unit
 from django.utils.translation import ugettext_lazy as _
+from django.contrib import messages
 
 class TemporaryIngredientManager(models.Manager):
     
@@ -23,10 +24,11 @@ class TemporaryIngredient(models.Model):
     used_by = models.OneToOneField(UsesIngredient, null=True, blank=True, related_name='temporary_ingredient')
     
     def __unicode__(self):
-        if self.ingredient is not None:
-            return self.ingredient.name
+        if self.ingredient is None or self.ingredient.is_dummy():
+            return u'Unknown: {}'.format(self.name)
+        
+        return self.ingredient.name
            
-        return u'Unknown: {}'.format(self.name)
 
 class TemporaryUnitManager(models.Manager):
     
@@ -98,8 +100,52 @@ class IncompleteRecipe(models.Model):
     def is_temp(self):
         return True
     
-    def incomplete_class(self):
+    def all_uses_convertible(self):
+        for uses in self.uses.select_related('unit__unit').all():
+            if not uses.is_convertible():
+                return False
         return True
+    
+    def is_convertible(self):
+        """
+        Returns True if this temporary recipe has all the necessary information
+        to be converted to a real recipe
+        
+        """
+        if self.name and self.author and self.course is not None and self.portions:
+            if self.external:
+                if self.external_site and self.external_url:
+                    return self.all_uses_convertible()
+            else:
+                if self.instructions:
+                    return self.all_uses_convertible()
+        return False
+    
+    def convert(self):
+        """
+        Converts this temporary recipe to a real recipe if possible
+        
+        """
+        recipe = Recipe(name=self.name, author=self.author, external=self.external, external_url=self.external_url,
+                        external_site=self.external_site, course=self.course, cuisine=self.cuisine, 
+                        description=self.description, portions=self.portions, active_time=self.active_time,
+                        passive_time=self.active_time, extra_info=self.extra_info) 
+                    
+        recipe.save()
+        
+        for image in self.images():
+            image.recipe = recipe
+            image.save()
+        
+        try:
+            for t_uses in self.uses.all():
+                t_uses.convert(recipe=recipe)
+        except (ValueError, Unit.DoesNotExist) as e:
+            recipe.uses.all().delete()
+            recipe.delete()
+            raise e
+            
+        return recipe
     
     def course_ok(self):
         return self.course is not None
@@ -117,3 +163,24 @@ class TemporaryUsesIngredient(models.Model):
     group = models.CharField(max_length=100, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
     unit = models.ForeignKey(TemporaryUnit, db_column='unit')
+    
+    def ingredient_display(self):
+        return self.ingredient
+    
+    def is_convertible(self):
+        """
+        Returns True if this temporary usesingredient can be converted to
+        a real usesingredient
+        
+        """
+        return self.unit.unit is not None
+    
+    def convert(self, recipe):
+        uses = UsesIngredient(recipe=recipe, ingredient=self.ingredient.ingredient,
+                              group=self.group, amount=self.amount, unit=self.unit.unit)
+        uses.save()
+        
+        self.ingredient.used_by = uses
+        self.ingredient.save()
+        
+        return uses

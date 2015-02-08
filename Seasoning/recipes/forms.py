@@ -2,8 +2,35 @@ from django import forms
 from django.forms.widgets import RadioSelect, CheckboxSelectMultiple
 from ingredients.fields import AutoCompleteSelectIngredientField
 from recipes.models import Recipe, Cuisine, RecipeImage
-from recipes.models.t_recipe import IncompleteRecipe
+from recipes.models.t_recipe import IncompleteRecipe, TemporaryUsesIngredient
 from recipes.models.recipe import UsesIngredient
+from ingredients.models.units import Unit
+from django.core.exceptions import ValidationError
+        
+class MultipleSeparatorsFloatField(forms.FloatField):
+    
+    def clean(self, value):
+        value = value.replace(',', '.')
+        return super(MultipleSeparatorsFloatField, self).clean(value)
+    
+    
+    
+class ChooseRealDisplayTempUnitField(forms.ModelChoiceField):
+    
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('queryset', Unit.objects.all())
+        return super(ChooseRealDisplayTempUnitField, self).__init__(*args, **kwargs)
+    
+    def clean(self, *args, **kwargs):
+        try:
+            result = super(ChooseRealDisplayTempUnitField, self).clean(*args, **kwargs)
+        except ValidationError as e:
+            if e.message == self.error_messages['required']:
+                result = None
+            else:
+                raise e
+        return result
+    
 
 class EditRecipeForm(forms.ModelForm):
     
@@ -17,6 +44,38 @@ class EditRecipeForm(forms.ModelForm):
             'portions': forms.widgets.TextInput(),
         }
 
+class EditTemporaryUsesIngredientForm(forms.ModelForm):
+    
+    class Meta:
+        model = TemporaryUsesIngredient
+    
+    amount = MultipleSeparatorsFloatField(widget=forms.TextInput(attrs={'class': 'amount'}))
+    unit = ChooseRealDisplayTempUnitField()
+    
+    def __init__(self, *args, **kwargs):
+        result = super(EditTemporaryUsesIngredientForm, self).__init__(*args, **kwargs)
+        if self.instance is not None:
+            if self.instance.unit.unit is None:
+                self.initial['unit'] = None
+            else:
+                self.initial['unit'] = self.instance.unit.unit.pk
+        return result
+    
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(EditTemporaryUsesIngredientForm, self).clean(*args, **kwargs)
+        if 'unit' in cleaned_data and self.instance is not None:
+            cleaned_data['real_unit'] = cleaned_data['unit']
+            cleaned_data['unit'] = self.instance.unit
+        return cleaned_data
+    
+    def save(self, *args, **kwargs):
+        if self.instance is not None and 'real_unit' in self.cleaned_data:
+            self.instance.unit.unit = self.cleaned_data['real_unit']
+            self.instance.unit.save()
+        return super(EditTemporaryUsesIngredientForm, self).save(*args, **kwargs)
+        
+        
+
 class AddRecipeForm(forms.ModelForm):
     
     class Meta:
@@ -28,12 +87,6 @@ class AddRecipeForm(forms.ModelForm):
             'passive_time': forms.widgets.TextInput(),
             'portions': forms.widgets.TextInput(),
         }
-        
-class MultipleSeparatorsFloatField(forms.FloatField):
-    
-    def clean(self, value):
-        value = value.replace(',', '.')
-        return super(MultipleSeparatorsFloatField, self).clean(value)
 
 class UsesIngredientForm(forms.ModelForm):
     

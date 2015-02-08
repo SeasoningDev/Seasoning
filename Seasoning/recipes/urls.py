@@ -7,7 +7,8 @@ urlpatterns = patterns('',
     
     # VIEW RECIPE
     url(r'^(\d*)/$', 'recipes.views.view_recipe', name='view_recipe'),
-    url(r'^i/(\d*)/$', 'recipes.views.view_incomplete_recipe', name='view_incomplete_recipe'),
+    url(r'^i/(\d*)/$', 'recipes.views.view_recipe', kwargs={'incomplete': True},
+        name='view_incomplete_recipe'),
     
     url(r'^img/delete/(\d*)/$', 'recipes.views.delete_recipe_image', name='delete_recipe_image'),
     
@@ -16,6 +17,8 @@ urlpatterns = patterns('',
     
     url(r'^ingredients/(\d*)/(\d*)/$', 'recipes.views.ajax_recipe_ingredients', 
         name='ajax_recipe_ingredients'),
+    url(r'^ingredients/i/(\d*)/(\d*)/$', 'recipes.views.ajax_recipe_ingredients', 
+        kwargs={'incomplete': True}, name='ajax_incomplete_recipe_ingredients'),
     
     url(r'^external/(\d*)/$', 'recipes.views.external_recipe', name='external_recipe'),
    
@@ -25,16 +28,18 @@ urlpatterns = patterns('',
     url(r'^edit/(\d*)/$', 'recipes.views.edit_recipe', name='edit_recipe'),
     url(r'^edit/i/(\d*)/$', 'recipes.views.edit_recipe', kwargs={'incomplete': True},
         name='edit_incomplete_recipe'),
+    url(r'^edit/i/(\d*)/save/$', 'recipes.views.save_incomplete_recipe', name='save_incomplete_recipe'),
                        
     url(r'^ajax/edit/(\d*)/$', 'recipes.views.ajax_edit_recipe', name='ajax_edit_recipe'),
     url(r'^ajax/edit/i/(\d*)/$', 'recipes.views.ajax_edit_recipe', kwargs={'incomplete': True},
         name='ajax_edit_incomplete_recipe'),
     
-    url(r'^save/(\d*)/$', 'recipes.views.save_recipe', name='save_recipe'),
     
 #     url(r'^add/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='add_recipe'),
 #     url(r'^edit/(?P<recipe_id>\d+)/$', EditRecipeWizard.as_view(EditRecipeWizard.FORMS), name='edit_recipe'),
     url(r'^delete/(\d*)/$', 'recipes.views.delete_recipe', name='delete_recipe'),
+    url(r'^delete/i/(\d*)/$', 'recipes.views.delete_recipe', kwargs={'incomplete': True},
+        name='delete_incomplete_recipe'),
     
     # Upload a recipe image
     url(r'^ajax/img/(\d+)/$', 'recipes.views.ajax_upload_recipe_image', name='ajax_upload_recipe_image'),

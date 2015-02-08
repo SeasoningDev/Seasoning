@@ -127,7 +127,7 @@ class Recipe(models.Model):
                                               help_text=_("The type of course this recipe will provide."))
     cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine', null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
-    description = models.TextField(_('Description'), validators=[MaxLengthValidator(300)],
+    description = models.TextField(_('Description'), validators=[MaxLengthValidator(300)], null=True, blank=True,
                                    help_text=_("A few sentences describing the recipe (Maximum 300 characters)."))
     portions = models.PositiveIntegerField(_('Portions'), validators=[MinValueValidator(1)], 
                                            help_text=_('The average amount of people that can be fed by this recipe '
@@ -194,7 +194,7 @@ class Recipe(models.Model):
     
     def _compelete_information(self):
         for uses in self.uses.all():
-            if not uses.ingredient.accepted:
+            if not uses.accepted():
                 return False
         return True
     
@@ -421,8 +421,10 @@ class UsesIngredient(models.Model):
     def is_dummy(self):
         return self.ingredient.is_dummy()
     
+    def accepted(self):
+        return not self.is_dummy() and self.ingredient.accepted
+    
     def ingredient_display(self):
-        print(self.is_dummy())
         if self.is_dummy():
             return self.temporary_ingredient.name
         
@@ -467,7 +469,7 @@ class UsesIngredient(models.Model):
         
         ret = super(UsesIngredient, self).save(*args, **kwargs)
         
-        if self.ingredient.is_dummy():
+        if self.ingredient.is_dummy() and hasattr(self, self.UNKNOWN_INGREDIENT_FIELD):
             # This means there should be a TemporaryIngredient referencing this UsesIngredient
             try:
                 temp_ing = self.temporary_ingredient
