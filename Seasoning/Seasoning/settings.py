@@ -13,6 +13,7 @@ if len(manage_command) != 0:
         
 # Determine if we are running a development version on localhost
 LOCAL_TEST = len(sys.argv) > 1 and sys.argv[1] == 'runserver'
+LOCAL_TEST = False
 
 from Seasoning import secrets
 
