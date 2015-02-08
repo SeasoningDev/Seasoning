@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from recipes.scraper.browse.browser import Browser as raw_browser
 from urllib import urlencode
 import re
 from django.contrib.auth import get_user_model
@@ -13,108 +12,101 @@ from ingredients.models.units import Unit
 from recipes.models.t_recipe import IncompleteRecipe, TemporaryIngredient,\
     TemporaryUnit, TemporaryUsesIngredient
 from recipes.models.recipe import RecipeImage
-
-Browser = lambda: raw_browser('www.evavzw.be')
+import json
+import bs4
 
 class RecipePage(object):
     
-    def __init__(self, preview_li, content=None):
-        self.preview_li = preview_li
-        self.url = 'http://www.evavzw.be/%s' % preview_li.find('h3').find('a')['href']
-        
-        self._content = content
+    def __init__(self, url):
+        self.url = 'http://www.evavzw.be%s' % url
+        self._content = None
     
     @property
     def content(self):
         if self._content is None:
-            self._content = Browser().get(self.url)
+            self._content = bs4.BeautifulSoup(requests.get(self.url).text)
         return self._content
     
     @property
     def recipe_name(self):
-        if self._content is None:
-            return self.preview_li.find('h3').text
-        else:
-            return self.content.find('div', {'class': 'articleHeader'}).find('h1').text
+        return self.content.find('div', class_='data-wrapper').find('h2').text
     
     @property
     def recipe_portions(self):
-        return int(self.content.find('div', {'id': 'recepten-ingredients'}).find('h2').find('strong').text)
+        return int(self.content.find('div', class_='ingredients-wrapper').find('h2').text.split()[2])
     
     @property
     def recipe_ingredients(self):
-        ing_table = self.content.find('div', {'id': 'recepten-ingredients'}).find('table')
-        for ing_tr in ing_table.find('tbody').find_all('tr'):
-            tds = ing_tr.find_all('td')
-            if re.match('.*\d+.*', tds[0].text):
-                amount_text = tds[0].text
-                amount_pieces = amount_text.split()
-                amount = float(amount_pieces[0])
-                if len(amount_pieces) > 1:
-                    unit = amount_pieces[1]
-                else:
-                    unit = 'stuk'
-                ing_name = tds[1].text
-            else:
-                ing_name = tds[0].text
-                amount = 1
-                if ing_name.lower() in ['peper', 'zout']:
-                    unit = 'snuifje'
-                else:
-                    unit = 'scheut'
+        ing_lis = self.content.find('div', class_='ingredients-wrapper').find_all('li')
+        
+        for ing_li in ing_lis:
+            parts = ing_li.text.split()
+            ing_name = ing_li.find('a').text
+            
+            try:
+                amount = float(parts[0].replace(',', '.'))
+                unit = parts[1]
+            except (ValueError, IndexError):
+                amount = None
+                unit = None
                 
             yield ing_name, amount, unit
     
     @property
-    def recipe_preparation_time(self):
-        time_li = self.preview_li.find('li', {'class': 'tijd'})
-        if time_li == None:
-            return 0
-        if '+' in time_li.text:
-            return int(time_li.text.split()[0])
-        return int(time_li.text[:-1])
-    
-    @property
     def recipe_course(self):
-        return self.preview_li.find('ul').find_all('li')[0].find('a').text
+        extra_info_lis = self.content.find('div', class_='extra-info-wrapper').find_all('li')
+        for li in extra_info_lis:
+            if 'Type' in li.text:
+                return li.find('a').text
+        return None
     
     @property
     def recipe_cuisine(self):
-        lis = self.preview_li.find('ul').find_all('li')
-        if len(lis) > 1:
-            if not 'tijd' in lis[1].get('class', ''):
-                return lis[1].find('a').text
+        extra_info_lis = self.content.find('div', class_='extra-info-wrapper').find_all('li')
+        for li in extra_info_lis:
+            if 'Regio' in li.text:
+                return li.find('a').text
         return None
-        
     
     @property
     def recipe_image(self):
-        return self.content.find('div', {'id': 'recepten-bereiding'}).find('div').find('img')['src']
+        return self.content.find('div', class_='image-wrapper').find('img')['src'].split('?')[0]
     
     @property
     def recipe_source(self):
-        source_div = self.content.find('div', {'id': 'recepten-bereiding'}).find_all('div')[-1]
-        if 'Bron' in source_div.text:
-            return source_div.text.replace('Bron', '')
-        return None
+        return self.url
     
 def get_recipe_pages():
-    params = {'option': 'com_content',
-              'view': 'article',
-              'id': 53,
-              'Itemid': 396,
-              'limitstart': 0}
+    page = 1
     
     while True:
-        browse_recipes_page = Browser().get('http://www.evavzw.be/index.php?%s' % urlencode(params))
-        recipe_lis = browse_recipes_page.find_all('li', {"class" : "ofrecept" })
-        if len(recipe_lis) <= 0:
-            return
+        params = {'allergy': '_none',
+                  'cooking_time': '_none',
+                  'difficulty': '_none',
+                  'form_build_id': 'form-GgrLYpqd6cXHsBcwTdM0ixxYAcgyJWxXQ4bWGx_k_XQ',
+                  'form_id': 'ingredient_search_form',
+                  'ingredient': '',    
+                  'page': page}
         
-        for recipe_li in recipe_lis:
-            yield RecipePage(preview_li=recipe_li)
+#         response = requests.post('http://www.evavzw.be/system/ajax', data=params)
+#         print(response.text)
+#         
+#         json_resp = json.loads(response.text)
+#         html_resp = bs4.BeautifulSoup(json_resp[1]['data'])
         
-        params['limitstart'] += 24
+        response = requests.get('http://www.evavzw.be/recepten/')
+        html_resp = bs4.BeautifulSoup(response.text)
+        
+        last_page = int(html_resp.find('li', class_='pager-last').find('a')['href'].split('page=')[-1])
+        
+        for recipe in html_resp.find_all('div', class_='field-name-title'):
+            yield RecipePage(url=recipe.find('a')['href'])
+        
+        page += 1
+        if page > last_page:
+            break
+    
+    return
 
 def scrape_recipes():
     # ALL THA RECIPES ARE MINE!!!
@@ -144,12 +136,13 @@ def scrape_recipes():
         # Get course
         recipe_course = None
         try:
-            best = difflib.get_close_matches(recipe_page.recipe_course, [x[1] for x in Recipe.COURSES], 1, 0.8)[0]
-            
-            for code, course in Recipe.COURSES:
-                if best == course:
-                    recipe_course = code
-                    break
+            if recipe_page.recipe_course is not None:
+                best = difflib.get_close_matches(recipe_page.recipe_course, [x[1] for x in Recipe.COURSES], 1, 0.8)[0]
+                
+                for code, course in Recipe.COURSES:
+                    if best == course:
+                        recipe_course = code
+                        break
         except IndexError:
             pass
         
@@ -166,7 +159,7 @@ def scrape_recipes():
         
         # Get Image file
         # Steam the image from the url
-        request = requests.get('http://www.evavzw.be%s' % recipe_page.recipe_image, stream=True)
+        request = requests.get(recipe_page.recipe_image, stream=True)
     
         # Was the request OK?
         if request.status_code != requests.codes['ok']:
@@ -192,8 +185,7 @@ def scrape_recipes():
         recipe = IncompleteRecipe(name=recipe_page.recipe_name, author=scraper,
                                   external=True, external_site=external_site, external_url=recipe_page.url, 
                                   course=recipe_course, cuisine=recipe_cuisine, cuisine_proposal=recipe_cuisine_proposal,
-                                  description='Een heerlijk vegetarisch receptje van Eva!',
-                                  portions=recipe_page.recipe_portions, active_time=recipe_page.recipe_preparation_time,
+                                  portions=recipe_page.recipe_portions, active_time=0,
                                   passive_time=0)
         
         if recipe.course is None:
@@ -212,23 +204,30 @@ def scrape_recipes():
         
         for recipe_ingredient in recipe_page.recipe_ingredients:
             parsed_ing_name = recipe_ingredient[0]
-            parsed_ing_name = re.sub('\(.*\)', '', parsed_ing_name).strip()
+            parsed_amount = recipe_ingredient[1]
+            parsed_unit_name = recipe_ingredient[2]
+            
             try:
                 ingredient = Ingredient.objects.filter(name__icontains=parsed_ing_name)[0]
             except IndexError:
                 ingredient = None
             
-            try:
-                unit = Unit.objects.filter(short_name__icontains=recipe_ingredient[2])[0]
-            except IndexError:
-                unit = None
+            if parsed_unit_name is None:
+                unit = Unit.objects.get(name__icontains='snuifje')
+                parsed_amount = 1
+                parsed_unit_name = 'snuifje'
+            else:
+                try:
+                    unit = Unit.objects.filter(short_name__icontains=parsed_unit_name)[0]
+                except (ValueError, IndexError):
+                    unit = None
             
-            t_ingredient = TemporaryIngredient(ingredient=ingredient, name=recipe_ingredient[0])
+            t_ingredient = TemporaryIngredient(ingredient=ingredient, name=parsed_ing_name)
             t_ingredient.save()
             
-            t_unit = TemporaryUnit(unit=unit, name=recipe_ingredient[2])
+            t_unit = TemporaryUnit(unit=unit, name=parsed_unit_name)
             t_unit.save()
             
-            t_uses = TemporaryUsesIngredient(recipe=recipe, ingredient=t_ingredient, amount=recipe_ingredient[1],
+            t_uses = TemporaryUsesIngredient(recipe=recipe, ingredient=t_ingredient, amount=parsed_amount,
                                              unit=t_unit)
             t_uses.save()
