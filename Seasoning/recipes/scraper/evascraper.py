@@ -188,18 +188,14 @@ def scrape_recipes():
                                   portions=recipe_page.recipe_portions, active_time=0,
                                   passive_time=0)
         
-        if recipe.course is None:
-            recipe.course = 0
-            recipe.instructions = 'Course: %s\n' % recipe_page.recipe_course
-        
         if recipe_page.recipe_source is not None:
             if recipe.instructions is None:
                 recipe.instructions = ''
-            recipe.instructions += 'Source: %s\n' % recipe_page.recipe_source.strip()
+            recipe.instructions += 'Source: %s\r\n' % recipe_page.recipe_source.strip()
         
         recipe.save()
         
-        image = RecipeImage(incomplete_recipe=recipe, added_by=scraper)
+        image = RecipeImage(incomplete_recipe=recipe, added_by=scraper, visible=True)
         image.image.save(file_name, files.File(lf))
         
         for recipe_ingredient in recipe_page.recipe_ingredients:
@@ -210,7 +206,7 @@ def scrape_recipes():
             try:
                 ingredient = Ingredient.objects.filter(name__icontains=parsed_ing_name)[0]
             except IndexError:
-                ingredient = None
+                ingredient = Ingredient.objects.dummy()
             
             if parsed_unit_name is None:
                 unit = Unit.objects.get(name__icontains='snuifje')

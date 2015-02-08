@@ -7,10 +7,10 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 import json
 import datetime
-from ingredients.models import Ingredient, Unit
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    EditRecipeForm, UploadRecipeImageForm, AddRecipeForm, UsesIngredientForm
+    EditRecipeForm, UploadRecipeImageForm, AddRecipeForm, UsesIngredientForm,\
+    EditTemporaryUsesIngredientForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from recipes.models.t_recipe import IncompleteRecipe, TemporaryUsesIngredient
 from django.template import defaultfilters
@@ -21,36 +21,48 @@ from django.conf import settings
 from recipes.models.recipe import RecipeImage
 from django.forms.models import inlineformset_factory
 
-def ajax_recipe_ingredients(request, recipe_id, portions):
+def ajax_recipe_ingredients(request, recipe_id, portions, incomplete=False):
     try:
         portions = int(portions)
         if request.is_ajax() and portions >= 1:
             try:
-                recipe = Recipe.objects.select_related(
-                    'author', 'cuisine').prefetch_related(
-                    'uses__unit',
-                    'uses__ingredient__canuseunit_set__unit',
-                    'uses__ingredient__available_in_country__location',
-                    'uses__ingredient__available_in_country__transport_method',
-                    'uses__ingredient__available_in_sea__location',
-                    'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
+                if incomplete:
+                    try:
+                        recipe = IncompleteRecipe.objects.get(pk=recipe_id)
+                    except IncompleteRecipe.DoesNotExist:
+                        raise Http404
+                    
+                    data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': recipe.uses.all(),
+                                                                                                  'incomplete': True})} 
+                else:
+                    try:
+                        recipe = Recipe.objects.select_related(
+                            'author', 'cuisine').prefetch_related(
+                            'uses__unit',
+                            'uses__ingredient__canuseunit_set__unit',
+                            'uses__ingredient__available_in_country__location',
+                            'uses__ingredient__available_in_country__transport_method',
+                            'uses__ingredient__available_in_sea__location',
+                            'uses__ingredient__available_in_sea__transport_method').get(pk=recipe_id)
+                    except Recipe.DoesNotExist:
+                        raise Http404
+                    
+                    ratio = float(portions)/recipe.portions
+                    total_footprint = portions * recipe.footprint
                 
-                ratio = float(portions)/recipe.portions
-                total_footprint = portions * recipe.footprint
+                    usess = []
+                    for uses in recipe.uses.all():
+                        uses.save_allowed = False
+                        uses.amount = ratio * uses.amount
+                        usess.append(uses)
                 
-                usess = []
-                for uses in recipe.uses.all():
-                    uses.save_allowed = False
-                    uses.amount = ratio * uses.amount
-                    usess.append(uses)
-                
-                data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess,
-                                                                                              'total_footprint': total_footprint})}
+                    data = {'ingredient_list': render_to_string('includes/ingredient_list.html', {'usess': usess,
+                                                                                                  'total_footprint': total_footprint})}
                 json_data = json.dumps(data)
                 
                 return HttpResponse(json_data)
             
-            except Recipe.DoesNotExist, UsesIngredient.DoesNotExist:
+            except UsesIngredient.DoesNotExist:
                 raise Http404
     except TypeError:
         pass
@@ -127,15 +139,21 @@ def ajax_markdown_preview(request):
 def ajax_edit_recipe(request, recipe_id, incomplete=False):
     if request.is_ajax() and request.method == 'POST':
         if incomplete:
-            recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+            try:
+                recipe = IncompleteRecipe.objects.prefetch_related(
+                    'uses__unit__unit').get(id=recipe_id)
+            except IncompleteRecipe.DoesNotExist:
+                raise Http404
+            
             form = AddRecipeForm(request.POST, instance=recipe)
-            UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, extra=0)
-            ing_formset = UsesIngredientFormset(request.POST, instance=recipe)
+            UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, form=EditTemporaryUsesIngredientForm, extra=0)
+            ing_formset = UsesIngredientFormset(request.POST, instance=recipe, queryset=recipe.uses.select_related('ingredient__ingredient', 
+                                                                                                                   'unit__unit').all())
         else:
             recipe = get_object_or_404(Recipe, id=recipe_id)
             form = EditRecipeForm(request.POST, instance=recipe)
             UsesIngredientFormset = inlineformset_factory(Recipe, UsesIngredient, form=UsesIngredientForm, extra=0)
-            ing_formset = UsesIngredientFormset(request.POST, instance=recipe)
+            ing_formset = UsesIngredientFormset(request.POST, instance=recipe, queryset=recipe.uses.select_related('unit').all())
         
         if form.is_valid() and ing_formset.is_valid():
             form.save()

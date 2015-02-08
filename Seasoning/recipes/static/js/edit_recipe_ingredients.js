@@ -96,11 +96,11 @@ var ing_edit_func = function() {
 	var prev_unit_val = ing.find('select').val();
 
 	$(this).find('.group-editable-field').each(function() {
-		el = $(this);
-		field = $(this).next('input, select');
+		var el = $(this);
+		var field = $(this).next('input, select');
 		
 		if (field.is('input')) {
-			field.val(el.text());
+			field.val(el.text().replace(',', '.'));
 		}
 		
 		el.hide();

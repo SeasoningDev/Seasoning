@@ -82,7 +82,7 @@ $(document).ready( function () {
   <tbody>
 {% for recipe in incomplete_recipes %}
   <tr>
-  	<td><a href="{% url 'admin:recipes_incompleterecipe_change' recipe.id %}">{{ recipe.name }}</a></td>
+  	<td><a href="{% url 'edit_incomplete_recipe' recipe.id %}">{{ recipe.name }}</a></td>
     <td align=center>{% if recipe.course_ok %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
     <td align=center>{% if recipe.cuisine_ok %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
     <td align=center></td>

@@ -42,7 +42,11 @@ class IngredientManager(models.Manager):
         return self.distinct().filter(name_filter, accepted=True)
     
     def dummy(self):
-        return self.get(name=self.DUMMY_NAME)
+        try:
+            return self.get(name=self.DUMMY_NAME)
+        except self.model.DoesNotExist:
+            ingredient = Ingredient(name=self.DUMMY_NAME, category=0, base_footprint=0)
+            ingredient.save()
 
 class Ingredient(models.Model):
     """

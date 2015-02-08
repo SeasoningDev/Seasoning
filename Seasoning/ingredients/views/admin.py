@@ -6,7 +6,7 @@ def list_ingredients(request):
     """
     Displays a list of all ingredients currently in the database.
     
-    """    
+    """
     if not request.user.is_superuser:
         raise PermissionDenied
    

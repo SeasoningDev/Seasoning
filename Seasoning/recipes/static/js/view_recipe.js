@@ -27,6 +27,8 @@ function load_ingredient_list() {
 	
 	// Get required parameters for ajax request
 	var portions = $('#portions-changer input').val();
+	if (!portions)
+		portions = $('#t-portions-display').text();
     var updated_recipe_portions_url = recipe_portions_url.replace('/0000/', '/' + portions + '/');
     
     

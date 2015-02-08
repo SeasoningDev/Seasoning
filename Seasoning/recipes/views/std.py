@@ -1,6 +1,7 @@
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    UploadRecipeImageForm, EditRecipeForm, AddRecipeForm, UsesIngredientForm
+    UploadRecipeImageForm, EditRecipeForm, AddRecipeForm, UsesIngredientForm,\
+    EditTemporaryUsesIngredientForm
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
@@ -9,10 +10,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from recipes.models.recipe import Upvote, UsesIngredient
-from recipes.models.t_recipe import IncompleteRecipe, TemporaryIngredient,\
+from recipes.models.t_recipe import IncompleteRecipe,\
     TemporaryUsesIngredient
 from django.forms.models import inlineformset_factory
-from ingredients.models.ingredients import Ingredient
+from ingredients.models.units import Unit
 
 
 def browse_recipes(request):
@@ -39,13 +40,21 @@ def browse_recipes(request):
                                                            'exclude_ingredients_formset': exclude_ingredients_formset,
                                                            'search_form_id': search_form_id})
 
-def view_recipe(request, recipe_id):
+def view_recipe(request, recipe_id, incomplete=False):
     context = {}
     
-    try:
-        recipe = Recipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
-    except Recipe.DoesNotExist:
-        raise Http404
+    if incomplete:
+        try:
+            recipe = IncompleteRecipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
+        except IncompleteRecipe.DoesNotExist:
+            Http404
+        
+        messages.add_message(request, messages.WARNING, 'Dit recept onvolledig. Voeg de ontbrekende informatie toe om alle functionaliteiten te onstluiten.')
+    else:
+        try:
+            recipe = Recipe.objects.select_related('author', 'cuisine').get(pk=recipe_id)
+        except Recipe.DoesNotExist:
+            raise Http404
     
     user_has_upvoted = Upvote.objects.filter(recipe_id=recipe_id, user=request.user.id).exists()
     
@@ -66,26 +75,10 @@ def view_recipe(request, recipe_id):
     upload_image_form = UploadRecipeImageForm()
     context['upload_image_form'] = upload_image_form
     
+    if not recipe.complete_information:
+        messages.add_message(request, messages.WARNING, 'Dit recept bevat ingredienten die momenteel niet in onze database zitten en is bijgevolg enkel zichtbaar voor jou. We voegen de missende ingredienten zo snel mogelijk toe!')
+    
     return render(request, template, context)
-
-@login_required
-def view_incomplete_recipe(request, recipe_id):
-    recipe = get_object_or_404(IncompleteRecipe, id=recipe_id, author=request.user)
-    
-    if request.method == 'POST':
-        upload_image_form = UploadRecipeImageForm(request.POST, request.FILES)
-        if upload_image_form.is_valid():
-            image = upload_image_form.save(commit=False)
-            image.recipe = recipe
-            image.added_by = request.user
-            image.save()
-            
-            upload_image_form = UploadRecipeImageForm()
-    else:
-        upload_image_form = UploadRecipeImageForm()
-    
-    return render(request, 'recipe/view_recipe.html', {'recipe': recipe,
-                                                       'upload_image_form': upload_image_form})
 
 @login_required
 def delete_recipe_image(request, image_id):
@@ -100,8 +93,11 @@ def delete_recipe_image(request, image_id):
     raise PermissionDenied()
 
 @login_required
-def delete_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
+def delete_recipe(request, recipe_id, incomplete=False):
+    if incomplete:
+        recipe = get_object_or_404(IncompleteRecipe, pk=recipe_id)
+    else:
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
     
     if recipe.author == request.user:
         recipe.delete()
@@ -129,7 +125,7 @@ def edit_recipe(request, recipe_id, incomplete=False):
     if incomplete:
         recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
         form = AddRecipeForm(instance=recipe)
-        UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, extra=0)
+        UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, form=EditTemporaryUsesIngredientForm, extra=0)
         ing_formset = UsesIngredientFormset(instance=recipe)
     else:
         recipe = get_object_or_404(Recipe, id=recipe_id)
@@ -146,10 +142,20 @@ def edit_recipe(request, recipe_id, incomplete=False):
     raise PermissionDenied()
 
 @login_required
-def save_recipe(request, recipe_id):
-    recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+def save_incomplete_recipe(request, recipe_id):
+    incomplete_recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
     
-    if recipe.author == request.user or request.user.is_staff:
-        return redirect(reverse('view_recipe', args=(recipe.id, )))
+    if incomplete_recipe.author == request.user or request.user.is_staff:
+        try:
+            if incomplete_recipe.is_convertible():
+                recipe = incomplete_recipe.convert()
+        
+                return redirect(reverse('view_recipe', args=(recipe.id, )))
+        except Unit.DoesNotExist as e:
+            messages.add_message(request, messages.WARNING, e.message)
+            
+            return redirect(reverse('edit_incomplete_recipe', args=(incomplete_recipe.id, )))
+    
+        return redirect(reverse('view_incomplete_recipe', args=(incomplete_recipe.id, )))
     
     raise PermissionDenied()

@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
 from recipes.models import ExternalSite
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 
 def proofread_recipes(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied()
+    
     try:
         external_site = ExternalSite.objects.get(name="Eva vzw")
     except ExternalSite.DoesNotExist:
@@ -26,6 +30,9 @@ def proofread_recipes(request):
                                                             'ignored_recipes': ignored_recipes})
 
 def scrape_recipes(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied()
+    
     from recipes.scraper.evascraper import scrape_recipes
     scrape_recipes()
     
