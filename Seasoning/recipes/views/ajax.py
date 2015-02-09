@@ -74,7 +74,7 @@ def upvote(request, recipe_id):
     if request.is_ajax():
         recipe = get_object_or_404(Recipe, pk=recipe_id)
         recipe.upvote(user=request.user)
-        return HttpResponse(recipe.upvotes)
+        return HttpResponse(recipe.ao_upvotes())
         
     raise PermissionDenied()
     
@@ -84,7 +84,7 @@ def downvote(request, recipe_id):
     if request.is_ajax():
         recipe = get_object_or_404(Recipe, pk=recipe_id)
         recipe.downvote(user=request.user)
-        return HttpResponse(recipe.upvotes)
+        return HttpResponse(recipe.ao_upvotes())
         
     raise PermissionDenied()
 
