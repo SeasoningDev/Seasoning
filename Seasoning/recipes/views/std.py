@@ -1,7 +1,7 @@
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    UploadRecipeImageForm, EditRecipeForm, AddRecipeForm, UsesIngredientForm,\
-    EditTemporaryUsesIngredientForm
+    UploadRecipeImageForm, EditRecipeForm, UsesIngredientForm,\
+    TemporaryUsesIngredientForm, EditIncompleteRecipeForm
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe, RecipeImage
 from django.http.response import Http404
@@ -123,18 +123,39 @@ def add_recipe(request):
 @login_required
 def edit_recipe(request, recipe_id, incomplete=False):
     if incomplete:
-        recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
-        form = AddRecipeForm(instance=recipe)
-        UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, form=EditTemporaryUsesIngredientForm, extra=0)
-        ing_formset = UsesIngredientFormset(instance=recipe)
+        try:
+            recipe = IncompleteRecipe.objects.select_related(
+                'author',
+                'external_site',
+                'cuisine').get(id=recipe_id)
+            uses_set = recipe.uses.select_related('ingredient__ingredient__temporary_ingredient',
+                                               'unit__unit').all()
+        except IncompleteRecipe.DoesNotExist:
+            raise Http404
+        form = EditIncompleteRecipeForm(instance=recipe)
+        UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, 
+                                                      form=TemporaryUsesIngredientForm,
+                                                      extra=0)
     else:
-        recipe = get_object_or_404(Recipe, id=recipe_id)
+        try:
+            recipe = Recipe.objects.select_related(
+                'author',
+                'external_site',
+                'cuisine').get(id=recipe_id)
+            uses_set = recipe.uses.select_related('ingredient__temporary_ingredient',
+                                                  'unit')
+        except Recipe.DoesNotExist:
+            raise Http404
         form = EditRecipeForm(instance=recipe)
         UsesIngredientFormset = inlineformset_factory(Recipe, UsesIngredient, form=UsesIngredientForm, extra=0)
-        ing_formset = UsesIngredientFormset(instance=recipe)
-        
+    
+    ing_formset = UsesIngredientFormset(instance=recipe, queryset=uses_set)
+    
+    images = recipe.images.visible().select_related('added_by')
+    
     if recipe.author == request.user or request.user.is_staff:
         return render(request, 'recipes/view_recipe.html', {'recipe': recipe,
+                                                            'images': images,
                                                             'form': form,
                                                             'ing_formset': ing_formset,
                                                             'edit': True})

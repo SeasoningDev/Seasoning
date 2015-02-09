@@ -149,7 +149,7 @@
 		  
 		    	<!-- Indicators -->
 		  		<ol class="carousel-indicators">
-		  			{% for image in recipe.images.visible %}
+		  			{% for image in images %}
 		  			<li data-target="#recipe-images-carousel" 
 		  			    data-slide-to="{{ forloop.counter0 }}" 
 		  			    {% if forloop.first %}class="active"{% endif %}>
@@ -176,7 +176,7 @@
 		
 		  		<!-- Wrapper for slides -->
 		  		<div class="carousel-inner" role="listbox">
-		  			{% for image in recipe.images.visible %}
+		  			{% for image in images %}
 		  			<div class="item{% if forloop.first %} active{% endif %}" style="background-image: url('{{ image.image.url }}');background-size: {{ image.bg_width|default_if_none:100 }}% {{ image.bg_height|default_if_none:"auto" }}{% if image.bg_height != None %}%{% endif %};background-position: {{ image.bg_x|default_if_none:0 }}% {{ image.bg_y|default_if_none:0 }}%;">
 		    		</div>
 		            {% empty %}	

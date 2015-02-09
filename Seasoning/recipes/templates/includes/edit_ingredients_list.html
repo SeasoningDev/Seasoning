@@ -10,7 +10,11 @@
 				<h4 class="panel-title">
 					<span class="edit-ingredient-name field-changer col-xs-12 col-sm-4 text-center-xs">
 						<span class="group-editable-field" default="(Naam van het ingrediënt)">{{ ing_form.instance.ingredient_display }}</span>
+						{% if recipe.is_temp or temp %}
+						<input disabled="disabled" value="{{ ing_form.instance.ingredient_display }}" />
+						{% else %}
 						{{ ing_form.ingredient }}
+						{% endif %}
 					</span>
 					<span class="col-xs-12 col-sm-1" style="height:10px;"></span>
 					<span class="edit-ingredient-amount field-changer col-xs-5 col-sm-3" style="text-align:right;">
