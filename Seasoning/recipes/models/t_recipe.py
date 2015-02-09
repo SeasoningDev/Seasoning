@@ -6,6 +6,7 @@ from django.core.validators import MaxLengthValidator, MinValueValidator
 from ingredients.models.ingredients import Ingredient
 from ingredients.models.units import Unit
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 class TemporaryIngredientManager(models.Manager):
     
@@ -20,7 +21,8 @@ class TemporaryIngredient(models.Model):
     name = models.CharField(max_length=500)
     
     # Field for existing recipes using an unknown ingredient
-    used_by = models.OneToOneField(UsesIngredient, null=True, blank=True, related_name='temporary_ingredient')
+    used_by = models.OneToOneField(UsesIngredient, null=True, blank=True,
+                                   on_delete=models.SET_NULL, related_name='temporary_ingredient')
     
     def __unicode__(self):
         if self.ingredient is None or self.ingredient.is_dummy():
@@ -132,7 +134,7 @@ class IncompleteRecipe(models.Model):
                     
         recipe.save()
         
-        for image in self.images():
+        for image in self.images.all():
             image.recipe = recipe
             image.save()
         
@@ -143,6 +145,11 @@ class IncompleteRecipe(models.Model):
             recipe.uses.all().delete()
             recipe.delete()
             raise e
+        
+        self.uses.all().delete()
+        self.delete()
+        
+        recipe.recalculate_ingredient_aggregates()
             
         return recipe
     
@@ -172,14 +179,26 @@ class TemporaryUsesIngredient(models.Model):
         a real usesingredient
         
         """
-        return self.unit.unit is not None
+        if self.unit.unit is None:
+            return False
+        if self.ingredient.ingredient is None:
+            return True
+        return self.ingredient.ingredient.can_use_unit(self.unit.unit)
     
     def convert(self, recipe):
         uses = UsesIngredient(recipe=recipe, ingredient=self.ingredient.ingredient,
                               group=self.group, amount=self.amount, unit=self.unit.unit)
-        uses.save()
+        uses.save(update_recipe_aggregates=False)
         
         self.ingredient.used_by = uses
         self.ingredient.save()
         
         return uses
+    
+    
+    def clean(self, *args, **kwargs):
+        # Validate that is ingredient is using a unit that it can use
+        if self.ingredient.ingredient is not None and self.ingredient.ingredient.accepted and self.unit.unit is not None:
+            if not self.ingredient.ingredient.can_use_unit(self.unit.unit):
+                raise ValidationError(_('This unit cannot be used for measuring this Ingredient.'))
+        return self

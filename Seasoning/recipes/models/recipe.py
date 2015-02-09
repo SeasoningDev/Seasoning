@@ -192,6 +192,10 @@ class Recipe(models.Model):
     def upvotes(self):
         return self.upvote_set.all().count()
     
+    @property
+    def thumbnail(self):
+        return self.images.visible()[0].thumbnail
+    
     def _compelete_information(self):
         for uses in self.uses.all():
             if not uses.accepted():
@@ -377,7 +381,7 @@ class RecipeImage(models.Model):
         width
         
         """
-        if self.w is None:
+        if self.w is None or self.w == 0:
             return None
         return int(round(100/self.w))
     
@@ -386,7 +390,7 @@ class RecipeImage(models.Model):
         Same as for width
         
         """
-        if self.h is None:
+        if self.h is None or self.h == 0:
             return None
         return int(round(100/self.h))
     
@@ -426,7 +430,7 @@ class UsesIngredient(models.Model):
     
     def ingredient_display(self):
         if self.is_dummy():
-            return self.temporary_ingredient.name
+            return 'Onbekend: {}'.format(self.temporary_ingredient.name)
         
         if self.amount == 1 or not self.ingredient.plural_name:
             return self.ingredient.name

@@ -56,6 +56,8 @@ def view_recipe(request, recipe_id, incomplete=False):
         except Recipe.DoesNotExist:
             raise Http404
     
+    context['images'] = recipe.images.visible().select_related('added_by')
+    
     user_has_upvoted = Upvote.objects.filter(recipe_id=recipe_id, user=request.user.id).exists()
     
     total_time = recipe.active_time + recipe.passive_time

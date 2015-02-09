@@ -52,4 +52,15 @@ urlpatterns = patterns('',
 #     url(r'^data/fprel/$', 'recipes.views.get_relative_footprint'),
     
     url(r'^markdownpreview/$', 'recipes.views.ajax_markdown_preview'),
+    
+    
+    
+    ### ADMIN FUNCTIONS
+    
+    url(r'^scrape/$', 'recipes.views.scrape_recipes', name='scrape_recipes'),
+    url(r'^scrape/(\d+)/$', 'recipes.views.scrape_recipes', name='scrape_recipe'),
+    url(r'^scrape/i/(\d+)/$', 'recipes.views.scrape_recipes', kwargs={'incomplete': True},
+        name='scrape_incomplete_recipe'),
+    url(r'^scrape/pr/$', 'recipes.views.proofread_recipes', name='proofread_recipes'),
+
 )
