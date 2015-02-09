@@ -27,76 +27,125 @@ $(document).ready( function () {
 {% endblock %}
 
 {% block content %}
-<h2><a href="{% url 'scrape_recipes' %}">Scrape Recipes</a></h2>
+<a class="btn btn-default pull-right" href="{% url 'scrape_recipes' %}" style="color:#333;">Scrape Recipes</a>
 
 <div class="meter orange">
 	<span style="width: {{ perc_accepted }}%"></span>
 	<span class="green" style="width: {{ perc_bramified }}%"></span>
 </div>
 
-<table style="margin: 20px 0 40px 5%; font-size: 1.5em;">
-	<tr>
+<div class="panel panel-default" style="width: 500px;margin-bottom:50px;">
+  <div class="panel-heading">
+  	<h3 style="margin: 0;font-weight: bold;font-size:16px">Eva Recepten Status</h3>
+  </div>
+
+  <!-- Table -->
+  <table class="table">
+    <tr>
 		<td style="padding-right: 30px;">
 			Aantal recepten van EVA in de databank
 		</td>
-		<td style="">
+		<td style="text-align:right;">
 			{{ ao_recipes }}
+		</td>
+	</tr>
+	<tr>
+		<td style="color: rgb(255,50,50);">
+			Recepten met missende informatie (Course of onbekende Units)
+		</td>
+		<td style="color: rgb(255,50,50);text-align:right;">
+			{{ ao_incomplete_recipes }}
+		</td>
+	</tr>
+	<tr>
+		<td style="color: rgb(241, 161, 101);">
+			Compleet maar bevat onbekende Ingrediënten
+		</td>
+		<td style="color: rgb(241, 161, 101);text-align:right;">
+			{{ ao_complete_recipes }}
 		</td>
 	</tr>
 	<tr>
 		<td style="color: rgb(43,194,83);">
 			Accepted recepten:
 		</td>
-		<td style="color: rgb(43,194,83);">
+		<td style="color: rgb(43,194,83);text-align:right;">
 			{{ ao_accepted_recipes }}
 		</td>
 	</tr>
-	<tr>
-		<td style="color: rgb(241, 161, 101);">
-			Compleet maar Niet Accepted recepten
-		</td>
-		<td style="color: rgb(241, 161, 101);">
-			{{ ao_complete_recipes }}
-		</td>
-	</tr>
-	<tr>
-		<td style="color: rgb(255,50,50);">
-			Incomplete recepten
-		</td>
-		<td style="color: rgb(255,50,50);">
-			{{ ao_incomplete_recipes }}
-		</td>
-	</tr>
-</table>
+  </table>
+</div>
 
 <table id="ingredient-table">
 	<thead>
   <tr align="left">
   	<th width=20%>Titel</th>
+  	<th width=5%># Ingrediënten</th>
     <th width=5%>Course ok?</th>
-    <th width=5%>Cuisine ok?</th>
+    <th width=5%>Alle Units gekend?</th>
 	<th width=5%>Complete</th>
 	<th width=5%>Accepted</th>
   </tr>
   </thead>
   <tbody>
-{% for recipe in incomplete_recipes %}
-  <tr>
-  	<td><a href="{% url 'edit_incomplete_recipe' recipe.id %}">{{ recipe.name }}</a></td>
-    <td align=center>{% if recipe.course_ok %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
-    <td align=center>{% if recipe.cuisine_ok %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
-    <td align=center></td>
-    <td align=center></td>
-  </tr>
+	{% for recipe in incomplete_recipes %}
+ 	<tr>
+	  	<td>
+	  		<a href="{% url 'edit_incomplete_recipe' recipe.id %}" style="color:rgb(255,50,50)">{{ recipe.name }}</a>
+	  		<a href="{% url 'scrape_incomplete_recipe' recipe.id %}" title="Dit recept opnieuw scrapen" style="margin-left:5px;color:#333;">
+	  			<span class="glyphicon glyphicon-refresh"></span>
+	  		</a>
+	  		{% if recipe.is_convertible %}
+	  		<p>Dit tijdelijke recept kan omgezet worden naar een volwaardig recept. Klik 
+	  		<a href="{% url 'save_incomplete_recipe' recipe.id %}">hier</a> om dit te doen</p>
+	  		{% endif %}
+	  	</td>
+	  	<td align=center>
+	  		{{ recipe.uses.count }}
+	  	</td>
+	    <td align=center>
+	    	{% if recipe.course_ok %}
+	    	<span class="glyphicon glyphicon-ok"></span>
+	    	{% endif %}
+	    </td>
+	    <td align=center>
+	    	{% if recipe.all_uses_convertible %}
+	    	<span class="glyphicon glyphicon-ok"></span>
+	    	{% endif %}
+	    </td>
+	    <td align=center></td>
+	    <td align=center></td>
+  	</tr>
 {% endfor %}
 {% for recipe in complete_recipes %}
-  <tr>
-  	<td><a href="{% url 'admin:recipes_recipe_change' recipe.id %}">{{ recipe.name }}</a></td>
-    <td align=center><img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" /></td>
-    <td align=center><img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" /></td>
-    <td align=center><img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" /></td>
-    <td align=center>{% if recipe.accepted %}<img src="http://suvendugiri.files.wordpress.com/2012/02/checkbox.png" width="10px" height="10px" alt="" />{% endif %}</td>
-  </tr>
+  	<tr>
+	  	<td>
+	  		<a href="{% url 'edit_recipe' recipe.id %}"
+	  		   style="{% if recipe.accepted %}color: rgb(43,194,83){% else %}color: rgb(241, 161, 101){% endif %};">
+	  			{{ recipe.name }}
+	  		</a>
+	  		<a href="{% url 'scrape_recipe' recipe.id %}" title="Dit recept opnieuw scrapen" style="margin-left:5px;color:#333;">
+	  			<span class="glyphicon glyphicon-refresh"></span>
+	  		</a>
+	  	</td>
+	  	<td align=center>
+	  		{{ recipe.uses.count }}
+	  	</td>
+	    <td align=center>
+	    	<span class="glyphicon glyphicon-ok"></span>
+	    </td>
+	    <td align=center>
+	    	<span class="glyphicon glyphicon-ok"></span>
+	    </td>
+	    <td align=center>
+	    	{% if recipe.complete_information %}<span class="glyphicon glyphicon-ok"></span>{% endif %}
+	    </td>
+	    <td align=center>
+	    	{% if recipe.accepted %}
+	    	<span class="glyphicon glyphicon-ok"></span>
+	    	{% endif %}
+	    </td>
+  	</tr>
 {% endfor %}
 </tbody>
 </table>

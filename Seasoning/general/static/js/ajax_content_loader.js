@@ -1,4 +1,6 @@
 (function( $ ){
+	var last_ajax_request;
+	
    $.fn.ajax_load = function(options) {
 	   
 	   // This is the easiest way to have default options.
@@ -65,13 +67,16 @@
 			   settings.page_field_to_update.val(parseInt(settings.page_field_to_update.val()) + 1);
 		   }
 		   
+		   if (last_ajax_request)
+			   last_ajax_request.abort();
+		   
 		   if (clear) {
 			   wrapper.html("");
 		   }
 
 		   settings.loader_element.show();
 		   
-		   $.ajax({
+		   last_ajax_request = $.ajax({
 			   url: settings.ajax_url,
 			   type : "POST",
 			   data: settings.form.serialize(),
@@ -80,14 +85,16 @@
 			   reloads_until_continue_ask--;
 		   }).done(function() {
 			   loading = false;
-		   }).error(function() {
-			   if (settings.page_field_to_update.val() <= 1) {
-				   if (settings.no_results_element_to_show) {
-					   settings.no_results_element_to_show.show();
-				   }
-			   } else {
-				   if (settings.no_more_data_element_to_show) {
-					   settings.no_more_data_element_to_show.show();
+		   }).error(function(jqXHR, status, error) {
+			   if (status != "abort") {
+	               if (settings.page_field_to_update.val() <= 1) {
+					   if (settings.no_results_element_to_show) {
+						   settings.no_results_element_to_show.show();
+					   }
+				   } else {
+					   if (settings.no_more_data_element_to_show) {
+						   settings.no_more_data_element_to_show.show();
+					   }
 				   }
 			   }
 		   }).always(function() {

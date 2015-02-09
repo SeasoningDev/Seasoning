@@ -13,9 +13,6 @@ urlpatterns = patterns('',
     url(r'^admin/contact/(\d*)/$', 'general.views.email_preview', name='email_preview'),
     url(r'^admin/contact/$', 'general.views.contact_overview', name='contact_overview'),
     
-    
-    url(r'^scrape/$', 'recipes.views.scrape_recipes', name='scrape_recipes'),
-    url(r'^admin/recipes/pr/$', 'recipes.views.proofread_recipes', name='proofread_recipes'),
     (r'^admin/', include(admin.site.urls)),
     
     # Backup Database

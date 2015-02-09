@@ -6,7 +6,7 @@
 		<span class="ingredient-id" style="display:none;">{{ ing_form.id }}</span>
 		<div class="panel panel-default col-xs-12">
 			
-			<div class="edit-ingredient panel-heading row">
+			<div class="edit-ingredient panel-heading row" style="border-radius:0;{% if ing_form.instance.is_dummy %}color:#d9534f"{% endif %}">
 				<h4 class="panel-title">
 					<span class="edit-ingredient-name field-changer col-xs-12 col-sm-4 text-center-xs">
 						<span class="group-editable-field" default="(Naam van het ingrediënt)">{{ ing_form.instance.ingredient_display }}</span>
@@ -15,6 +15,14 @@
 						{% else %}
 						{{ ing_form.ingredient }}
 						{% endif %}
+						{% if user.is_staff %}
+							{% if recipe.is_temp or temp and not ing_form.instance.is_dummy %}
+							<a class="edit-button" href="{% url 'admin:ingredients_ingredient_change' ing_form.instance.ingredient.ingredient.id %}" target="_blank" title="Wijzig dit Ingrediënt">
+								<img src="/static/img/icons/edit.png" height="32px;"/>
+							</a>
+							{% endif %}
+						{% endif %}
+						
 					</span>
 					<span class="col-xs-12 col-sm-1" style="height:10px;"></span>
 					<span class="edit-ingredient-amount field-changer col-xs-5 col-sm-3" style="text-align:right;">

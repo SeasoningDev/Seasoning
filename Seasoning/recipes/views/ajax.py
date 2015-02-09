@@ -213,7 +213,7 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
             return HttpResponseServerError(form.errors[form.changed_data[0]])
         else:
             errors = filter(lambda errs: len(errs) > 0, ing_formset.errors)
-            if len(errors) > 0:
+            if len(errors) > 1:
                 raise Exception('Multiple forms in formset have errors: {}'.format(str(ing_formset.errors)))
             return HttpResponseServerError(errors[0].values()[0])
         
