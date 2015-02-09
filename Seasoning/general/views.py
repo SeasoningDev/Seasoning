@@ -34,6 +34,7 @@ from general import all_templates, send_seasoning_email
 from django.contrib.sites.models import RequestSite
 from django.template.context import RequestContext
 from recipes.models.recipe import Recipe
+from django.core.exceptions import PermissionDenied
 
 def home(request):
     if request.user.is_authenticated():
@@ -206,6 +207,12 @@ def contact_overview(request):
     
 # TEST VIEWS FOR TEMPLATE INSPECTION
 @staff_member_required
-def test_500(request):
-    return render(request, '502.html')
-    return 1/0
+def test_error(request, error_code):
+    if error_code == 404:
+        raise Http404()
+    elif error_code == 403:
+        raise PermissionDenied()
+    elif error_code == 500:
+        return 1/0
+    else:
+        return render(request, '502.html')

@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^robots\.txt$', TemplateView.as_view(template_name='misc/robots.txt', content_type='text/plain')),
     
     # TEST VIEWS
-    url(r'^500/$', 'general.views.test_500'),
+    url(r'^error/(\d{3})/$', 'general.views.test_error'),
     
     # Google verification file
     url(r'^google99ea56259237cc2a.html/$', TemplateView.as_view(template_name='misc/google99ea56259237cc2a.html', content_type='text/plain')),
