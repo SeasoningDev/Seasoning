@@ -1,4 +1,4 @@
-{% load compressed %}
+{% load pipeline %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -24,18 +24,18 @@
 		
 		{% block default_static_stuff %}
         <link rel="icon" href="{{ STATIC_URL }}img/logos/favicon.png" type="image/png" />
-		{% compressed_css 'global' %}
-		{% compressed_css 'mobile' %}
+		{% stylesheet 'global' %}
+		{% stylesheet 'mobile' %}
         {% if 'profile' in request.path %}
-        {% compressed_css 'authentication' %}
+        {% stylesheet 'authentication' %}
         {% elif 'ingredients' in request.path %}
-        {% compressed_css 'ingredients' %}
+        {% stylesheet 'ingredients' %}
         {% elif 'recipes' in request.path %}
-        {% compressed_css 'recipes' %}
+        {% stylesheet 'recipes' %}
         {% elif 'faq' in request.path %}
-        {% compressed_css 'faq' %}
+        {% stylesheet 'faq' %}
         {% else %}
-        {% compressed_css 'general' %}
+        {% stylesheet 'general' %}
         {% endif %}
 		{% block extra_link %}{% endblock %}
 		
