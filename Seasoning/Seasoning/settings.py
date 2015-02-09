@@ -23,7 +23,7 @@ TEMPLATE_DEBUG = secrets.DEBUG
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost', 'www.seasoning.be', 'seasoning.be']
+ALLOWED_HOSTS = ['localhost', 'www.seasoning.be', 'seasoning.be', 'dev.seasoning.be']
 
 # The directory containing the source code
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
