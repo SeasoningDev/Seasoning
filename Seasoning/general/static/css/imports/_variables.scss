@@ -26,3 +26,32 @@ $dec: $img/decoration;
 $icons: $img/icons;
 $logos: $img/logos;
 $static: $img/static;
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+@mixin border-top-radius($radius) {
+  -webkit-border-top-left-radius: $radius;
+     -moz-border-radius-topleft: $radius;
+      -ms-border-top-left-radius: $radius;
+          border-top-left-radius: $radius;
+-webkit-border-top-right-radius: $radius;
+     -moz-border-radius-topright: $radius;
+      -ms-border-top-right-radius: $radius;
+          border-top-right-radius: $radius;
+}
+
+@mixin border-bottom-radius($radius) {
+  -webkit-border-bottom-left-radius: $radius;
+     -moz-border-radius-bottomleft: $radius;
+      -ms-border-bottom-left-radius: $radius;
+          border-bottom-left-radius: $radius;
+-webkit-border-bottom-right-radius: $radius;
+     -moz-border-radius-bottomright: $radius;
+      -ms-border-bottom-right-radius: $radius;
+          border-bottom-right-radius: $radius;
+}

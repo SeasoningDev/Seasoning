@@ -2,7 +2,7 @@
 
 .recipe-summary-wrapper {
 	display: inline-block;
-	width: 202px;
+	width: 220px;
 	max-width: 95%;
 	margin: 0 5px 25px;
 }
@@ -16,8 +16,9 @@
   	transition: all 0.25s ease-in-out;
   	-webkit-transition: all 0.25s ease-in-out;
   	-moz-transition: all 0.25s ease-in-out;
-  	border: 1px solid rgba(255, 255, 255, .2);
+  	border: 1px solid $light-border-color;
   	color: inherit;
+  	@include border-radius(15px);
 }
 
 .recipe-summary-link:hover,
@@ -49,19 +50,15 @@
 
 .recipe-summary img {
   display: block;
-  height: 200px;
-  /**
-  border-top-right-radius: 15px;
-  border-top-left-radius: 15px;
-  -moz-border-radius-topright: 15px;
-  -moz-border-radius-topleft: 15px; */
+  width: 100%;
+	@include border-top-radius(14px);
 }
 
 .recipe-summary .recipe-title {
   display: block;
-  height: 80px;
+  height: 110px;
   padding: 10px 10px 5px;
-  background-color: $green-main;
+  background-color: #fff;
   position: relative;
   border: none;
   margin: 0;
@@ -73,7 +70,7 @@
 	overflow: hidden;
 	font-family: $title-font-stack;
 	font-size: 26px;
-	color: #fff;
+	color: #333;
 	line-height: 30px;
 	text-align: left;
 }
@@ -89,20 +86,18 @@
 
 .recipe-meta-inf {
   display: block;
-  background-color: #333;
+  background-color: $green-light;
   padding: 5px 10px;
   font-size: 11px;
   height: 26px;
-  /**
-  border-bottom-right-radius: 15px;
-  border-bottom-left-radius: 15px;
-  -moz-border-radius-bottomright: 15px;
-  -moz-border-radius-bottomleft: 15px; */
+	@include border-bottom-radius(14px);
   color: white; }
 
 .recipe-meta-inf .recipe-time {
   float: left;
-  font-weight: bold; }
+  font-weight: bold;
+  line-height: 16px;
+}
 
 .recipe-meta-inf .recipe-rating {
   float: right; }
