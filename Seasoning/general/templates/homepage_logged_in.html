@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
+{% block extra_link %}
+<link href='https://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+{% endblock %}
+
 {% block content %}
-<div style="text-align: center; position: relative;">
-	<h1 style="border: none; margin: 20px 0 5px 0;">Welkom op Seasoning</h1>
-    <hr class="leaf-line" />
-</div>
+		<h1 class="text-center">Welkom op Seasoning</h1>
+	    <hr class="leaf-line" style="margin-bottom: 50px;" />
+
 
 <div id="homepage-twitter-feed-wrapper">
 	<a class="twitter-timeline"  href="https://twitter.com/Seasoningbe"  data-widget-id="401823165782839296">Tweets van @Seasoningbe</a>
@@ -37,25 +40,6 @@
 	<br style="clear: left;" />
 </div>
 {% endif %}
-
-<div id="quicknav">
-	<form action="{% url 'browse_recipes' %}" method="post">
-		{% csrf_token %}
-		<strong>Zoek recepten: </strong>
-		
-		<span id="quicknav-recipe-search" style="position: relative; display:inline-block;">
-			<input id="id_search_string" class="keywords-searchbar" type="text" name="search_string" />
-			
-			<button id="keywords-submit" class="nochrome" type="submit">
-				<span class="submit-icon"> </span>
-			</button>
-		</span>
-		
-	</form>
-	<p id="add-button-wrapper">
-		<a href="{% url 'add_recipe' %}" id="add-recipe-button" class="add-button">Voeg een nieuw recept toe</a>
-	</p>
-</div>
 
 <br class="clear" />
 

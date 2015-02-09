@@ -87,6 +87,8 @@ class RecipeManager(models.Manager):
         if sort_field:
             if 'tot_time' in sort_field:
                 recipes_list = recipes_list.extra(select={'tot_time': 'active_time + passive_time'})
+            elif 'rating' in sort_field:
+                recipes_list = recipes_list.annotate(rating=models.Count('upvotes'))
             recipes_list = recipes_list.order_by(sort_field)
         
         return recipes_list.distinct()
@@ -189,7 +191,7 @@ class Recipe(models.Model):
         return self.active_time + self.passive_time
     
     @property
-    def upvotes(self):
+    def ao_upvotes(self):
         return self.upvote_set.all().count()
     
     @property
@@ -504,6 +506,6 @@ class Upvote(models.Model):
     class Meta:
         unique_together = (("recipe", "user"),)
     
-    recipe = models.ForeignKey(Recipe)
+    recipe = models.ForeignKey(Recipe, related_name='upvotes')
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     time = models.DateTimeField(auto_now_add=True, editable=False)

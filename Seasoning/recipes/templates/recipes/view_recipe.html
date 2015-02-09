@@ -263,8 +263,8 @@
 				<div style="position: relative; display: inline-block; width: 60px; height: 100%;" class="popover-element"
 					 data-toggle="popover" data-trigger="click hover" data-placement="top" 
 					 data-title="Waardering"
-					 data-content="{% if recipe.upvotes <= 0 %}Nog niemand heeft aangegeven dit gerecht lekker te vinden.{% else %}{{ recipe.upvotes }} mensen vinden dit gerecht lekker.{% endif %}">
-					<div id="upvote-count" class="upvote-bubble">{{ recipe.upvotes }}</div>
+					 data-content="{% if recipe.ao_upvotes <= 0 %}Nog niemand heeft aangegeven dit gerecht lekker te vinden.{% else %}{{ recipe.ao_upvotes }} mensen vinden dit gerecht lekker.{% endif %}">
+					<div id="upvote-count" class="upvote-bubble">{{ recipe.ao_upvotes }}</div>
 					{% if user.is_authenticated %}
 					<a id="upvote-button" href="#" onclick="upvote();return false;"{% if user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto; opacity: 0.5;"/></a>
 					<a id="downvote-button" href="#" onclick="downvote();return false;"{% if not user_has_upvoted %} style="display: none;"{% endif %}><img src="{{ STATIC_URL }}img/icons/lekker.png" style="position: absolute; left: 0; bottom: 0; width: 60px; height: auto;"/></a>
