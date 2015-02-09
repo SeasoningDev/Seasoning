@@ -6,7 +6,6 @@ from django.core.validators import MaxLengthValidator, MinValueValidator
 from ingredients.models.ingredients import Ingredient
 from ingredients.models.units import Unit
 from django.utils.translation import ugettext_lazy as _
-from django.contrib import messages
 
 class TemporaryIngredientManager(models.Manager):
     

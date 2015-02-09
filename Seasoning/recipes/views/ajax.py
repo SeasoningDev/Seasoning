@@ -9,8 +9,8 @@ import json
 import datetime
 from django.forms.formsets import formset_factory
 from recipes.forms import IngredientInRecipeSearchForm, SearchRecipeForm,\
-    EditRecipeForm, UploadRecipeImageForm, AddRecipeForm, UsesIngredientForm,\
-    EditTemporaryUsesIngredientForm
+    EditRecipeForm, UploadRecipeImageForm, UsesIngredientForm,\
+    TemporaryUsesIngredientForm, EditIncompleteRecipeForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from recipes.models.t_recipe import IncompleteRecipe, TemporaryUsesIngredient
 from django.template import defaultfilters
@@ -140,23 +140,38 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
     if request.is_ajax() and request.method == 'POST':
         if incomplete:
             try:
-                recipe = IncompleteRecipe.objects.prefetch_related(
-                    'uses__unit__unit').get(id=recipe_id)
+                recipe = IncompleteRecipe.objects.select_related(
+                    'author',
+                    'external_site',
+                    'cuisine').get(id=recipe_id)
+                uses_set = recipe.uses.select_related('ingredient__ingredient__temporary_ingredient',
+                                                   'unit__unit').all()
             except IncompleteRecipe.DoesNotExist:
                 raise Http404
-            
-            form = AddRecipeForm(request.POST, instance=recipe)
-            UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, form=EditTemporaryUsesIngredientForm, extra=0)
-            ing_formset = UsesIngredientFormset(request.POST, instance=recipe, queryset=recipe.uses.select_related('ingredient__ingredient', 
-                                                                                                                   'unit__unit').all())
+            form = EditIncompleteRecipeForm(request.POST, instance=recipe)
+            UsesIngredientFormset = inlineformset_factory(IncompleteRecipe, TemporaryUsesIngredient, 
+                                                          form=TemporaryUsesIngredientForm,
+                                                          extra=0)
         else:
-            recipe = get_object_or_404(Recipe, id=recipe_id)
+            try:
+                recipe = Recipe.objects.select_related(
+                    'author',
+                    'external_site',
+                    'cuisine').get(id=recipe_id)
+                uses_set = recipe.uses.select_related('ingredient__temporary_ingredient',
+                                                      'unit')
+            except Recipe.DoesNotExist:
+                raise Http404
             form = EditRecipeForm(request.POST, instance=recipe)
             UsesIngredientFormset = inlineformset_factory(Recipe, UsesIngredient, form=UsesIngredientForm, extra=0)
-            ing_formset = UsesIngredientFormset(request.POST, instance=recipe, queryset=recipe.uses.select_related('unit').all())
+        
+        ing_formset = UsesIngredientFormset(request.POST, instance=recipe, queryset=uses_set)
+        
+        
         
         if form.is_valid() and ing_formset.is_valid():
-            form.save()
+            if form.has_changed():
+                form.save()
             ing_formset.save()
             
             if not settings.DEBUG:
@@ -170,29 +185,37 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
                               'bramspammer@seasoning.be',
                               ['bram@seasoning.be'], fail_silently=False, html_message=message)
             
-            if incomplete:
-                recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
-            else:
-                recipe = get_object_or_404(Recipe, id=recipe_id)
                 
             resp_txt = ''
             if len(form.changed_data) > 0:
+                # Recipe was changed
+                if incomplete:
+                    recipe = get_object_or_404(IncompleteRecipe, id=recipe_id)
+                else:
+                    recipe = get_object_or_404(Recipe, id=recipe_id)
+                
                 if form.changed_data[0] == 'extra_info' or form.changed_data[0] == 'description':
                     resp_txt = defaultfilters.linebreaks(getattr(recipe, form.changed_data[0]))
                 if form.changed_data[0] == 'instructions':
                     resp_txt = markdown(getattr(recipe, form.changed_data[0]))
+                    
             elif ing_formset.has_changed():
-                ing_formset = UsesIngredientFormset(instance=recipe)
-                resp_txt = render_to_string('includes/edit_ingredients_list.html', {'ing_formset': ing_formset})
+                # UsesIngredient was changed
+                uses_set = recipe.uses.select_related('ingredient__ingredient__temporary_ingredient',
+                                                      'unit__unit').all()
+                ing_formset = UsesIngredientFormset(instance=recipe, queryset=uses_set)
+                resp_txt = render_to_string('includes/edit_ingredients_list.html', {'ing_formset': ing_formset,
+                                                                                    'temp': recipe.is_temp()})
                 
             return HttpResponse(resp_txt)
         
-        print(form.errors)
-        print(ing_formset.errors)
         if form.errors:
             return HttpResponseServerError(form.errors[form.changed_data[0]])
         else:
-            return HttpResponseServerError(ing_formset.errors[0].values()[0])
+            errors = filter(lambda errs: len(errs) > 0, ing_formset.errors)
+            if len(errors) > 0:
+                raise Exception('Multiple forms in formset have errors: {}'.format(str(ing_formset.errors)))
+            return HttpResponseServerError(errors[0].values()[0])
         
     raise PermissionDenied()
 
