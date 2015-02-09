@@ -208,11 +208,11 @@ def contact_overview(request):
 # TEST VIEWS FOR TEMPLATE INSPECTION
 @staff_member_required
 def test_error(request, error_code):
-    if error_code == 404:
+    if error_code == '404':
         raise Http404()
-    elif error_code == 403:
+    elif error_code == '403':
         raise PermissionDenied()
-    elif error_code == 500:
+    elif error_code == '500':
         return 1/0
     else:
-        return render(request, '502.html')
+        return render(request, 'errors/502.html')
