@@ -1,21 +1,5 @@
 @import "variables";
 
-  * {
-    margin: 0;
-  }
-  
-  html, body {
-    height: 100%;
-  }
-  
-  html {
-    overflow-y: scroll;
-  }
-    
-  
-  body {
-    font: 14px/21px $font-stack;
-  }
    
   .clear {
   	clear: both;

@@ -11,9 +11,6 @@ function update_recipe_page() {
 
 $(document).ready(function() {
 	
-	if ($(window).scrollTop() <= 0)
-		$("html").scrollTop($("#header-margin").outerHeight() - $("#nav-container").height());
-	
 	$("#id_sort_field").click(function(e) {
 		e.stopPropagation();
 	})

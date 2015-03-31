@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load addcss %}
 
 {% block title %}Recepten{% endblock %}
 
@@ -12,6 +13,9 @@
 {% endblock %}
 
 {% block extra_script %}
+<script src="{{ STATIC_URL }}js/plugins/modernizr.js"></script>
+<script src="{{ STATIC_URL }}js/plugins/jquery.mixitup.min.js"></script>
+<script src="{{ STATIC_URL }}js/plugins/content-filter.js"></script>
 <script src="{{ STATIC_URL }}js/forms.js"></script>
 <script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
@@ -31,6 +35,11 @@ $(function() {
 	$("#id_search_string").focus();
 });
 </script>
+<style>
+body {
+	background-color: #e7e7e7;
+}
+</style>
 {% endblock %}
 
 {% block recipes-active %}active{% endblock %}
@@ -51,30 +60,33 @@ $(function() {
 	
 	<div id="base-recipe-search-container">
 		<div id="base-recipe-search" class="navbar-form">
-			<input id="id_search_string" class="form-control" placeholder="Zoek Recepten" type="text" name="search_string">
-			<button id="keywords-submit" class="nochrome" type="submit">
-				<span class="submit-icon"> </span>
-			</button>
+			{{ search_form.search_string|addcss:"class,form-control" }}
 	    </div>
 	</div>
 	
-	<div id="recipe-search-options">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-sm-offset-3">
-					<div class="row text-center">
-						<a class="col-xs-12 col-sm-8 col-sm-offset-2 btn" onclick='$("#id_sort_field").click();return false;'>
-							Sorteren op
-							{{ search_form.sort_field }}
-						</a>
-						<!--<a class="col-xs-12 col-sm-4 btn" onclick='$("#advanced-search-options").slideToggle(500);return false;'>Geavanceerd Zoeken</a>
-						<a href="{% url 'add_recipe' %}" class="col-xs-12 col-sm-4 btn">Recept Toevoegen</a>
-						-->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div class="cd-tab-filter-wrapper">
+		
+		<a href="#0" class="cd-filter-trigger">Geavanceerd Zoeken</a>
+		
+		<div class="cd-tab-filter">
+			<ul class="cd-filters">
+				{% for sort_field, sort_field_display in search_form.fields.sort_field.choices %}
+					{% if search_form.sort_field.value == sort_field %}
+					<li class="placeholder">
+						<a href="#0" data-type="all">{{ sort_field_display|safe }}</a>
+					</li>
+					{% endif %}
+				{% endfor %}
+				
+				{% for sort_field, sort_field_display in search_form.fields.sort_field.choices %}
+					<li class="filter">
+						<a {% if search_form.sort_fields.value == sort_field %}class="selected"{% endif %}href="#0" data-type="all">{{ sort_field_display|safe }}</a>
+					</li>
+				{% endfor %}
+			</ul> <!-- cd-filters -->
+		</div> <!-- cd-tab-filter -->
+	</div> <!-- cd-tab-filter-wrapper -->
+	
 	
 	<div id="advanced-search-options">
 		<p>
