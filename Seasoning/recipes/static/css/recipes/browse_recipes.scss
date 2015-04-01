@@ -1,10 +1,16 @@
 @import "variables";
 
+#recipe-search-form {
+	position: relative;
+}
+
 #base-recipe-search-container {
 	display: inline-block;
 	width: 100%;
 	height: 100px;
 	background-color: $green-light;
+	background: url('/static/img/decoration/landing1.jpg') no-repeat center center;
+	background-size: 100% auto;
 }
 
 #base-recipe-search-container #base-recipe-search {
@@ -123,14 +129,70 @@
   /* reduces the opacity of the placeholder on mobile when the menu is open */
   opacity: .4;
 }
+.cd-tab-filter select {
+	display: none;
+}
+
+
+.cd-gallery {
+    padding: 26px;
+    width: 100%;
+    min-height: 1100px;
+}
+.cd-gallery li {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    display: none;
+    margin-bottom: 1.6em;
+}
+.cd-gallery li.gap {
+    display: inline-block;
+    height: 0;
+    opacity: 0;
+}
+.cd-gallery img {
+    display: block;
+}
+.cd-gallery .cd-fail-message {
+    display: none;
+    text-align: center;
+}
+@media only screen and (min-width: 768px) {
+.cd-gallery {
+    padding: 40px;
+}
+.cd-gallery ul {
+    text-align: justify;
+}
+.cd-gallery ul::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.cd-gallery li {
+    margin-bottom: 2em;
+    width: 48%;
+}
+}
+@media only screen and (min-width: 1170px) {
+.cd-gallery {
+    float: right;
+    padding: 50px;
+    transition: width 0.3s ease 0s;
+}
+.cd-gallery li {
+    width: 23%;
+}
+.cd-gallery.filter-is-visible {
+    width: 80%;
+}
+}
 
 
 .cd-filter {
   position: absolute;
-  top: 0;
+  top: 100px;
   left: 0;
   width: 280px;
-  height: 100%;
   background: #ffffff;
   box-shadow: 4px 4px 20px transparent;
   z-index: 2;
@@ -150,6 +212,7 @@
   -webkit-transition: -webkit-transform 0.3s, box-shadow 0.3s;
   -moz-transition: -moz-transform 0.3s, box-shadow 0.3s;
   transition: transform 0.3s, box-shadow 0.3s;
+  padding: 70px 30px 10px;
 }
 .cd-filter::before {
   /* top colored bar */
@@ -159,31 +222,35 @@
   left: 0;
   height: 50px;
   width: 100%;
-  background-color: #41307c;
+  background-color: $green-main;
   z-index: 2;
 }
 .cd-filter form {
   padding: 70px 20px;
 }
 .cd-filter .cd-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 50px;
-  line-height: 50px;
-  width: 60px;
-  color: #ffffff;
-  font-size: 1.3rem;
-  text-align: center;
-  background: #37296a;
-  opacity: 0;
-  -webkit-transition: opacity 0.3s;
-  -moz-transition: opacity 0.3s;
-  transition: opacity 0.3s;
-  z-index: 3;
+  	position: absolute;
+  	top: 0;
+  	height: 50px;
+  	line-height: 50px;
+  	/* image replacement */
+  	overflow: hidden;
+  	white-space: nowrap;
+  	background: transparent url("/static/img/icons/cd-icon-filter-w.png") no-repeat center center;
+  	z-index: 3;
+	background-position: left center;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    left: 30px;
+    padding-left: 24px;
+    text-indent: 0;
+    text-transform: uppercase;
+    transition: color 0.3s ease 0s;
+    width: auto;
 }
 .no-touch .cd-filter .cd-close:hover {
-  background: #32255f;
+  
 }
 .cd-filter.filter-is-visible {
   -webkit-transform: translateX(0);
@@ -226,7 +293,7 @@
 @media only screen and (min-width: 1170px) {
   .cd-filter-trigger {
     width: auto;
-    left: 2%;
+    left: 30px;
     text-indent: 0;
     color: #9a9a9a;
     text-transform: uppercase;
@@ -239,7 +306,7 @@
     transition: color 0.3s;
   }
   .no-touch .cd-filter-trigger:hover {
-    color: #41307c;
+    color: $green-main;
   }
   .cd-filter-trigger.filter-is-visible, .cd-filter-trigger.filter-is-visible:hover {
     color: #ffffff;
@@ -251,6 +318,17 @@
 xcustom form elements 
 
 -------------------------------- */
+.cd-filter ul {
+	padding: 0;
+}
+.cd-filter li {
+	list-style: none;
+}
+.cd-filter label {
+	margin: 0;
+	font-weight: 400;
+	display: inline;
+}
 .cd-filter-block {
   margin-bottom: 1.6em;
 }
@@ -270,7 +348,7 @@ xcustom form elements
   cursor: pointer;
 }
 .no-touch .cd-filter-block h4:hover {
-  color: #41307c;
+  color: $green-main;
 }
 .cd-filter-block h4::before {
   /* arrow */
@@ -280,7 +358,7 @@ xcustom form elements
   top: 50%;
   width: 16px;
   height: 16px;
-  background: url("../img/cd-icon-arrow.svg") no-repeat center center;
+  background: url("/static/img/icons/cd-icon-arrow.svg") no-repeat center center;
   -webkit-transform: translateY(-50%);
   -moz-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
@@ -323,7 +401,7 @@ xcustom form elements
 .cd-filter-block select:focus {
   outline: none;
   background-color: #ffffff;
-  border-color: #41307c;
+  border-color: $green-main;
 }
 .cd-filter-block input[type='search'] {
   /* custom style for the search element */
@@ -354,7 +432,7 @@ xcustom form elements
   display: block;
   width: 16px;
   height: 16px;
-  background: url("../img/cd-icon-arrow.svg") no-repeat center center;
+  background: url("/static/img/icons/cd-icon-arrow.svg") no-repeat center center;
   pointer-events: none;
 }
 .cd-filter-block select {
@@ -420,7 +498,7 @@ xcustom form elements
   /* check mark style for check boxes */
   width: 16px;
   height: 16px;
-  background: url("../img/cd-icon-check.svg") no-repeat center center;
+  background: url("/static/img/icons/cd-icon-check.svg") no-repeat center center;
 }
 .cd-filter-block .radio-label::before,
 .cd-filter-block .radio-label::after {
@@ -435,12 +513,22 @@ xcustom form elements
 }
 .cd-filter-block input[type=radio]:checked + label::before,
 .cd-filter-block input[type=checkbox]:checked + label::before {
-  border-color: #41307c;
-  background-color: #41307c;
+  border-color: $green-main;
+  background-color: $green-main;
 }
 .cd-filter-block input[type=radio]:checked + label::after,
 .cd-filter-block input[type=checkbox]:checked + label::after {
   display: block;
+}
+.cd-filter-block .toggle {
+	border-color: #e6e6e6;
+	margin-bottom: 10px;
+	background: transparent;
+}
+.cd-filter-block .toggle-group label {
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
+	background-color: transparent;
+	color: #333;
 }
 
 @-moz-document url-prefix() {
@@ -714,9 +802,7 @@ xcustom form elements
 }
 
 #browse-recipe-summaries-wrapper {
-  margin: 30px 20px;
-  position: relative;
-  text-align: center; }
+  position: relative; }
 
 #browse-recipe-summaries-wrapper.advanced { }
 
