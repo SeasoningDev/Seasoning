@@ -15,13 +15,33 @@ function update_recipe_page() {
 
 $(document).ready(function() {
 	
+	
 
-	// Open and Close lateral filter (Codyhouse)
-	$('.cd-filter-trigger').on('click', function(){
+	// Open advanced search
+	$('.cd-filter-trigger').on('click', function() {
+		$('#id_advanced_search').prop('checked', true);
+
+		// Save the users preference
+		localStorage.advanced_search = true;
+		
 		triggerFilter(true);
+		return false;
 	});
-	$('.cd-filter .cd-close').on('click', function(){
+	
+	// Open advanced search if the user prefers the advanced box open
+	if (localStorage.advanced_search === 'true') {
+		$('.cd-filter-trigger').click();
+	}
+	
+	// Close advanced search
+	$('.cd-filter .cd-close').on('click', function() {
+		$('#id_advanced_search').prop('checked', false);
+		
+		// Save the users preference
+		localStorage.advanced_search = false;
+		
 		triggerFilter(false);
+		return false;
 	});
 
 	function triggerFilter($bool) {
@@ -63,6 +83,8 @@ $(document).ready(function() {
 			$('.cd-tab-filter .selected').removeClass('selected');
 			$(event.target).addClass('selected');
 		}
+		
+		return false;
 	});
 	
 	
@@ -71,60 +93,36 @@ $(document).ready(function() {
 	// Close a filter group dropdown inside lateral .cd-filter 
 	$('.cd-filter-block h4').on('click', function(){
 		$(this).toggleClass('closed').siblings('.cd-filter-content').slideToggle(300);
+		
+		return false;
 	})
 	
 	
-	$("#id_sort_field").click(function(e) {
-		e.stopPropagation();
+	
+	
+	/**
+	 * SORTING
+	 */
+	$('#sort-field-wrapper li.filter a').click(function() {
+		// if one of the elements of the dropdown is selected, we should
+		// select the corresponding OPTION element of the sorting SELECT
+		// element
+		option_value = $(this).attr('data-value');
+		
+		$('#sort-field-wrapper select option[value="' + option_value + '"]').prop('selected', true);
+		
+		update_recipe_page();
 	})
 	
-	$("#keywords-submit").click(function() {
+	
+	/**
+	 * Activate filter elements
+	 */
+	$("#special-inputs input").change(function() {
 		update_recipe_page();
-		return false;
-	});
+	})
 	
-	// Toggle the Advanced Search Window
-	$("#advanced-link").click(function() {
-		$("#advanced-link").hide();
-		$("#not-advanced-link").show().css('display', 'block');
-
-		$("#advanced-search").slideDown(1000);
-		$("#id_advanced_search").val("True");
-		$("#browse-recipes-right-column").addClass("advanced");
-		
-		return false;
-	});
 	
-	$("#not-advanced-link").click(function() {
-		$("#advanced-search").slideUp(1000, function() {
-			$("#not-advanced-link").hide();
-			$("#advanced-link").show().css('display', 'block');
-			
-			$("#id_advanced_search").val("False");
-			$("#browse-recipes-right-column").removeClass("advanced");
-		});
-		
-		return false;
-	});
-
-	// Activate the buttons that change the order direction
-	$(".order-arrow").click(function() {
-		if (!$(this).hasClass("active")) {
-			var active_order_arrow = $(".order-arrow.active");
-			active_order_arrow.removeClass("active");
-			$(this).addClass("active");
-			if ($(this).hasClass("up")) {
-				$("#id_sort_order_0").click();
-			} else {
-				$("#id_sort_order_1").click();
-			}
-		}
-		update_recipe_page();
-		return false;
-	});
-	
-	$("#inseason-option input").click(update_recipe_page);
-
 	// Activate the buttons for veganism selection
 	$(".veg-choice").each(function() {
 		if (!$(this).children("input").prop("checked")) {

@@ -20,6 +20,17 @@
     display: none;
   }
   
+  .ajax-loader {
+  	font-size: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .ajax-loader img {
+  	height: 28px;
+  	margin-right: 5px;
+  }
+  
   hr.leaf-line {
     margin: 40px 0;  
   }

@@ -34,6 +34,7 @@ body {
 
 .navbar-default .navbar-nav > li {
     @include transition(background-color, .5s, ease);
+    padding: 0 20px;
 }
 .navbar-default .navbar-nav > li:hover {
     background-color: rgba(0, 0, 0, .2);

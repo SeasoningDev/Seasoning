@@ -137,6 +137,7 @@ class SearchRecipeForm(forms.Form):
     sort_field = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[0][0])
     
     inseason = forms.BooleanField(initial=False, required=False)
+    no_endangered = forms.BooleanField(initial=False, required=False)
     
     ven = forms.BooleanField(initial=True, required=False, label='Veganistisch')
     veg = forms.BooleanField(initial=True, required=False, label='Vegetarisch')

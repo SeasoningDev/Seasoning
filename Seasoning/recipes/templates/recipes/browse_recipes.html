@@ -31,7 +31,7 @@ $(function() {
 		continue_ask_after_reloads: 5,
 		continue_ask_element_to_show: $("#recipes-ajax-more"),
 	});
-	$("#id_search_string").focus();
+	$("#{{ search_form.search_string.auto_id }}").focus();
 });
 </script>
 <style>
@@ -44,14 +44,12 @@ body {
 {% block recipes-active %}active{% endblock %}
 
 {% block before-content %}
-<form id="{{ search_form_id }}" class="keywords" action="" method="post">
+<form id="{{ search_form_id }}" class="recipe-search-form keywords" action="" method="post">
 	{% csrf_token %}
 	
 	{{ search_form.page }}
 	
-	{{ search_form.advanced_search.as_hidden }}
-	
-	{{ search_form.sort_order.as_hidden }}
+	{{ search_form.advanced_search|addcss:"style,display:none;" }}
 	
 	{{ include_ingredients_formset.management_form }}
 	{{ exclude_ingredients_formset.management_form }}
@@ -65,43 +63,63 @@ body {
 	
 	<div class="cd-tab-filter-wrapper">
 		
-		<a href="#0" class="cd-filter-trigger">Geavanceerd Zoeken</a>
+		<a href="#" class="cd-filter-trigger">Geavanceerd Zoeken</a>
 		
-		<div class="cd-tab-filter">
+		<div id="sort-field-wrapper" class="cd-tab-filter">
 			<ul class="cd-filters">
 				{% for sort_field, sort_field_display in search_form.fields.sort_field.choices %}
 					{% if search_form.sort_field.value == sort_field %}
 					<li class="placeholder">
-						<a href="#0" data-type="all">{{ sort_field_display|safe }}</a>
+						<a href="#" data-type="all">{{ sort_field_display|safe }}</a>
 					</li>
 					{% endif %}
 				{% endfor %}
 				
 				{% for sort_field, sort_field_display in search_form.fields.sort_field.choices %}
 					<li class="filter">
-						<a {% if search_form.sort_fields.value == sort_field %}class="selected"{% endif %}href="#0" data-type="all">{{ sort_field_display|safe }}</a>
+						<a {% if search_form.sort_fields.value == sort_field %}class="selected" {% endif %}
+						   href="#" data-type="all"
+						   data-value={{ sort_field }}>{{ sort_field_display|safe }}</a>
 					</li>
 				{% endfor %}
 			</ul> <!-- cd-filters -->
 			{{ search_form.sort_field }}
 		</div> <!-- cd-tab-filter -->
 	</div> <!-- cd-tab-filter-wrapper -->
-	
+
 	<section id="browse-recipe-summaries-wrapper" class="cd-gallery">
 		
 	</section>
 	
+	<div id="recipes-ajax-loader">
+		{% include "includes/ajax-loader.html" with load_text="Recepten worden geladen..." %}
+	</div>
+		
+	<div id="recipes-ajax-more" style="clear: both; text-align: center; display: none; height: 100px;">
+		<a class="btn btn-default" href="#">Meer recepten tonen</a>
+	</div>
+				
+	<div id="recipes-ajax-done" style="clear: both; text-align: center; display: none; height: 100px;">
+		<a class="btn btn-default" href="#{{ search_form_id }}">Terug naar boven</a>
+	</div>
+			
+	<div id="recipes-ajax-noresults" style="clear: both; text-align: center; display: none; height: 60px; font-size: 20px;">
+		Je zoekopdracht heeft geen resultaten opgeleverd...
+	</div>
+	
 	<div class="cd-filter">
 		<div class="cd-filter-block">
 			<h4>Speciale Eigenschappen</h4>
-			<ul class="cd-filter-content cd-filters list">
+			<ul id="special-inputs" class="cd-filter-content cd-filters list">
 				<li>
-					<input id="spec-check-1" class="filter" type="checkbox" data-filter=".spec-check-1">
-					<label class="checkbox-label" for="spec-check-1">Enkel In Seizoen</label>
+					<input id="{{ search_form.inseason.auto_id }}" name="{{ search_form.inseason.name }}" 
+						   class="filter" type="checkbox" data-filter=".spec-check-1">
+					<label class="checkbox-label" for="{{ search_form.inseason.auto_id }}">Enkel In Seizoen</label>
 				</li>
 				<li>
-					<input id="spec-check-2" class="filter" type="checkbox" data-filter=".spec-check-2">
-					<label class="checkbox-label" for="spec-check-2">Geen Overbevissing</label>
+					<input id="{{ search_form.no_endangered.auto_id }}" name="{{ search_form.no_endangered.name }}" 
+						   class="filter" type="checkbox" data-filter=".spec-check-2">
+					<label class="checkbox-label" for="{{ search_form.no_endangered.auto_id }}">Geen Overbeviste ingredienten</label>
 				</li>
 			</ul>
 		</div>
@@ -173,27 +191,8 @@ body {
 		<a onclick='$("#advanced-search-options").slideToggle(500);return false;'>Geavanceerd Zoeken verbergen</a>
 	</div>
 	
-	<div id="recipe-search-results-container">
+	<div id="results-container">
 		<div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
-		</div>
-				
-		<div id="recipes-ajax-loader" style="clear: both; text-align: center; padding-top: 20px;">
-			<div>
-				{% include "includes/ajax-loader.html" %}
-			</div>
-			Recepten laden...
-		</div>
-		
-		<div id="recipes-ajax-more" style="clear: both; text-align: center; display: none; height: 100px;">
-			<a class="btn btn-success" href="#">Meer recepten tonen</a>
-		</div>
-				
-		<div id="recipes-ajax-done" style="clear: both; text-align: center; display: none;">
-			<a class="btn btn-success" href="#{{ search_form_id }}">Terug naar boven</a>
-		</div>
-			
-		<div id="recipes-ajax-noresults" style="clear: both; text-align: center; display: none; height: 60px;">
-			Je zoekopdracht heeft geen resultaten opgeleverd...
 		</div>
 	</div>
 		    -->
