@@ -222,7 +222,7 @@ def ajax_edit_recipe(request, recipe_id, incomplete=False):
 def ajax_browse_recipes(request):
     if request.method == 'POST' and request.is_ajax():
         # This is a formset for inputting ingredients to be included or excluded in the recipe search
-        IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
+        IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=0)
     
         page = 1
         search_form = SearchRecipeForm(request.POST)
@@ -233,12 +233,14 @@ def ajax_browse_recipes(request):
         recipes_list = []
         if search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid():
             data = search_form.cleaned_data
+
             include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
             exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
+            print(data['course'])
             recipes_list = Recipe.objects.query(search_string=data['search_string'], advanced_search=data['advanced_search'],
                                                 sort_field=data['sort_field'], inseason=data['inseason'], no_endangered=data['no_endangered'],
-                                                ven=data['ven'], veg=data['veg'], nveg=data['nveg'], cuisines=data['cuisine'], courses=data['course'], 
-                                                include_ingredients_operator=data['include_ingredients_operator'],
+                                                veganisms=data['veganism'], cuisines=data['cuisine'], courses=data['course'], 
+                                                include_ingredients_AND_operator=data['include_ingredients_AND_operator'],
                                                 include_ingredient_names=include_ingredient_names, exclude_ingredient_names=exclude_ingredient_names)
         page = search_form.cleaned_data.get('page', 1)
         

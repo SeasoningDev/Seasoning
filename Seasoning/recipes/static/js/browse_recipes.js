@@ -13,6 +13,11 @@ function update_recipe_page() {
 	$(window).trigger("ajax-clear-and-load-data");
 }
 
+function replace_prefix(el, id) {
+	el.attr('id', el.attr('id').replace('__prefix__', id));
+	el.attr('name', el.attr('name').replace('__prefix__', id));
+}
+
 $(document).ready(function() {
 	
 	
@@ -122,125 +127,77 @@ $(document).ready(function() {
 		update_recipe_page();
 	})
 	
+	$("#incl-ing-operator").click(update_recipe_page);
 	
-	// Activate the buttons for veganism selection
-	$(".veg-choice").each(function() {
-		if (!$(this).children("input").prop("checked")) {
-			$(this).removeClass("active");
-		}
-		$(this).click(function() {
-			if ($(this).hasClass("active")) {
-				$(this).removeClass("active");
-				$(this).children("input").prop('checked', false);
-			} else {
-				$(this).addClass("active");
-				$(this).children("input").prop('checked', true);
-			}
-			update_recipe_page();
-			return false;
-		});
-	});
-
-	// Activate the button for the include ingredients operator
-	$("#incl-ings .option").click(function() {
-		if (!$(this).hasClass("active")) {
-			var active_option = $("#incl-ings .option.active");
-			active_option.removeClass("active");
-			$(this).addClass("active");
-			if ($(this).hasClass("and")) {
-				$("#id_include_ingredients_operator_0").click();
-			} else {
-				$("#id_include_ingredients_operator_1").click();
-			}
-		}
-		update_recipe_page();
-		return false;
-	});
-	
-	function add_include_ingredient(ingredient) {
-		if (ingredient && ingredient != "") {
-			// If the user pressed enter while
-			// in the input field, and it
-			// contains text,
-			// add another ingredient to the
-			// filter
-			var current_form_num = parseInt($("#id_include-TOTAL_FORMS").val());
-			$("#id_include-TOTAL_FORMS").val(current_form_num + 1);
-			var empty_form = $("#id_include-__prefix__-name");
-			var new_form = empty_form.clone();
-			new_form.attr("id", new_form.attr("id").replace("__prefix__", current_form_num));
-			new_form.attr("name", new_form.attr("name").replace("__prefix__",current_form_num));
-			new_form.val(ingredient);
-			new_form.insertBefore(empty_form);
-			// Display the new ingredient as
-			// being in the filter
-			var new_ing = $('<a href="#"><div class="filtered-ingredient">' + ingredient + '</div></a>');
-			new_ing.click(function() {
-				new_form.remove();
-				$(this).remove();
-				update_recipe_page();
-				return false;
-			});
-			$("#included-ingredients").append(new_ing);
-			update_recipe_page();
-		}
-	}
-	
-	// Activate the input field for including ingredients
-	$("#advanced-search #include-ingredients-input").autocomplete({
-		source: "/ingredients/ing_list/",
-		minLength: 2,
+	$("#incl-ingredients-input").autocomplete({
+		source: ingredient_names_url,
 		select: function(event, ui) {
-			if (event.keyCode != 13) {
-				add_include_ingredient(ui.item.value);
-			}
+			var new_ing = $("#incl-ingredients .incl-ing-template").clone().removeClass('incl-ing-template');
+			var new_ing_input = new_ing.find('input'); 
+			var parent_div = new_ing.parent();
+			
+			var total_forms = $('#id_include-TOTAL_FORMS').val();
+			replace_prefix(new_ing_input, total_forms);
+			new_ing_input.val(ui.item.label);
+			new_ing.find('.ing-name .text').text(ui.item.label);
+			console.log(parseInt(total_forms) + 1);
+			$('#id_include-TOTAL_FORMS').val(parseInt(total_forms) + 1);
+			
+			new_ing.insertBefore($('.incl-ing-template'));
+			
+			$(".ui-menu-item").hide();
+	        
+			event.preventDefault(); 
+	        $(this).val('');
+	        
+	        update_recipe_page();
 		},
-	});
-	
-	function add_exclude_ingredient(ingredient) {
-		if (ingredient && ingredient != "") {
-			// If the user pressed enter while
-			// in the input field, and it
-			// contains text,
-			// add another ingredient to the
-			// filter
-			var current_form_num = parseInt($("#id_exclude-TOTAL_FORMS").val());
-			$("#id_exclude-TOTAL_FORMS").val(current_form_num + 1);
-			var empty_form = $("#id_exclude-__prefix__-name");
-			var new_form = empty_form.clone();
-			new_form.attr("id", new_form.attr("id").replace("__prefix__",current_form_num));
-			new_form.attr("name", new_form.attr("name").replace("__prefix__",current_form_num));
-			new_form.val(ingredient);
-			new_form.insertBefore(empty_form);
-			// Display the new ingredient as
-			// being in the filter
-			var new_ing = $('<a href="#"><div class="filtered-ingredient">' + ingredient + '</div></a>')
-			new_ing.click(function() {
-				new_form.remove();
-				$(this).remove();
-				update_recipe_page();
-				return false;
-			});
-			$("#excluded-ingredients").append(new_ing);
-			update_recipe_page();
+		focus: function(event, ui) { 
+			event.preventDefault();
+		},
+		search: function() {
+			$(this).parent().find('.ajax-loader').show();
+		},
+		response: function() {
+			$(this).parent().find('.ajax-loader').hide();
 		}
-	}
-	
-	// Activate the input field for excluding ingredients
-	$( "#advanced-search #exclude-ingredients-input").autocomplete({
-		source: "/ingredients/ing_list/",
-		minLength: 2,
-		select: function(event, ui) {
-			if (event.keyCode != 13) {
-				add_exclude_ingredient(ui.item.value);
-			}
-		},
 	});
 	
-	// Update recipe list on filter change
-	$("#id_sort_field").change(update_recipe_page);
-	$("input[name='cuisine']").change(update_recipe_page);
-	$("input[name='course']").change(update_recipe_page);
+	$("#excl-ingredients-input").autocomplete({
+		source: ingredient_names_url,
+		select: function(event, ui) {
+			var new_ing = $("#excl-ingredients .excl-ing-template").clone().removeClass('excl-ing-template');
+			var new_ing_input = new_ing.find('input'); 
+			var parent_div = new_ing.parent();
+			
+			var total_forms = $('#id_exclude-TOTAL_FORMS').val();
+			replace_prefix(new_ing_input, total_forms);
+			new_ing_input.val(ui.item.label);
+			new_ing.find('.ing-name .text').text(ui.item.label);
+			console.log(parseInt(total_forms) + 1);
+			$('#id_exclude-TOTAL_FORMS').val(parseInt(total_forms) + 1);
+			
+			new_ing.insertBefore($('.excl-ing-template'));
+			
+			$(".ui-menu-item").hide();
+	        
+			event.preventDefault(); 
+	        $(this).val('');
+	        
+	        update_recipe_page();
+		},
+		focus: function(event, ui) { 
+			event.preventDefault();
+		},
+		search: function() {
+			$(this).parent().find('.ajax-loader').show();
+		},
+		response: function() {
+			$(this).parent().find('.ajax-loader').hide();
+		}
+	});
+	
+	$(".boolean-inputs input").change(update_recipe_page);
 	
 	/**
 	 * Update the recipe list when the user types a search query

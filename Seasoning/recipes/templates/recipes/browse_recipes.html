@@ -13,6 +13,9 @@
 {% endblock %}
 
 {% block extra_script %}
+<script>
+var ingredient_names_url = '{% url 'ajax_ingredient_name_list' %}'
+</script>
 <script src="{{ STATIC_URL }}js/forms.js"></script>
 <script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
@@ -37,6 +40,57 @@ $(function() {
 <style>
 body {
 	background-color: #f4f4f4;
+}
+.ui-autocomplete {
+	z-index: 1001;
+	border-color: #629b31;
+	border-width: 2px;
+	border-top: none;
+}
+.ui-corner-all {
+	border-radius: 0;
+}
+.ui-menu .ui-menu-item a {
+	padding: 10px;
+}
+.ui-autocomplete .ui-state-focus {
+	background: none;
+	border-color: rgba(98, 155, 49, .3);
+	background-color: rgba(98, 155, 49, .3);
+}
+
+.incl-ing-template,
+.excl-ing-template {
+	display: none;
+}
+
+.incl-ing label,
+.excl-ing label,
+.incl-ing input,
+.excl-ing input {
+	display: none;
+}
+
+.ing-name {
+	font-size: 16px;
+	background-color: rgba(98, 155, 49, .1);
+	border: 1px solid rgba(98, 155, 49, .4);
+	margin-bottom: 10px;
+	padding: 10px;
+	color: #888;
+}
+.ing-name a {
+	color: #888;
+}
+
+.ing-input-wrapper .ajax-loader {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: calc(100% - 20px);
+	margin: 10px 5px;
+	padding: 0;
+	display: none;
 }
 </style>
 {% endblock %}
@@ -123,59 +177,80 @@ body {
 				</li>
 			</ul>
 		</div>
-	
+		
 		<div class="cd-filter-block">
 			<h4>Voedingswijze</h4>
-			<ul class="cd-filter-content cd-filters list">
+			<ul id="special-inputs" class="cd-filter-content cd-filters list">
+				{% for veganism_choice in search_form.veganism %}
 				<li>
-					<input id="radio1" class="filter" type="radio" checked="" name="radioButton" data-filter="">
-					<label class="radio-label" for="radio1">Veganistisch</label>
+					<input id="{{ search_form.veganism.auto_id }}_{{ forloop.counter0 }}" type="checkbox" value="{{ veganism_choice.choice_value }}"
+						   name="{{ veganism_choice.name }}" class="filter" checked="checked" />
+					<label class="checkbox-label" for="{{ search_form.veganism.auto_id }}_{{ forloop.counter0 }}">{{ veganism_choice.choice_label }}</label>
 				</li>
-				<li>
-					<input id="radio2" class="filter" type="radio" checked="" name="radioButton" data-filter="">
-					<label class="radio-label" for="radio2">Vegetarisch</label>
-				</li>
-				<li>
-					<input id="radio3" class="filter" type="radio" checked="" name="radioButton" data-filter="">
-					<label class="radio-label" for="radio3">Niet-vegetarisch</label>
-				</li>
+				{% endfor %}
 			</ul>
 		</div>	
 	
-		<div class="cd-filter-block">
+		<div id="incl-ingredients" class="cd-filter-block">
 			<h4>Gewenste Ingrediënten</h4>
 			<div class="cd-filter-content">
-				<input data-toggle="toggle" data-on="Minstens één" data-off="Allemaal" type="checkbox" checked="checked">
-				<input type="search" placeholder="Voer Ingrediënten in...">
+				
+				<div id="incl-ing-operator">
+					<input id="{{ search_form.include_ingredients_AND_operator.auto_id }}" name="{{ search_form.include_ingredients_AND_operator.name }}"
+				       data-toggle="toggle" data-off="Minstens één" data-on="Allemaal" type="checkbox">
+				</div>
+				<div class="incl-ing incl-ing-template">
+					{{ include_ingredients_formset.empty_form }}
+					<div class="ing-name">
+						<span class="text"></span>
+						<a href="#" class="pull-right" onclick="$(this).parent().parent().fadeOut(200, function(){$(this).remove();update_recipe_page();});return false;"><span class="glyphicon glyphicon-remove"></span></a>
+					</div>
+				</div>
+				<div class="ing-input-wrapper" style="position: relative;">
+					<input id="incl-ingredients-input" type="search" placeholder="Voer Ingrediënten in...">
+					<img src="{{ STATIC_URL }}img/decoration/ajax-loader.png" class="ajax-loader" />
+				</div>
 			</div>
 		</div>
 		
-		<div class="cd-filter-block">
+		<div id="excl-ingredients" class="cd-filter-block">
 			<h4>Ongewenste Ingrediënten</h4>
 			<div class="cd-filter-content">
-				<input type="search" placeholder="Voer Ingrediënten in...">
+				<div class="excl-ing excl-ing-template">
+					{{ exclude_ingredients_formset.empty_form }}
+					<div class="ing-name">
+						<span class="text"></span>
+						<a href="#" class="pull-right" onclick="$(this).parent().parent().fadeOut(200, function(){$(this).remove();update_recipe_page();});return false;"><span class="glyphicon glyphicon-remove"></span></a>
+					</div>
+				</div>
+				<div class="ing-input-wrapper" style="position: relative;">
+					<input id="excl-ingredients-input" type="search" placeholder="Voer Ingrediënten in...">
+					<img src="{{ STATIC_URL }}img/decoration/ajax-loader.png" class="ajax-loader" />
+				</div>
 			</div>
 		</div>
 		
-		<div class="cd-filter-block">
+		<div class="cd-filter-block boolean-inputs">
 			<h4>Type Maaltijd</h4>
 			<ul class="cd-filter-content cd-filters list">
 				{% for value,option in search_form.fields.course.choices %}
 				<li>
-					<input id="course-check-{{ forloop.counter }}" class="filter" type="checkbox" data-filter=".check1">
-					<label class="checkbox-label" for="course-check-{{ forloop.counter }}">{{ option }}</label>
+					<input id="id_course_{{ value }}" name="course" value="{{ value }}"
+						   class="filter" type="checkbox" data-filter=".check1">
+					<label class="checkbox-label" for="id_course_{{ value }}">{{ option }}</label>
 				</li>
 				{% endfor %}
 			</ul>
 		</div>
 		
-		<div class="cd-filter-block">
+		<div class="cd-filter-block boolean-inputs">
 			<h4>Keuken</h4>
 			<ul class="cd-filter-content cd-filters list">
 				{% for value,option in search_form.fields.cuisine.choices %}
 				<li>
-					<input id="cuis-check-{{ forloop.counter }}" class="filter" type="checkbox" data-filter=".check1">
-					<label class="checkbox-label" for="cuis-check-{{ forloop.counter }}">{{ option }}</label>
+					<input id="id_cuisine_{{ value }}" name="cuisine" value="{{ value }}"
+					       class="filter" type="checkbox" data-filter=".check1">
+					<label class="checkbox-label" for="id_cuisine_{{ value }}">{{ option }}</label>
 				</li>
 				{% endfor %}
 			</ul>

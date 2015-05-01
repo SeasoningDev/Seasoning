@@ -37,9 +37,9 @@ class Cuisine(models.Model):
 class RecipeManager(models.Manager):
     
     def query(self, search_string='', advanced_search=False, sort_field='time_added', 
-              inseason=False, no_endangered=False, ven=True, veg=True, nveg=True, cuisines=[], 
-              courses=[], include_ingredients_operator='and', include_ingredient_names=[],
-              exclude_ingredient_names=[]):
+              inseason=False, no_endangered=False, veganisms=[c[0] for c in Ingredient.VEGANISMS], 
+              cuisines=[], courses=[], include_ingredients_AND_operator=False,
+              include_ingredient_names=[], exclude_ingredient_names=[]):
         
         recipes_list = self
         
@@ -52,19 +52,14 @@ class RecipeManager(models.Manager):
         # In accordance with Issue #299: Always enable advanced search
         if True:
             # Filter for Veganism
-            if ven:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGAN)
-            if veg:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGETARIAN)
-            if nveg:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.NON_VEGETARIAN)
-            
+            veg_filter = veg_filter | models.Q(veganism__in=veganisms)
+                        
             # Filter for included en excluded ingredients
-            if include_ingredients_operator == 'and':
+            if include_ingredients_AND_operator:
                 for ingredient_name in include_ingredient_names:
                     ing_filter = models.Q(ingredients__name__iexact=ingredient_name) | models.Q(ingredients__synonyms__name__iexact=ingredient_name)
                     recipes_list = recipes_list.filter(ing_filter)
-            elif include_ingredients_operator == 'or':
+            else:
                 for ingredient_name in include_ingredient_names:
                     ing_filter = models.Q(ingredients__name__iexact=ingredient_name) | models.Q(ingredients__synonyms__name__iexact=ingredient_name)
                     incl_ingredient_filter = incl_ingredient_filter | models.Q(ing_filter)            

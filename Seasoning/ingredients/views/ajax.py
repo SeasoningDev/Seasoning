@@ -1,6 +1,6 @@
 from ingredients.models import Ingredient, Synonym
 import json
-from django.http.response import HttpResponse, Http404
+from django.http.response import HttpResponse, Http404, JsonResponse
 from django.core.exceptions import PermissionDenied
 from ingredients.forms import SearchIngredientForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -29,7 +29,7 @@ def ajax_ingredient_name_list(request):
         ingredients_json = json.dumps(result)
   
         # Return the response
-        return HttpResponse(ingredients_json, content_type='application/javascript')
+        return HttpResponse(ingredients_json)
     
     # If this is not an ajax request, permission is denied
     raise PermissionDenied()

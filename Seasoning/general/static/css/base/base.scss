@@ -25,6 +25,7 @@ body {
 
 .navbar .navbar-brand {
 	color: white;
+	display: none;
 }
 
 .navbar .navbar-brand img {
@@ -32,9 +33,25 @@ body {
 	height: 36px;
 }
 
+.nav.nav-center {
+	margin: 0;
+	float: none;
+	display: inline-block;
+}
+
+#bs-main-navbar-collapse-1 {
+	text-align: center;
+}
+
 .navbar-default .navbar-nav > li {
     @include transition(background-color, .5s, ease);
     padding: 0 20px;
+    width: 150px;
+}
+
+.navbar-default .navbar-nav > li.nav-brand-li {
+    width: auto;
+    padding: 0;
 }
 .navbar-default .navbar-nav > li:hover {
     background-color: rgba(0, 0, 0, .2);
@@ -48,12 +65,24 @@ body {
 .navbar-default .navbar-nav > li > a:focus {
     color: white;
     border-color: transparent;
+    outline: none;
 }
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
     color: white;
     border: none;
+}
+
+.navbar-default .navbar-nav .center-brand {
+	height: 65px;
+	margin: 0;
+	text-align: center;
+	padding: 15px 0;
+}
+
+.navbar-nav .center-brand img {
+	height: 100%;	
 }
 	
 #header-margin {

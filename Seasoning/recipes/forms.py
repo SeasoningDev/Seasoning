@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import RadioSelect, CheckboxSelectMultiple
+from django.forms.widgets import RadioSelect, CheckboxSelectMultiple, TextInput
 from ingredients.fields import AutoCompleteSelectIngredientField
 from recipes.models import Recipe, Cuisine, RecipeImage
 from recipes.models.t_recipe import IncompleteRecipe, TemporaryUsesIngredient
@@ -7,6 +7,7 @@ from recipes.models.recipe import UsesIngredient
 from recipes.fields import MultipleSeparatorsFloatField,\
     ChooseRealDisplayTempUnitField
 from django.forms.utils import ErrorDict
+from ingredients.models.ingredients import Ingredient
     
 
 class EditRecipeForm(forms.ModelForm):
@@ -139,9 +140,8 @@ class SearchRecipeForm(forms.Form):
     inseason = forms.BooleanField(initial=False, required=False)
     no_endangered = forms.BooleanField(initial=False, required=False)
     
-    ven = forms.BooleanField(initial=True, required=False, label='Veganistisch')
-    veg = forms.BooleanField(initial=True, required=False, label='Vegetarisch')
-    nveg = forms.BooleanField(initial=True, required=False, label='Niet-Vegetarisch')
+    veganism = forms.MultipleChoiceField(choices=Ingredient.VEGANISMS, widget=CheckboxSelectMultiple,
+                                         initial=[Ingredient.VEGAN])
     
     cuisine = forms.ModelMultipleChoiceField(queryset=Cuisine.objects.all(), required=False, label='Keuken',
                                              widget=CheckboxSelectMultiple())
@@ -149,14 +149,14 @@ class SearchRecipeForm(forms.Form):
     course = forms.MultipleChoiceField(required=False, choices=Recipe.COURSES, label='Maaltijd',
                                        widget=CheckboxSelectMultiple())
     
-    include_ingredients_operator = forms.ChoiceField(widget=RadioSelect, choices=OPERATOR_CHOICES, label='', initial=OPERATOR_CHOICES[1][0], required=False)
-    
+    include_ingredients_AND_operator = forms.BooleanField(initial=False, required=False)
+        
     page = forms.IntegerField(widget=forms.HiddenInput(attrs={'autocomplete': 'off'}), initial=0)
 
 class IngredientInRecipeSearchForm(forms.Form):
     
     name = forms.CharField()
-
+    
 class UploadRecipeImageForm(forms.ModelForm):
     
     class Meta:

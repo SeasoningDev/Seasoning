@@ -89,31 +89,28 @@
 			<div class="container-fluid">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
+					<a class="navbar-brand" href="/">
+						<img alt="Seasoning Home" title="Seasoning Home" src="{{ STATIC_URL }}img/logos/header4.png" />
+					</a>
 					<button type="button" class="navbar-toggle collapsed"
 						data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 						<span class="sr-only">Toggle navigation</span> <span
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="/">
-						<img alt="Brand" src="{{ STATIC_URL }}img/logos/header4.png">
-					</a>
 				</div>
 		
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse"
-					id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav navbar-right">
+					id="bs-main-navbar-collapse-1">
+					<ul class="nav navbar-nav nav-center">
 						<li class="{% block recipes-active %}{% endblock %}"><a href="{% url 'browse_recipes' %}">RECEPTEN</a></li>
+						<li class="nav-brand-li">
+							<a href="/" class="center-brand">
+								<img title="Seasoning Home" src="{{ STATIC_URL }}img/logos/header4.png" />
+							</a>
+						</li>
 	                    <li class="{% block ingredients-active %}{% endblock %}"><a href="{% url 'browse_ingredients' %}">INGREDIËNTEN</a></li>
-	                    <li class="{% block contribute-active %}{% endblock %}"><a href="{% url 'contribute' %}">BIJDRAGEN</a></li>
-	    	            {% if user.is_authenticated %}
-	                    <li class="{% block myaccount-active %}{% endblock %}"><a href="{% url 'my_profile' %}">MIJN PROFIEL</a></li>
-	                    <li class=""><a href="{% url 'logout' %}">AFMELDEN</a></div>
-	                    {% else %}
-	                    <li class="{% block register-active %}{% endblock %}"><a href="{% url 'registration' %}">REGISTREREN</a></li>
-	                    <li class="{% block login-active %}{% endblock %}"><a href="{% url 'login' %}">AANMELDEN</a></li>
-	                    {% endif %}
 					</ul>
 				</div>
 			</div>

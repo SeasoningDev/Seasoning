@@ -22,7 +22,7 @@ def browse_recipes(request):
     
     """
     # This is a formset for inputting ingredients to be included or excluded in the recipe search
-    IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=1)
+    IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=0)
     
     if request.method == 'POST':
         # A simple search with only the recipe name was done (from the homepage)
