@@ -16,3 +16,4 @@ media/*
 secrets.py
 initial_data.json
 cred*
+settings.py
