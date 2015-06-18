@@ -1,16 +1,1 @@
-pillow==2.6.0
-django==1.7
-django-imagekit==2.0.2
-django-recaptcha==1.0
-mysql-python==1.2.5
-coverage==3.7
-django_dynamic_fixture==1.8
-markdown==2.3.1
-django-markitup==2.1
-django-pipeline==1.4.2
-cssmin==0.2.0
-django-debug-toolbar==1.2.1
-google-api-python-client==1.2
-django-dowser
-BeautifulSoup4==4.3.2
-requests==2.4.1
+django==1.8.2

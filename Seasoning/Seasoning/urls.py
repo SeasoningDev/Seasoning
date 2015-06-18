@@ -1,48 +1,21 @@
-from django.conf.urls import patterns, include, url
-from general.sitemaps import GeneralViewsSitemap, StaticViewSitemap
-from ingredients.sitemaps import IngredientViewsSitemap
-from recipes.sitemaps import RecipeViewsSitemap
+"""Seasoning URL Configuration
 
-sitemaps = {
-    'general': GeneralViewsSitemap,
-    'static': StaticViewSitemap,
-    'ingredients': IngredientViewsSitemap,
-    'recipes': RecipeViewsSitemap,
-}
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.8/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Add an import:  from blog import urls as blog_urls
+    2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
+"""
+from django.conf.urls import include, url
+from django.contrib import admin
 
-urlpatterns = patterns('',
-    
-    # Core pages
-    (r'^ingredients/', include('ingredients.urls')),
-    (r'^recipes/', include('recipes.urls')),
-    
-    # Registration pages
-    (r'^profile/', include('authentication.urls')),
-    
-    # FAQ
-    (r'^faq/', include('faq.urls')),
-    # Logs
-    (r'^log/', include('logs.urls')),
-    
-    # Sitemap
-    (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': sitemaps}),
-    (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
-    
-#     (r'^dowser/', include('django_dowser.urls')),
-    
-    # General Pages
-    (r'^', include('general.urls')),
-)
-
-import debug_toolbar
-urlpatterns += patterns('',
-    url(r'^__debug__/', include(debug_toolbar.urls)),
-)
-
-from django.conf import settings
-# debug stuff to serve static media
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
-            {'document_root': settings.MEDIA_ROOT}),
-   )
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+]
