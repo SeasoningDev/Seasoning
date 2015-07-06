@@ -8,7 +8,6 @@ media/*
 *~
 \#*\#
 .\#*
-*.css
 .sass-cache
 *.css.map
 !style.css
