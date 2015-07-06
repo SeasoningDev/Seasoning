@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Recepten{% endblock %}
+
+{% block extra_link %}
+<link href="{% static "recipes/css/browse_recipes.css" %}" rel="stylesheet">
+<link href="{% static "recipes/css/recipe_preview.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_script %}
+<script>
+	var get_recipes_url = "{% url 'get_recipes_max' 40 %}";
+</script>
+<script type="text/javascript" src="{% static "recipes/js/browse_recipes.js" %}"></script>
+<!--
+
+//-->
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+	<input id="next-recipes-page" type="hidden" value=1>
+	
+	<section id="browse-recipes-wrapper" class="cd-gallery">
+		
+	</section>
+	
+	<div class="ajax-loader">
+		<img src="{% static "img/decoration/ajax-loader.png" %}">
+	</div>
+		
+	<div id="end-buttons" class="container text-center">
+		<div id="show-more-recipes-btn" class="col-xs-6 col-sm-3 col-sm-offset-3">
+			<a class="btn btn-success btn-block" href="#">Meer recepten tonen</a>
+		</div>
+		<div class="col-xs-6 col-sm-3">
+			<a class="btn btn-success btn-block" href="#browse-recipes-wrapper">Terug naar boven</a>
+		</div>
+	</div>
+	
+	
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+<a class="recipe-preview-wrapper" href="{{ recipe.external_url }}" target="_blank">
+ 
+	<span class="recipe-preview" title="{{ recipe.name }}"
+		  style="background-image: url('http://www.seasoning.be/media/{{ recipe.image }}')">
+
+		<span class="recipe-preview-title">
+			{{ recipe.name }}
+		</span>
+		
+		<span class="recipe-preview-fp-cat">
+			<span class="pull-left">Duurzaamheidsklasse:</span>
+			<span class="pull-right">{{ recipe.get_footprint_category_display }}</span>
+		</span>
+	</span>
+</a>
