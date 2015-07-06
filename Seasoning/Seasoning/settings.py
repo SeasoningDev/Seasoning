@@ -50,6 +50,8 @@ INSTALLED_APPS = (
     'authentication',
     'ingredients',
     'recipes',
+    
+    'administration',
 )
 
 MIDDLEWARE_CLASSES = (

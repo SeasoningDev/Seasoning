@@ -3,9 +3,9 @@ Created on Jul 5, 2015
 
 @author: joep
 '''
-from django.contrib import admin
 from ingredients.models import Ingredient, AvailableInCountry, TransportMethod,\
     AvailableInSea, CanUseUnit, Unit
+from django.contrib import admin
 
 class CanUseUnitInline(admin.TabularInline):
     
@@ -24,8 +24,8 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ['name']
     inlines = [CanUseUnitInline, AvailableInCountryInline]
     
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(AvailableInCountry)
-admin.site.register(AvailableInSea)
-admin.site.register(TransportMethod)
-admin.site.register(Unit)
+# seasoning_admin_site.register(Ingredient, IngredientAdmin)
+# seasoning_admin_site.register(AvailableInCountry)
+# seasoning_admin_site.register(AvailableInSea)
+# seasoning_admin_site.register(TransportMethod)
+# seasoning_admin_site.register(Unit)

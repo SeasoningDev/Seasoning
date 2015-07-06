@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Admin - {% block admin_title %}Home{% endblock %}{% endblock %}
+
+{% block extra_link %}
+<link href="{% static "admin/css/admin_base.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="navbar navbar-default sidebar" role="navigation">
+	<div class="sidebar-nav navbar-collapse">
+		<ul id="side-menu" class="nav navbar-nav">
+			<li>
+				<h3 class="text-muted">
+					Administration
+				</h3>
+			</li>
+			<li>
+				<a class="active" href="index.html"> 
+					<span class="glyphicon glyphicon-dashboard pull-left"></span>
+					Dashboard
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'admin:index' %}"">
+					<span class="glyphicon glyphicon-hdd pull-left"></span>
+					Database
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'admin_scrapers' %}">
+					<span class="glyphicon glyphicon-screenshot pull-left"></span>
+					Scrapers
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="glyphicon glyphicon-align-justify pull-left"></span>
+					Bram's Stuff
+					<span class="glyphicon glyphicon-chevron-left pull-right"></span>
+				</a>
+			</li>
+			
+			<li></li>
+			
+			<li>
+				<a href="/">Back to Seasoning</a> /
+			</li>
+			<li>
+				<a href="{% url 'admin:password_change' %}">Change password</a>
+			</li>
+			<li>
+				<a href="{% url 'admin:logout' %}">Log out</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="page-wrapper">
+	{% block content %}
+	{% endblock %}
+</div>
+{% endblock %}
