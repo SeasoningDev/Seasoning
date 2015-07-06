@@ -10,7 +10,7 @@
 
 {% block extra_script %}
 <script>
-	var get_recipes_url = "{% url 'get_recipes_max' 40 %}";
+	var get_recipes_url = "{% url 'get_recipes_max' 20 %}";
 </script>
 <script type="text/javascript" src="{% static "recipes/js/browse_recipes.js" %}"></script>
 <!--
@@ -22,7 +22,7 @@
 
 {% block body %}
 
-	<input id="next-recipes-page" type="hidden" value=1>
+	<input id="next-recipes-page" type="hidden" value=1 autocomplete="off">
 	
 	<section id="browse-recipes-wrapper" class="cd-gallery">
 		
