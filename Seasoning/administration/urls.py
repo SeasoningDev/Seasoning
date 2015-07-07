@@ -3,6 +3,7 @@ from administration import views
 
 urlpatterns = [
     url(r'^$', views.admin_home, name='admin_home'),
+    url(r'^cachupdate/$', views.admin_recipes_update_cached_properties, name='admin_recipes_update_cached_properties'),
     
     url(r'^scrapers/$', views.admin_scrapers, name='admin_scrapers'),
     url(r'^scrapers/proofread/$', views.admin_proofread_scraped_recipes, name='admin_proofread_scraped_recipes'),

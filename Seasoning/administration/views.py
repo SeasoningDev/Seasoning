@@ -6,15 +6,29 @@ Created on Jul 6, 2015
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from recipes.scrapers.eva_scraper import scrape_recipes
-from recipes.models import ScrapedRecipe, ScrapedUsesIngredient
+from recipes.models import ScrapedRecipe, ScrapedUsesIngredient, Recipe
 from administration.forms import ScrapedRecipeProofreadForm
 from django.forms.models import inlineformset_factory
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from recipes.forms import RecipeSearchForm
+from django.core.management import call_command
 
 @staff_member_required
 def admin_home(request):
-    return render(request, 'admin/admin_base.html')
+    return render(request, 'admin/admin_dashboard.html', {'stats': {'ao_visible_recipes': RecipeSearchForm({}).search_queryset().count(),
+                                                                    'last_cache_update': Recipe.objects.all().order_by('last_update_time')[0].last_update_time}})
+    
+@staff_member_required
+def admin_recipes_update_cached_properties(request):
+#     for recipe in Recipe.objects.all():
+#         recipe.save()
+        
+    call_command('calculate_recipe_distributions')
+    
+    return redirect('admin_home')
+
+
 
 @staff_member_required
 def admin_scrapers(request):

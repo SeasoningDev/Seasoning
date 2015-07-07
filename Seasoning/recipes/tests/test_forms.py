@@ -28,3 +28,9 @@ class RecipeSearchFormTest(TestCase):
         form = RecipeSearchForm({'search_query': 'tester'})
         self.assertEqual(form.search_queryset().count(), 0)
         
+    def test_form_nothing(self):
+        form = RecipeSearchForm({})
+        form.is_valid()
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+        

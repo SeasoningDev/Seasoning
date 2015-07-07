@@ -94,6 +94,11 @@ class Recipe(models.Model):
     small_image = ImageSpecField([SmartResize(310, 310)], source='image', format='JPEG')
     
     
+    
+    time_added = models.DateTimeField(auto_now_add=True)
+    last_update_time = models.DateTimeField(auto_now=True)
+    
+    
     """
     Cached attributes, be very carefull when using these, might be out of sync
     

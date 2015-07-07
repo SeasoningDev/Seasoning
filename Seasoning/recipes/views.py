@@ -40,7 +40,7 @@ def get_recipes(request, results_per_page=10):
                                                           'uses_ingredients__ingredient__available_in_country__location',
                                                           'uses_ingredients__ingredient__available_in_sea__transport_method',
                                                           'uses_ingredients__ingredient__available_in_sea__location',
-                                                          'uses_ingredients__unit__parent_unit').filter(external_url__isnull=False), results_per_page)
+                                                          'uses_ingredients__unit__parent_unit'), results_per_page)
     
     try:
         try:

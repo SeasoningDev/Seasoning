@@ -11,7 +11,7 @@ from ingredients.models import Ingredient, Unit, CanUseUnit
 class RecipeModelTest(TestCase):
     
     def test_footprint(self):
-        recipe = G(Recipe)
+        recipe = G(Recipe, portions=2)
         
         ing = G(Ingredient, base_footprint=1, category=Ingredient.BASIC)
         unit = G(Unit, parent_unit=None)
@@ -19,7 +19,8 @@ class RecipeModelTest(TestCase):
         
         G(UsesIngredient, recipe=recipe, ingredient=ing, amount=1, unit=unit)
         
-        self.assertEqual(recipe.footprint(), 1)
+        self.assertEqual(recipe.total_footprint(), 1)
+        self.assertEqual(recipe.normalized_footprint(), 0.5)
 
 
 

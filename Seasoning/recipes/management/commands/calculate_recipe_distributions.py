@@ -16,7 +16,7 @@ class Command(BaseCommand):
             recipes = Recipe.objects.filter(course=course)
             
             if len(recipes) > 0:
-                footprints = [recipe.footprint() for recipe in recipes]
+                footprints = [recipe.normalized_footprint() for recipe in recipes]
                 
                 RecipeDistribution(course=course, parameter=RecipeDistribution.MEAN,
                                    value=numpy.mean(footprints)).save()

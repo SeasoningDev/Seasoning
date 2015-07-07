@@ -1,0 +1,36 @@
+{% extends "admin/admin_base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">Dashboard</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-3 col-md-6">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-xs-3">
+						<img src="{% static "admin/img/decoration/dinner.png" %}"
+							style="height: 55px;">
+					</div>
+					<div class="col-xs-9 text-right">
+						<div style="font-size: 40px;line-height:40px;">{{ stats.ao_visible_recipes }}</div>
+						<div>Recipes visible on Seasoning</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<a href="{% url 'admin_recipes_update_cached_properties' %}">
+					<span style="font-size: 20px; margin: 3px 5px 0 0;" class="glyphicon glyphicon-refresh pull-left"></span>
+					<span style="line-height: 10px;" class="">Recalculate cache properties (last update: {{ stats.last_cache_update }})</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	
+</div>
+{% endblock %}
