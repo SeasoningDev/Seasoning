@@ -8,26 +8,46 @@ from recipes.models import Recipe
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
-from recipes.forms import RecipeSearchForm
+from recipes.forms import RecipeSearchForm, IngredientInRecipeSearchForm
+from django.forms.formsets import formset_factory
 
 def browse_recipes(request):
-    recipe_search_form = RecipeSearchForm()
+    IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=0)
     
-    return render(request, 'recipes/browse_recipes.html', {'recipe_search_form': recipe_search_form})
+    recipe_search_form = RecipeSearchForm()
+        
+    include_ingredients_formset = IngredientInRecipeFormset(prefix='include')
+    exclude_ingredients_formset = IngredientInRecipeFormset(prefix='exclude')
+    
+    return render(request, 'recipes/browse_recipes.html', {'recipe_search_form': recipe_search_form,
+                                                           'include_ingredients_formset': include_ingredients_formset,
+                                                           'exclude_ingredients_formset': exclude_ingredients_formset})
 
 
 
 def get_recipes(request, results_per_page=10):
     results_per_page = min(int(results_per_page), 100)
     
+    IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=0)
+    
     if request.method == 'POST':
         page = int(request.POST.get('page', 1))
+        
         recipe_search_form = RecipeSearchForm(request.POST)
         
-        if recipe_search_form.is_valid():
-            recipe_queryset = recipe_search_form.search_queryset()
+        include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
+        exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
+            
+        
+        if recipe_search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid:
+            include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
+            exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
+        
+            recipe_queryset = recipe_search_form.search_queryset(include_ingredient_names=include_ingredient_names,
+                                                                 exclude_ingredient_names=exclude_ingredient_names)
         
         else:
+            print(recipe_search_form.errors)
             recipe_queryset = Recipe.objects.all()
             
     else:
@@ -57,7 +77,8 @@ def get_recipes(request, results_per_page=10):
         recipe_previews_html = ''
     
     
-    return JsonResponse(data={'result': recipe_previews_html}, safe=False)
+    return JsonResponse(data={'result': recipe_previews_html,
+                              'result_count': paginator.count}, safe=False)
     
     
     

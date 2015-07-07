@@ -30,7 +30,6 @@ class RecipeSearchFormTest(TestCase):
         
     def test_form_nothing(self):
         form = RecipeSearchForm({})
-        form.is_valid()
-        print(form.errors)
+        
         self.assertTrue(form.is_valid())
         

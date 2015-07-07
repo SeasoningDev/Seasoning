@@ -4,19 +4,20 @@
 {% block title %}Recepten{% endblock %}
 
 {% block extra_link %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <link href="{% static "recipes/css/browse_recipes.css" %}" rel="stylesheet">
 <link href="{% static "recipes/css/recipe_preview.css" %}" rel="stylesheet">
 {% endblock %}
 
 {% block extra_script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 <script>
 	var get_recipes_url = "{% url 'get_recipes_max' 20 %}";
+	var ingredient_names_url = "{% url 'get_ingredient_name_list' %}";
 </script>
 <script type="text/javascript" src="{% static "recipes/js/browse_recipes.js" %}"></script>
-<!--
-
-//-->
-</script>
 {% endblock %}
 
 
@@ -25,6 +26,9 @@
 	{% csrf_token %}
 	<input id="next-recipes-page" name="page" type="hidden" value=1 autocomplete="off">
 	
+	{{ include_ingredients_formset.management_form }}
+	{{ exclude_ingredients_formset.management_form }}
+	
 	<div id="base-recipe-search-container">
 		<div id="base-recipe-search" class="navbar-form">
 			{{ recipe_search_form.search_query|addcss:"class,form-control,placeholder,Zoek Recepten" }}
@@ -32,6 +36,11 @@
 	</div>
 	
 	<div id="advanced-search-bar">
+		
+		<a id="advanced-search-btn" href="#">Geavanceerd Zoeken</a>
+		
+		<span id="result-count"><span id="count"></span> Recepten Gevonden</span>
+		
 		<div id="sort-by-wrapper">
 			<ul>
 				{% for sort_field, sort_field_display in recipe_search_form.fields.sort_by.choices %}
@@ -52,10 +61,109 @@
 			</ul>
 			{{ recipe_search_form.sort_by }}
 		</div>
+		
+		<div class="cd-filter">
+			<div class="cd-filter-block">
+				<h4>Speciale Eigenschappen</h4>
+				<ul id="special-inputs" class="cd-filter-content cd-filters list">
+					<li>
+						<input id="{{ recipe_search_form.inseason.auto_id }}" name="{{ recipe_search_form.inseason.name }}" 
+							   class="filter" type="checkbox" data-filter=".spec-check-1">
+						<label class="checkbox-label" for="{{ recipe_search_form.inseason.auto_id }}">Enkel In Seizoen</label>
+					</li>
+					<li>
+						<input id="{{ recipe_search_form.no_endangered.auto_id }}" name="{{ recipe_search_form.no_endangered.name }}" 
+							   class="filter" type="checkbox" data-filter=".spec-check-2">
+						<label class="checkbox-label" for="{{ recipe_search_form.no_endangered.auto_id }}">Geen Overbeviste ingredienten</label>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="cd-filter-block">
+				<h4>Voedingswijze</h4>
+				<ul id="special-inputs" class="cd-filter-content cd-filters list">
+					{% for veganism_choice in recipe_search_form.veganism %}
+					<li>
+						<input id="{{ recipe_search_form.veganism.auto_id }}_{{ forloop.counter0 }}" type="checkbox" value="{{ veganism_choice.choice_value }}"
+							   name="{{ veganism_choice.name }}" class="filter" checked="checked" />
+						<label class="checkbox-label" for="{{ recipe_search_form.veganism.auto_id }}_{{ forloop.counter0 }}">{{ veganism_choice.choice_label }}</label>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>	
+		
+			<div id="incl-ingredients" class="cd-filter-block">
+				<h4>Gewenste Ingrediënten</h4>
+				<div class="cd-filter-content">
+					
+					<div id="incl-ing-operator">
+						<input id="{{ recipe_search_form.include_ingredients_AND_operator.auto_id }}" name="{{ recipe_search_form.include_ingredients_AND_operator.name }}"
+					       data-toggle="toggle" data-off="Minstens één" data-on="Allemaal" type="checkbox">
+					</div>
+					<div class="incl-ing incl-ing-template">
+						{{ include_ingredients_formset.empty_form }}
+						<div class="ing-name">
+							<span class="text"></span>
+							<a href="#" class="pull-right" onclick="$(this).parent().parent().fadeOut(200, function(){$(this).remove();ajax_search_recipes();});return false;"><span class="glyphicon glyphicon-remove"></span></a>
+						</div>
+					</div>
+					<div class="ing-input-wrapper" style="position: relative;">
+						<input id="incl-ingredients-input" type="search" placeholder="Voer Ingrediënten in...">
+						<img src="{% static "img/decoration/ajax-loader.png" %}" class="ajax-loader" />
+					</div>
+				</div>
+			</div>
+			
+			<div id="excl-ingredients" class="cd-filter-block">
+				<h4>Ongewenste Ingrediënten</h4>
+				<div class="cd-filter-content">
+					<div class="excl-ing excl-ing-template">
+						{{ exclude_ingredients_formset.empty_form }}
+						<div class="ing-name">
+							<span class="text"></span>
+							<a href="#" class="pull-right" onclick="$(this).parent().parent().fadeOut(200, function(){$(this).remove();ajax_search_recipes();});return false;"><span class="glyphicon glyphicon-remove"></span></a>
+						</div>
+					</div>
+					<div class="ing-input-wrapper" style="position: relative;">
+						<input id="excl-ingredients-input" type="search" placeholder="Voer Ingrediënten in...">
+						<img src="{% static "img/decoration/ajax-loader.png" %}" class="ajax-loader" />
+					</div>
+				</div>
+			</div>
+			
+			<div class="cd-filter-block boolean-inputs">
+				<h4>Type Maaltijd</h4>
+				<ul class="cd-filter-content cd-filters list">
+					{% for value,option in recipe_search_form.fields.course.choices %}
+					<li>
+						<input id="id_course_{{ value }}" name="course" value="{{ value }}"
+							   class="filter" type="checkbox" data-filter=".check1">
+						<label class="checkbox-label" for="id_course_{{ value }}">{{ option }}</label>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+			
+			<div class="cd-filter-block boolean-inputs">
+				<h4>Keuken</h4>
+				<ul class="cd-filter-content cd-filters list">
+					{% for value,option in recipe_search_form.fields.cuisine.choices %}
+					<li>
+						<input id="id_cuisine_{{ value }}" name="cuisine" value="{{ value }}"
+						       class="filter" type="checkbox" data-filter=".check1">
+						<label class="checkbox-label" for="id_cuisine_{{ value }}">{{ option }}</label>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+			
+			<a class="cd-close" href="#0">Geavanceerd Zoeken Verbergen</a>
+		</div>
 	</div>
 	
 	<div id="overlay-wrapper">
-		<section id="browse-recipes-wrapper" class="cd-gallery">
+		<div class="advanced-search-spacer"></div>
+		<section id="browse-recipes-wrapper">
 			
 		</section>
 		

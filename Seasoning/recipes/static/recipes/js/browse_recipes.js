@@ -22,6 +22,11 @@ $.fn.pressEnter = function(fn) {
     });  
 };
 
+function replace_prefix(el, id) {
+	el.attr('id', el.attr('id').replace('__prefix__', id));
+	el.attr('name', el.attr('name').replace('__prefix__', id));
+}
+
 /**
  * This timer will be reset after the user has typed his last character
  * in the search field. This prevents a buttload of queries when a user is
@@ -39,10 +44,10 @@ function reset_paging() {
 	$("#next-recipes-page").val(1);
 }
 function next_page() {
-	$("#next-recipes-page").val();
+	return parseInt($("#next-recipes-page").val());
 }
 function inc_paging() {
-	$("#next-recipes-page").val(parseInt($("#next-recipes-page").val()) + 1);
+	$("#next-recipes-page").val(next_page() + 1);
 }
 
 function reset_search_results() {
@@ -61,10 +66,18 @@ function get_recipe_search_results(page) {
 	});
 }
 
+function show_result_count(count) {
+	$("#result-count #count").text(count);
+	$("#result-count").fadeIn(200);
+}
+
 
 
 function ajax_search_recipes() {
+	loading_next_page = true;
+	
 	reset_paging();
+	$("#result-count").fadeOut(200);
 	
 	$("#dark-overlay").fadeIn(200);
 	$(".search-results-loader.top").fadeIn(200);
@@ -81,7 +94,12 @@ function ajax_search_recipes() {
 			$("#no-result").fadeIn(200)
 		}
 		
+		show_result_count(data.result_count);
+		
 		inc_paging();
+		loading_next_page = false;
+		
+		$("html, body").animate({ scrollTop: "0px" });
 			
 	}).always(function() {
 		$("#dark-overlay").fadeOut(200);
@@ -95,7 +113,9 @@ function ajax_load_next_page() {
 		loading_next_page = true;
 		$(".search-results-loader.bottom").fadeIn(200);
 		
-		get_recipe_search_results(next_page()).done(function(data) {
+		var np = next_page();
+		
+		get_recipe_search_results(np).done(function(data) {
 			
 			if (data.result) {
 				no_more_pages = false;
@@ -103,8 +123,12 @@ function ajax_load_next_page() {
 			} else {
 				no_more_pages = true;
 			}
+			console.log(np)
+			if (np == 1)
+				show_result_count(data.result_count);
 			
 			inc_paging();
+			console.log('inc');
 			loading_next_page = false;
 			
 		}).always(function() {
@@ -193,4 +217,136 @@ $(function() {
 		
 		ajax_search_recipes();
 	})
+	
+	
+	
+	// Open advanced search
+	$('#advanced-search-btn').on('click', function() {
+		// Save the users preference
+		localStorage.advanced_search = true;
+		
+		triggerFilter(true);
+		
+		var spacer = $(".advanced-search-spacer")
+		spacer.css('width', $('.cd-filter').css('width'));
+		spacer.css('height', $('.cd-filter').css('height'));
+		return false;
+	});
+	
+	// Open advanced search if the user prefers the advanced box open
+	if (localStorage.advanced_search === 'true') {
+		$('#advanced-search-btn').click();
+	}
+	
+	// Close advanced search
+	$('.cd-filter .cd-close').on('click', function() {
+		$('#id_advanced_search').prop('checked', false);
+		
+		// Save the users preference
+		localStorage.advanced_search = false;
+		
+		triggerFilter(false);
+		
+		$(".advanced-search-spacer").css('width', 0);
+		return false;
+	});
+
+	function triggerFilter($bool) {
+		var elementsToTrigger = $([$('.cd-filter-trigger'), $('.cd-filter'), $('.cd-tab-filter'), $('#browse-recipes-wrapper'), $(".advanced-search-spacer")]);
+		elementsToTrigger.each(function(){
+			$(this).toggleClass('filter-is-visible', $bool);
+		});
+	}
+	
+	
+	
+	/**
+	 * Advanced Search Bar functions
+	 */
+
+	// Close a filter group dropdown inside lateral .cd-filter 
+	$('.cd-filter-block h4').on('click', function(){
+		$(this).toggleClass('closed').siblings('.cd-filter-content').slideToggle(300);
+		
+		return false;
+	})
+	
+	/**
+	 * Activate filter elements
+	 */
+	$("#special-inputs input").change(function() {
+		ajax_search_recipes();
+	})
+	
+	$("#incl-ing-operator").click(ajax_search_recipes);
+	
+	$("#incl-ingredients-input").autocomplete({
+		source: ingredient_names_url,
+		select: function(event, ui) {
+			var new_ing = $("#incl-ingredients .incl-ing-template").clone().removeClass('incl-ing-template');
+			var new_ing_input = new_ing.find('input'); 
+			var parent_div = new_ing.parent();
+			
+			var total_forms = $('#id_include-TOTAL_FORMS').val();
+			replace_prefix(new_ing_input, total_forms);
+			new_ing_input.val(ui.item.label);
+			new_ing.find('.ing-name .text').text(ui.item.label);
+			
+			$('#id_include-TOTAL_FORMS').val(parseInt(total_forms) + 1);
+			
+			new_ing.insertBefore($('.incl-ing-template'));
+			
+			$(".ui-menu-item").hide();
+	        
+			event.preventDefault(); 
+	        $(this).val('');
+	        
+	        ajax_search_recipes();
+		},
+		focus: function(event, ui) { 
+			event.preventDefault();
+		},
+		search: function() {
+			$(this).parent().find('.ajax-loader').show();
+		},
+		response: function() {
+			$(this).parent().find('.ajax-loader').hide();
+		}
+	});
+	
+	$("#excl-ingredients-input").autocomplete({
+		source: ingredient_names_url,
+		select: function(event, ui) {
+			var new_ing = $("#excl-ingredients .excl-ing-template").clone().removeClass('excl-ing-template');
+			var new_ing_input = new_ing.find('input'); 
+			var parent_div = new_ing.parent();
+			
+			var total_forms = $('#id_exclude-TOTAL_FORMS').val();
+			replace_prefix(new_ing_input, total_forms);
+			new_ing_input.val(ui.item.label);
+			new_ing.find('.ing-name .text').text(ui.item.label);
+			
+			$('#id_exclude-TOTAL_FORMS').val(parseInt(total_forms) + 1);
+			
+			new_ing.insertBefore($('.excl-ing-template'));
+			
+			$(".ui-menu-item").hide();
+	        
+			event.preventDefault(); 
+	        $(this).val('');
+	        
+	        ajax_search_recipes();
+		},
+		focus: function(event, ui) { 
+			event.preventDefault();
+		},
+		search: function() {
+			$(this).parent().find('.ajax-loader').show();
+		},
+		response: function() {
+			$(this).parent().find('.ajax-loader').hide();
+		}
+	});
+	
+	$(".boolean-inputs input").change(ajax_search_recipes);
 })
