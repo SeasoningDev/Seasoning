@@ -107,8 +107,8 @@ else:
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'seasoning',
             'USER': 'seasoning',
-            'HOST': '127.0.0.1',
-#             'HOST': 'www.seasoning.be',
+#             'HOST': '127.0.0.1',
+            'HOST': 'www.seasoning.be',
             'PORT': '',
         },
     }

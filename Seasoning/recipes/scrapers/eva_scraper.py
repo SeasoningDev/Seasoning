@@ -188,7 +188,9 @@ def scrape_recipes():
                 try:
                     ingredients = Ingredient.objects.filter(fil).distinct()
                     if len(ingredients) > 1:
-                        raise Exception('Multiple ingredients found: {} - {}'.format(parsed_ing_name, [ing.name for ing in ingredients]))
+                        best = difflib.get_close_matches(parsed_ing_name, [ing.name for ing in ingredients], 1, 0)[0]
+                        ingredients = list(filter(lambda ing: ing.name == best, ingredients))
+
                     ingredient = ingredients[0]
                 except IndexError:
                     ingredient = None
