@@ -133,10 +133,10 @@
 </style>
 <div id="make-objects-btns" class="row">
  	<div class="btn-group" role="group" aria-label="Default button group">
-        <a href=="{% url 'admin:recipes_cuisine_add' %}" target="_blank" type="button" class="btn btn-info">Add New Cuisine</a>
-        <a type="button" class="btn btn-info">Add New Unit</a>
-        <a type="button" class="btn btn-info">Add New Ingredient</a>
-        <a type="button" class="btn btn-info">Add New CanUseUnit</a>
+        <a href="{% url 'admin:recipes_cuisine_add' %}" target="_blank" type="button" class="btn btn-info">Add New Cuisine</a>
+        <a href="{% url 'admin:ingredients_unit_add' %}" target="_blank" type="button" class="btn btn-info">Add New Unit</a>
+        <a href="{% url 'admin:ingredients_ingredient_add' %}" target="_blank" type="button" class="btn btn-info">Add New Ingredient</a>
+        <a href="{% url 'admin:ingredients_canuseunit_add' %}" target="_blank" type="button" class="btn btn-info">Add New CanUseUnit</a>
         
     </div>
 </div>
