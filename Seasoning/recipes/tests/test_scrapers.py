@@ -15,8 +15,8 @@ class EvaScraperTest(TestCase):
         self.assertIn('/recept', recipe_pages[0].url)
         
     def test_get_recipe_pages_last_page(self):
-        recipe_page_1 = list(get_recipe_pages(27))
+        recipe_page_1 = list(get_recipe_pages(1000))
         
-        recipe_page_2 = list(get_recipe_pages(28))
+        recipe_page_2 = list(get_recipe_pages(1001))
         
         self.assertEqual(recipe_page_1[0].url, recipe_page_2[0].url)

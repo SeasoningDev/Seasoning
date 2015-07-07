@@ -75,7 +75,7 @@ class Recipe(models.Model):
                                               help_text=_("The type of course this recipe will provide."))
     cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
-    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)],
+    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)], null=True, blank=True,
                                    help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
     portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
@@ -85,24 +85,35 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
-    instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'))
+    instructions = models.TextField(_('Instructions'), null=True, blank=True,
+                                    help_text=_('Detailed instructions for preparing this recipe.'))
     
     image = ProcessedImageField(upload_to=get_image_filename,
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
     thumbnail = ImageSpecField([SmartResize(216, 216)], source='image', format='JPEG')
     small_image = ImageSpecField([SmartResize(310, 310)], source='image', format='JPEG')
     
+    
+    """
+    Cached attributes, be very carefull when using these, might be out of sync
+    
+    """
+    _footprint = models.FloatField()
+    
     def __str__(self):
         return self.name
     
     
     
-    def footprint(self):
+    def total_footprint(self):
         total_footprint = 0
-        for uses_ingredient in self.uses_ingredient.all():
+        for uses_ingredient in self.uses_ingredients.all():
             total_footprint += uses_ingredient.footprint()
             
         return total_footprint
+    
+    def normalized_footprint(self):
+        return self.total_footprint() / self.portions
     
     def footprint_category(self, display=False):
         distribution_parameters = RecipeDistribution.objects.filter(course=self.course)
@@ -120,19 +131,28 @@ class Recipe(models.Model):
         for cat, cat_display in self.FOOTPRINT_CATEGORIES:
             probit_val = mean + (std * math.sqrt(2) * RecipeDistribution.IERF[self.FOOTPRINT_CATEGORY_CUTOFF_VALUES[cat]])
             
-            if self.footprint() <= probit_val:
+            if self.normalized_footprint() <= probit_val:
                 if display:
                     return cat_display
                 return cat
     
     def get_footprint_category_display(self):
         return self.footprint_category(display=True)
+    
+    
+    
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.uses_ingredients.select_related('ingredient__can_use_units__unit',
+                                                         'unit__parent_unit').all()
+        self._footprint = self.normalized_footprint()
+        
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         
     
 
 class UsesIngredient(models.Model):
     
-    recipe = models.ForeignKey(Recipe, related_name='uses_ingredient')
+    recipe = models.ForeignKey(Recipe, related_name='uses_ingredients')
     ingredient = models.ForeignKey(ingredients.models.Ingredient)
     
     group = models.CharField(max_length=100, blank=True)
@@ -141,9 +161,9 @@ class UsesIngredient(models.Model):
     
     def unit_conversion_ratio(self):
         if self.unit.parent_unit is not None:
-            return CanUseUnit.objects.get(ingredient=self.ingredient, unit=self.unit.parent_unit).conversion_ratio * self.unit.ratio
+            return next(cuu for cuu in self.ingredient.can_use_units.all() if cuu.unit == self.unit.parent_unit).conversion_ratio * self.unit.ratio
             
-        return CanUseUnit.objects.get(ingredient=self.ingredient, unit=self.unit).conversion_ratio
+        return next(cuu for cuu in self.ingredient.can_use_units.all() if cuu.unit == self.unit).conversion_ratio
     
     def footprint(self):
         return self.ingredient.footprint() * self.amount * self.unit_conversion_ratio()
@@ -241,24 +261,23 @@ class ScrapedRecipe(models.Model):
     
     deleted = models.BooleanField(default=False)
     
-    _is_missing_info = None
     def is_missing_info(self):
-        if self._is_missing_info is None:
+        if not hasattr(self, '_is_missing_info') or getattr(self, '_is_missing_info') is None:
             if self.course is None:
-                self._is_missing_info = True
+                _is_missing_info = True
             elif len(list(filter(lambda ing: ing.ingredient is None or not ing.ingredient.accepted or ing.unit is None or ing.amount is None, self.ingredients.all()))) > 0:
-                self._is_missing_info = True
+                _is_missing_info = True
             else:
-                self._is_missing_info = False
+                _is_missing_info = False
+            setattr(self, '_is_missing_info', _is_missing_info)
     
-        return self._is_missing_info
+        return getattr(self, '_is_missing_info')
     
-    _ao_unknown_ingredients = None
     def ao_unknown_ingredients(self):
-        if self._ao_unknown_ingredients is None:
-            self._ao_unknown_ingredients = len(list(filter(lambda ing: ing.ingredient is None, self.ingredients.all())))
+        if not hasattr(self, '_ao_unknown_ingredients') or getattr(self, '_ao_unknown_ingredients') is None:
+            setattr(self, '_ao_unknown_ingredients', len(list(filter(lambda ing: ing.ingredient is None, self.ingredients.all()))))
             
-        return self._ao_unknown_ingredients
+        return getattr(self, '_ao_unknown_ingredients')
     
     
     def convert_to_real_recipe(self):

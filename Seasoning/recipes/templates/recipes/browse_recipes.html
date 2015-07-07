@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static addcss %}
 
 {% block title %}Recepten{% endblock %}
 
@@ -21,23 +21,61 @@
 
 
 {% block body %}
-
-	<input id="next-recipes-page" type="hidden" value=1 autocomplete="off">
+<form id="recipe-search-form" class="keywords">
+	{% csrf_token %}
+	<input id="next-recipes-page" name="page" type="hidden" value=1 autocomplete="off">
 	
-	<section id="browse-recipes-wrapper" class="cd-gallery">
+	<div id="base-recipe-search-container">
+		<div id="base-recipe-search" class="navbar-form">
+			{{ recipe_search_form.search_query|addcss:"class,form-control,placeholder,Zoek Recepten" }}
+	    </div>
+	</div>
+	
+	<div id="advanced-search-bar">
+		<div id="sort-by-wrapper">
+			<ul>
+				{% for sort_field, sort_field_display in recipe_search_form.fields.sort_by.choices %}
+					{% if recipe_search_form.sort_by.value == sort_field %}
+					<li class="placeholder">
+						<a href="#" data-type="all">Sorteren op: {{ sort_field_display|safe }}</a>
+					</li>
+					{% endif %}
+				{% endfor %}
+				
+				{% for sort_field, sort_field_display in recipe_search_form.fields.sort_by.choices %}
+					<li class="filter">
+						<a {% if search_form.sort_fields.value == sort_field %}class="selected" {% endif %}
+						   href="#" data-type="all"
+						   data-value={{ sort_field }}>{{ sort_field_display|safe }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+			{{ recipe_search_form.sort_by }}
+		</div>
+	</div>
+	
+	<div id="overlay-wrapper">
+		<section id="browse-recipes-wrapper" class="cd-gallery">
+			
+		</section>
 		
-	</section>
+		<div id="dark-overlay"></div>
 	
-	<div class="ajax-loader">
-		<img src="{% static "img/decoration/ajax-loader.png" %}">
+		<div class="search-results-loader ajax-loader top">
+			<img src="{% static "img/decoration/ajax-loader.png" %}">
+		</div>
+		<div class="search-results-loader ajax-loader bottom">
+			<img src="{% static "img/decoration/ajax-loader.png" %}">
+		</div>
+		
+		<div id="no-results" class="text-success text-center">
+			Er werden geen recepten gevonden die aan jou zoekcriteria voldoen...
+		</div>
 	</div>
 		
 	<div id="end-buttons" class="container text-center">
-		<div id="show-more-recipes-btn" class="col-xs-6 col-sm-3 col-sm-offset-3">
-			<a class="btn btn-success btn-block" href="#">Meer recepten tonen</a>
-		</div>
-		<div class="col-xs-6 col-sm-3">
-			<a class="btn btn-success btn-block" href="#browse-recipes-wrapper">Terug naar boven</a>
+		<div class="col-xs-6 col-sm-4 col-sm-offset-4">
+			<a class="btn btn-success btn-block" href="#">Terug naar boven</a>
 		</div>
 	</div>
 	

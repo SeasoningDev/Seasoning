@@ -49,6 +49,8 @@ class Ingredient(models.Model):
     dependent on time and has no special attributes
     
     """
+    class Meta:
+        ordering = ('name', )
     
     class BasicIngredientException(Exception):
         pass
@@ -156,7 +158,7 @@ class CanUseUnit(models.Model):
         1 this_unit = conversion_factor primary_unit
     
     """    
-    ingredient = models.ForeignKey('Ingredient')
+    ingredient = models.ForeignKey('Ingredient', related_name='can_use_units')
     unit = models.ForeignKey('Unit', related_name='useable_by', limit_choices_to=models.Q(parent_unit__isnull=True))
     
     conversion_ratio = models.FloatField()

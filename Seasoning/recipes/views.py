@@ -8,39 +8,56 @@ from recipes.models import Recipe
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
+from recipes.forms import RecipeSearchForm
 
 def browse_recipes(request):
-    return render(request, 'recipes/browse_recipes.html')
+    recipe_search_form = RecipeSearchForm()
+    
+    return render(request, 'recipes/browse_recipes.html', {'recipe_search_form': recipe_search_form})
 
 
 
 def get_recipes(request, results_per_page=10):
     results_per_page = min(int(results_per_page), 100)
     
-    paginator = Paginator(Recipe.objects.prefetch_related('uses_ingredient__ingredient__available_in_country__transport_method',
-                                                          'uses_ingredient__ingredient__available_in_country__location',
-                                                          'uses_ingredient__ingredient__available_in_sea__transport_method',
-                                                          'uses_ingredient__ingredient__available_in_sea__location',
-                                                          'uses_ingredient__unit').filter(external_url__isnull=False).order_by('name'), results_per_page)
-    
-    page = int(request.GET.get('page', 1))
-    try:
-        recipes_page = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        recipes_page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        recipes_page = paginator.page(paginator.num_pages)
-    
-    recipe_previews_html = ''
-    for recipe in recipes_page:
-        recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', {'recipe': recipe})
+    if request.method == 'POST':
+        page = int(request.POST.get('page', 1))
+        recipe_search_form = RecipeSearchForm(request.POST)
         
-    more_pages = recipes_page.has_next()
+        if recipe_search_form.is_valid():
+            recipe_queryset = recipe_search_form.search_queryset()
+        
+        else:
+            recipe_queryset = Recipe.objects.all()
+            
+    else:
+        page = 1
+        recipe_queryset = Recipe.objects.all()
     
-    return JsonResponse(data={'result': recipe_previews_html,
-                              'more_pages': more_pages}, safe=False)
+    
+    paginator = Paginator(recipe_queryset.prefetch_related('uses_ingredients__ingredient__can_use_units__unit',
+                                                          'uses_ingredients__ingredient__available_in_country__transport_method',
+                                                          'uses_ingredients__ingredient__available_in_country__location',
+                                                          'uses_ingredients__ingredient__available_in_sea__transport_method',
+                                                          'uses_ingredients__ingredient__available_in_sea__location',
+                                                          'uses_ingredients__unit__parent_unit').filter(external_url__isnull=False), results_per_page)
+    
+    try:
+        try:
+            recipes_page = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            recipes_page = paginator.page(1)
+        
+        recipe_previews_html = ''
+        for recipe in recipes_page:
+            recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', {'recipe': recipe})
+            
+    except EmptyPage:
+        recipe_previews_html = ''
+    
+    
+    return JsonResponse(data={'result': recipe_previews_html}, safe=False)
     
     
     
