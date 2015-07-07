@@ -17,15 +17,15 @@
 							style="height: 50px;">
 					</div>
 					<div class="col-xs-9 text-right">
-						<div style="font-size: 40px;line-height:40px;">26</div>
+						<div style="font-size: 40px;line-height:40px;">{{ scraped_recipes.eva }}</div>
 						<div>Recipes scraped from Eva</div>
 					</div>
 				</div>
 			</div>
 			<div class="panel-body">
-				<a href="#">
+				<a href="{% url 'admin_scrape_eva' %}">
 					<span style="font-size: 20px; margin-right: 5px;" class="glyphicon glyphicon-refresh pull-left"></span>
-					<span class="pull-left">Restart Scraper</span>
+					<span class="pull-left">Scrape Eva VZW website</span>
 				</a>
 			</div>
 		</div>

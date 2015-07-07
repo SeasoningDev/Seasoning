@@ -1,0 +1,64 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">Gescrapete recepten nakijken en toevoegen</h1>
+	</div>
+</div>
+
+<div class="panel panel-warning">
+	<div class="panel-heading">
+		Na te kijken recepten
+		<span class="pull-right">{{ unfinished_recipes.count}}</span>	
+	</div>
+   
+	<table class="table">
+		<tr>
+			<th style="white-space:nowrap;">Naam Recept</th>
+			<th style="white-space:nowrap;">Ontbrekende Informatie?</th>
+			<th style="white-space:nowrap;">Onbekende Ingredienten</th>
+		</tr>
+		{% for recipe in unfinished_recipes %}
+		<tr>
+			<td style="width: 100%;">
+				<a href="{% url 'admin_proofread_scraped_recipe' recipe.id %}">
+					{{ recipe.name }}
+				</a>
+			</td>
+			<td class="text-center" style="white-space:nowrap;">
+				{% if recipe.is_missing_info %}Jep{% else %}Nope{% endif %}
+			</td>
+			<td class="text-center" style="white-space:nowrap;">
+				{{ recipe.ao_unknown_ingredients }}/{{ recipe.ingredients.count }}
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+<div class="panel panel-success">
+	<div class="panel-heading">
+		Reeds toegevoegde recepten
+		<span class="pull-right">{{ finished_recipes.count}}</span>	
+	</div>
+   
+	<table class="table">
+		<tr>
+			<th>Naam Recept</th>
+			<th>Echte Recept</th>
+		</tr>
+		{% for recipe in finished_recipes %}
+		<tr>
+			<td>
+				{{ recipe.name }}
+			</td>
+			<td>
+				<a href="#">Bekijk</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

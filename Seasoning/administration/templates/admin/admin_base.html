@@ -7,6 +7,16 @@
 <link href="{% static "admin/css/admin_base.css" %}" rel="stylesheet">
 {% endblock %}
 
+{% block extra_script %}
+<script>
+$(function() {
+	$("li.expandable").click(function() {
+		$(this).toggleClass('expanded');
+	});
+});
+</script>
+{% endblock %}
+
 {% block body %}
 <div class="navbar navbar-default sidebar" role="navigation">
 	<div class="sidebar-nav navbar-collapse">
@@ -17,7 +27,7 @@
 				</h3>
 			</li>
 			<li>
-				<a class="active" href="index.html"> 
+				<a href="{% url 'admin_home' %}"> 
 					<span class="glyphicon glyphicon-dashboard pull-left"></span>
 					Dashboard
 				</a>
@@ -34,12 +44,27 @@
 					Scrapers
 				</a>
 			</li>
-			<li>
-				<a href="#">
-					<span class="glyphicon glyphicon-align-justify pull-left"></span>
+			<li class="expandable">
+				<a data-toggle="collapse" href="#bramstuff" aria-expanded="false" aria-controls="bramstuff">
+					<span class="glyphicon glyphicon-thumbs-down pull-left"></span>
 					Bram's Stuff
 					<span class="glyphicon glyphicon-chevron-left pull-right"></span>
+					<span class="glyphicon glyphicon-chevron-down pull-right"></span>
 				</a>
+				<ul id="bramstuff" class="nav navbar-nav second collapse" aria-labelledby="bramstuff">
+					<li>
+						<a href="">
+							<span class="glyphicon glyphicon-list pull-left"></span>
+							Ingredienten Lijst
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'admin_proofread_scraped_recipes' %}">
+							<span class="glyphicon glyphicon-search pull-left"></span>
+							Recepten Nakijken
+						</a>
+					</li>
+				</ul>
 			</li>
 			
 			<li></li>

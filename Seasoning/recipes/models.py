@@ -7,8 +7,9 @@ from django.db.models.fields import FloatField
 from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import SmartResize
-from ingredients.models import CanUseUnit
+from ingredients.models import CanUseUnit, Unit, Ingredient
 import math
+from django.core.exceptions import ValidationError
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -92,8 +93,15 @@ class Recipe(models.Model):
     def footprint_category(self, display=False):
         distribution_parameters = RecipeDistribution.objects.filter(course=self.course)
         
-        mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].value
-        std = list(filter(lambda x: x.parameter == RecipeDistribution.STANDARD_DEVIATION, distribution_parameters))[0].value
+        try:
+            mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].value
+        except IndexError:
+            mean = 0
+        
+        try:
+            std = list(filter(lambda x: x.parameter == RecipeDistribution.STANDARD_DEVIATION, distribution_parameters))[0].value
+        except IndexError:
+            std = 0
         
         for cat, cat_display in self.FOOTPRINT_CATEGORIES:
             probit_val = mean + (std * math.sqrt(2) * RecipeDistribution.IERF[self.FOOTPRINT_CATEGORY_CUTOFF_VALUES[cat]])
@@ -149,4 +157,92 @@ class RecipeDistribution(models.Model):
         unique_together = (('course', 'parameter'), )
     
     
+  
+  
+  
     
+class ScrapedRecipe(models.Model):
+    
+    name = models.CharField(_('Name'), max_length=100, default='',
+                            help_text=_('The names of the recipe.'),
+                            null=True, blank=True)
+    
+    external = models.BooleanField(default=False)
+    external_url = models.CharField(max_length=1000, null=True, blank=True)
+    external_site = models.ForeignKey(ExternalSite, related_name='incomplete_recipes',
+                                      null=True, blank=True)
+    
+    course = models.PositiveSmallIntegerField(_('Course'), choices=Recipe.COURSES,
+                                              help_text=_("The type of course this recipe will provide."),
+                                              null=True, blank=True)
+    course_proposal = models.CharField(max_length=50, null=True, blank=True)
+    cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine',
+                                help_text=_("The type of cuisine this recipe represents."), 
+                                null=True, blank=True)
+    cuisine_proposal = models.CharField(max_length=50, null=True, blank=True)
+    
+    description = models.TextField(_('Description'), 
+                                   default='',
+                                   validators=[MaxLengthValidator(300)],
+                                   help_text=_("A few sentences describing the recipe (Maximum 300 characters)."),
+                                   null=True, blank=True)
+    portions = models.PositiveIntegerField(_('Portions'), default=0,
+                                           help_text=_('The average amount of people that can be fed by this recipe '
+                                                       'using the given amounts of ingredients.'),
+                                           null=True, blank=True)
+    active_time = models.IntegerField(_('Active time'), default=0, 
+                                      help_text=_('The time needed to prepare this recipe where you are actually doing something.'),
+                                      null=True, blank=True)
+    passive_time = models.IntegerField(_('Passive time'), default=0, 
+                                       help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
+                                       null=True, blank=True)
+    
+    extra_info = models.TextField(_('Extra info'), default='',
+                                  help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'),
+                                  null=True, blank=True)
+    instructions = models.TextField(_('Instructions'), default='', 
+                                    help_text=_('Detailed instructions for preparing this recipe.'),
+                                    null=True, blank=True)
+    
+    ignore = models.BooleanField(default=False)
+    
+    image_url = models.URLField(max_length=400, null=True, blank=True)
+    
+    first_scrape_date = models.DateField(auto_now_add=True)
+    last_update_date = models.DateField(auto_now=True)
+    
+    recipe = models.ForeignKey(Recipe, null=True, blank=True)
+    
+    deleted = models.BooleanField(default=False)
+    
+    def is_missing_info(self):
+        return self.cuisine is None or self.course is None
+    
+    def ao_unknown_ingredients(self):
+        return self.ingredients.filter(ingredient=None).count()
+     
+
+    
+class ScrapedUsesIngredient(models.Model):
+    
+    recipe = models.ForeignKey(ScrapedRecipe, related_name='ingredients')
+    
+    ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
+    ingredient_proposal = models.CharField(max_length=100)
+    
+    group = models.CharField(max_length=100, blank=True)
+    amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)], null=True, blank=True)
+    amount_proposal = models.FloatField(default=0, validators=[MinValueValidator(0.00001)], null=True, blank=True)
+    
+    unit = models.ForeignKey(Unit, null=True, blank=True)
+    unit_proposal = models.CharField(max_length=50, null=True, blank=True)
+    
+    def clean(self):
+        if self.unit is not None and self.ingredient is not None:
+            if self.unit.parent_unit is None:
+                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit).exists():
+                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
+            
+            else:
+                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit.parent_unit).exists():
+                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))

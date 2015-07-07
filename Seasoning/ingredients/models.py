@@ -108,6 +108,9 @@ class Ingredient(models.Model):
     
     useable_units = models.ManyToManyField(Unit, through='CanUseUnit')
     
+    def __str__(self):
+        return self.name
+    
     def footprint(self):
         if self.type is self.BASIC:
             return self.base_footprint

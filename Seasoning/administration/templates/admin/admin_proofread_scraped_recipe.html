@@ -1,0 +1,122 @@
+{% extends "admin/admin_base.html" %}
+{% load addcss %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">Scraped Recipe nakijken en toevoegen</h1>
+	</div>
+</div>
+
+<form action="" method="POST" class="form-horizontal">
+	{% csrf_token %}
+  <fieldset>
+    <legend>{{ recipe.name }}</legend>
+    
+    <div class="form-group">
+      <label class="col-lg-2 control-label" style="white-space:nowrap">Original Recipe</label>
+      <div class="col-lg-10">
+      	<div class="form-control">
+        	<a href="{{ recipe.external_url }}">{{ recipe.external_url }}</a>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="form-group{% if recipe.name.errors %} has-error{% endif %}">
+      <label for="inputName" class="col-lg-2 control-label" style="white-space:nowrap">Name</label>
+      <div class="col-lg-10">
+        {{ recipe_form.name|addcss:"class,form-control,placeholder,Recipe Name" }}
+      </div>
+    </div>
+    <br>
+    <div class="form-group">
+      <label class="col-lg-2 control-label" style="white-space:nowrap">Scraped Course</label>
+      <div class="col-lg-10">
+      	<div class="form-control">
+        	<span class="text-warning">{{ recipe.course_proposal }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputCourse" class="col-lg-2 control-label" style="white-space:nowrap">Course</label>
+      <div class="col-lg-10">
+        {{ recipe_form.course|addcss:"class,form-control" }}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label" style="white-space:nowrap">Scraped Cuisine</label>
+      <div class="col-lg-10">
+      	<div class="form-control">
+        	<span class="text-warning">{{ recipe.cuisine_proposal }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputCuisine" class="col-lg-2 control-label" style="white-space:nowrap">Cuisine</label>
+      <div class="col-lg-10">
+        {{ recipe_form.cuisine|addcss:"class,form-control" }}
+      </div>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="inputPortions" class="col-lg-2 control-label" style="white-space:nowrap">Portions</label>
+      <div class="col-lg-10">
+        {{ recipe_form.portions|addcss:"class,form-control" }}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputPortions" class="col-lg-2 control-label">Image</label>
+      <div class="col-lg-10">
+        <img style="width: 400px;" src="{{ recipe.image_url }}">
+      </div>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="inputPortions" class="col-lg-2 control-label">Ingredienten</label>
+      <div class="col-lg-10">
+      	{{ uses_ingredients_formset.management_form }}
+      	
+    	{% for form in uses_ingredients_formset %}
+    	{{ form.id }}
+    	<div class="panel panel-{% if form.errors %}danger{% else %}default{% endif %}">
+    		<div class="panel-heading">
+    			Scraped: <b style="margin-left: 10px;">{{ form.instance.amount_proposal|default_if_none:"" }} {{ form.instance.unit_proposal|default_if_none:"" }} {{ form.instance.ingredient_proposal }}</b>
+    		</div>
+    		<div class="panel-body">
+    			{% for error in form.non_field_errors %}
+    			<p class="text-danger">
+    				{{ error }}
+    			</p>
+    			{% endfor %}
+    			<div class="form-inline">
+    		      		  	{{ form.amount|addcss:"class,form-control" }}
+			      		  	{{ form.unit|addcss:"class,form-control" }}
+			      		  	{{ form.ingredient|addcss:"class,form-control" }}
+			  </div>
+    		</div>
+    	</div>
+    	{% endfor %}
+      </div>
+    </div>
+    <div class="form-group">
+    	<label for="inputPassword" class="col-lg-2 control-label"></label>
+      <div class="col-lg-10">
+        <div class="checkbox">
+          <label>
+            {{ recipe_form.ignore }} Dit recept niet meer scrapen
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-5 col-lg-offset-2">
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+      </div>
+      <div class="col-lg-5">
+        <a href="{% url 'admin_proofread_scraped_recipes' %}" class="btn btn-primary btn-block">Back</a>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+{% endblock %}
