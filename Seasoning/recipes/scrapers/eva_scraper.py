@@ -5,11 +5,13 @@ from recipes.models import ExternalSite, Cuisine, ScrapedRecipe, Recipe,\
 import difflib
 from django.db import models
 from ingredients.models import Ingredient, Unit
+from urllib.error import HTTPError
 
 class RecipePage(object):
     
-    def __init__(self, url):
+    def __init__(self, url, thumb_url):
         self.url = 'http://www.evavzw.be{}'.format(url.replace('http://www.evavzw.be', ''))
+        self.thumb_url = thumb_url
         self._content = None
     
     @property
@@ -81,7 +83,12 @@ class RecipePage(object):
     
     @property
     def recipe_image(self):
-        return self.content.find('div', class_='image-wrapper').find('img')['src'].split('?')[0]
+        header_img_url = self.content.find('div', class_='image-wrapper').find('img')['src'].split('?')[0]
+        
+        if 'recept-header.jpg' in header_img_url:
+            return self.thumb_url
+        
+        return header_img_url
     
     @property
     def recipe_source(self):
@@ -94,7 +101,7 @@ def get_recipe_pages(page):
                           data={'allergy': '_none',
                                   'cooking_time': '_none',
                                   'difficulty': '_none',
-                                  'form_build_id': 'form-hJVvTkJVMyOLuh17gCFwHrjjX_6Q9RsQd2YZlt-ujWc',
+                                  'form_build_id': 'form-l6NAU4f0M7qBaROO7AlEI5-un17mswynGfBo7YlYJDE',
                                   'form_id': 'ingredient_search_form',
                                   'ingredient': '',
                                   'page': page,
@@ -102,6 +109,10 @@ def get_recipe_pages(page):
                                   'types': '_none'})
     
     recipes_html = None
+    
+    if resp.content == '':
+        raise HTTPError('Eva Scraper could not retrieve data from evavzw.be')
+    
     for result_dict in resp.json():
         if len(result_dict.get('data', '')) > 0:
             recipes_html = BeautifulSoup(result_dict['data'])
@@ -111,7 +122,8 @@ def get_recipe_pages(page):
         return None
     
     for recipe_div in recipes_html.find_all(class_='node-recipe'):
-        yield RecipePage(url=recipe_div.find('h3').find('a')['href'])
+        yield RecipePage(url=recipe_div.find('h3').find('a')['href'],
+                         thumb_url=recipe_div.find('img')['src'])
 
 
 

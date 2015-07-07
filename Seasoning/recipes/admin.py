@@ -3,6 +3,18 @@ Created on Jul 5, 2015
 
 @author: joep
 '''
-from recipes.models import Recipe
+from recipes.models import Recipe, Cuisine, UsesIngredient
+from administration.admin import seasoning_admin_site
+from django.contrib import admin
 
-# seasoning_admin_site.register(Recipe)
+class UsesIngredientInline(admin.TabularInline):
+    
+    model = UsesIngredient
+    
+class RecipeAdmin(admin.ModelAdmin):
+    
+    model = Recipe
+    inlines = [UsesIngredientInline]
+    
+seasoning_admin_site.register(Cuisine)
+seasoning_admin_site.register(Recipe, RecipeAdmin)

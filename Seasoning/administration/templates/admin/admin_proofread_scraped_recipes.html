@@ -10,7 +10,7 @@
 <div class="panel panel-warning">
 	<div class="panel-heading">
 		Na te kijken recepten
-		<span class="pull-right">{{ unfinished_recipes.count}}</span>	
+		<span class="pull-right">{{ unfinished_recipes_count}}</span>	
 	</div>
    
 	<table class="table">
@@ -18,6 +18,7 @@
 			<th style="white-space:nowrap;">Naam Recept</th>
 			<th style="white-space:nowrap;">Ontbrekende Informatie?</th>
 			<th style="white-space:nowrap;">Onbekende Ingredienten</th>
+			<th></th>
 		</tr>
 		{% for recipe in unfinished_recipes %}
 		<tr>
@@ -31,6 +32,11 @@
 			</td>
 			<td class="text-center" style="white-space:nowrap;">
 				{{ recipe.ao_unknown_ingredients }}/{{ recipe.ingredients.count }}
+			</td>
+			<td style="white-space:nowrap;">
+				{% if not recipe.is_missing_info %}
+				<a href="{% url 'admin_convert_scraped_recipe' recipe.id %}">Add as real recipe</a>
+				{% endif %}
 			</td>
 		</tr>
 		{% endfor %}
@@ -54,7 +60,7 @@
 				{{ recipe.name }}
 			</td>
 			<td>
-				<a href="#">Bekijk</a>
+				<a href="{% url 'admin:recipes_recipe_change' recipe.recipe.id %}">Bekijk</a>
 			</td>
 		</tr>
 		{% endfor %}

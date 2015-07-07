@@ -8,7 +8,7 @@
 	</div>
 </div>
 
-<form action="" method="POST" class="form-horizontal">
+<form action="" method="POST" class="form-horizontal" style="padding-bottom: 100px;">
 	{% csrf_token %}
   <fieldset>
     <legend>{{ recipe.name }}</legend>
@@ -78,9 +78,14 @@
       	
     	{% for form in uses_ingredients_formset %}
     	{{ form.id }}
-    	<div class="panel panel-{% if form.errors %}danger{% else %}default{% endif %}">
+    	<div class="panel panel-{% if form.errors %}danger{% elif form.instance.ingredient != None and  not form.instance.ingredient.accepted %}warning{% else %}default{% endif %}">
     		<div class="panel-heading">
     			Scraped: <b style="margin-left: 10px;">{{ form.instance.amount_proposal|default_if_none:"" }} {{ form.instance.unit_proposal|default_if_none:"" }} {{ form.instance.ingredient_proposal }}</b>
+    			{% if form.instance.ingredient != None and  not form.instance.ingredient.accepted %}
+    			<span class="pull-right">
+    				Ingredient is not yet accepted <a href="{% url 'admin:ingredients_ingredient_change' form.instance.ingredient.id %}" target="_blank">Click here to edit</a>
+    			</span>
+    			{% endif %}
     		</div>
     		<div class="panel-body">
     			{% for error in form.non_field_errors %}
@@ -119,4 +124,20 @@
   </fieldset>
 </form>
 
+<style>
+#make-objects-btns {
+	position: fixed;
+	bottom: 0;
+	right: calc(50% - 260px);
+}
+</style>
+<div id="make-objects-btns" class="row">
+ 	<div class="btn-group" role="group" aria-label="Default button group">
+        <a href=="{% url 'admin:recipes_cuisine_add' %}" target="_blank" type="button" class="btn btn-info">Add New Cuisine</a>
+        <a type="button" class="btn btn-info">Add New Unit</a>
+        <a type="button" class="btn btn-info">Add New Ingredient</a>
+        <a type="button" class="btn btn-info">Add New CanUseUnit</a>
+        
+    </div>
+</div>
 {% endblock %}

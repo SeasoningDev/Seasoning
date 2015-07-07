@@ -83,6 +83,12 @@ $(function() {
 </div>
 
 <div id="page-wrapper">
+	{% for message in messages %}
+	<div class="message alert alert-dismissible alert-danger">
+	  <button type="button" class="close" data-dismiss="alert">×</button>
+	  {{ message }}
+	</div>
+	{% endfor %}
 	{% block content %}
 	{% endblock %}
 </div>

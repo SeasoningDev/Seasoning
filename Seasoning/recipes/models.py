@@ -10,9 +10,13 @@ from imagekit.processors.resize import SmartResize
 from ingredients.models import CanUseUnit, Unit, Ingredient
 import math
 from django.core.exceptions import ValidationError
+from django.core.files.temp import NamedTemporaryFile
+import urllib
+from django.core.files.base import File
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
+    print(old_filename)
     filename = '%s.%s' % (str(time.time()), extension)
     return 'images/recipes/' + filename
 
@@ -75,8 +79,8 @@ class Recipe(models.Model):
                                    help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
     portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
-    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
-    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
+    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'), null=True, blank=True)
+    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'), null=True, blank=True)
     
     ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
@@ -87,6 +91,11 @@ class Recipe(models.Model):
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
     thumbnail = ImageSpecField([SmartResize(216, 216)], source='image', format='JPEG')
     small_image = ImageSpecField([SmartResize(310, 310)], source='image', format='JPEG')
+    
+    def __str__(self):
+        return self.name
+    
+    
     
     def footprint(self):
         total_footprint = 0
@@ -138,6 +147,18 @@ class UsesIngredient(models.Model):
     
     def footprint(self):
         return self.ingredient.footprint() * self.amount * self.unit_conversion_ratio()
+    
+    
+    
+    def clean(self):
+        if self.unit is not None and self.ingredient is not None:
+            if self.unit.parent_unit is None:
+                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit).exists():
+                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
+            
+            else:
+                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit.parent_unit).exists():
+                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
 
 
 
@@ -216,15 +237,57 @@ class ScrapedRecipe(models.Model):
     first_scrape_date = models.DateField(auto_now_add=True)
     last_update_date = models.DateField(auto_now=True)
     
-    recipe = models.ForeignKey(Recipe, null=True, blank=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.SET_NULL, null=True, blank=True)
     
     deleted = models.BooleanField(default=False)
     
+    _is_missing_info = None
     def is_missing_info(self):
-        return self.cuisine is None or self.course is None
+        if self._is_missing_info is None:
+            if self.course is None:
+                self._is_missing_info = True
+            elif len(list(filter(lambda ing: ing.ingredient is None or not ing.ingredient.accepted or ing.unit is None or ing.amount is None, self.ingredients.all()))) > 0:
+                self._is_missing_info = True
+            else:
+                self._is_missing_info = False
     
+        return self._is_missing_info
+    
+    _ao_unknown_ingredients = None
     def ao_unknown_ingredients(self):
-        return self.ingredients.filter(ingredient=None).count()
+        if self._ao_unknown_ingredients is None:
+            self._ao_unknown_ingredients = len(list(filter(lambda ing: ing.ingredient is None, self.ingredients.all())))
+            
+        return self._ao_unknown_ingredients
+    
+    
+    def convert_to_real_recipe(self):
+        if self.is_missing_info():
+            raise ValidationError('The recipe `{}` cannot be converted while it is missing required info'.format(self.name))
+        
+        for ingredient in self.ingredients.all():
+            try:
+                CanUseUnit.objects.get(ingredient=ingredient.ingredient, unit=ingredient.unit)
+            except CanUseUnit.DoesNotExist:
+                raise ValidationError('The ingredient `{}` can not use unit `{}`.'.format(ingredient.ingredient, ingredient.unit))
+            
+        img_temp = NamedTemporaryFile(delete=True, suffix='.jpg')
+        img_temp.write(urllib.request.urlopen(self.image_url).read())
+        img_temp.flush()
+        
+        real_recipe = Recipe(name=self.name,
+                             external=True, external_site=self.external_site, external_url=self.external_url,
+                             course=self.course, cuisine=self.cuisine, description=self.description, portions=self.portions,
+                             image=File(img_temp))
+        
+        real_recipe.save()
+        
+        for uses_ingredient in self.ingredients.all():
+            UsesIngredient(recipe=real_recipe, ingredient=uses_ingredient.ingredient, amount=uses_ingredient.amount,
+                           unit=uses_ingredient.unit, group=uses_ingredient.group).save()
+        
+        self.recipe = real_recipe
+        self.save()
      
 
     

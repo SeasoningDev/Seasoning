@@ -79,8 +79,12 @@ body {
 #page-wrapper {
     border-left: 1px solid #3e3f3a;
     margin: 0 0 0 250px;
-    padding: 0 30px;
+    padding: 1px 30px;
     position: inherit;
     min-height: 1000px;
     background-color: #fff;
+}
+
+#page-wrapper .message {
+	margin-top: 20px;
 }
