@@ -13,7 +13,7 @@ class RecipeSearchForm(forms.Form):
     
     search_query = forms.CharField(required=False)
     
-    SORT_CHOICES = (('_footprint', 'Voetafdruk (oplopend)'), ('-_footprint', 'Voetafdruk (aflopend)'),
+    SORT_CHOICES = (('cached_footprint', 'Voetafdruk (oplopend)'), ('-cached_footprint', 'Voetafdruk (aflopend)'),
                     ('name', 'Naam (A->Z)'), ('-name', 'Naam (Z->A)'))
     sort_by = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[0][0], required=False)
     
@@ -42,13 +42,13 @@ class RecipeSearchForm(forms.Form):
         recipe_filter = Q(name__icontains=self.cleaned_data['search_query'])
 
         if 'in_season' in self.cleaned_data and self.cleaned_data['in_season']:
-            recipe_filter &= Q(_in_season=True)
+            recipe_filter &= Q(cached_in_season=True)
         
         if 'no_endangered' in self.cleaned_data and self.cleaned_data['no_endangered']:
-            recipe_filter &= Q(_has_endangered_ingredients=False)
+            recipe_filter &= Q(cached_has_endangered_ingredients=False)
         
         if 'veganism' in self.cleaned_data and len(self.cleaned_data['veganism']) > 0:
-            recipe_filter &= Q(_veganism__in=self.cleaned_data['veganism'])
+            recipe_filter &= Q(cached_veganism__in=self.cleaned_data['veganism'])
         
         if 'cuisine' in self.cleaned_data and len(self.cleaned_data['cuisine']) > 0:
             recipe_filter &= Q(cuisine__in=self.cleaned_data['cuisine'])
@@ -79,7 +79,7 @@ class RecipeSearchForm(forms.Form):
         if 'sort_by' in self.cleaned_data and self.cleaned_data['sort_by']:
             qs = qs.order_by(self.cleaned_data['sort_by'])
             
-        return qs.filter(external_url__isnull=False)
+        return qs
     
     
 

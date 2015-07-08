@@ -1,15 +1,29 @@
-<a class="recipe-preview-wrapper" href="{{ recipe.external_url }}" target="_blank">
+{% load staticfiles %}
+
+<a class="recipe-preview-wrapper" href="{% if recipe.external %}{{ recipe.external_url }}{% else %}#{% endif %}" target="_blank">
+	
+	{% if recipe.cached_in_season %}
+	<img class="corner-ribbon" src="{% static "recipes/img/corner-ribbon-inseason.png" %}">
+	{% elif recipe.cached_has_endangered_ingredients %}
+	<img class="corner-ribbon" src="{% static "recipes/img/corner-ribbon-endangered.png" %}">
+	{% endif %}
  
 	<span class="recipe-preview" title="{{ recipe.name }}"
-		  style="background-image: url('https://seasoning.be/media/{{ recipe.image }}')">
+		  style="background-image: url('/media/{{ recipe.image_thumbnail }}')">
 
+		{% if recipe.external %}
+		<span class="recipe-preview-source">
+			Recept van <i>{{ recipe.external_site.name }}</i>
+		</span>
+		{% endif %}
+		
 		<span class="recipe-preview-title">
 			{{ recipe.name }}
 		</span>
 		
 		<span class="recipe-preview-fp-cat">
 			<span class="pull-left">Voetafdruk</span>
-			<span class="pull-right">{{ recipe.normalized_footprint|floatformat:2 }} kgCO<sub>2</sub></span>
+			<span class="pull-right">{{ recipe.cached_footprint|floatformat:2 }} kgCO<sub>2</sub></span>
 		</span>
 	</span>
 </a>

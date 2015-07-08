@@ -3,6 +3,7 @@ import time
 from django.db import models
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import ResizeToFill, SmartResize
+import datetime
 
 def get_image_filename(instance, old_filename):
     """
@@ -113,9 +114,12 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
     
-    def footprint(self):
+    
+    
+    ACTIVE, PRESERVING, INACTIVE = 0, 1, 2
+    def get_available_ins_sorted_by_footprint(self, date=None):
         if self.type is self.BASIC:
-            return self.base_footprint
+            return []
         
         elif self.type is self.SEASONAL:
             availables = self.available_in_country.all()
@@ -123,16 +127,45 @@ class Ingredient(models.Model):
         elif self.type is self.SEASONAL_SEA:
             availables = self.available_in_sea.all()
         
-            
-        min_extra_footprint = None
-        if len(availables) <= 0:
-            raise Exception(self.get_type_display())
+        availables_fp = []
         for available in availables:
-            if min_extra_footprint is None or available.total_extra_footprint() < min_extra_footprint:
-                min_extra_footprint = available.total_extra_footprint()
+            availables_fp.append({'available_in_object': available, 
+                                  'state': self.ACTIVE, 
+                                  'current_footprint': available.total_extra_footprint()})
+            
+            if not available.is_active(date):
+                availables_fp[-1]['current_footprint'] += available.days_since_last_active(date) * self.preservation_footprint
+                
+                if self.preservability < available.days_since_last_active(date):
+                    availables_fp[-1]['state'] = self.INACTIVE
+                
+                else:
+                    availables_fp[-1]['state'] = self.PRESERVING
+                    
+        return sorted(availables_fp, key=lambda avail: avail['current_footprint'])
+            
+    def is_in_season(self, date=None):
+        try:
+            return self.get_available_ins_sorted_by_footprint(date)[0]['state'] is not self.INACTIVE
         
-        return self.base_footprint + min_extra_footprint
+        except IndexError:
+            return True
+            
+    def footprint(self, date=None):
+        if self.type is self.BASIC:
+            return self.base_footprint
         
+        for avail in self.get_available_ins_sorted_by_footprint(date):
+            if avail['state'] is not self.INACTIVE:
+                return self.base_footprint + avail['current_footprint']
+    
+    
+    
+    def is_endangered(self, date=None):
+        if self.type is not self.SEASONAL_SEA:
+            return False
+        
+        return self.get_available_ins_sorted_by_footprint(date)[0]['available_in_object'].endangered 
         
             
 
@@ -193,7 +226,7 @@ class TransportMethod(models.Model):
     """
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=20)
-    emission_per_km = models.FloatField()
+    emissions_per_km = models.FloatField()
     
     
     
@@ -224,11 +257,69 @@ class AvailableIn(models.Model):
     date_from = models.DateField()
     date_until = models.DateField()
     
+    
+    
+    def innie(self):
+        # 2000      from          until  2001
+        # |---------[-------------]------|
+        return self.date_from < self.date_until
+    
+    def outie(self):
+        # 2000      until         from   2001
+        # |---------]-------------[------|
+        return self.date_from > self.date_until
+    
+    def is_active(self, date=None):
+        """
+        Returns if this available in is currently active. This means the
+        ingredient can be supplied using these parameters today.
+        
+        """
+        if date is None:
+            date = datetime.date.today().replace(year=self.BASE_YEAR)
+        else:
+            date = date.replace(year=self.BASE_YEAR)
+        
+        if self.innie():
+            if date < self.date_from or self.date_until < date:
+                return False
+            return True
+        else:
+            if self.date_until < date and date < self.date_from:
+                return False
+            return True
+    
+    def days_since_last_active(self, date=None):
+        if date is None:
+            date = datetime.date.today().replace(year=self.BASE_YEAR)
+        else:
+            date = date.replace(year=self.BASE_YEAR)
+        
+        if self.is_active(date):
+            return 0
+        
+        if date < self.date_until:
+            date = date.replace(year=self.BASE_YEAR + 1)
+        
+        return (date - self.date_until).days
+    
+        
+    
     def transportation_footprint(self):
-        return self.location.distance * self.transport_method.emission_per_km
+        return self.location.distance * self.transport_method.emissions_per_km
     
     def total_extra_footprint(self):
         return self.transportation_footprint() + self.extra_production_footprint
+    
+    
+    
+    def save(self, force_insert=False, force_update=False, using=None, 
+        update_fields=None):
+        
+        self.date_from = self.date_from.replace(year=self.BASE_YEAR)
+        self.date_until = self.date_until.replace(year=self.BASE_YEAR)
+        
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
     
 class AvailableInCountry(AvailableIn):
     """

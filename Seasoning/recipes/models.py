@@ -90,9 +90,8 @@ class Recipe(models.Model):
     
     image = ProcessedImageField(upload_to=get_image_filename,
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
-    thumbnail = ImageSpecField([SmartResize(216, 216)], source='image', format='JPEG')
-    small_image = ImageSpecField([SmartResize(310, 310)], source='image', format='JPEG')
-    
+    image_thumbnail = ImageSpecField([SmartResize(248, 48)], source='image', format='JPEG')
+
     
     
     time_added = models.DateTimeField(auto_now_add=True)
@@ -103,10 +102,10 @@ class Recipe(models.Model):
     Cached attributes, be very carefull when using these, might be out of sync
     
     """
-    _veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, null=True, blank=True)
-    _footprint = models.FloatField(null=True, blank=True)
-    _in_season = models.BooleanField(default=False)
-    _has_endangered_ingredients = models.BooleanField(default=False)
+    cached_veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, null=True, blank=True)
+    cached_footprint = models.FloatField(null=True, blank=True)
+    cached_in_season = models.BooleanField(default=False)
+    cached_has_endangered_ingredients = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name
@@ -116,17 +115,34 @@ class Recipe(models.Model):
     def veganism(self):
         return min(ingredient.veganism for ingredient in self.ingredients.all())
     
-    
-    
-    def total_footprint(self):
+    def total_footprint(self, date=None):
         total_footprint = 0
         for uses_ingredient in self.uses_ingredients.all():
-            total_footprint += uses_ingredient.footprint()
+            total_footprint += uses_ingredient.footprint(date)
             
         return total_footprint
     
-    def normalized_footprint(self):
-        return self.total_footprint() / self.portions
+    def normalized_footprint(self, date=None):
+        return self.total_footprint(date) / self.portions
+    
+    def in_season(self, date=None):
+        return any(ingredient.type is not Ingredient.BASIC for ingredient in self.ingredients.all()) and \
+            all(ingredient.is_in_season(date) for ingredient in self.ingredients.all())
+    
+    def has_endangered_ingredients(self, date=None):
+        return any(ingredient.is_endangered(date) for ingredient in self.ingredients.all())
+    
+    def update_cached_attributes(self):
+        self.uses_ingredients.select_related('ingredient__can_use_units__unit',
+                                                         'unit__parent_unit').all()
+        self.cached_veganism = self.veganism()
+        self.cached_footprint = self.normalized_footprint()
+        self.cached_in_season = self.in_season()
+        self.cached_has_endangered_ingredients = self.has_endangered_ingredients()
+        
+        self.save()
+        
+        
     
     def footprint_category(self, display=False):
         distribution_parameters = RecipeDistribution.objects.filter(course=self.course)
@@ -144,25 +160,13 @@ class Recipe(models.Model):
         for cat, cat_display in self.FOOTPRINT_CATEGORIES:
             probit_val = mean + (std * math.sqrt(2) * RecipeDistribution.IERF[self.FOOTPRINT_CATEGORY_CUTOFF_VALUES[cat]])
             
-            if self.normalized_footprint() <= probit_val:
+            if self.cached_footprint <= probit_val:
                 if display:
                     return cat_display
                 return cat
     
     def get_footprint_category_display(self):
         return self.footprint_category(display=True)
-    
-    
-    
-    def update_cached_attributes(self):
-        self.uses_ingredients.select_related('ingredient__can_use_units__unit',
-                                                         'unit__parent_unit').all()
-        self._veganism = self.veganism()
-        self._footprint = self.normalized_footprint()
-        self._in_season = False
-        self._has_endangered_ingredients = False
-        
-        self.save()
         
     
 
@@ -181,20 +185,20 @@ class UsesIngredient(models.Model):
             
         return next(cuu for cuu in self.ingredient.can_use_units.all() if cuu.unit == self.unit).conversion_ratio
     
-    def footprint(self):
-        return self.ingredient.footprint() * self.amount * self.unit_conversion_ratio()
+    def footprint(self, date=None):
+        return self.ingredient.footprint(date) * self.amount * self.unit_conversion_ratio()
     
     
     
     def clean(self):
         if self.unit is not None and self.ingredient is not None:
             if self.unit.parent_unit is None:
-                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit).exists():
-                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
-            
+                unit = self.unit.parent_unit
             else:
-                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit.parent_unit).exists():
-                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
+                unit = self.unit
+            
+            if not unit in [cuu.unit for cuu in self.ingredient.can_use_units.all()]:
+                raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
 
 
 

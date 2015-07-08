@@ -569,9 +569,6 @@
 }
 
 #no-results {
-	position: absolute;
-	left: 0;
-	right: 0;
 	padding: 100px 0;
 	display: none;
 }
