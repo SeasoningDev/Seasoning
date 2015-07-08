@@ -8,8 +8,8 @@
 		</span>
 		
 		<span class="recipe-preview-fp-cat">
-			<span class="pull-left">Duurzaamheidsklasse:</span>
-			<span class="pull-right">{{ recipe.get_footprint_category_display }}</span>
+			<span class="pull-left">Ecologische Voetafdruk</span>
+			<span class="pull-right">{{ recipe.normalized_footprint|floatformat:2 }} gCO<sub>2</sub></span>
 		</span>
 	</span>
 </a>

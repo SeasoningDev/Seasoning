@@ -73,11 +73,15 @@ def get_recipes(request, results_per_page=10):
         for recipe in recipes_page:
             recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', {'recipe': recipe})
             
+        has_next = recipes_page.has_next()
+            
     except EmptyPage:
         recipe_previews_html = ''
+        has_next = False
     
     
     return JsonResponse(data={'result': recipe_previews_html,
+                              'has_next': has_next, 
                               'result_count': paginator.count}, safe=False)
     
     

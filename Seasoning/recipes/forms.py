@@ -21,7 +21,7 @@ class RecipeSearchForm(forms.Form):
     Advanced Search Options
     
     """
-    inseason = forms.BooleanField(initial=False, required=False)
+    in_season = forms.BooleanField(initial=False, required=False)
     no_endangered = forms.BooleanField(initial=False, required=False)
     
     veganism = forms.MultipleChoiceField(choices=Ingredient.VEGANISMS, widget=CheckboxSelectMultiple,
@@ -40,18 +40,15 @@ class RecipeSearchForm(forms.Form):
             return None
         
         recipe_filter = Q(name__icontains=self.cleaned_data['search_query'])
+
+        if 'in_season' in self.cleaned_data and self.cleaned_data['in_season']:
+            recipe_filter &= Q(_in_season=True)
         
-        if 'in_season' in self.cleaned_data:
-#             recipe_filter &= Q(in_season=True)
-            pass
-        
-        if 'no_endangered' in self.cleaned_data:
-#             recipe_filter &= Q(has_endangered_ingredients=False)
-            pass
+        if 'no_endangered' in self.cleaned_data and self.cleaned_data['no_endangered']:
+            recipe_filter &= Q(_has_endangered_ingredients=False)
         
         if 'veganism' in self.cleaned_data and len(self.cleaned_data['veganism']) > 0:
-#             recipe_filter &= Q(veganism__in=self.cleaned_data['veganism'])
-            pass
+            recipe_filter &= Q(_veganism__in=self.cleaned_data['veganism'])
         
         if 'cuisine' in self.cleaned_data and len(self.cleaned_data['cuisine']) > 0:
             recipe_filter &= Q(cuisine__in=self.cleaned_data['cuisine'])

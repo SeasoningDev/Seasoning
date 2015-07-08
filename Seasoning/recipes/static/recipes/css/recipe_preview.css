@@ -44,7 +44,7 @@
 	
 	text-align: left;
 	font-size: 25px;
-	overflow: hidden;
+	overflow:hidden; 
 }
 
 .recipe-preview .recipe-preview-fp-cat {

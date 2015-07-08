@@ -42,6 +42,7 @@ var no_more_pages = false;
 
 function reset_paging() {
 	$("#next-recipes-page").val(1);
+	$("#end-buttons").fadeOut(200);
 }
 function next_page() {
 	return parseInt($("#next-recipes-page").val());
@@ -87,11 +88,11 @@ function ajax_search_recipes() {
 		
 		if (data.result) {
 			no_more_pages = false;
-			$("#no-result").fadeOut(200);
+			$("#no-results").fadeOut(200);
 			append_search_results(data);
 		} else {
 			no_more_pages = true;
-			$("#no-result").fadeIn(200)
+			$("#no-results").fadeIn(200);
 		}
 		
 		show_result_count(data.result_count);
@@ -120,15 +121,20 @@ function ajax_load_next_page() {
 			if (data.result) {
 				no_more_pages = false;
 				append_search_results(data);
-			} else {
-				no_more_pages = true;
 			}
-			console.log(np)
-			if (np == 1)
+			if (!data.has_next) {
+				no_more_pages = true;
+				$("#end-buttons").fadeIn(200);
+			}
+			
+			if (np == 1) {
 				show_result_count(data.result_count);
+				if (!data.result)
+					$("#no-results").fadeIn(200);
+			}
+			
 			
 			inc_paging();
-			console.log('inc');
 			loading_next_page = false;
 			
 		}).always(function() {
@@ -138,6 +144,7 @@ function ajax_load_next_page() {
 }
 
 $(function() {
+	reset_paging();
 	ajax_load_next_page();
 	
 	/**
@@ -252,7 +259,7 @@ $(function() {
 	});
 
 	function triggerFilter($bool) {
-		var elementsToTrigger = $([$('.cd-filter-trigger'), $('.cd-filter'), $('.cd-tab-filter'), $('#browse-recipes-wrapper'), $(".advanced-search-spacer")]);
+		var elementsToTrigger = $([$('.cd-filter-trigger'), $('.cd-filter'), $('.cd-tab-filter'), $('#browse-recipes-wrapper'), $(".advanced-search-spacer"), $("#overlay-wrapper")]);
 		elementsToTrigger.each(function(){
 			$(this).toggleClass('filter-is-visible', $bool);
 		});

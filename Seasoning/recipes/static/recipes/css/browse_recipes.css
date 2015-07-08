@@ -527,6 +527,7 @@
 
 #overlay-wrapper {
 	position: relative;
+	margin-bottom: 100px;
 }
 
 #dark-overlay {
@@ -536,7 +537,7 @@
 	bottom: 0;
 	left: 0;
 	
-	background-color: rgba(0, 0, 0, 0.3);
+	background-color: rgba(255, 255, 255, 0.5);
 	
 	display: none;
 	z-index: 1001;
@@ -552,10 +553,16 @@
 	opacity: 0.8;
 }
 .search-results-loader.bottom {
+	position: absolute;
+	left: 0;
+	right: 0;
 	display: none;
 }
 
 #no-results {
+	position: absolute;
+	left: 0;
+	right: 0;
 	padding: 100px 0;
 	display: none;
 }
@@ -576,5 +583,9 @@
 
 
 #end-buttons {
+	position: absolute;
+	left: 0;
+	right: 0;
 	margin: 20px auto;
+	display: none;
 }

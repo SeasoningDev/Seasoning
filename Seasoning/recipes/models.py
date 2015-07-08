@@ -103,10 +103,19 @@ class Recipe(models.Model):
     Cached attributes, be very carefull when using these, might be out of sync
     
     """
+    _veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS)
     _footprint = models.FloatField()
+    _footprint_category = models.PositiveSmallIntegerField(choices=FOOTPRINT_CATEGORIES)
+    _in_season = models.BooleanField(default=False)
+    _has_endangered_ingredients = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name
+    
+    
+    
+    def veganism(self):
+        return min(ingredient.veganism for ingredient in self.ingredients.all())
     
     
     
@@ -149,7 +158,11 @@ class Recipe(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.uses_ingredients.select_related('ingredient__can_use_units__unit',
                                                          'unit__parent_unit').all()
+        self._veganism = self.veganism()
         self._footprint = self.normalized_footprint()
+        self._footprint_catergory = self.footprint_category()
+        self._in_season = False
+        self._has_endangered_ingredients = False
         
         return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         
@@ -190,7 +203,7 @@ class UsesIngredient(models.Model):
 class RecipeDistribution(models.Model):
     
     MEAN, STANDARD_DEVIATION = 0, 1
-    DISTRIBUTION_PARAMETERS = ((MEAN, _('Gemiddelde')), (STANDARD_DEVIATION, _('Standaardafwijking')))
+    DISTRIBUTION_PARAMETERS = ((MEAN, _('Mean')), (STANDARD_DEVIATION, _('Standard Deviation')))
     
     # Inverse Error function values
     IERF = {0.1: -0.90619380,
@@ -202,11 +215,15 @@ class RecipeDistribution(models.Model):
     course = models.PositiveSmallIntegerField(choices=Recipe.COURSES)
     parameter = models.PositiveSmallIntegerField(choices=DISTRIBUTION_PARAMETERS)
     
-    value = models.FloatField()
+    parameter_value = models.FloatField()
     
     class Meta:
         unique_together = (('course', 'parameter'), )
+        
     
+    
+    def __str__(self):
+        return '{} of `{}` courses is {:.2f}'.format(self.get_parameter_display(), self.get_course_display(), self.parameter_value)
     
   
   

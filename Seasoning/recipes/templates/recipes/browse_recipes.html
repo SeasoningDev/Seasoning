@@ -14,8 +14,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 <script>
-	var get_recipes_url = "{% url 'get_recipes_max' 20 %}";
+	{% with page_size=20 %}
+	var get_recipes_url = "{% url 'get_recipes_max' page_size %}";
+	var recipes_page_size = {{ page_size }};
 	var ingredient_names_url = "{% url 'get_ingredient_name_list' %}";
+	{% endwith %}
 </script>
 <script type="text/javascript" src="{% static "recipes/js/browse_recipes.js" %}"></script>
 {% endblock %}
@@ -67,9 +70,9 @@
 				<h4>Speciale Eigenschappen</h4>
 				<ul id="special-inputs" class="cd-filter-content cd-filters list">
 					<li>
-						<input id="{{ recipe_search_form.inseason.auto_id }}" name="{{ recipe_search_form.inseason.name }}" 
+						<input id="{{ recipe_search_form.in_season.auto_id }}" name="{{ recipe_search_form.in_season.name }}" 
 							   class="filter" type="checkbox" data-filter=".spec-check-1">
-						<label class="checkbox-label" for="{{ recipe_search_form.inseason.auto_id }}">Enkel In Seizoen</label>
+						<label class="checkbox-label" for="{{ recipe_search_form.in_season.auto_id }}">Enkel In Seizoen</label>
 					</li>
 					<li>
 						<input id="{{ recipe_search_form.no_endangered.auto_id }}" name="{{ recipe_search_form.no_endangered.name }}" 
@@ -179,11 +182,11 @@
 		<div id="no-results" class="text-success text-center">
 			Er werden geen recepten gevonden die aan jou zoekcriteria voldoen...
 		</div>
-	</div>
 		
-	<div id="end-buttons" class="container text-center">
-		<div class="col-xs-6 col-sm-4 col-sm-offset-4">
-			<a class="btn btn-success btn-block" href="#">Terug naar boven</a>
+		<div id="end-buttons" class="text-center row">
+			<div class="col-xs-6 col-sm-4 col-sm-offset-4">
+				<a class="btn btn-success btn-block" href="#">Terug naar boven</a>
+			</div>
 		</div>
 	</div>
 	

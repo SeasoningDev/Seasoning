@@ -10,6 +10,23 @@ from ingredients.models import Ingredient, Unit, CanUseUnit
 
 class RecipeModelTest(TestCase):
     
+    def test_veganism(self):
+        recipe = G(Recipe)
+        ing = G(Ingredient, veganism=Ingredient.VEGAN)
+        G(UsesIngredient, recipe=recipe, ingredient=ing)
+        
+        self.assertEqual(recipe.veganism(), Ingredient.VEGAN)
+        
+        ing = G(Ingredient, veganism=Ingredient.VEGETARIAN)
+        G(UsesIngredient, recipe=recipe, ingredient=ing)
+        
+        self.assertEqual(recipe.veganism(), Ingredient.VEGETARIAN)
+        
+        ing = G(Ingredient, veganism=Ingredient.NON_VEGETARIAN)
+        G(UsesIngredient, recipe=recipe, ingredient=ing)
+        
+        self.assertEqual(recipe.veganism(), Ingredient.NON_VEGETARIAN)
+    
     def test_footprint(self):
         recipe = G(Recipe, portions=2)
         
@@ -21,6 +38,9 @@ class RecipeModelTest(TestCase):
         
         self.assertEqual(recipe.total_footprint(), 1)
         self.assertEqual(recipe.normalized_footprint(), 0.5)
+    
+    def test_footprint_category(self):
+        
 
 
 
