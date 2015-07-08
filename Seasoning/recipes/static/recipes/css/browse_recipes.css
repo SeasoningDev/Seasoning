@@ -34,6 +34,16 @@
     z-index: 1005;
 }
 
+#advanced-search-bar.affix {
+	position: fixed;
+	top: 60px;
+	left: 0;
+	right: 0;
+}
+#advanced-search-bar-spacer {
+	height: 50px;
+	display: none;
+}
 
 
 #advanced-search-bar #advanced-search-btn {
@@ -59,6 +69,37 @@
     overflow: hidden;
     white-space: nowrap;
     outline: none;
+}
+#advanced-search-bar #advanced-search-close-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    transform: translateX(-100%);
+    
+    width: 20%;
+    height: 50px;
+    padding: 0 6px 0 60px;
+    
+    background: #629b31 url("/static/img/icons/cd-icon-filter-w.png") no-repeat scroll left center;
+    background-position: 36px center;
+    
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 50px;
+    
+    overflow: hidden;
+    text-indent: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    outline: none;
+    
+    transition: transform 0.3s ease 0s, box-shadow 0.3s ease 0s;
+}
+#advanced-search-bar #advanced-search-close-btn.filter-is-visible {
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.2);
+    transform: translateX(0px);
 }
 
 #advanced-search-bar #result-count {
@@ -184,52 +225,25 @@
 .cd-filter {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 210px;
     width: 280px;
-    z-index: 1200;
+    z-index: 100;
     transform: translateX(-100%);
     
-    padding: 70px 30px 10px;
+    padding: 1px 30px 10px;
     
     background: #ffffff none repeat scroll 0 0;
     box-shadow: 4px 4px 20px transparent;
     
     transition: transform 0.3s ease 0s, box-shadow 0.3s ease 0s;
 }
-
-.cd-filter::before {
-    background-color: #629b31;
-    content: "";
-    height: 50px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 2;
+.cd-filter.affix {
+	position: fixed;
 }
+
 
 .cd-filter form {
     padding: 70px 20px;
-}
-.cd-filter .cd-close {
-    background: transparent url("/static/img/icons/cd-icon-filter-w.png") no-repeat scroll left center;
-    color: white;
-    font-size: 1.3rem;
-    font-weight: 700;
-    height: 50px;
-    left: 30px;
-    line-height: 50px;
-    overflow: hidden;
-    padding-left: 24px;
-    position: absolute;
-    text-indent: 0;
-    text-transform: uppercase;
-    top: 0;
-    transition: color 0.3s ease 0s;
-    white-space: nowrap;
-    width: auto;
-    z-index: 3;
-    outline: none;
 }
 .cd-filter.filter-is-visible {
     box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.2);
@@ -560,12 +574,6 @@
 	right: 0;
 	padding: 100px 0;
 	display: none;
-}
-
-.advanced-search-spacer {
-	float: left;
-	width: 0;
-	transition: width .3s ease;
 }
 
 #browse-recipes-wrapper {

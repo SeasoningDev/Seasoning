@@ -241,7 +241,7 @@ $(function() {
 	}
 	
 	// Close advanced search
-	$('.cd-filter .cd-close').on('click', function() {
+	$('#advanced-search-close-btn').on('click', function() {
 		$('#id_advanced_search').prop('checked', false);
 		
 		// Save the users preference
@@ -254,7 +254,7 @@ $(function() {
 	});
 
 	function triggerFilter($bool) {
-		var elementsToTrigger = $([$('.cd-filter-trigger'), $('.cd-filter'), $('.cd-tab-filter'), $('#browse-recipes-wrapper'), $(".advanced-search-spacer"), $("#overlay-wrapper")]);
+		var elementsToTrigger = $([$('.cd-filter-trigger'), $('.cd-filter'), $('.cd-tab-filter'), $('#browse-recipes-wrapper'), $("#advanced-search-close-btn"), $("#overlay-wrapper")]);
 		elementsToTrigger.each(function(){
 			$(this).toggleClass('filter-is-visible', $bool);
 		});
@@ -351,4 +351,81 @@ $(function() {
 	});
 	
 	$(".boolean-inputs input").change(ajax_search_recipes);
+	
+	
+	
+	
+	// AFFIX of advanced search bar
+	function offset_func_asb(el) {
+		if (el.hasClass('affix-top'))
+			return 100
+			
+		return 160;
+	}
+	var asb = $("#advanced-search-bar")
+	asb.affix({
+		offset: {
+			top: offset_func_asb,
+		}
+	})
+	$("#advanced-search-bar").on('affix.bs.affix', function() {
+		$("#advanced-search-bar-spacer").show();
+	});
+	$("#advanced-search-bar").on('affix-top.bs.affix', function() {
+		$("#advanced-search-bar-spacer").hide();
+	});
+	
+	var filters = $('.cd-filter');
+	var scrolltop;
+	var dir = 0;
+	$(window).scroll(function() {
+		if (!scrolltop)
+			scrolltop = $(window).scrollTop();
+		
+		var prev_scrolltop = scrolltop;
+		scrolltop = $(window).scrollTop();
+		
+		if (scrolltop > prev_scrolltop) {
+			// Scrolling down
+			console.log('down');
+			
+			if (dir != 1) {
+				// We weren't scrolling down before
+				dir = 1;
+				
+				filters.css('top', filters.offset().top + 'px');
+				filters.css('position', 'absolute');
+			}
+			
+			if (filters.css('position') != 'fixed' && (filters.offset().top - scrolltop) < 110) {
+				if (scrolltop + $(window).height() > filters.offset().top + filters.outerHeight()) {
+					filters.css('position', 'fixed');
+					filters.css('top', Math.min(110, ($(window).height() - filters.outerHeight())) + 'px');
+				}
+			}
+			
+		} else if (scrolltop < prev_scrolltop) {
+			// Scrolling up
+			console.log('up');
+			
+			if (dir != 2) {
+				// We werent scrolling up before
+				dir = 2;
+				
+				filters.css('top', filters.offset().top + 'px');
+				filters.css('position', 'absolute');
+			}
+			
+			if (filters.css('position') != 'fixed' && filters.offset().top > 212) {
+				if (scrolltop + 110 <= filters.offset().top) {
+					console.log('ok');
+					filters.css('position', 'fixed');
+					filters.css('top', '110px');
+				}
+			} else if (filters.offset().top <= 210) {
+				filters.css('top', '210px');
+				filters.css('position', 'absolute');
+			}
+		}
+	})
 })
