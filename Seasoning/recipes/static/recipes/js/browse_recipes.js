@@ -99,8 +99,6 @@ function ajax_search_recipes() {
 		
 		inc_paging();
 		loading_next_page = false;
-		
-		$("html, body").animate({ scrollTop: "0px" });
 			
 	}).always(function() {
 		$("#dark-overlay").fadeOut(200);

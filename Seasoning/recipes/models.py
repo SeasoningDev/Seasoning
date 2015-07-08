@@ -103,9 +103,8 @@ class Recipe(models.Model):
     Cached attributes, be very carefull when using these, might be out of sync
     
     """
-    _veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS)
-    _footprint = models.FloatField()
-    _footprint_category = models.PositiveSmallIntegerField(choices=FOOTPRINT_CATEGORIES)
+    _veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, null=True, blank=True)
+    _footprint = models.FloatField(null=True, blank=True)
     _in_season = models.BooleanField(default=False)
     _has_endangered_ingredients = models.BooleanField(default=False)
     
@@ -155,16 +154,15 @@ class Recipe(models.Model):
     
     
     
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def update_cached_attributes(self):
         self.uses_ingredients.select_related('ingredient__can_use_units__unit',
                                                          'unit__parent_unit').all()
         self._veganism = self.veganism()
         self._footprint = self.normalized_footprint()
-        self._footprint_catergory = self.footprint_category()
         self._in_season = False
         self._has_endangered_ingredients = False
         
-        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        self.save()
         
     
 
@@ -326,6 +324,8 @@ class ScrapedRecipe(models.Model):
         for uses_ingredient in self.ingredients.all():
             UsesIngredient(recipe=real_recipe, ingredient=uses_ingredient.ingredient, amount=uses_ingredient.amount,
                            unit=uses_ingredient.unit, group=uses_ingredient.group).save()
+        
+        real_recipe.update_cached_attributes()
         
         self.recipe = real_recipe
         self.save()

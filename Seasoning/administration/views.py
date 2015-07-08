@@ -21,9 +21,8 @@ def admin_home(request):
     
 @staff_member_required
 def admin_recipes_update_cached_properties(request):
-#     for recipe in Recipe.objects.all():
-#         recipe.save()
-        
+    call_command('update_cached_attributes')
+    
     call_command('calculate_recipe_distributions')
     
     return redirect('admin_home')
