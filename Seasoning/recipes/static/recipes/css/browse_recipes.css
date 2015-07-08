@@ -172,11 +172,6 @@
     width: 320px;
 }
 
-#sort-by-wrapper a.selected {
-    background: #629b31 none repeat scroll 0 0;
-    color: #ffffff;
-}
-
 
 #sort-by-wrapper select {
 	display: none;
@@ -577,6 +572,10 @@
 	padding-top: 15px;
 	text-align: center;
 	position: relative;
+}
+#browse-recipes-wrapper.filter-is-visible {
+	width: 80%;
+	margin-left: 20%;
 }
 
 

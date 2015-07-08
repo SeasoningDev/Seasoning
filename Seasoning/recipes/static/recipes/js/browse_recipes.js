@@ -184,32 +184,29 @@ $(function() {
 	var filter_tab_placeholder_text = filter_tab_placeholder.text();
 	
 	$('#sort-by-wrapper  li').on('click', function(event){
-		//detect which tab filter item was selected
-		var selected_filter = $(event.target).data('type');
-			
 		//check if user has clicked the placeholder item
 		if( $(event.target).is(filter_tab_placeholder) ) {
 			(filter_tab_placeholder_default_value == filter_tab_placeholder.text()) ? filter_tab_placeholder.text(filter_tab_placeholder_text) : filter_tab_placeholder.text(filter_tab_placeholder_default_value) ;
 			$('#sort-by-wrapper').toggleClass('is-open');
 			
 		//check if user has clicked a filter already selected 
-		} else if( filter_tab_placeholder.data('type') == selected_filter ) {
+		} else {
 			filter_tab_placeholder.text(filter_tab_placeholder_default_value + $(event.target).text());
 			$('#sort-by-wrapper').removeClass('is-open');	
-
-		} else {
-			//close the dropdown and change placeholder text/data-type value
-			$('#sort-by-wrapper').removeClass('is-open');
-			filter_tab_placeholder.text(filter_tab_placeholder_default_value + $(event.target).text()).data('type', selected_filter);
-			filter_tab_placeholder_text = $(event.target).text();
 			
 			//add class selected to the selected filter item
 			$('#sort-by-wrapper .selected').removeClass('selected');
 			$(event.target).addClass('selected');
+
 		}
 		
 		return false;
 	});
+	
+	$("body").click(function() {
+		filter_tab_placeholder.text(filter_tab_placeholder_default_value + $('#sort-by-wrapper .selected').text());
+		$("#sort-by-wrapper").removeClass('is-open');
+	})
 	
 	// Update the recipes if a sort field is chosen
 	$('#sort-by-wrapper li.filter a').click(function() {

@@ -56,7 +56,7 @@
 				
 				{% for sort_field, sort_field_display in recipe_search_form.fields.sort_by.choices %}
 					<li class="filter">
-						<a {% if search_form.sort_fields.value == sort_field %}class="selected" {% endif %}
+						<a {% if recipe_search_form.sort_by.value == sort_field %}class="selected" {% endif %}
 						   href="#" data-type="all"
 						   data-value={{ sort_field }}>{{ sort_field_display|safe }}</a>
 					</li>
@@ -165,7 +165,7 @@
 	</div>
 	
 	<div id="overlay-wrapper">
-		<div class="advanced-search-spacer"></div>
+		<!-- <div class="advanced-search-spacer"></div>-->
 		<section id="browse-recipes-wrapper">
 			
 		</section>
