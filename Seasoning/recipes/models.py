@@ -90,7 +90,7 @@ class Recipe(models.Model):
     
     image = ProcessedImageField(upload_to=get_image_filename,
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
-    image_thumbnail = ImageSpecField([SmartResize(248, 48)], source='image', format='JPEG')
+    image_thumbnail = ImageSpecField([SmartResize(248, 348)], source='image', format='JPEG')
 
     
     
