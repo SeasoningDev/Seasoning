@@ -17,11 +17,15 @@
 		</span>
 		{% endif %}
 		
+		<span class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}">
+			{{ recipe.get_footprint_category_display }}
+		</span>
+		
 		<span class="recipe-preview-title">
 			{{ recipe.name }}
 		</span>
 		
-		<span class="recipe-preview-fp-cat">
+		<span class="recipe-preview-footprint">
 			<span class="pull-left">Voetafdruk</span>
 			<span class="pull-right">{{ recipe.cached_footprint|floatformat:2 }} kgCO<sub>2</sub></span>
 		</span>

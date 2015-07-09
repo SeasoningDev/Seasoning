@@ -148,12 +148,12 @@ class Recipe(models.Model):
         distribution_parameters = RecipeDistribution.objects.filter(course=self.course)
         
         try:
-            mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].value
+            mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].parameter_value
         except IndexError:
             mean = 0
         
         try:
-            std = list(filter(lambda x: x.parameter == RecipeDistribution.STANDARD_DEVIATION, distribution_parameters))[0].value
+            std = list(filter(lambda x: x.parameter == RecipeDistribution.STANDARD_DEVIATION, distribution_parameters))[0].parameter_value
         except IndexError:
             std = 0
         
@@ -296,6 +296,12 @@ class ScrapedRecipe(models.Model):
             setattr(self, '_is_missing_info', _is_missing_info)
     
         return getattr(self, '_is_missing_info')
+    
+    def ao_unfinished_ingredients(self):
+        if not hasattr(self, '_ao_unfinished_ingredients') or getattr(self, '_ao_unfinished_ingredients') is None:
+            setattr(self, '_ao_unfinished_ingredients', len(list(filter(lambda ing: ing.ingredient is None or not ing.ingredient.accepted, self.ingredients.all()))))
+            
+        return getattr(self, '_ao_unfinished_ingredients')
     
     def ao_unknown_ingredients(self):
         if not hasattr(self, '_ao_unknown_ingredients') or getattr(self, '_ao_unknown_ingredients') is None:

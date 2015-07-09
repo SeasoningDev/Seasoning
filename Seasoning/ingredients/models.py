@@ -43,6 +43,11 @@ class Unit(models.Model):
     
     
 
+class IngredientManager(models.Manager):
+    
+    def accepted(self):
+        return self.filter(accepted=True)
+    
 class Ingredient(models.Model):
     """
     This is the base class for ingredients. It is not an abstract class, as simple
@@ -55,6 +60,10 @@ class Ingredient(models.Model):
     
     class BasicIngredientException(Exception):
         pass
+    
+    objects = IngredientManager()
+    
+    
     
     # Choices
     DRINKS, FRUIT, CEREAL, VEGETABLES, HERBS_AND_SPICES, NUTS_AND_SEEDS, OILS, LEGUME, SEAFOOD, SUPPLEMENTS, FISH, MEAT, MEAT_SUBS, DAIRY_PRODUCTS = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13

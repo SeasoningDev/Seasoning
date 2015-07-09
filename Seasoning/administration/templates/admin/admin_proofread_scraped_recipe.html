@@ -93,11 +93,23 @@
     				{{ error }}
     			</p>
     			{% endfor %}
-    			<div class="form-inline">
-    		      		  	{{ form.amount|addcss:"class,form-control" }}
-			      		  	{{ form.unit|addcss:"class,form-control" }}
-			      		  	{{ form.ingredient|addcss:"class,form-control" }}
-			  </div>
+    			<table class="form-inline">
+    				<tr valign="top">
+	    		    	<td style="padding-right: 20px;">
+	    		    		{{ form.amount|addcss:"class,form-control" }}
+	    		    	</td>
+	    		    	<td style="padding-right: 20px;">
+				      		{{ form.unit|addcss:"class,form-control" }}
+				      	</td>
+				      	<td>
+				      		{{ form.ingredient|addcss:"class,form-control" }}
+				  			{% if form.instance.ingredient %}
+				      		<br>
+				      		<a href="{% url 'admin:ingredients_ingredient_change' form.instance.ingredient.id %}" target="_blank">Open dit ingredient in een nieuwe tab</a>
+				      		{% endif %}
+				      	</td>
+			      	</tr>
+			  </table>
     		</div>
     	</div>
     	{% endfor %}

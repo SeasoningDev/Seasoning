@@ -43,8 +43,11 @@ def admin_scrape_eva(request):
 
 @staff_member_required
 def admin_proofread_scraped_recipes(request):
-    unfinished_recipes = sorted(sorted(ScrapedRecipe.objects.select_related('cuisine').prefetch_related('ingredients__ingredient',
-                                                                                                        'ingredients__unit').filter(recipe=None), key=lambda recipe: recipe.ao_unknown_ingredients()), key=lambda recipe: recipe.is_missing_info())
+    unfinished_recipes = sorted(sorted(sorted(ScrapedRecipe.objects.select_related('cuisine').prefetch_related('ingredients__ingredient',
+                                                                                                        'ingredients__unit').filter(recipe=None), 
+                                              key=lambda recipe: recipe.ao_unknown_ingredients()),
+                                       key=lambda recipe: recipe.ao_unfinished_ingredients()), 
+                                key=lambda recipe: recipe.is_missing_info())
     finished_recipes = ScrapedRecipe.objects.exclude(recipe=None)
     
     return render(request, 'admin/admin_proofread_scraped_recipes.html', {'unfinished_recipes': unfinished_recipes,
