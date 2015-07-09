@@ -10,6 +10,7 @@ from django.http.response import JsonResponse
 from django.template.loader import render_to_string
 from recipes.forms import RecipeSearchForm, IngredientInRecipeSearchForm
 from django.forms.formsets import formset_factory
+from django.template.context import RequestContext
 
 def browse_recipes(request):
     IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=0)
@@ -47,7 +48,6 @@ def get_recipes(request, results_per_page=10):
                                                                  exclude_ingredient_names=exclude_ingredient_names)
         
         else:
-            print(recipe_search_form.errors)
             recipe_queryset = Recipe.objects.all()
             
     else:
@@ -55,12 +55,7 @@ def get_recipes(request, results_per_page=10):
         recipe_queryset = Recipe.objects.all()
     
     
-    paginator = Paginator(recipe_queryset.prefetch_related('uses_ingredients__ingredient__can_use_units__unit',
-                                                          'uses_ingredients__ingredient__available_in_country__transport_method',
-                                                          'uses_ingredients__ingredient__available_in_country__location',
-                                                          'uses_ingredients__ingredient__available_in_sea__transport_method',
-                                                          'uses_ingredients__ingredient__available_in_sea__location',
-                                                          'uses_ingredients__unit__parent_unit'), results_per_page)
+    paginator = Paginator(recipe_queryset, results_per_page)
     
     try:
         try:
@@ -71,7 +66,7 @@ def get_recipes(request, results_per_page=10):
         
         recipe_previews_html = ''
         for recipe in recipes_page:
-            recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', {'recipe': recipe})
+            recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', RequestContext(request, {'recipe': recipe}))
             
         has_next = recipes_page.has_next()
             

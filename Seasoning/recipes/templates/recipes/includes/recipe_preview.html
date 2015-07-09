@@ -9,7 +9,7 @@
 	{% endif %}
  
 	<span class="recipe-preview" title="{{ recipe.name }}"
-		  style="background-image: url('{{ recipe.image_thumbnail.url }}')">
+		  style="background-image: url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be/media/{{ recipe.image }}{% else %}{{ recipe.image_thumbnail.url }}{% endif %}')">
 
 		{% if recipe.external %}
 		<span class="recipe-preview-source">

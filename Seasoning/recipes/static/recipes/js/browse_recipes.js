@@ -387,8 +387,6 @@ $(function() {
 		
 		if (scrolltop > prev_scrolltop) {
 			// Scrolling down
-			console.log('down');
-			
 			if (dir != 1) {
 				// We weren't scrolling down before
 				dir = 1;
@@ -406,8 +404,6 @@ $(function() {
 			
 		} else if (scrolltop < prev_scrolltop) {
 			// Scrolling up
-			console.log('up');
-			
 			if (dir != 2) {
 				// We werent scrolling up before
 				dir = 2;
