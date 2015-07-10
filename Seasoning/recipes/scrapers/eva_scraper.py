@@ -1,11 +1,52 @@
 import requests
 from bs4 import BeautifulSoup
-from recipes.models import ExternalSite, Cuisine, ScrapedRecipe, Recipe,\
-    ScrapedUsesIngredient
-import difflib
-from django.db import models
-from ingredients.models import Ingredient, Unit
 from urllib.error import HTTPError
+
+def get_recipe_pages():
+    page = 1
+    
+    last_recipe_page_first_recipe_url = None
+    while True:
+        first = True
+        
+        resp = requests.post('http://www.evavzw.be/system/ajax',
+                              data={'allergy': '_none',
+                                      'cooking_time': '_none',
+                                      'difficulty': '_none',
+                                      'form_build_id': 'form-l6NAU4f0M7qBaROO7AlEI5-un17mswynGfBo7YlYJDE',
+                                      'form_id': 'ingredient_search_form',
+                                      'ingredient': '',
+                                      'page': page,
+                                      'region': '_none',
+                                      'types': '_none'})
+        
+        recipes_html = None
+        
+        if resp.content == '':
+            raise HTTPError('Eva Scraper could not retrieve data from evavzw.be')
+        
+        for result_dict in resp.json():
+            if len(result_dict.get('data', '')) > 0:
+                recipes_html = BeautifulSoup(result_dict['data'])
+                break
+            
+        if recipes_html is None:
+            return None
+        
+        for recipe_div in recipes_html.find_all(class_='node-recipe'):
+            recipe_page = RecipePage(url=recipe_div.find('h3').find('a')['href'],
+                                     thumb_url=recipe_div.find('img')['src'])
+            
+            if first:
+                if last_recipe_page_first_recipe_url == recipe_page.url:
+                    raise StopIteration()
+                
+                last_recipe_page_first_recipe_url = recipe_page.url
+                first = False
+                
+        page += 1
+
+
 
 class RecipePage(object):
     
@@ -13,6 +54,8 @@ class RecipePage(object):
         self.url = 'http://www.evavzw.be{}'.format(url.replace('http://www.evavzw.be', ''))
         self.thumb_url = thumb_url
         self._content = None
+        
+        self.recipe_description = None
     
     @property
     def content(self):
@@ -63,7 +106,7 @@ class RecipePage(object):
                 yield ing_names[0].strip(), amount, unit
                 ing_name = ing_names[1].strip()
                 
-            yield ing_name, amount, unit
+            yield ing_name, amount, unit, None
     
     @property
     def recipe_course(self):
@@ -94,147 +137,3 @@ class RecipePage(object):
     def recipe_source(self):
         return self.url
     
-    
-        
-def get_recipe_pages(page):
-    resp = requests.post('http://www.evavzw.be/system/ajax',
-                          data={'allergy': '_none',
-                                  'cooking_time': '_none',
-                                  'difficulty': '_none',
-                                  'form_build_id': 'form-l6NAU4f0M7qBaROO7AlEI5-un17mswynGfBo7YlYJDE',
-                                  'form_id': 'ingredient_search_form',
-                                  'ingredient': '',
-                                  'page': page,
-                                  'region': '_none',
-                                  'types': '_none'})
-    
-    recipes_html = None
-    
-    if resp.content == '':
-        raise HTTPError('Eva Scraper could not retrieve data from evavzw.be')
-    
-    for result_dict in resp.json():
-        if len(result_dict.get('data', '')) > 0:
-            recipes_html = BeautifulSoup(result_dict['data'])
-            break
-        
-    if recipes_html is None:
-        return None
-    
-    for recipe_div in recipes_html.find_all(class_='node-recipe'):
-        yield RecipePage(url=recipe_div.find('h3').find('a')['href'],
-                         thumb_url=recipe_div.find('img')['src'])
-
-
-
-def scrape_recipes():
-    # ALL THA RECIPES ARE MINE!!!
-    try:
-        external_site = ExternalSite.objects.get(name="Eva vzw")
-    except ExternalSite.DoesNotExist:
-        external_site = ExternalSite(name="Eva vzw", url='http://www.evavzw.be')
-        external_site.save()
-    
-    cuisines = {cuisine.name: cuisine for cuisine in Cuisine.objects.all()}
-    
-    
-    
-    page = 1
-    
-    last_recipe_page_first_recipe_url = None
-    while True:
-        recipe_pages = list(get_recipe_pages(page))
-        
-        if recipe_pages[0].url == last_recipe_page_first_recipe_url:
-            break
-        
-        last_recipe_page_first_recipe_url = recipe_pages[0].url
-        
-        for recipe_page in recipe_pages:
-            # Match course
-            recipe_course = None
-            recipe_course_proposal = recipe_page.recipe_course
-            try:
-                if recipe_page.recipe_course is not None:
-                    best = difflib.get_close_matches(recipe_page.recipe_course, [x[1] for x in Recipe.COURSES], 1, 0.8)[0]
-                    
-                    for code, course in Recipe.COURSES:
-                        if best == course:
-                            recipe_course = code
-                            break
-            except IndexError:
-                pass
-            
-            # Match cuisine
-            recipe_cuisine = None
-            recipe_cuisine_proposal = None
-            if recipe_page.recipe_cuisine is not None:
-                try:
-                    best = difflib.get_close_matches(recipe_page.recipe_cuisine, cuisines.keys(), 1, 0.8)[0]
-                    
-                    recipe_cuisine = cuisines[best]
-                except IndexError:
-                    recipe_cuisine_proposal = recipe_page.recipe_cuisine
-            
-            recipe = ScrapedRecipe(name=recipe_page.recipe_name,
-                                   external=True, external_site=external_site, external_url=recipe_page.url, 
-                                   course=recipe_course, course_proposal=recipe_course_proposal, 
-                                   cuisine=recipe_cuisine, cuisine_proposal=recipe_cuisine_proposal,
-                                   portions=recipe_page.recipe_portions, active_time=0,
-                                   passive_time=0,
-                                   image_url=recipe_page.recipe_image)
-            
-            recipe.save()
-            
-            scraped_uses_ingredients = []
-            for recipe_ingredient in recipe_page.recipe_ingredients:
-                parsed_ing_name = recipe_ingredient[0]
-                parsed_amount = recipe_ingredient[1]
-                parsed_unit_name = recipe_ingredient[2]
-                
-                fil = models.Q()
-                for i in range(min(3, len(parsed_ing_name))):
-                    fil |= models.Q(name__iexact=parsed_ing_name[:len(parsed_ing_name) - i])
-                    fil |= models.Q(plural_name__iexact=parsed_ing_name[:len(parsed_ing_name) - i])
-                    fil |= models.Q(synonyms__name__iexact=parsed_ing_name[:len(parsed_ing_name) - i])
-                try:
-                    ingredients = Ingredient.objects.filter(fil).distinct()
-                    if len(ingredients) > 1:
-                        best = difflib.get_close_matches(parsed_ing_name, [ing.name for ing in ingredients], 1, 0)[0]
-                        ingredients = list(filter(lambda ing: ing.name == best, ingredients))
-
-                    ingredient = ingredients[0]
-                except IndexError:
-                    ingredient = None
-                
-                amount = parsed_amount
-                if parsed_amount is None:
-                    unit = Unit.objects.get(name__icontains='snuifje')
-                    amount = 1
-                                
-                elif parsed_unit_name is None:
-                    unit = Unit.objects.get(name__icontains='stuk')
-                    
-                else:
-                    fil = models.Q()
-                    for i in range(min(4, len(parsed_unit_name))):
-                        units = Unit.objects.filter(models.Q(name__istartswith=parsed_unit_name[:len(parsed_unit_name) - i]) | models.Q(short_name__istartswith=parsed_unit_name[:len(parsed_unit_name) - i])).distinct()
-                        if len(units) <= 0:
-                            continue
-                        if len(units) > 1:
-                            best = difflib.get_close_matches(parsed_unit_name, [unit.name for unit in units], 1, 0)[0]
-                            units = list(filter(lambda unit: unit.name == best, units))
-                        unit = units[0]
-                        break
-                    else:
-                        unit = None
-                
-                scraped_uses_ingredient = ScrapedUsesIngredient(recipe=recipe, 
-                                                                ingredient=ingredient, ingredient_proposal=parsed_ing_name,
-                                                                amount=amount, amount_proposal=parsed_amount,
-                                                                unit=unit, unit_proposal=parsed_unit_name)
-                scraped_uses_ingredients.append(scraped_uses_ingredient)
-            
-            ScrapedUsesIngredient.objects.bulk_create(scraped_uses_ingredients)
-        
-        page += 1

@@ -379,6 +379,14 @@ $(function() {
 	var scrolltop;
 	var dir = 0;
 	$(window).scroll(function() {
+		if ($("#overlay-wrapper").outerHeight() <= $(".cd-filter").outerHeight()) {
+			if (filters.css('top') != 210) {
+				filters.css('top', '210px');
+				filters.css('position', 'absolute');
+			}
+			return
+		}
+			
 		if (!scrolltop)
 			scrolltop = $(window).scrollTop();
 		

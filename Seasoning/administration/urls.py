@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^scrapers/proofread/(\d+)/$', views.admin_proofread_scraped_recipe, name='admin_proofread_scraped_recipe'),
     url(r'^scrapers/convert/(\d+)/$', views.admin_convert_scraped_recipe, name='admin_convert_scraped_recipe'),
     
-    url(r'^scrapers/scrape/eva/$', views.admin_scrape_eva, name='admin_scrape_eva'),
+    url(r'^scrapers/scrape/(\d+)/$', views.admin_scrape_recipes, name='admin_scrape_recipes'),
 ]

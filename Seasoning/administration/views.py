@@ -5,7 +5,6 @@ Created on Jul 6, 2015
 '''
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
-from recipes.scrapers.eva_scraper import scrape_recipes
 from recipes.models import ScrapedRecipe, ScrapedUsesIngredient, Recipe
 from administration.forms import ScrapedRecipeProofreadForm
 from django.forms.models import inlineformset_factory
@@ -13,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from recipes.forms import RecipeSearchForm
 from django.core.management import call_command
+from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
 
 @staff_member_required
 def admin_home(request):
@@ -31,13 +31,18 @@ def admin_recipes_update_cached_properties(request):
 
 @staff_member_required
 def admin_scrapers(request):
-    return render(request, 'admin/admin_scrapers.html', {'scraped_recipes': {'eva': ScrapedRecipe.objects.filter(external_site__name__icontains='eva').count()}})
+    return render(request, 'admin/admin_scrapers.html', {'scraped_recipes': {'eva': ScrapedRecipe.objects.filter(external_site__name__icontains='eva').count(),
+                                                                             'kriskookt': ScrapedRecipe.objects.filter(external_site__name__icontains='kris').count()}})
 
 @staff_member_required
-def admin_scrape_eva(request):
-    ScrapedRecipe.objects.all().delete()
-    
-    scrape_recipes()
+def admin_scrape_recipes(request, scraper):
+    scraper = int(scraper)
+    if scraper not in INSTALLED_SCRAPERS:
+        messages.add_message(request, messages.ERROR, 'This scraper has not been installed yet')
+        
+    else:
+        ScrapedRecipe.objects.filter(external_site__name=INSTALLED_SCRAPERS[scraper]['name']).delete()
+        scrape_recipes(scraper)
     
     return redirect('admin_scrapers')
 

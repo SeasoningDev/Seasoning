@@ -5,6 +5,7 @@ Created on Jul 6, 2015
 '''
 from django.test import TestCase
 from recipes.scrapers.eva_scraper import get_recipe_pages
+from recipes.scrapers import kriskookt_scraper
 
 class EvaScraperTest(TestCase):
     
@@ -20,3 +21,12 @@ class EvaScraperTest(TestCase):
         recipe_page_2 = list(get_recipe_pages(1001))
         
         self.assertEqual(recipe_page_1[0].url, recipe_page_2[0].url)
+
+
+
+class KrisKooktScraperTest(TestCase):
+    
+    def test_get_recipe_categories(self):
+        cats = kriskookt_scraper.get_recipe_categories()
+        
+        self.assertTrue(len(cats) > 0)

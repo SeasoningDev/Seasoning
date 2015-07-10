@@ -189,6 +189,9 @@ class Synonym(models.Model):
     
     ingredient = models.ForeignKey(Ingredient, related_name='synonyms', null=True, blank=True)
     
+    def __str__(self):
+        return '{} (synonym of ingredient {})'.format(self.name, self.ingredient_id)
+    
     
     
 class CanUseUnit(models.Model):
@@ -205,6 +208,9 @@ class CanUseUnit(models.Model):
     
     conversion_ratio = models.FloatField()
     
+    def __str__(self):
+        return 'Ingredient {} can use unit {}'.format(self.ingredient_id, self.unit_id)
+    
         
 
 class Country(models.Model):
@@ -215,6 +221,9 @@ class Country(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     distance = models.IntegerField()
+    
+    def __str__(self):
+        return self.name
 
 class Sea(models.Model):
     """
@@ -224,6 +233,9 @@ class Sea(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     distance = models.IntegerField()
+    
+    def __str__(self):
+        return self.name
     
     
     
@@ -236,6 +248,9 @@ class TransportMethod(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=20)
     emissions_per_km = models.FloatField()
+    
+    def __str__(self):
+        return self.name
     
     
     
@@ -338,6 +353,9 @@ class AvailableInCountry(AvailableIn):
     ingredient = models.ForeignKey(Ingredient, related_name='available_in_country')
     location = models.ForeignKey('Country')
     
+    def __str__(self):
+        return 'Ingredient {} is available in Country {}'.format(self.ingredient_id, self.location_id)
+    
 class AvailableInSea(AvailableIn):
     """
     An implementation of the AvailableIn model for fish ingredients
@@ -347,3 +365,6 @@ class AvailableInSea(AvailableIn):
     location = models.ForeignKey('Sea')
     
     endangered = models.BooleanField()
+    
+    def __str__(self):
+        return 'Ingredient {} is available in Sea {}'.format(self.ingredient_id, self.location_id)

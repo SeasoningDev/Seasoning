@@ -39,7 +39,7 @@ class ExternalSite(models.Model):
     url = models.CharField(_('URL'), max_length=200,
                             help_text=_('The home url of the external website'))
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Recipe(models.Model):
@@ -64,7 +64,7 @@ class Recipe(models.Model):
                                         C: 0.75,
                                         D: 1}
     
-    name = models.CharField(_('Name'), max_length=100,
+    name = models.CharField(_('Name'), max_length=300,
                             help_text=_('The names of the recipe.'))
     
     external = models.BooleanField(default=False)
@@ -179,6 +179,11 @@ class UsesIngredient(models.Model):
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
     unit = models.ForeignKey(ingredients.models.Unit)
     
+    def __str__(self):
+        return 'Recipe {} uses Ingredient {}'.format(self.recipe_id, self.ingredient_id)
+    
+    
+    
     def unit_conversion_ratio(self):
         if self.unit.parent_unit is not None:
             return next(cuu for cuu in self.ingredient.can_use_units.all() if cuu.unit == self.unit.parent_unit).conversion_ratio * self.unit.ratio
@@ -193,9 +198,9 @@ class UsesIngredient(models.Model):
     def clean(self):
         if self.unit is not None and self.ingredient is not None:
             if self.unit.parent_unit is None:
-                unit = self.unit.parent_unit
-            else:
                 unit = self.unit
+            else:
+                unit = self.unit.parent_unit
             
             if not unit in [cuu.unit for cuu in self.ingredient.can_use_units.all()]:
                 raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
@@ -233,7 +238,7 @@ class RecipeDistribution(models.Model):
     
 class ScrapedRecipe(models.Model):
     
-    name = models.CharField(_('Name'), max_length=100, default='',
+    name = models.CharField(_('Name'), max_length=300, default='',
                             help_text=_('The names of the recipe.'),
                             null=True, blank=True)
     
@@ -284,6 +289,11 @@ class ScrapedRecipe(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.SET_NULL, null=True, blank=True)
     
     deleted = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return '{}: {}'.format(self.external_site.name, self.name)
+    
+    
     
     def is_missing_info(self):
         if not hasattr(self, '_is_missing_info') or getattr(self, '_is_missing_info') is None:
@@ -347,11 +357,11 @@ class ScrapedUsesIngredient(models.Model):
     recipe = models.ForeignKey(ScrapedRecipe, related_name='ingredients')
     
     ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
-    ingredient_proposal = models.CharField(max_length=100)
+    ingredient_proposal = models.CharField(max_length=500)
     
-    group = models.CharField(max_length=100, blank=True)
+    group = models.CharField(max_length=500, null=True, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)], null=True, blank=True)
-    amount_proposal = models.FloatField(default=0, validators=[MinValueValidator(0.00001)], null=True, blank=True)
+    amount_proposal = models.CharField(max_length=20, null=True, blank=True)
     
     unit = models.ForeignKey(Unit, null=True, blank=True)
     unit_proposal = models.CharField(max_length=50, null=True, blank=True)

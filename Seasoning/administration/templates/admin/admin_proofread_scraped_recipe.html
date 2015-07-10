@@ -78,12 +78,20 @@
       	
     	{% for form in uses_ingredients_formset %}
     	{{ form.id }}
-    	<div class="panel panel-{% if form.errors %}danger{% elif form.instance.ingredient != None and  not form.instance.ingredient.accepted %}warning{% else %}default{% endif %}">
+    	<div class="panel panel-{% if form.errors %}danger{% elif form.instance.ingredient != None and not form.instance.ingredient.accepted %}warning{% elif form.instance.unit == None or form.instance.amount == '' %}warning{% else %}default{% endif %}">
     		<div class="panel-heading">
     			Scraped: <b style="margin-left: 10px;">{{ form.instance.amount_proposal|default_if_none:"" }} {{ form.instance.unit_proposal|default_if_none:"" }} {{ form.instance.ingredient_proposal }}</b>
     			{% if form.instance.ingredient != None and  not form.instance.ingredient.accepted %}
     			<span class="pull-right">
     				Ingredient is not yet accepted <a href="{% url 'admin:ingredients_ingredient_change' form.instance.ingredient.id %}" target="_blank">Click here to edit</a>
+    			</span>
+    			{% elif form.instance.unit == None %}
+    			<span class="pull-right">
+    				No Unit given
+    			</span>
+    			{% elif form.instance.amount == '' %}
+    			<span class="pull-right">
+    				No Amount given
     			</span>
     			{% endif %}
     		</div>

@@ -23,9 +23,32 @@
 				</div>
 			</div>
 			<div class="panel-body">
-				<a href="{% url 'admin_scrape_eva' %}">
+				<a href="{% url 'admin_scrape_recipes' 0 %}">
 					<span style="font-size: 20px; margin-right: 5px;" class="glyphicon glyphicon-refresh pull-left"></span>
 					<span class="pull-left">Scrape Eva VZW website</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-lg-3 col-md-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-xs-3">
+						<img src="http://www.kriskookt.be/wp-content/themes/edegree/uploads/nieuw.jpg"
+							style="width: 170px;">
+					</div>
+					<div class="col-xs-9 text-right">
+						<div style="font-size: 40px;line-height:40px;">{{ scraped_recipes.kriskookt }}</div>
+						<div>Recipes scraped from Kris Kookt</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<a href="{% url 'admin_scrape_recipes' 1 %}">
+					<span style="font-size: 20px; margin-right: 5px;" class="glyphicon glyphicon-refresh pull-left"></span>
+					<span class="pull-left">Scrape Kris Kookt website</span>
 				</a>
 			</div>
 		</div>
