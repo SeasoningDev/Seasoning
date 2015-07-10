@@ -226,7 +226,7 @@
     position: absolute;
     left: 0;
     top: 210px;
-    width: 280px;
+    width: 320px;
     z-index: 100;
     transform: translateX(-100%);
     
@@ -251,14 +251,6 @@
 }
 .cd-filter.filter-is-visible .cd-close {
     opacity: 1;
-}
-@media only screen and (min-width: 1170px) {
-.cd-filter {
-    width: 320px;
-}
-.cd-filter form {
-    padding: 70px 10%;
-}
 }
 .cd-filter-trigger {
     background: transparent url("/static/img/icons/cd-icon-filter.png") no-repeat scroll center center;
@@ -592,4 +584,27 @@
 	right: 0;
 	margin: 20px auto;
 	display: none;
+}
+
+
+
+
+
+
+@media only screen and (max-width: 1170px) {
+	#advanced-search-bar #sort-by-wrapper {
+		float: right;
+	}
+	
+	#result-count {
+		display: none !important;
+	}
+	
+	.search-results-loader {
+		margin-left: 320px;
+	}
+	
+	#end-buttons {
+		margin-left: 320px;
+	}
 }

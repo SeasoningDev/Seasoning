@@ -27,6 +27,11 @@ def get_recipe_pages():
             yield RecipePage(url=recipe_div.find('h3').find('a')['href'],
                              category_name=category_name,
                              description=recipe_div.find('p').text)
+
+def debug_get_recipe_page(url):
+    return RecipePage(url=url,
+                      category_name='',
+                      description='')
             
 
 class RecipePage(object):
@@ -61,16 +66,19 @@ class RecipePage(object):
     
     @property
     def recipe_ingredients(self):
-        ing_start = self.content.find('p', text=re.compile('^[Nn]odig'))
+        ing_start = self.content.find('p', text=re.compile('^\ *[Nn]odig[:]?'))
         if ing_start is None:
-            ing_start = self.content.find('p', text=re.compile('^\ *[Ii]ngrediënten:'))
-        if ing_start is None:
-            ing_start = self.content.find('ul')
-            if ing_start is not None:
-                ing_start = ing_start.find_previous_sibling()
+            ing_start = self.content.find('strong', text=re.compile('^\ *[Ii]ngrediënten'))
+            
+            if ing_start is None:
+                ing_start = self.content.find('ul')
+                if ing_start is not None:
+                    ing_start = ing_start.find_previous_sibling()
+            else:
+                ing_start = ing_start.find_parent()
             
         if ing_start is None:
-            raise Exception('No ingredients found: {}\n{}'.format(self.url, self.content.prettify()))
+            raise NotImplementedError('No ingredients found: {}\n{}'.format(self.url, self.content.prettify()))
         
         cur_el = ing_start
         cur_group = None

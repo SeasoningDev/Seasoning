@@ -13,6 +13,7 @@ from django.contrib import messages
 from recipes.forms import RecipeSearchForm
 from django.core.management import call_command
 from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
+from recipes.scrapers.kriskookt_scraper import debug_get_recipe_page
 
 @staff_member_required
 def admin_home(request):
@@ -42,14 +43,15 @@ def admin_scrape_recipes(request, scraper):
         
     else:
         ScrapedRecipe.objects.filter(external_site__name=INSTALLED_SCRAPERS[scraper]['name']).delete()
+        print(list(debug_get_recipe_page('http://www.kriskookt.be/recepten/2013/gin-tonic-foodpairing-hendricks-gin-tartaar-tonijn/').recipe_ingredients))
         scrape_recipes(scraper)
     
     return redirect('admin_scrapers')
 
 @staff_member_required
 def admin_proofread_scraped_recipes(request):
-    unfinished_recipes = sorted(sorted(sorted(ScrapedRecipe.objects.select_related('cuisine').prefetch_related('ingredients__ingredient',
-                                                                                                        'ingredients__unit').filter(recipe=None), 
+    unfinished_recipes = sorted(sorted(sorted(ScrapedRecipe.objects.select_related('cuisine', 'external_site').prefetch_related('ingredients__ingredient',
+                                                                                                                                'ingredients__unit').filter(recipe=None), 
                                               key=lambda recipe: recipe.ao_unknown_ingredients()),
                                        key=lambda recipe: recipe.ao_unfinished_ingredients()), 
                                 key=lambda recipe: recipe.is_missing_info())

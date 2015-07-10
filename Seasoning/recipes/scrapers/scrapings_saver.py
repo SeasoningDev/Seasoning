@@ -31,30 +31,38 @@ def scrape_recipes(scraper):
     
     
     for recipe_page in get_recipe_pages():
-        # Match course
-        recipe_course = None
-        recipe_course_proposal = recipe_page.recipe_course
         try:
-            if recipe_page.recipe_course is not None:
-                best = difflib.get_close_matches(recipe_page.recipe_course, [x[1] for x in Recipe.COURSES], 1, 0.8)[0]
-                
-                for code, course in Recipe.COURSES:
-                    if best == course:
-                        recipe_course = code
-                        break
-        except IndexError:
-            pass
-        
-        # Match cuisine
-        recipe_cuisine = None
-        recipe_cuisine_proposal = None
-        if recipe_page.recipe_cuisine is not None:
+            # Match course
+            recipe_course = None
+            recipe_course_proposal = recipe_page.recipe_course
             try:
-                best = difflib.get_close_matches(recipe_page.recipe_cuisine, cuisines.keys(), 1, 0.8)[0]
-                
-                recipe_cuisine = cuisines[best]
+                if recipe_page.recipe_course is not None:
+                    best = difflib.get_close_matches(recipe_page.recipe_course, [x[1] for x in Recipe.COURSES], 1, 0.8)[0]
+                    
+                    for code, course in Recipe.COURSES:
+                        if best == course:
+                            recipe_course = code
+                            break
             except IndexError:
-                recipe_cuisine_proposal = recipe_page.recipe_cuisine
+                pass
+            
+            # Match cuisine
+            recipe_cuisine = None
+            recipe_cuisine_proposal = None
+            if recipe_page.recipe_cuisine is not None:
+                try:
+                    best = difflib.get_close_matches(recipe_page.recipe_cuisine, cuisines.keys(), 1, 0.8)[0]
+                    
+                    recipe_cuisine = cuisines[best]
+                except IndexError:
+                    recipe_cuisine_proposal = recipe_page.recipe_cuisine
+                    
+            if len(list(recipe_page.recipe_ingredients)) <= 0:
+                raise NotImplementedError
+        
+        except NotImplementedError:
+            print(recipe_page.url)
+            continue
         
         recipe = ScrapedRecipe(name=recipe_page.recipe_name, description=recipe_page.recipe_description,
                                external=True, external_site=external_site, external_url=recipe_page.url, 

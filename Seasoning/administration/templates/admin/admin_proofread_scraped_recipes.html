@@ -16,6 +16,7 @@
 	<table class="table">
 		<tr>
 			<th style="white-space:nowrap;">Naam Recept</th>
+			<th>Bron</th>
 			<th style="white-space:nowrap;">Ontbrekende Informatie?</th>
 			<th style="white-space:nowrap;">Ontbrekende Ingredienten</th>
 			<th style="white-space:nowrap;">Waarvan Onbekend</th>
@@ -28,6 +29,7 @@
 					{{ recipe.name }}
 				</a>
 			</td>
+			<td style="white-space:nowrap;">{{ recipe.external_site.name }}</td>
 			<td class="text-center" style="white-space:nowrap;">
 				{% if recipe.is_missing_info %}Jep{% else %}Nope{% endif %}
 			</td>

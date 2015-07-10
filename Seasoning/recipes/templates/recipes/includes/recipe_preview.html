@@ -11,11 +11,13 @@
 	<span class="recipe-preview" title="{{ recipe.name }}"
 		  style="background-image: url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be/media/{{ recipe.image }}{% else %}{{ recipe.image_thumbnail.url }}{% endif %}')">
 
-		{% if recipe.external %}
 		<span class="recipe-preview-source">
+			{% if recipe.external %}
 			Recept van <i>{{ recipe.external_site.name }}</i>
+			{% else %}
+			Recept van Seasoning
+			{% endif %}
 		</span>
-		{% endif %}
 		
 		<span class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}">
 			{{ recipe.get_footprint_category_display }}
