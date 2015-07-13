@@ -175,7 +175,7 @@ class UsesIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='uses_ingredients')
     ingredient = models.ForeignKey(ingredients.models.Ingredient)
     
-    group = models.CharField(max_length=100, blank=True)
+    group = models.CharField(max_length=100, null=True, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
     unit = models.ForeignKey(ingredients.models.Unit)
     
@@ -325,10 +325,7 @@ class ScrapedRecipe(models.Model):
             raise ValidationError('The recipe `{}` cannot be converted while it is missing required info'.format(self.name))
         
         for ingredient in self.ingredients.all():
-            try:
-                CanUseUnit.objects.get(ingredient=ingredient.ingredient, unit=ingredient.unit)
-            except CanUseUnit.DoesNotExist:
-                raise ValidationError('The ingredient `{}` can not use unit `{}`.'.format(ingredient.ingredient, ingredient.unit))
+            ingredient.clean()
             
         img_temp = NamedTemporaryFile(delete=True, suffix='.jpg')
         img_temp.write(urllib.request.urlopen(self.image_url).read())
@@ -368,10 +365,6 @@ class ScrapedUsesIngredient(models.Model):
     
     def clean(self):
         if self.unit is not None and self.ingredient is not None:
-            if self.unit.parent_unit is None:
-                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit).exists():
-                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
+            if not self.ingredient.can_use_unit(self.unit):
+                raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
             
-            else:
-                if not CanUseUnit.objects.filter(ingredient=self.ingredient, unit=self.unit.parent_unit).exists():
-                    raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))

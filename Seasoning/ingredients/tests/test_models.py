@@ -6,10 +6,28 @@ Created on Jul 5, 2015
 from django.test import TestCase
 from django_dynamic_fixture import G
 from ingredients.models import Ingredient, Country, TransportMethod,\
-    AvailableInCountry
+    AvailableInCountry, Unit, CanUseUnit
 import datetime
 
 class IngredientModelTest(TestCase):
+    
+    def test_can_use_unit(self):
+        ing = G(Ingredient)
+        
+        unit = G(Unit, parent_unit=None)
+        c_unit = G(Unit, parent_unit=unit)
+        
+        unit2 = G(Unit, parent_unit=None)
+        c_unit2 = G(Unit, parent_unit=unit2)
+        
+        G(CanUseUnit, ingredient=ing, unit=unit)
+        
+        self.assertTrue(ing.can_use_unit(unit))
+        self.assertTrue(ing.can_use_unit(c_unit))
+        
+        self.assertFalse(ing.can_use_unit(unit2))
+        self.assertFalse(ing.can_use_unit(c_unit2))
+        
     
     def test_footprint_basic(self):
         ingredient = G(Ingredient, base_footprint=1, type=Ingredient.BASIC)

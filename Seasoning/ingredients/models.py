@@ -123,6 +123,14 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
     
+    def can_use_unit(self, unit):
+        unit = unit.parent_unit or unit
+        
+        if unit in self.useable_units.all():
+            return True
+        
+        return False
+        
     
     
     ACTIVE, PRESERVING, INACTIVE = 0, 1, 2
