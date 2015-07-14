@@ -3,6 +3,8 @@ psycopg2==2.6.1
 
 pillow==2.8.2
 django-imagekit==3.2.6
+django-markitup==2.2.2
+markdown==2.6.2
 
 numpy==1.9.2
 

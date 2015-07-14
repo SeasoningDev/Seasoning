@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}{{ recipe.name }}{% endblock %}
+
+{% block extra_link %}
+<link href="{% static "recipes/css/view_recipe.css" %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block body %}
+
+<div id="recipe-body" class="container">
+
+	<div class="row">
+		<div class="col-xs-12 page-header">
+			<h1>{{ recipe.name }}</h1>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
+			<h3 class="ing-title">Ingrediënten</h3>
+			<span class="portions">Voor {{ recipe.portions }} personen</span>
+			
+			<ul class="ingredients">
+				{% for uses_ingredient in recipe.uses_ingredients.all %}
+				<li>{{ uses_ingredient.amount|floatformat:"-10" }} {{ uses_ingredient.unit.short_name }} {{ uses_ingredient.ingredient }}</li>
+				{% endfor %}
+			</ul>
+			
+			<h4>Extra Info</h4>
+			
+			<p>{{ recipe.extra_info }}</p>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6">
+			<div id="recipe-image-border">
+				<div id="recipe-image" style="background-image:url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be{% endif %}{{ recipe.image.url }}');"></div>
+			</div>
+		</div>
+		
+		<div class="col-xs-12">
+					<h3>Bereiding</h3>
+			
+			{{ recipe.instructions.rendered|safe }}
+		</div>
+		
+	</div>
+
+</div>
+{% endblock %}

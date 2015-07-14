@@ -1,0 +1,35 @@
+body {
+	background-color: #fff;
+}
+
+#recipe-body {
+	margin-bottom: 40px;
+}
+
+.page-header {
+	margin-top: 20px;
+}
+
+h3.ing-title {
+	margin: 0;
+}
+
+.portions {
+	display: block;
+	margin-bottom: 20px;
+}
+
+#recipe-image {
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-bottom: 100%;
+	
+	background-size: cover;
+	background-position: center;
+}
+
+#recipe-image-border {
+	border: 1px solid #ddd;
+	padding: 5px;
+}

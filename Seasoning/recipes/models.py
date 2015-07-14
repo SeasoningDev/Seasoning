@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
 import urllib
 from django.core.files.base import File
+from markitup.fields import MarkupField
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -85,11 +86,12 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
-    instructions = models.TextField(_('Instructions'), null=True, blank=True,
-                                    help_text=_('Detailed instructions for preparing this recipe.'))
+    instructions = MarkupField(_('Instructions'), null=True, blank=True,
+                               help_text=_('Detailed instructions for preparing this recipe.'))
     
     image = ProcessedImageField(upload_to=get_image_filename,
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
+    image_normal = ImageSpecField([SmartResize(400, 400)], source='image', format='JPEG')
     image_thumbnail = ImageSpecField([SmartResize(248, 348)], source='image', format='JPEG')
 
     

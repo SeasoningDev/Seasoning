@@ -3,7 +3,7 @@ Created on Jul 5, 2015
 
 @author: joep
 '''
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from recipes.models import Recipe
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import JsonResponse
@@ -24,6 +24,12 @@ def browse_recipes(request):
                                                            'include_ingredients_formset': include_ingredients_formset,
                                                            'exclude_ingredients_formset': exclude_ingredients_formset})
 
+def view_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    recipe.save()
+    
+    return render(request, 'recipes/view_recipe.html', {'recipe': recipe})
+
 
 
 def get_recipes(request, results_per_page=10):
@@ -40,7 +46,6 @@ def get_recipes(request, results_per_page=10):
         exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
         
         if recipe_search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid:
-            print(recipe_search_form.cleaned_data['include_ingredients_AND_operator'])
             include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
             exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
         

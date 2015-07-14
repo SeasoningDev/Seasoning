@@ -1,6 +1,6 @@
 {% load staticfiles %}
 
-<a class="recipe-preview-wrapper" href="{% if recipe.external %}{{ recipe.external_url }}{% else %}#{% endif %}" target="_blank">
+<a class="recipe-preview-wrapper" href="{% if recipe.external %}{{ recipe.external_url }}{% else %}{% url 'view_recipe' recipe.id %}{% endif %}" target="_blank">
 	
 	{% if recipe.cached_in_season %}
 	<img class="corner-ribbon" src="{% static "recipes/img/corner-ribbon-inseason.png" %}">

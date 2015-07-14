@@ -108,7 +108,7 @@ else:
             'NAME': 'seasoning',
             'USER': 'seasoning',
 #            'HOST': '127.0.0.1',
-            'HOST': 'www.seasoning.be',
+            'HOST': 'seasoning.be',
             'PORT': '',
         },
     }
@@ -136,6 +136,10 @@ STATIC_ROOT ='/srv/static/Seasoning/'
 
 MEDIA_URL ='/media/'
 MEDIA_ROOT = '/srv/media/Seasoning/'
+
+
+
+MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
 
 
 
