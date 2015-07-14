@@ -639,7 +639,11 @@
 	
 	.cd-filter {
 		width: 100%;
+		display: none !important;
 		position: static !important;
+	}
+	.cd-filter.filter-is-visible {
+		display: block !important;
 	}
 	
 	#advanced-search-bar #sort-by-wrapper {
