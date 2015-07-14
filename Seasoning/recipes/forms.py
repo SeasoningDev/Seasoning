@@ -62,13 +62,13 @@ class RecipeSearchForm(forms.Form):
             
             if self.cleaned_data['include_ingredients_AND_operator']:
                 for ingredient in include_ingredient_names:
-                    qs = qs.filter(ingredients__name=ingredient)
+                    qs = qs.filter(Q(ingredients__name=ingredient) | Q(ingredients__synonyms__name=ingredient))
             
             else:
                 ingredients_filter = Q()
                 
                 for ingredient in include_ingredient_names:
-                    ingredients_filter |= Q(ingredients__name=ingredient)
+                    ingredients_filter |= Q(ingredients__name=ingredient) | Q(ingredients__synonyms__name=ingredient)
                 
                 recipe_filter &= ingredients_filter
         

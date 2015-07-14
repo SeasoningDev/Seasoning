@@ -639,6 +639,7 @@
 	
 	.cd-filter {
 		width: 100%;
+		position: static !important;
 	}
 	
 	#advanced-search-bar #sort-by-wrapper {
