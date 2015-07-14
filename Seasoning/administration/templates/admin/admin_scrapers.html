@@ -32,7 +32,7 @@
 	</div>
 	
 	<div class="col-lg-3 col-md-6">
-		<div class="panel panel-primary">
+		<div class="panel panel-default">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-xs-3">
@@ -49,6 +49,29 @@
 				<a href="{% url 'admin_scrape_recipes' 1 %}">
 					<span style="font-size: 20px; margin-right: 5px;" class="glyphicon glyphicon-refresh pull-left"></span>
 					<span class="pull-left">Scrape Kris Kookt website</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-lg-3 col-md-6">
+		<div class="panel panel-danger">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-xs-3">
+						<img src="http://4.bp.blogspot.com/-vWbe46w7dfw/USkpxRnbdaI/AAAAAAAAFUY/SdyA0ktTIc8/s240/Olala%2BChocola.jpg"
+							style="height: 50px;">
+					</div>
+					<div class="col-xs-9 text-right">
+						<div style="font-size: 40px;line-height:40px;">{{ scraped_recipes.evassmulhuisje }}</div>
+						<div style="white-space:nowrap;">Recipes scraped from Eva's Smulhuisje</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<a href="{% url 'admin_scrape_recipes' 1 %}">
+					<span style="font-size: 20px; margin-right: 5px;" class="glyphicon glyphicon-refresh pull-left"></span>
+					<span class="pull-left">Scrape Eva's Smulhuisje website</span>
 				</a>
 			</div>
 		</div>

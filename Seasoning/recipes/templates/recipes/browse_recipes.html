@@ -109,7 +109,7 @@
 				
 				<div id="incl-ing-operator">
 					<input id="{{ recipe_search_form.include_ingredients_AND_operator.auto_id }}" name="{{ recipe_search_form.include_ingredients_AND_operator.name }}"
-				       data-toggle="toggle" data-off="Minstens één" data-on="Allemaal" type="checkbox">
+				       data-toggle="toggle" data-off="Minstens één" data-on="Allemaal" type="checkbox" {% if recipe_search_form.include_ingredients_AND_operator.value %}checked="checked"{% endif %}>
 				</div>
 				<div class="incl-ing incl-ing-template">
 					{{ include_ingredients_formset.empty_form }}

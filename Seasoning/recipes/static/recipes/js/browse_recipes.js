@@ -289,7 +289,9 @@ $(function() {
 		ajax_search_recipes();
 	})
 	
-	$("#incl-ing-operator").click(ajax_search_recipes);
+	$("#incl-ing-operator input").change(function() {
+		ajax_search_recipes()
+	});
 	
 	$("#incl-ingredients-input").autocomplete({
 		source: ingredient_names_url,

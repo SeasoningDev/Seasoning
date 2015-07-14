@@ -8,14 +8,16 @@ from recipes.models import ExternalSite, Cuisine, Recipe, ScrapedRecipe,\
 import difflib
 from django.db import models
 from ingredients.models import Ingredient, Unit
-from recipes.scrapers import eva_scraper, kriskookt_scraper
+from recipes.scrapers import eva_scraper, kriskookt_scraper, evassmulhuisje_scraper
 
-EVA_SCRAPER, KRISKOOKT_SCRAPER = 0, 1
+EVA_SCRAPER, KRISKOOKT_SCRAPER, EVASSMULHUISJE_SCRAPER = 0, 1, 2
 INSTALLED_SCRAPERS = {
     EVA_SCRAPER: {'name': 'Eva vzw',
                   'scraper': eva_scraper.get_recipe_pages},
     KRISKOOKT_SCRAPER: {'name': 'Kris kookt',
-                        'scraper': kriskookt_scraper.get_recipe_pages}}
+                        'scraper': kriskookt_scraper.get_recipe_pages},
+    EVASSMULHUISJE_SCRAPER: {'name': 'Eva\'s Smulhuisje',
+                             'scraper': evassmulhuisje_scraper.get_recipe_pages}}
     
 def scrape_recipes(scraper):
     # ALL THA RECIPES ARE MINE!!!

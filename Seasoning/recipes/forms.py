@@ -39,6 +39,8 @@ class RecipeSearchForm(forms.Form):
         if not self.is_valid():
             return None
         
+        qs = Recipe.objects
+        
         recipe_filter = Q(name__icontains=self.cleaned_data['search_query'])
 
         if 'in_season' in self.cleaned_data and self.cleaned_data['in_season']:
@@ -57,19 +59,20 @@ class RecipeSearchForm(forms.Form):
             recipe_filter &= Q(course__in=self.cleaned_data['course'])
         #TODO: synonyms
         if include_ingredient_names:
-            ingredients_filter = Q()
             
-            for ingredient in include_ingredient_names:
-                ingredient_filter = Q(ingredients__name=ingredient)
+            if self.cleaned_data['include_ingredients_AND_operator']:
+                for ingredient in include_ingredient_names:
+                    qs = qs.filter(ingredients__name=ingredient)
+            
+            else:
+                ingredients_filter = Q()
                 
-                if self.cleaned_data['include_ingredients_AND_operator']:
-                    ingredients_filter &= ingredient_filter
-                else:
-                    ingredients_filter |= ingredient_filter
+                for ingredient in include_ingredient_names:
+                    ingredients_filter |= Q(ingredients__name=ingredient)
                 
-            recipe_filter &= ingredients_filter
+                recipe_filter &= ingredients_filter
         
-        qs = Recipe.objects.filter(recipe_filter)
+        qs = qs.filter(recipe_filter)
         
         if exclude_ingredient_names:
             for ingredient in exclude_ingredient_names:
@@ -79,7 +82,7 @@ class RecipeSearchForm(forms.Form):
         if 'sort_by' in self.cleaned_data and self.cleaned_data['sort_by']:
             qs = qs.order_by(self.cleaned_data['sort_by'])
             
-        return qs
+        return qs.distinct()
     
     
 
