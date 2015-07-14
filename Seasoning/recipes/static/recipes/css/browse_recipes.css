@@ -622,9 +622,15 @@
 	
     background: transparent url("/static/img/icons/cd-icon-filter-w.png") no-repeat scroll center center;
     background-size: 25px;
+    
+    display: none;
 }
 
 @media only screen and (max-width: 640px) {
+	#advanced-search-btn-mobile {
+		display: block;
+	}
+	
 	#advanced-search-btn,
 	#advanced-search-close-btn {
 		display: none !important;
