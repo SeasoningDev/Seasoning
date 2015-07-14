@@ -227,7 +227,7 @@
     left: 0;
     top: 210px;
     width: 320px;
-    z-index: 100;
+    z-index: 105;
     transform: translateX(-100%);
     
     padding: 1px 30px 10px;
@@ -606,5 +606,42 @@
 	
 	#end-buttons {
 		margin-left: 320px;
+	}
+}
+
+
+
+
+#advanced-search-btn-mobile {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	width: 40px;
+	height: 40px;
+	z-index: 2000;
+	
+    background: transparent url("/static/img/icons/cd-icon-filter-w.png") no-repeat scroll center center;
+    background-size: 25px;
+}
+
+@media only screen and (max-width: 640px) {
+	#advanced-search-btn,
+	#advanced-search-close-btn {
+		display: none !important;
+	}
+	
+	.cd-filter {
+		width: 100%;
+	}
+	
+	#advanced-search-bar #sort-by-wrapper {
+		float: none;
+	}
+	
+	#browse-recipes-wrapper,
+	.search-results-loader,
+    #end-buttons {
+		margin: 0 !important;
+		width: 100% !important;
 	}
 }

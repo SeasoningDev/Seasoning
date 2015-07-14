@@ -252,6 +252,15 @@ $(function() {
 		$(".advanced-search-spacer").css('width', 0);
 		return false;
 	});
+	
+	// Open and close advanced search on mobile
+	$("#advanced-search-btn-mobile").click(function() {
+		if (!$('.cd-filter').hasClass('filter-is-visible')) {
+			triggerFilter(true);
+		} else {
+			triggerFilter(false);
+		}
+	})
 
 	function triggerFilter($bool) {
 		var elementsToTrigger = $([$('.cd-filter-trigger'), $('.cd-filter'), $('.cd-tab-filter'), $('#browse-recipes-wrapper'), $("#advanced-search-close-btn"), $("#overlay-wrapper")]);
