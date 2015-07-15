@@ -1,12 +1,14 @@
 {% load staticfiles %}
 
-<a class="recipe-preview-wrapper" href="{% if recipe.external %}{{ recipe.external_url }}{% else %}{% url 'view_recipe' recipe.id %}{% endif %}" target="_blank">
+<div class="recipe-preview-wrapper" data-url="{% if recipe.external %}{{ recipe.external_url }}{% else %}{% url 'view_recipe' recipe.id %}{% endif %}">
 	
-	{% if recipe.cached_in_season %}
-	<img class="corner-ribbon" src="{% static "recipes/img/corner-ribbon-inseason.png" %}">
-	{% elif recipe.cached_has_endangered_ingredients %}
-	<img class="corner-ribbon" src="{% static "recipes/img/corner-ribbon-endangered.png" %}">
-	{% endif %}
+	<span class="corner-ribbon">
+		{% if recipe.cached_in_season %}
+		<img src="{% static "recipes/img/corner-ribbon-inseason.png" %}">
+		{% elif recipe.cached_has_endangered_ingredients %}
+		<img src="{% static "recipes/img/corner-ribbon-endangered.png" %}">
+		{% endif %}
+	</span>
  
 	<span class="recipe-preview" title="{{ recipe.name }}"
 		  style="background-image: url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be/media/{{ recipe.image }}{% else %}{{ recipe.image_thumbnail.url }}{% endif %}')">
@@ -19,17 +21,17 @@
 			{% endif %}
 		</span>
 		
-		<span class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}">
+		<a class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}" href="{% url 'view_recipe_footprint_analysis' recipe.id %}" target="_blank">		
 			{{ recipe.get_footprint_category_display }}
-		</span>
+		</a>
 		
 		<span class="recipe-preview-title">
 			{{ recipe.name }}
 		</span>
 		
-		<span class="recipe-preview-footprint">
-			<span class="pull-left">Voetafdruk</span>
-			<span class="pull-right">{{ recipe.cached_footprint|floatformat:2 }} kgCO<sub>2</sub></span>
-		</span>
+		<a class="recipe-preview-footprint" href="{% url 'view_recipe_footprint_analysis' recipe.id %}" target="_blank">
+				<span class="pull-left">Voetafdruk</span>
+				<span class="pull-right">{{ recipe.cached_footprint|floatformat:2 }} kgCO<sub>2</sub></span>
+		</a>
 	</span>
-</a>
+</div>

@@ -12,6 +12,8 @@
     
     vertical-align: top;
 	color: #3e3f3a;
+	
+	cursor: pointer;
 }
 
 .recipe-preview-wrapper:hover, .recipe-preview-wrapper:active, .recipe-preview-wrapper:focus {
@@ -69,10 +71,12 @@
 	font-size: 20px;
 	font-weight: bold;
 	line-height: 38px;
+	
+    transition: all 0.25s ease-in-out 0s;
 }
 .recipe-preview .recipe-preview-footprint-category:hover {
-    box-shadow: 0 0 5px 1px;
-    transition: all 0.25s ease-in-out 0s;
+    box-shadow: 0 0 5px 1px #333;
+    text-decoration: none;
 }
 .recipe-preview-footprint-category.category-0 {
 	color: #629b31;
@@ -124,5 +128,11 @@
 	border-top: 1px solid rgba(255, 255, 255, 0.85);
 	padding: 0 10px;
 	line-height: 30px;
+	color: #333;
 	
+    transition: all 0.25s ease-in-out 0s;
+}
+
+.recipe-preview .recipe-preview-footprint:hover {
+    box-shadow: 0 0 5px 1px #333;
 }

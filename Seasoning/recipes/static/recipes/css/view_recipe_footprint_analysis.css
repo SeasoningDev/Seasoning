@@ -1,0 +1,22 @@
+body {
+	background-color: #fff;
+}
+
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.ingredient text {
+  text-anchor: end;
+}
+
+.current-date line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
