@@ -336,7 +336,7 @@ class ScrapedRecipe(models.Model):
         real_recipe = Recipe(name=self.name,
                              external=True, external_site=self.external_site, external_url=self.external_url,
                              course=self.course, cuisine=self.cuisine, description=self.description, portions=self.portions,
-                             image=File(img_temp))
+                             image=File(img_temp), instructions='')
         
         real_recipe.save()
         
