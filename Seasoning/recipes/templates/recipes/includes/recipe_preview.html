@@ -1,6 +1,6 @@
 {% load staticfiles %}
 
-<div class="recipe-preview-wrapper" data-url="{% if recipe.external %}{{ recipe.external_url }}{% else %}{% url 'view_recipe' recipe.id %}{% endif %}">
+<div class="recipe-preview-wrapper" onclick="window.open('{% if recipe.external %}{{ recipe.external_url }}{% else %}{% url 'view_recipe' recipe.id %}{% endif %}', '_blank')">
 	
 	<span class="corner-ribbon">
 		{% if recipe.cached_in_season %}
