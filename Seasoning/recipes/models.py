@@ -147,7 +147,7 @@ class Recipe(models.Model):
         
     
     def footprint_category(self, display=False):
-        distribution_parameters = RecipeDistribution.objects.filter(course=self.course)
+        distribution_parameters = RecipeDistribution.objects.filter(group=self.course)
         
         try:
             mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].parameter_value
@@ -195,6 +195,9 @@ class UsesIngredient(models.Model):
     def footprint(self, date=None):
         return self.ingredient.footprint(date) * self.amount * self.unit_conversion_ratio()
     
+    def footprint_breakdown(self, date=None):
+        return {footprint_source: footprint * self.amount * self.unit_conversion_ratio() for footprint_source, footprint in self.ingredient.footprint_breakdown(date).items()}
+    
     
     
     def clean(self):
@@ -221,13 +224,18 @@ class RecipeDistribution(models.Model):
             0.75: 0.47693628,
             1: 100000}
     
-    course = models.PositiveSmallIntegerField(choices=Recipe.COURSES)
+    
+    ALL = 100
+    GROUPS = [(ALL, _('All Recipes'))]
+    GROUPS.extend(Recipe.COURSES)
+    
+    group = models.PositiveSmallIntegerField(choices=GROUPS)
     parameter = models.PositiveSmallIntegerField(choices=DISTRIBUTION_PARAMETERS)
     
     parameter_value = models.FloatField()
     
     class Meta:
-        unique_together = (('course', 'parameter'), )
+        unique_together = (('group', 'parameter'), )
         
     
     

@@ -8,5 +8,6 @@ urlpatterns = [
     
     url(r'^get/$', views.get_recipes, name='get_recipes'),
     url(r'^get/(\d+)/$', views.get_recipes, name='get_recipes_max'),
-    url(r'^get/analyze/footprint/(\d+)/$', views.get_recipe_footprint_data, name='get_recipe_footprint_data')
+    url(r'^get/analyze/breakdown/(\d+)/$', views.get_recipe_footprint_breakdown_data, name='get_recipe_footprint_breakdown_data'),
+    url(r'^get/analyze/relative/(\d+)/$', views.get_recipe_relative_footprint_data, name='get_recipe_relative_footprint_data'),
 ]

@@ -4,7 +4,7 @@ Created on Jul 5, 2015
 @author: joep
 '''
 from django.shortcuts import render, get_object_or_404
-from recipes.models import Recipe
+from recipes.models import Recipe, RecipeDistribution
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import JsonResponse, Http404
 from django.template.loader import render_to_string
@@ -94,7 +94,7 @@ def get_recipes(request, results_per_page=10):
     
     
     
-def get_recipe_footprint_data(request, recipe_id):
+def get_recipe_footprint_breakdown_data(request, recipe_id):
     try:
         recipe = Recipe.objects.prefetch_related('uses_ingredients__ingredient__can_use_units__unit',
                                                  'uses_ingredients__ingredient__available_in_country__location',
@@ -106,17 +106,30 @@ def get_recipe_footprint_data(request, recipe_id):
         raise Http404
     
     footprint_data = []
-    date = datetime.date(AvailableIn.BASE_YEAR, 1, 1)
     
-    for _ in range(14):
+    for month in range(13):
+        date = datetime.date(year=AvailableIn.BASE_YEAR + (month // 12),
+                             month=(month % 12) + 1,
+                             day=1)
         month_data = {'date': date}
         
         for uses_ingredient in recipe.uses_ingredients.all():
-            month_data[uses_ingredient.ingredient.name] = uses_ingredient.footprint(date) / float(recipe.portions)
+            month_data[uses_ingredient.ingredient.name] = {source: footprint / float(recipe.portions) for source, footprint in uses_ingredient.footprint_breakdown(date).items()}
         
         footprint_data.append(month_data)
         
-        date += datetime.timedelta(days=30)
-    
     return JsonResponse(data={'current_date': datetime.date.today().replace(year=AvailableIn.BASE_YEAR),
                               'footprint_data': footprint_data}, safe=False)
+
+def get_recipe_relative_footprint_data(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    
+    return JsonResponse(data={'this_recipes_footprint': recipe.cached_footprint,
+                              'all_recipes_footprints': [r[0] for r in Recipe.objects.all().values_list('cached_footprint')],
+                              'all_recipes_distribution': list(RecipeDistribution.objects.filter(group=RecipeDistribution.ALL).values('parameter', 'parameter_value')),
+                              'same_course_recipes_footprints': [r[0] for r in Recipe.objects.filter(course=recipe.course).values_list('cached_footprint')],
+                              'same_course_recipes_distribution': list(RecipeDistribution.objects.filter(group=recipe.course).values('parameter', 'parameter_value')),
+                              'same_veganism_recipes_footprints': [r[0] for r in Recipe.objects.filter(cached_veganism=recipe.cached_veganism).values_list('cached_footprint')],
+                              'same_veganism_recipes_distribution': list(RecipeDistribution.objects.filter(group=RecipeDistribution.ALL).values('parameter', 'parameter_value')),
+                              'both_same_recipes_footprints': [r[0] for r in Recipe.objects.filter(course=recipe.course, cached_veganism=recipe.cached_veganism).values_list('cached_footprint')],
+                              'both_same_recipes_distribution': list(RecipeDistribution.objects.filter(group=RecipeDistribution.ALL).values('parameter', 'parameter_value'))}, safe=False)

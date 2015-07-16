@@ -12,21 +12,25 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         RecipeDistribution.objects.all().delete()
         
+        footprints = [f[0] for f in Recipe.objects.all().values_list('cached_footprint')]
+        RecipeDistribution(group=RecipeDistribution.ALL, parameter=RecipeDistribution.MEAN,
+                           parameter_value=numpy.mean(footprints)).save()
+        RecipeDistribution(group=RecipeDistribution.ALL, parameter=RecipeDistribution.STANDARD_DEVIATION,
+                           parameter_value=numpy.std(footprints)).save()
+        
         for course, _ in Recipe.COURSES:
-            recipes = Recipe.objects.filter(course=course)
+            footprints =  [f[0] for f in Recipe.objects.filter(course=course).values_list('cached_footprint')]
             
-            if len(recipes) > 0:
-                footprints = [recipe.cached_footprint for recipe in recipes]
-                
-                RecipeDistribution(course=course, parameter=RecipeDistribution.MEAN,
+            if len(footprints) > 0:
+                RecipeDistribution(group=course, parameter=RecipeDistribution.MEAN,
                                    parameter_value=numpy.mean(footprints)).save()
-                RecipeDistribution(course=course, parameter=RecipeDistribution.STANDARD_DEVIATION,
+                RecipeDistribution(group=course, parameter=RecipeDistribution.STANDARD_DEVIATION,
                                    parameter_value=numpy.std(footprints)).save()
             
             else:
-                RecipeDistribution(course=course, parameter=RecipeDistribution.MEAN,
+                RecipeDistribution(group=course, parameter=RecipeDistribution.MEAN,
                                    parameter_value=0).save()
-                RecipeDistribution(course=course, parameter=RecipeDistribution.STANDARD_DEVIATION,
+                RecipeDistribution(group=course, parameter=RecipeDistribution.STANDARD_DEVIATION,
                                    parameter_value=0).save()
                 
             

@@ -148,10 +148,13 @@ class Ingredient(models.Model):
         for available in availables:
             availables_fp.append({'available_in_object': available, 
                                   'state': self.ACTIVE, 
+                                  'transportation_footprint': available.transportation_footprint(),
+                                  'production_footprint': available.extra_production_footprint,
                                   'current_footprint': available.total_extra_footprint()})
             
             if not available.is_active(date):
-                availables_fp[-1]['current_footprint'] += available.days_since_last_active(date) * self.preservation_footprint
+                availables_fp[-1]['preservation_footprint'] = available.days_since_last_active(date) * self.preservation_footprint 
+                availables_fp[-1]['current_footprint'] += availables_fp[-1]['preservation_footprint']
                 
                 if self.preservability < available.days_since_last_active(date):
                     availables_fp[-1]['state'] = self.INACTIVE
@@ -160,6 +163,13 @@ class Ingredient(models.Model):
                     availables_fp[-1]['state'] = self.PRESERVING
                     
         return sorted(availables_fp, key=lambda avail: avail['current_footprint'])
+    
+    def get_useable_available_in_with_lowest_footprint(self, date=None):
+        for avail in self.get_available_ins_sorted_by_footprint(date):
+            if avail['state'] is not self.INACTIVE:
+                return avail
+        
+        raise Exception('No available in object is currently active')
             
     def is_in_season(self, date=None):
         try:
@@ -167,14 +177,35 @@ class Ingredient(models.Model):
         
         except IndexError:
             return True
-            
+        
+    
+    
     def footprint(self, date=None):
         if self.type is self.BASIC:
             return self.base_footprint
         
-        for avail in self.get_available_ins_sorted_by_footprint(date):
-            if avail['state'] is not self.INACTIVE:
-                return self.base_footprint + avail['current_footprint']
+        avail = self.get_useable_available_in_with_lowest_footprint(date)
+        return self.base_footprint + avail['current_footprint']
+    
+    def footprint_breakdown(self, date=None):
+        breakdown = {'Base Footprint': self.base_footprint}
+        
+        if self.type is self.BASIC:
+            breakdown.update({'Production': 0,
+                              'Transportation': 0,
+                              'Preservation': 0})
+        
+        else:
+            avail = self.get_useable_available_in_with_lowest_footprint(date)
+            
+            breakdown.update({'Production': avail['production_footprint'],
+                              'Transportation': avail['transportation_footprint'],
+                              'Preservation': avail.get('preservation_footprint', 0)})
+                         
+        return breakdown
+        
+        
+        
     
     
     

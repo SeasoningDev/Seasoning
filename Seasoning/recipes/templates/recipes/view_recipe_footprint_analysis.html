@@ -10,171 +10,78 @@
 {% block extra_script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
-var recipe_footprint_data_url = "{% url 'get_recipe_footprint_data' recipe.id %}";
-
-
-function draw_recipe_footprint_analysis_graph() {
-	
-	var margin = {top: 20, right: 20, bottom: 30, left: 50},
-	width = $("#recipe-body").outerWidth() - margin.left - margin.right,
-	height = 500 - margin.top - margin.bottom;
-	
-	var parseDate = d3.time.format("%Y-%m-%d").parse,
-    	bisectDate = d3.bisector(function(d) { return d.date; }).left;
-	
-	var x = d3.time.scale()
-	.range([0, width]);
-	
-	var y = d3.scale.linear()
-	.range([height, 0]);
-	
-	var color = d3.scale.category20c();
-	
-	var xAxis = d3.svg.axis()
-					  .scale(x)
-					  .orient("bottom");
-	
-	var yAxis = d3.svg.axis()
-					  .scale(y)
-					  .orient("left");
-	
-	var area = d3.svg.area()
-					 .x(function(d) { return x(d.date); })
-					 .y0(function(d) { return y(d.y0); })
-					 .y1(function(d) { return y(d.y0 + d.y); })
-					 .interpolate('cardinal');
-	
-	var stack = d3.layout.stack()
-						 .values(function(d) { return d.values; });
-	
-	var svg = d3.select("#recipe-body").append("svg")
-									   .attr("width", width + margin.left + margin.right)
-									   .attr("height", height + margin.top + margin.bottom)
-									   .append("g")
-									   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	
-	d3.json(recipe_footprint_data_url, function(data) {
-		var current_date = parseDate(data.current_date);
-		var footprint_data = data.footprint_data;
-		
-		var names = d3.keys(footprint_data[0]).filter(function(key) { return key !== "date"; }).sort();
-		
-		color.domain(names);
-		
-		footprint_data.forEach(function(d) {
-			d.date = parseDate(d.date);
-			
-		    var y0 = 0;
-		    d.ingredients = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-		    d.total = d.ingredients[d.ingredients.length - 1].y1;
-		});
-		
-		var max_footprint = d3.max(footprint_data, function(d) { return d.total; });
-		  
-		x.domain(d3.extent(footprint_data, function(d) { return d.date; }));
-		y.domain([0, 1.2 * max_footprint]);
-
-		var ingredients = stack(color.domain().map(function(name) {
-			return {
-		    	name: name,
-		      	values: footprint_data.map(function(d) {
-		        	return {date: d.date, y: d[name]};
-		      	})
-		    };
-		}))
-
-		var ingredient = svg.selectAll(".ingredient")
-							 .data(ingredients)
-							 .enter().append("g")
-							 .attr("class", "ingredient");
-
-		ingredient.append("path")
-		    	  .attr("class", "area")
-				  .attr("d", function(d) { return area(d.values); })
-				  .style("fill", function(d) { return color(d.name); });
-
-		ingredient.append("text")
-		      	  .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-		      	  .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
-		      	  .attr("x", -100)
-		      	  .attr("dy", ".35em")
-		      	  .text(function(d) { return d.name; });
-		
-		svg.append("g")
-		   .attr("class", "current-date")
-		   .append("line")
-		   .attr("x1", x(current_date)).attr("x2", x(current_date))
-		   .attr("y1", y(0)).attr("y2", y(1.05 * max_footprint))
-		  
-		svg.append("text")
-		   .attr("transform", "translate(" + x(current_date) + "," + y(1.1 * max_footprint) + ")")
-		   .attr("text-anchor", "middle")
-		   .text("Vandaag");
-		
-		// Draw x-axis
-		svg.append("g")
-		   .attr("class", "x axis")
-		   .attr("transform", "translate(0," + height + ")")
-		   .call(xAxis);
-		
-		// Draw y-axis
-		svg.append("g")
-		   .attr("class", "y axis")
-		   .call(yAxis);
-
-		
-		
-		
-		var focus = svg.append("g")
-		    		   .style("display", "none");
-		
-		
-		// append the circle at the intersection
-	    focus.selectAll('.hover-circle')
-	    	 .data(ingredients)
-	    	 .enter().append("circle")
-	         .attr("class", function(d) {
-	        	 return 'hover-circle hover-circle-' + d.name;
-	         })
-	         .style("fill", "none")
-	         .style("stroke", "blue")
-	         .attr("r", 4);
-		
-		// append a rectangle to capture mouse
-	    svg.append("rect")
-	        .attr("width", width)
-	        .attr("height", height)
-	        .style("fill", "none")
-	        .style("pointer-events", "all")
-	        .on("mouseover", function() { focus.style("display", null); })
-	        .on("mouseout", function() { focus.style("display", "none"); })
-	        .on("mousemove", mousemove);
-		
-	    function mousemove() {
-	        var x0 = d3.mouse(this)[0];
-			
-	        focus.selectAll("circle.hover-circle")
-	        	 .attr("transform", "translate(" + x0 + "," + y(max_footprint) + ")");
-
-	    }
-	})
-}
-
-$(function() {
-	draw_recipe_footprint_analysis_graph();
-})
-	
+var recipe_footprint_breakdown_data_url = "{% url 'get_recipe_footprint_breakdown_data' recipe.id %}";
+var recipe_relative_footprint_data_url = "{% url 'get_recipe_relative_footprint_data' recipe.id %}";
 </script>
+<script src="{% static "recipes/js/footprint_analysis.js" %}"></script>
 {% endblock %}
 
 
 {% block body %}
 
-<div id="recipe-body" class="container">
-
-	<div class="row">
-		
+<div class="container">
+	<div class="row page-header">
+		<h1 class="col-xs-12">{{ recipe.name }}</h1>
+		<h3 class="col-xs-12">Analyse van de voetafdruk</h3>
 	</div>
-
+	
+	<div class="row bottom-margin">
+		
+		<h4 class="col-xs-12">1. Opbouw van de voetafdruk</h4>
+		<div class="padded col-xs-12">
+			<p id="footprint-breakdown-help" class="help">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eget sagittis mauris. Aliquam non venenatis augue, eget tristique magna. Sed ornare scelerisque nunc vitae maximus. Curabitur vel dui ligula. Nunc cursus leo arcu, sed euismod tortor congue vel. Proin eu metus a ex tincidunt tincidunt non ac lacus. Curabitur dapibus auctor leo, et commodo ipsum elementum non. Vestibulum urna lectus, elementum sed efficitur quis, ultrices ut turpis. Cras pulvinar non diam at mattis. Etiam aliquet varius imperdiet. 
+			</p>
+			<a class="show-help-btn" href="#" onclick='$("#footprint-breakdown-help").slideDown(500);$(this).parent().toggleClass("help-visible");return false;'>Uitleg tonen</a>
+			<a class="hide-help-btn" href="#" onclick='$("#footprint-breakdown-help").slideUp(500);$(this).parent().toggleClass("help-visible");return false;'>Uitleg verbergen</a>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 text-right">
+			<h4>
+				<a class="text-default active" href="#" onclick="show_ingredient_data();$('a').removeClass('active');$(this).addClass('active');return false;">Grouperen per Ingrediënt</a>
+			</h4>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<h4>
+				<a class="text-default" href="#" onclick="show_source_data();$('a').removeClass('active');$(this).addClass('active');return false;">Grouperen per Soort</a>
+			</h4>
+		</div>
+		
+		<div id="footprint-breakdown" class="col-xs-12">
+		</div>
+	
+	</div>
+	
+	<div class="row bottom-margin">
+		
+		<h4 class="col-xs-12">2. In vergelijking met gelijkaardige recepten</h4>
+		<div class="padded col-xs-12">
+			<p id="relative-footprint-help" class="help">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eget sagittis mauris. Aliquam non venenatis augue, eget tristique magna. Sed ornare scelerisque nunc vitae maximus. Curabitur vel dui ligula. Nunc cursus leo arcu, sed euismod tortor congue vel. Proin eu metus a ex tincidunt tincidunt non ac lacus. Curabitur dapibus auctor leo, et commodo ipsum elementum non. Vestibulum urna lectus, elementum sed efficitur quis, ultrices ut turpis. Cras pulvinar non diam at mattis. Etiam aliquet varius imperdiet. 
+			</p>
+			<a class="show-help-btn" href="#" onclick='$("#relative-footprint-help").slideDown(500);$(this).parent().toggleClass("help-visible");return false;'>Uitleg tonen</a>
+			<a class="hide-help-btn" href="#" onclick='$("#relative-footprint-help").slideUp(500);$(this).parent().toggleClass("help-visible");return false;'>Uitleg verbergen</a>
+		</div>
+		
+		<div id="relative-footprint" class="col-xs-12">
+		</div>
+		
+		<div class="col-xs-12">
+			<h3>Filters</h3>
+			<h4>
+				<a class="text-default active" href="#" onclick="show_all_recipes_data();$('a').removeClass('active');$(this).addClass('active');return false;">Alle recepten</a>
+			</h4>
+			<h4>
+				<a class="text-default" href="#" onclick="show_course_recipes_data();$('a').removeClass('active');$(this).addClass('active');return false;">Enkel recepten van hetzelfde maaltijd type ({{ recipe.get_course_display }}) </a>
+			</h4>
+			<h4>
+				<a class="text-default" href="#" onclick="show_veg_recipes_data();$('a').removeClass('active');$(this).addClass('active');return false;">Enkel recepten van dezelfde voedingswijze ({{ recipe.get_cached_veganism_display }}) </a>
+			</h4>
+			<h4>
+				<a class="text-default" href="#" onclick="show_both_recipes_data();$('a').removeClass('active');$(this).addClass('active');return false;">Enkel recepten van hetzelfde maaltijd type en voedingswijze</a>
+			</h4>
+		</div>
+	
+	</div>
 </div>
 {% endblock %}
