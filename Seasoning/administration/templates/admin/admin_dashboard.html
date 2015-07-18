@@ -1,7 +1,148 @@
 {% extends "admin/admin_base.html" %}
 {% load staticfiles %}
 
+{% block extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<<script type="text/javascript">
+var recipes_added_data_url = "{% url 'get_admin_recipes_added_data' %}";
+</script>
+<script>
+
+$(function() {
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%SZ").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.amount); });
+
+var svg = d3.select("#recipes-graph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json(recipes_added_data_url, function(error, data) {
+  if (error) throw error;
+
+  data.forEach(function(d) {
+    d.date = parseDate(d.date);
+    if (d.amount < 95)
+    	d.amount = 95;
+  });
+
+  x.domain([data[0].date, new Date(2015,6,31)]);
+  y.domain([90, 210]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+  svg.append("line")
+      .attr("class", "stretch-goal-line")
+      .attr("x1", x(x.domain()[0]))
+      .attr("y1", y(150))
+      .attr("x2", x(x.domain()[1]))
+      .attr("y2", y(150))
+  svg.append("text")
+      .attr("x", x(x.domain()[1]))
+      .attr("y", y(150))
+      .attr("dy", "-0.8em")
+      .style("text-anchor", "end")
+      .style("font-size", "12px")
+      .text("Bram krijgt een nieuwe Ingrediëntenpagina");
+
+  svg.append("line")
+      .attr("class", "stretch-goal-line")
+      .attr("x1", x(x.domain()[0]))
+      .attr("y1", y(180))
+      .attr("x2", x(x.domain()[1]))
+      .attr("y2", y(180))
+  svg.append("text")
+      .attr("x", x(x.domain()[1]))
+      .attr("y", y(180))
+      .attr("dy", "-0.8em")
+      .style("text-anchor", "end")
+      .style("font-size", "12px")
+      .text("Bram mag nog 1 sessie all-out mierenneuken over eender wat");
+
+  svg.append("line")
+      .attr("class", "stretch-goal-line")
+      .attr("x1", x(x.domain()[0]))
+      .attr("y1", y(200))
+      .attr("x2", x(x.domain()[1]))
+      .attr("y2", y(200))
+  svg.append("text")
+      .attr("x", x(x.domain()[1]))
+      .attr("y", y(200))
+      .attr("dy", "-0.8em")
+      .style("text-anchor", "end")
+      .style("font-size", "12px")
+      .text("Seasoning V1.1 Launch + pers");
+      
+
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("# Recepten");
+});
+});
+</script>
+{% endblock %}
+
 {% block content %}
+<style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.stretch-goal-line {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 2px;
+}
+
+</style>
+
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">Dashboard</h1>
@@ -32,5 +173,11 @@
 		</div>
 	</div>
 	
+</div>
+
+<div class="row">
+	<div id="recipes-graph">
+	</div>
+
 </div>
 {% endblock %}

@@ -9,6 +9,7 @@ import difflib
 from django.db import models
 from ingredients.models import Ingredient, Unit
 from recipes.scrapers import eva_scraper, kriskookt_scraper, evassmulhuisje_scraper
+from pip._vendor.distlib.compat import raw_input
 
 EVA_SCRAPER, KRISKOOKT_SCRAPER, EVASSMULHUISJE_SCRAPER = 0, 1, 2
 INSTALLED_SCRAPERS = {
@@ -33,6 +34,12 @@ def scrape_recipes(scraper):
     
     
     for recipe_page in get_recipe_pages():
+        if ScrapedRecipe.objects.filter(external_site=external_site,
+                                        scraped_name=recipe_page.recipe_name).exists():
+            
+            print('Skipped `{}` ({}), already scraped'.format(recipe_page.recipe_name, external_site.name))
+            continue
+            
         try:
             # Match course
             recipe_course = None
@@ -61,12 +68,13 @@ def scrape_recipes(scraper):
                     
             if len(list(recipe_page.recipe_ingredients)) <= 0:
                 raise NotImplementedError
-        
+            
         except NotImplementedError:
-            print(recipe_page.url)
+            print('Could not scrape recipe on page `{}`'.format(recipe_page.url))
             continue
         
-        recipe = ScrapedRecipe(name=recipe_page.recipe_name, description=recipe_page.recipe_description,
+        recipe = ScrapedRecipe(name=recipe_page.recipe_name, scraped_name=recipe_page.recipe_name,
+                               description=recipe_page.recipe_description,
                                external=True, external_site=external_site, external_url=recipe_page.url, 
                                course=recipe_course, course_proposal=recipe_course_proposal, 
                                cuisine=recipe_cuisine, cuisine_proposal=recipe_cuisine_proposal,

@@ -57,7 +57,7 @@ class RecipeSearchForm(forms.Form):
         
         if 'course' in self.cleaned_data and len(self.cleaned_data['course']) > 0:
             recipe_filter &= Q(course__in=self.cleaned_data['course'])
-        #TODO: synonyms
+        
         if include_ingredient_names:
             
             if self.cleaned_data['include_ingredients_AND_operator']:

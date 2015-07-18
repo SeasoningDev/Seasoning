@@ -248,9 +248,14 @@ class RecipeDistribution(models.Model):
     
 class ScrapedRecipe(models.Model):
     
+    class Meta:
+        unique_together = (('scraped_name', 'external_site'), )
+    
     name = models.CharField(_('Name'), max_length=300, default='',
-                            help_text=_('The names of the recipe.'),
+                            help_text=_('The name of the recipe.'),
                             null=True, blank=True)
+    
+    scraped_name = models.CharField(_('Scraped Name'), max_length=300, default='')
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)

@@ -14,11 +14,34 @@ from recipes.forms import RecipeSearchForm
 from django.core.management import call_command
 from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
 from recipes.scrapers.kriskookt_scraper import debug_get_recipe_page
+from django.http.response import JsonResponse
+from _collections import defaultdict
 
 @staff_member_required
 def admin_home(request):
     return render(request, 'admin/admin_dashboard.html', {'stats': {'ao_visible_recipes': RecipeSearchForm({}).search_queryset().count(),
                                                                     'last_cache_update': Recipe.objects.all().order_by('last_update_time')[0].last_update_time}})
+    
+@staff_member_required
+def get_admin_recipes_added_data(request):
+    dates = []
+    total = 0
+    for recipe in Recipe.objects.all().values('time_added').order_by('time_added'):
+        total += 1
+        dates.append({
+            'date': recipe['time_added'].strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'amount': total
+        })
+        
+    return JsonResponse(dates, safe=False)
+
+
+
+@staff_member_required
+def admin_list_ingredients(request):
+    return render(request, 'admin/admin_list_ingredients.html')
+
+
     
 @staff_member_required
 def admin_recipes_update_cached_properties(request):
@@ -43,8 +66,6 @@ def admin_scrape_recipes(request, scraper):
         messages.add_message(request, messages.ERROR, 'This scraper has not been installed yet')
         
     else:
-#         ScrapedRecipe.objects.filter(external_site__name=INSTALLED_SCRAPERS[scraper]['name']).delete()
-        
         scrape_recipes(scraper)
     
     return redirect('admin_scrapers')
@@ -56,7 +77,7 @@ def admin_proofread_scraped_recipes(request):
                                               key=lambda recipe: recipe.ao_unknown_ingredients()),
                                        key=lambda recipe: recipe.ao_unfinished_ingredients()), 
                                 key=lambda recipe: recipe.is_missing_info())
-    finished_recipes = ScrapedRecipe.objects.exclude(recipe=None)
+    finished_recipes = ScrapedRecipe.objects.select_related('recipe').exclude(recipe=None).order_by('recipe__time_added')
     
     return render(request, 'admin/admin_proofread_scraped_recipes.html', {'unfinished_recipes': unfinished_recipes,
                                                                           'unfinished_recipes_count': ScrapedRecipe.objects.filter(recipe=None).count(),

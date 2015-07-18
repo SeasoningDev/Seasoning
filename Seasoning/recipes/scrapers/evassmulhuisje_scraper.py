@@ -17,7 +17,7 @@ def get_recipe_categories():
 def get_recipe_pages():
     for category_name, category_link in get_recipe_categories().items():
         
-        recipes_page = bs4.BeautifulSoup(requests.get(category_link))
+        recipes_page = bs4.BeautifulSoup(requests.get(category_link).content)
         
         while True:
             
@@ -28,7 +28,7 @@ def get_recipe_pages():
                 yield RecipePage(url=recipe.find('a')['href'],
                                  category_name=category_name)
             
-            recipes_page = bs4.BeautifulSoup(requests.get(recipes_page.find('a', class_='blog-pager-older-link')['href']))
+            recipes_page = bs4.BeautifulSoup(requests.get(recipes_page.find('a', class_='blog-pager-older-link')['href']).content)
 
 def debug_get_recipe_page(url):
     return RecipePage(url=url,
@@ -67,29 +67,35 @@ class RecipePage(object):
     
     @property
     def recipe_ingredients(self):
-        for ing_el in self.content.find_all('strong'):
-            if 'Dit heb je nodig' in ing_el.text:
-                continue
-            if ing_el.text.strip().startswith('('):
-                continue
-            
-            ing_parts = ing_el.text.strip().split()
-                    
-            if len(ing_parts) > 2:
-                unit = ing_parts[1]
-                del ing_parts[1]
-            else:
-                unit = None
-            
-            if len(ing_parts) > 1 and re.match('\d+(\/\d+)?', ing_parts[0]):
-                amount = ing_parts[0]
-                del ing_parts[0]
-            else:
-                amount = 1
+        for ing_el_wrap in self.content.find_all('strong') + self.content.find_all('b'):
+            for ing_el in ing_el_wrap.stripped_strings:
+                if ing_el.lower().startswith('extra'):
+                    continue
                 
-            ing_name = ' '.join(ing_parts)
-            
-            yield ing_name, amount, unit, None
+                ing_text = ing_el.strip()
+                
+                if 'Dit heb je nodig' in ing_text:
+                    continue
+                if ing_text.startswith('('):
+                    continue
+                
+                ing_parts = ing_text.split()
+                        
+                if len(ing_parts) > 2:
+                    unit = ing_parts[1]
+                    del ing_parts[1]
+                else:
+                    unit = None
+                
+                if len(ing_parts) > 1 and re.match('\d+(\/\d+)?', ing_parts[0]):
+                    amount = ing_parts[0]
+                    del ing_parts[0]
+                else:
+                    amount = 1
+                    
+                ing_name = ' '.join(ing_parts)
+                
+                yield ing_name, amount, unit, None
             
     
     @property

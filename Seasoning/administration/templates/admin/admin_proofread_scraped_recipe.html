@@ -22,6 +22,14 @@
       </div>
     </div>
     <br>
+    
+    <div class="form-group{% if recipe.name.errors %} has-error{% endif %}">
+      <label for="inputName" class="col-lg-2 control-label" style="white-space:nowrap">Original Name</label>
+      <div class="col-lg-10" style="height: 33px; line-height: 46px;padding-left: 31px;">
+        {{ recipe_form.instance.scraped_name }}
+      </div>
+    </div>
+    
     <div class="form-group{% if recipe.name.errors %} has-error{% endif %}">
       <label for="inputName" class="col-lg-2 control-label" style="white-space:nowrap">Name</label>
       <div class="col-lg-10">
@@ -94,6 +102,7 @@
     				No Amount given
     			</span>
     			{% endif %}
+    			<a class="pull-right text-danger" href="{% url 'admin:recipes_scrapedusesingredient_delete' form.instance.id %}" target="_blank">Verwijder</a>
     		</div>
     		<div class="panel-body">
     			{% for error in form.non_field_errors %}
