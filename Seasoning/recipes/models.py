@@ -238,6 +238,37 @@ class RecipeDistribution(models.Model):
         unique_together = (('group', 'parameter'), )
         
     
+    """
+    Here we provide functions for the statistical analysis of recipe footprint.
+    We make the following assumptions:
+        * The footprints of recipes follow a normal distribution
+        * The footprint of a recipe can only be compared to other recipes of the
+          same course type
+    
+    To find the footprint category of a recipe, we need to calculate a footprint
+    that is smaller than p% of all the footprints.
+    
+    The probit function PHI-1(p) yields a value for which the probablity is p that
+    any other value will be smaller or equal to it. So PHI-1(0.1) gives us the 
+    10% quantile footprint.
+    
+    However, since our distribution go into the negative part of the axes, and
+    negative footprints are not possible, we need to take into account that this
+    part of the distribution doesn't exist.
+    
+    As such we have:
+    PHI(0): The theorethical probability that a footprint will have a value lower
+            than 0, call this p_0
+    1 - p_0: The theorethical probability that a footprint will be higher than 0,
+             call this p_1
+    
+    This means that to find PHI-1(0.1), we actually have to find PHI-1(p_0 + (0.1 * p_1))
+    
+    For ease of calculation, we will approximate the normal distribution with the 
+    logistic distribution.
+    """
+        
+    
     
     def __str__(self):
         return '{} of `{}` courses is {:.2f}'.format(self.get_parameter_display(), self.get_course_display(), self.parameter_value)
@@ -255,7 +286,7 @@ class ScrapedRecipe(models.Model):
                             help_text=_('The name of the recipe.'),
                             null=True, blank=True)
     
-    scraped_name = models.CharField(_('Scraped Name'), max_length=300, default='')
+    scraped_name = models.CharField(_('Scraped Name'), max_length=300, default='', null=True, blank=True)
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)

@@ -11,7 +11,7 @@ var recipes_added_data_url = "{% url 'get_admin_recipes_added_data' %}";
 $(function() {
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 350 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%SZ").parse;
 
@@ -23,7 +23,7 @@ var y = d3.scale.linear()
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom");
+    .orient("bottom").tickFormat(d3.time.format("%d/%m"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -48,8 +48,8 @@ d3.json(recipes_added_data_url, function(error, data) {
     	d.amount = 95;
   });
 
-  x.domain([data[0].date, new Date(2015,6,31)]);
-  y.domain([90, 210]);
+  x.domain([data[0].date, new Date(2015,data[data.length - 1].date.getMonth() + 1,28)]);
+  y.domain([90, 310]);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -64,16 +64,44 @@ d3.json(recipes_added_data_url, function(error, data) {
   svg.append("line")
       .attr("class", "stretch-goal-line")
       .attr("x1", x(x.domain()[0]))
+      .attr("y1", y(135))
+      .attr("x2", x(x.domain()[1]))
+      .attr("y2", y(135))
+  svg.append("text")
+      .attr("x", x(x.domain()[1]))
+      .attr("y", y(135))
+      .attr("dy", "-0.3em")
+      .style("text-anchor", "end")
+      .style("font-size", "12px")
+      .text("Recepten pagina wordt gepimped");
+
+  svg.append("line")
+      .attr("class", "stretch-goal-line")
+      .attr("x1", x(x.domain()[0]))
       .attr("y1", y(150))
       .attr("x2", x(x.domain()[1]))
       .attr("y2", y(150))
   svg.append("text")
       .attr("x", x(x.domain()[1]))
       .attr("y", y(150))
-      .attr("dy", "-0.8em")
+      .attr("dy", "-0.3em")
       .style("text-anchor", "end")
       .style("font-size", "12px")
       .text("Bram krijgt een nieuwe Ingrediëntenpagina");
+
+  svg.append("line")
+      .attr("class", "stretch-goal-line")
+      .attr("x1", x(x.domain()[0]))
+      .attr("y1", y(160))
+      .attr("x2", x(x.domain()[1]))
+      .attr("y2", y(160))
+  svg.append("text")
+      .attr("x", x(x.domain()[1]))
+      .attr("y", y(160))
+      .attr("dy", "-0.3em")
+      .style("text-anchor", "end")
+      .style("font-size", "12px")
+      .text("Mooie ingredienten op de recepten pagina");
 
   svg.append("line")
       .attr("class", "stretch-goal-line")
@@ -84,7 +112,7 @@ d3.json(recipes_added_data_url, function(error, data) {
   svg.append("text")
       .attr("x", x(x.domain()[1]))
       .attr("y", y(180))
-      .attr("dy", "-0.8em")
+      .attr("dy", "-0.3em")
       .style("text-anchor", "end")
       .style("font-size", "12px")
       .text("Bram mag nog 1 sessie all-out mierenneuken over eender wat");
@@ -98,10 +126,24 @@ d3.json(recipes_added_data_url, function(error, data) {
   svg.append("text")
       .attr("x", x(x.domain()[1]))
       .attr("y", y(200))
-      .attr("dy", "-0.8em")
+      .attr("dy", "-0.3em")
       .style("text-anchor", "end")
       .style("font-size", "12px")
       .text("Seasoning V1.1 Launch + pers");
+
+  svg.append("line")
+      .attr("class", "stretch-goal-line")
+      .attr("x1", x(x.domain()[0]))
+      .attr("y1", y(300))
+      .attr("x2", x(x.domain()[1]))
+      .attr("y2", y(300))
+  svg.append("text")
+      .attr("x", x(x.domain()[1]))
+      .attr("y", y(300))
+      .attr("dy", "-0.3em")
+      .style("text-anchor", "end")
+      .style("font-size", "12px")
+      .text("Joep maakt een app");
       
 
 
