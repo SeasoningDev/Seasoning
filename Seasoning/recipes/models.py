@@ -14,6 +14,7 @@ from django.core.files.temp import NamedTemporaryFile
 import urllib
 from django.core.files.base import File
 from markitup.fields import MarkupField
+from math import sqrt
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -264,9 +265,28 @@ class RecipeDistribution(models.Model):
     
     This means that to find PHI-1(0.1), we actually have to find PHI-1(p_0 + (0.1 * p_1))
     
-    For ease of calculation, we will approximate the normal distribution with the 
-    logistic distribution.
+    For ease of calculation, we will approximate the normal distribution N(x) with the 
+    logistic distribution L(x). To achieve a comparable logistic distribution, we need a
+    scaling factor so that N(0, m, s) = l_0 * L(0, m, s)
+    
     """
+    @classmethod
+    def logistic(cls, x, mean, std, scaling=1):
+        return scaling * (math.exp(-(x - mean) / std) / (std * math.pow((1 + math.exp(-(x - mean) / std)), 2)))
+    
+#     @classmethod
+#     def logistic_cdf(cls, x, mean, std, scaling=1):
+#         
+    
+    @classmethod
+    def distribution_scaling_factor(cls, mean, std):
+        N_0 = 1 / (std * math.sqrt(2 * math.pi))
+        L_0 = cls.logistic(0, mean, std)
+        
+        return N_0 / L_0
+    
+    
+        
         
     
     
@@ -286,7 +306,7 @@ class ScrapedRecipe(models.Model):
                             help_text=_('The name of the recipe.'),
                             null=True, blank=True)
     
-    scraped_name = models.CharField(_('Scraped Name'), max_length=300, default='', null=True, blank=True)
+    scraped_name = models.CharField(_('Scraped Name'), max_length=300, null=True, blank=True)
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)
@@ -392,7 +412,6 @@ class ScrapedRecipe(models.Model):
         
         self.recipe = real_recipe
         self.save()
-     
 
     
 class ScrapedUsesIngredient(models.Model):
