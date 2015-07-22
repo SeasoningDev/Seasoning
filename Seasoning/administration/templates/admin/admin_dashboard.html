@@ -62,7 +62,7 @@ d3.json(recipes_added_data_url, function(error, data) {
       .attr("d", line);
 
   svg.append("line")
-      .attr("class", "stretch-goal-line")
+      .attr("class", "stretch-goal-line done")
       .attr("x1", x(x.domain()[0]))
       .attr("y1", y(135))
       .attr("x2", x(x.domain()[1]))
@@ -181,6 +181,10 @@ d3.json(recipes_added_data_url, function(error, data) {
   fill: none;
   stroke: #ddd;
   stroke-width: 2px;
+}
+
+.stretch-goal-line.done {
+	stroke: #93c54b;
 }
 
 </style>
