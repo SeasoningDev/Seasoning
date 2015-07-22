@@ -4,6 +4,7 @@ from django.db import models
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import ResizeToFill, SmartResize
 import datetime
+import re
 
 def get_image_filename(instance, old_filename):
     """
@@ -40,6 +41,25 @@ class Unit(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def name_needed(self):
+        return 'stuk' not in self.name.lower()
+    
+    def get_display_name(self):
+        if self.name_needed():
+            m = re.match('(.*)\(.*\)', self.name)
+            if m:
+                return m.group(1)
+            
+            return self.name
+        
+        return ''
+    
+    def get_display_name_plural(self):
+        if self.name_needed():
+            return self.name.replace('(', '').replace(')', '')
+        
+        return ''
     
     
 

@@ -1,6 +1,6 @@
 {% load staticfiles %}
 
-<div class="recipe-preview-wrapper" onclick="window.open('{% if recipe.external %}{{ recipe.external_url }}{% else %}{% url 'view_recipe' recipe.id %}{% endif %}', '_blank')">
+<a class="recipe-preview-wrapper" href="{% if recipe.external %}{{ recipe.external_url }}" target="_blank{% else %}{% url 'view_recipe' recipe.id %}{% endif %}">
 	
 	<span class="corner-ribbon">
 		{% if recipe.cached_in_season %}
@@ -21,17 +21,17 @@
 			{% endif %}
 		</span>
 		
-		<a class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}" href="{% url 'view_recipe_footprint_analysis' recipe.id %}" target="_blank">		
+		<span class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}" onclick="window.open('{% url 'view_recipe_footprint_analysis' recipe.id %}', '_blank');return false;">		
 			{{ recipe.get_footprint_category_display }}
-		</a>
+		</span>
 		
 		<span class="recipe-preview-title">
 			{{ recipe.name }}
 		</span>
 		
-		<a class="recipe-preview-footprint" href="{% url 'view_recipe_footprint_analysis' recipe.id %}" target="_blank">
+		<span class="recipe-preview-footprint" onclick="window.open('{% url 'view_recipe_footprint_analysis' recipe.id %}', '_blank');return false;">
 				<span class="pull-left">Voetafdruk</span>
 				<span class="pull-right">{{ recipe.cached_footprint|floatformat:2 }} kgCO<sub>2</sub></span>
-		</a>
+		</span>
 	</span>
-</div>
+</a>

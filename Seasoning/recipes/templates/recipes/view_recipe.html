@@ -10,43 +10,70 @@
 
 {% block body %}
 
+<div id="recipe-name" style="background-image:url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be{% endif %}{{ recipe.image.url }}');">
+	<div class="overlay">
+	<div class="container">
+		<div class="row">
+			<h1 class="col-xs-12">{{ recipe.name }}</h1>
+		</div>
+	</div>
+	</div>
+</div>
+<hr id="recipe-name-line" />
+
 <div id="recipe-body" class="container">
 
 	<div class="row">
-		<div class="col-xs-12 page-header">
-			<h1>{{ recipe.name }}</h1>
-		</div>
+		<h3 class="col-xs-12">Ingrediënten</h3>
 	</div>
 	
 	<div class="row">
-		<div class="col-xs-12 col-sm-6">
-			<h3 class="ing-title">Ingrediënten</h3>
-			<span class="portions">Voor {{ recipe.portions }} personen</span>
-			
-			<ul class="ingredients">
-				{% for uses_ingredient in recipe.uses_ingredients.all %}
-				<li>{{ uses_ingredient.amount|floatformat:"-10" }} {{ uses_ingredient.unit.short_name }} {{ uses_ingredient.ingredient }}</li>
-				{% endfor %}
-			</ul>
-			
-			<h4>Extra Info</h4>
-			
-			<p>{{ recipe.extra_info }}</p>
-		</div>
 		
-		<div class="col-xs-12 col-sm-6">
-			<div id="recipe-image-border">
-				<div id="recipe-image" style="background-image:url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be{% endif %}{{ recipe.image.url }}');"></div>
+		{% for uses in recipe.uses_ingredients.all %}
+		<div class="ingredient col-xs-12 col-sm-6">
+			<span class="ingredient-id" style="display:none;">{{ uses.ingredient.id }}</span>
+			<div class="col-xs-12">
+			    <div class="row" role="tab" id="heading{{ forloop.counter0 }}">
+				    <h5 class="">
+				    	<span class="col-xs-10">
+						    {{ uses.amount|floatformat:"-2" }} {{ uses.get_unit_display }}
+							<span class="ingredient-name">
+								{{ uses.get_ingredient_display }}
+								{% if uses.ingredient.coming_from_endangered %}
+								<img class="endangered-icon" src="{{ STATIC_URL }}img/icons/attention.png" title="Opgelet! Deze vissoort wordt mogelijk slecht beheerd in bepaalde gebieden. Klik hier voor meer informatie." />
+								{% endif %}
+							</span>
+						</span>
+						
+						<span class="col-xs-2 pull-right text-right" style="white-space: nowrap;">
+							<span class="ingredient-footprint pull-right">
+								<span class="footprint-number">{{ uses.footprint|floatformat:"2" }}</span> kgCO<sub>2</sub>
+							</span>
+						</span>
+				    </h5>
+				</div>
 			</div>
 		</div>
-		
-		<div class="col-xs-12">
-					<h3>Bereiding</h3>
-			
-			{{ recipe.instructions.rendered|safe }}
-		</div>
+		{% endfor %}
 		
 	</div>
+	<br><br>
+	<div class="row">
+		<h3 class="col-xs-12">Bereidingswijze</h3>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-12">
+			{{ recipe.instructions }}
+		</div>
+	</div>
+	<br><br><br>
+	<div class="row">
+		<div class="col-xs-12 col-sm-4 col-sm-offset-4">
+			<a href="{% url 'browse_recipes' %}" class="btn btn-default btn-block">Terug naar de zoekpagina</a>
+		</div>
+	</div>
+	<br><br>
 
 </div>
 {% endblock %}

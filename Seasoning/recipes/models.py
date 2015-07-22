@@ -185,6 +185,20 @@ class UsesIngredient(models.Model):
     def __str__(self):
         return 'Recipe {} uses Ingredient {}'.format(self.recipe_id, self.ingredient_id)
     
+    def get_unit_display(self):
+        if self.amount == 1:
+            return self.unit.get_display_name()
+        
+        return self.unit.get_display_name_plural()
+    
+    def get_ingredient_display(self):
+        if self.amount == 1 or self.ingredient.plural_name is None or self.ingredient.plural_name == '':
+            return self.ingredient.name
+        
+        return self.ingredient.plural_name
+    
+    
+    
     
     
     def unit_conversion_ratio(self):
