@@ -201,7 +201,7 @@
     opacity: 0.4;
 }
 
-#sort-by-wrapper a {
+#sort-by-wrapper li a {
     color: #629b31;
     display: block;
     font-size: 16px;
