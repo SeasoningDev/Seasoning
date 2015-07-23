@@ -16,6 +16,7 @@ from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
 from recipes.scrapers.kriskookt_scraper import debug_get_recipe_page
 from django.http.response import JsonResponse
 from _collections import defaultdict
+from ingredients.models import Ingredient
 
 @staff_member_required
 def admin_home(request):
@@ -39,15 +40,23 @@ def get_admin_recipes_added_data(request):
 
 @staff_member_required
 def admin_list_ingredients(request):
-    return render(request, 'admin/admin_list_ingredients.html')
+    return render(request, 'admin/admin_list_ingredients.html', {'ao_ings': Ingredient.objects.all().count(),
+                                                                 'ao_accepted_ings': Ingredient.objects.filter(accepted=True).count(),
+                                                                 'ao_bramified_ings': Ingredient.objects.filter(bramified=True).count(),
+                                                                 'ingredients': Ingredient.objects.all().order_by('bramified', '-accepted', 'name')})
 
 
     
 @staff_member_required
-def admin_recipes_update_cached_properties(request):
-    call_command('update_cached_attributes')
+def admin_recipes_update_cached_properties(request, recipe_id=None):
+    if recipe_id is None:
+        call_command('update_cached_attributes')
+        
+        call_command('calculate_recipe_distributions')
     
-    call_command('calculate_recipe_distributions')
+    else:
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        recipe.update_cached_attributes()
     
     return redirect('admin_home')
 

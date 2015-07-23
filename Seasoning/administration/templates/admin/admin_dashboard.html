@@ -3,7 +3,7 @@
 
 {% block extra_script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-<<script type="text/javascript">
+<script type="text/javascript">
 var recipes_added_data_url = "{% url 'get_admin_recipes_added_data' %}";
 </script>
 <script>
@@ -76,7 +76,7 @@ d3.json(recipes_added_data_url, function(error, data) {
       .text("Recepten pagina wordt gepimped");
 
   svg.append("line")
-      .attr("class", "stretch-goal-line")
+      .attr("class", "stretch-goal-line done")
       .attr("x1", x(x.domain()[0]))
       .attr("y1", y(150))
       .attr("x2", x(x.domain()[1]))

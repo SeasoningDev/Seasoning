@@ -17,8 +17,11 @@ body {
 }
 
 #recipe-name h1 {
-	margin: 80px 0 0;
+	margin: 0;
 	font-size: 50px;
+	height: 150px;
+	line-height: 150px;
+	text-align: center;
 }
 
 #recipe-name-line {

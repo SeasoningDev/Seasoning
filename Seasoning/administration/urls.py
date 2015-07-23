@@ -12,7 +12,8 @@ urlpatterns = [
     
     
     
-    url(r'^cachupdate/$', views.admin_recipes_update_cached_properties, name='admin_recipes_update_cached_properties'),
+    url(r'^cacheupdate/$', views.admin_recipes_update_cached_properties, name='admin_recipes_update_cached_properties'),
+    url(r'^cacheupdate/(\d+)/$', views.admin_recipes_update_cached_properties, name='admin_recipes_update_cached_properties_single'),
     
     
     
