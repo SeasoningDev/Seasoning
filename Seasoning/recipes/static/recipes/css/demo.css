@@ -1,3 +1,7 @@
+#demo-templates {
+	display: none;
+}
+
 .alert.alert-demo {
 	width: 600px;
 	position: fixed;
@@ -52,4 +56,27 @@
 }
 .alert-demo .btn-block {
 	width: auto;
+}
+
+
+
+
+.demo-start,
+.demo-end {
+	bottom: 30px;
+	right: 30px;
+}
+
+.basic-intro-1,
+.basic-intro-2,
+.basic-intro-3,
+.basic-intro-4,
+.basic-intro-5,
+.basic-intro-6,
+.basic-intro-7 {
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 }
