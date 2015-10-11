@@ -1,27 +1,34 @@
+'''
+Created on Jul 5, 2015
+
+@author: joep
+'''
+from recipes.models import Recipe, Cuisine, UsesIngredient, RecipeDistribution,\
+    ExternalSite, ScrapedRecipe, ScrapedUsesIngredient
+from administration.admin import seasoning_admin_site
 from django.contrib import admin
-from recipes.models import Recipe, Cuisine, UsesIngredient, UnknownIngredient, ExternalSite
 
 class UsesIngredientInline(admin.TabularInline):
+    
     model = UsesIngredient
-    readonly_fields=('footprint',)
-
+    
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = [ UsesIngredientInline, ]
-    search_fields = ['name']
-    list_display = ('__unicode__', 'external', 'accepted')
     
-    # Make sure the recipe object gets saved again after the usesingredient objects are saved
-    temp_obj = None
+    model = Recipe
+    inlines = [UsesIngredientInline]
     
-    def save_model(self, request, obj, form, change):
-        self.temp_obj = obj
-        admin.ModelAdmin.save_model(self, request, obj, form, change)
+class ScrapedUsesIngredientInline(admin.TabularInline):
     
-    def save_related(self, request, form, formsets, change):
-        admin.ModelAdmin.save_related(self, request, form, formsets, change)
-        self.temp_obj.save()
-
-admin.site.register(ExternalSite)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Cuisine)
-admin.site.register(UnknownIngredient)
+    model = ScrapedUsesIngredient
+    
+class ScrapedRecipeAdmin(admin.ModelAdmin):
+    
+    model = ScrapedRecipe
+    inlines = [ScrapedUsesIngredientInline]
+    
+seasoning_admin_site.register(Cuisine)
+seasoning_admin_site.register(Recipe, RecipeAdmin)
+seasoning_admin_site.register(RecipeDistribution)
+seasoning_admin_site.register(ExternalSite)
+seasoning_admin_site.register(ScrapedRecipe, ScrapedRecipeAdmin)
+seasoning_admin_site.register(ScrapedUsesIngredient)

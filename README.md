@@ -17,3 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Seasoning.  If not, see <http://www.gnu.org/licenses/>.
 
 See the website at https://www.seasoning.be
+
+TODO:
+Add creditations for icons and images:
+Accept/Decline icons: <div>Icons made by Robin Kylander from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>         is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>

@@ -8,8 +8,8 @@ media/*
 *~
 \#*\#
 .\#*
-*.css
 .sass-cache
+*.css.map
 !style.css
 
 secrets.py

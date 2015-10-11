@@ -1,48 +1,15 @@
-from django.conf.urls import patterns, include, url
-from general.sitemaps import GeneralViewsSitemap, StaticViewSitemap
-from ingredients.sitemaps import IngredientViewsSitemap
-from recipes.sitemaps import RecipeViewsSitemap
+from django.conf.urls import include, url
+from django.shortcuts import redirect
+import recipes.urls, administration.urls, ingredients.urls
+from django.contrib import admin
+from administration.admin import seasoning_admin_site
 
-sitemaps = {
-    'general': GeneralViewsSitemap,
-    'static': StaticViewSitemap,
-    'ingredients': IngredientViewsSitemap,
-    'recipes': RecipeViewsSitemap,
-}
-
-urlpatterns = patterns('',
+urlpatterns = [
+    url(r'^$', lambda r: redirect('browse_recipes')),
     
-    # Core pages
-    (r'^ingredients/', include('ingredients.urls')),
-    (r'^recipes/', include('recipes.urls')),
-    
-    # Registration pages
-    (r'^profile/', include('authentication.urls')),
-    
-     # Comments
-    (r'^comments/', include('django.contrib.comments.urls')),
-    # FAQ
-    (r'^faq/', include('faq.urls')),
-    
-    # Sitemap
-    (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': sitemaps}),
-    (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
-    
-    (r'^dowser/', include('django_dowser.urls')),
-    
-    # General Pages
-    (r'^', include('general.urls')),
-)
-
-import debug_toolbar
-urlpatterns += patterns('',
-    url(r'^__debug__/', include(debug_toolbar.urls)),
-)
-
-from django.conf import settings
-# debug stuff to serve static media
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
-            {'document_root': settings.MEDIA_ROOT}),
-   )
+    url(r'^ingredients/', include(ingredients.urls)),
+    url(r'^recipes/', include(recipes.urls)),
+        
+    url(r'^admin/', include(administration.urls)),
+    url(r'^admin/db/', include(seasoning_admin_site.urls)),
+]

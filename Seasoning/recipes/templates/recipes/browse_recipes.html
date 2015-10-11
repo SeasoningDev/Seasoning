@@ -1,161 +1,203 @@
 {% extends "base.html" %}
+{% load static addcss %}
 
 {% block title %}Recepten{% endblock %}
 
-{% block extra_script %}
-<script src="{{ STATIC_URL }}js/forms.js"></script>
-<script src="{{ STATIC_URL }}js/jquery-ui.min.js"></script>
-<script src="{{ STATIC_URL }}js/browse_recipes.js"></script>
-<script src="{{ STATIC_URL }}js/ajax_content_loader.js"></script>
-<script>
-$(function() {
-	$("#browse-recipe-summaries-wrapper").ajax_load({
-		ajax_url: '{% url "ajax_browse_recipes" %}',
-		form: $("#{{ search_form_id }}"),
-		page_field_to_update: $("#id_page"),
-		loader_element: $("#recipes-ajax-loader"),
-		no_more_data_element_to_show: $("#recipes-ajax-done"),
-		no_results_element_to_show: $("#recipes-ajax-noresults"),
-	});
-	$("#id_search_string").focus();
-});
-</script>
+{% block extra_link %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<link href="{% static "recipes/css/browse_recipes.css" %}" rel="stylesheet">
+<link href="{% static "recipes/css/recipe_preview.css" %}" rel="stylesheet">
+<link href="{% static "recipes/css/demo.css" %}" rel="stylesheet">
 {% endblock %}
 
-{% block recipes-active %}active{% endblock %}
+{% block extra_script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+<script>
+	{% with page_size=20 %}
+	var get_recipes_url = "{% url 'get_recipes_max' page_size %}";
+	var recipes_page_size = {{ page_size }};
+	var ingredient_names_url = "{% url 'get_ingredient_name_list' %}";
+	{% endwith %}
+</script>
+<script type="text/javascript" src="{% static "recipes/js/browse_recipes.js" %}"></script>
+<script tupe="text/javascript" src="{% static "recipes/js/demo.js" %}" ></script>
+{% endblock %}
 
-{% block content %}
-<h2>Recepten zoeken</h2>
 
-<a href="{% url 'add_recipe' %}" title="Voeg een nieuw recept toe" id="add-recipe-button" class="add-button">
-	<span id="add-recipe-button-text">Voeg een nieuw recept toe</span>
-</a>
-	    
-<div id="recipe-search-container">
-	<form id="{{ search_form_id }}" class="keywords" action="" method="post">
-	    {% csrf_token %}
-	    
-	    {{ search_form.page }}
-	    
-	    <div id="basic-search">
-	        {{ search_form.search_string }}
-		    <button id="keywords-submit" class="nochrome" type="submit">
-		        <span class="submit-icon"> </span>
-		    </button>
+{% block body %}
+<a href="#" id="advanced-search-btn-mobile"></a>
+
+<form id="recipe-search-form" class="keywords">
+	{% csrf_token %}
+	<input id="next-recipes-page" name="page" type="hidden" value=1 autocomplete="off">
 	
-			<span id="browse-recipes-loader">
-				{% include "includes/ajax-loader.html" %}
-			</span>
-		</div>
-		<a id="not-advanced-link" class="advanced-link" href="#">
-		    Niet-geavanceerd zoeken
-		</a>
-		<a id="advanced-link" class="advanced-link" href="#">
-		    Geavanceerd zoeken
-		</a>
-	    {{ search_form.advanced_search.as_hidden }}
-	    
-	    <hr id="search-form-divider">
-	    <div id="advanced-search">
-	        <div id="sorting-options">
-	            <p>
-	                Sorteren op:
-	            </p>
-	        	{{ search_form.sort_field }}
-	            <a class="order-arrow up{% if search_form.sort_order.0.is_checked %} active{% endif %}" href="#">
-	                <img src="{{ STATIC_URL }}img/icons/up.png" title="Sorteer in oplopende volgorde" alt="Sorteer in oplopende volgorde" />
-	            </a><a class="order-arrow down{% if search_form.sort_order.1.is_checked %} active{% endif %}" href="#">
-	                <img src="{{ STATIC_URL }}img/icons/down.png" title="Sorteer in aflopende volgorde" alt="Sorteer in aflopende volgorde" />
-	            </a>
-	            {{ search_form.sort_order }}
-	        </div>
-	        <div id="inseason-option">
-	        	<p>
-	        		In seizoen: {{ search_form.inseason }}
-	        	</p>
-	        </div>
-	    	<div id="veg-options">
-	    	    <p>
-	                Voedingswijze:
-	            </p>
-	            <a class="veg-choice active" href="#">
-	            	<img src="{{ STATIC_URL }}img/icons/vegan.png" title="Veganistische gerechten" alt="Veganistische gerechten" />
-	            	{{ search_form.ven }}
-	            </a><a class="veg-choice active" href="#">
-	                <img src="{{ STATIC_URL }}img/icons/vegetarian.png" title="Vegetarische gerechten" alt="Vegetarische gerechten" />
-	                {{ search_form.veg }}
-	            </a><a class="veg-choice active" href="#">
-	            	<img src="{{ STATIC_URL }}img/icons/non-vegetarian.png" title="Niet-vegetarische gerechten" alt="Niet-vegetarische gerechten" />
-	            	{{ search_form.nveg }}
-	            </a>
-	        </div>
-	        <div id="incl-ings">
-	            <p>
-	                Dit wil ik erbij:
-	            </p>
-	            {{ include_ingredients_formset.management_form }}
-	            <a href="#"><span class="option and first{% if search_form.include_ingredients_operator.0.is_checked %} active{% endif %}">Allemaal</span></a><a href="#"><span class="option or last{% if search_form.include_ingredients_operator.1.is_checked %} active{% endif %}">Minstens 1</span></a>
-	            {{ search_form.include_ingredients_operator }}
-	            
-	            <input id="include-ingredients-input" class="ingredients-input" type="text" placeholder="Voer ingrediënten in" />
+	{{ include_ingredients_formset.management_form }}
+	{{ exclude_ingredients_formset.management_form }}
 	
-	            <div id="included-ingredients">
-	            </div>
-	            <span class="empty-form">
-	                {{ include_ingredients_formset.empty_form.name }}
-	            </span>
-	        </div>
-	        <div id="excl-ings">
-	            <p>
-	                Dit wil ik er niet bij:
-	            </p>
-	            {{ exclude_ingredients_formset.management_form }}
-	            <input id="exclude-ingredients-input" class="ingredients-input" type="text" placeholder="Voer ingrediënten in" />
-	
-	            <div id="excluded-ingredients">
-	            </div>
-	            <span class="empty-form">
-	                {{ exclude_ingredients_formset.empty_form.name }}
-	            </span>
-	        </div>
-	        <div id="extra-info">
-	            <p>
-	                Type maaltijd:
-	            </p>
-	    	   {{ search_form.course }}
-	            <p>
-	                Keuken:
-	            </p>
-	            {{ search_form.cuisine }}
-	    	</div>
-			
-			
-	    	<br class="clear" />
+	<div id="base-recipe-search-container">
+		<div id="base-recipe-search" class="navbar-form">
+			{{ recipe_search_form.search_query|addcss:"class,form-control,placeholder,Zoek Recepten" }}
 	    </div>
-	    
-	    <div id="browse-recipes-right-column" class="advanced">
-	    	<div id="browse-recipe-summaries-wrapper" class="summaries-wrapper">
-			</div>
-			
-			<div id="recipes-ajax-loader" style="clear: both; text-align: center; padding-top: 20px;">
-				<div>
-					{% include "includes/ajax-loader.html" %}
-				</div>
-				Recepten laden...
-			</div>
-			
-			<div id="recipes-ajax-done" style="clear: both; text-align: center; padding-top: 20px; display: none;">
-				<a href="#top-of-page">Terug naar boven</a>
-			</div>
+	</div>
+	
+	<div id="advanced-search-bar-spacer"></div>
+	
+	<div id="advanced-search-bar">
 		
-			<div id="recipes-ajax-noresults" style="clear: both; text-align: center; padding-top: 20px; display: none; height: 60px;">
-				Je zoekopdracht heeft geen resultaten opgeleverd...
+		<a id="advanced-search-btn" href="#">Geavanceerd Zoeken</a>
+			
+		<a id="advanced-search-close-btn" href="#">Geavanceerd Zoeken Verbergen</a>
+		
+		<span id="result-count"><span id="count"></span> Recepten Gevonden</span>
+		
+		<div id="sort-by-wrapper">
+			<ul>
+				{% for sort_field, sort_field_display in recipe_search_form.fields.sort_by.choices %}
+					{% if recipe_search_form.sort_by.value == sort_field %}
+					<li class="placeholder">
+						<a href="#" data-type="all">Sorteren op: {{ sort_field_display|safe }}</a>
+					</li>
+					{% endif %}
+				{% endfor %}
+				
+				{% for sort_field, sort_field_display in recipe_search_form.fields.sort_by.choices %}
+					<li class="filter">
+						<a {% if recipe_search_form.sort_by.value == sort_field %}class="selected" {% endif %}
+						   href="#" data-type="all"
+						   data-value={{ sort_field }}>{{ sort_field_display|safe }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+			{{ recipe_search_form.sort_by }}
 		</div>
-	    </div>
-	    
-	</form>
+	</div>
 	
-	<br class="clear" />
-</div>
+	
+	<div class="cd-filter">
+		<div class="cd-filter-block">
+			<h4>Speciale Eigenschappen</h4>
+			<ul id="special-inputs" class="cd-filter-content cd-filters list">
+				<li>
+					<input id="{{ recipe_search_form.in_season.auto_id }}" name="{{ recipe_search_form.in_season.name }}" 
+						   class="filter" type="checkbox" data-filter=".spec-check-1">
+					<label class="checkbox-label" for="{{ recipe_search_form.in_season.auto_id }}">Enkel in seizoen</label>
+				</li>
+				<li>
+					<input id="{{ recipe_search_form.no_endangered.auto_id }}" name="{{ recipe_search_form.no_endangered.name }}" 
+						   class="filter" type="checkbox" data-filter=".spec-check-2">
+					<label class="checkbox-label" for="{{ recipe_search_form.no_endangered.auto_id }}">Geen overbeviste ingredienten</label>
+				</li>
+			</ul>
+		</div>
+		
+		<div class="cd-filter-block">
+			<h4>Voedingswijze</h4>
+			<ul id="special-inputs" class="cd-filter-content cd-filters list">
+				{% for veganism_choice in recipe_search_form.veganism %}
+				<li>
+					<input id="{{ recipe_search_form.veganism.auto_id }}_{{ forloop.counter0 }}" type="checkbox" value="{{ veganism_choice.choice_value }}"
+						   name="{{ veganism_choice.name }}" class="filter" checked="checked" />
+					<label class="checkbox-label" for="{{ recipe_search_form.veganism.auto_id }}_{{ forloop.counter0 }}">{{ veganism_choice.choice_label }}</label>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>	
+	
+		<div id="incl-ingredients" class="cd-filter-block">
+			<h4>Gewenste Ingrediënten</h4>
+			<div class="cd-filter-content">
+				
+				<div id="incl-ing-operator">
+					<input id="{{ recipe_search_form.include_ingredients_AND_operator.auto_id }}" name="{{ recipe_search_form.include_ingredients_AND_operator.name }}"
+				       data-toggle="toggle" data-off="Minstens één" data-on="Allemaal" type="checkbox" {% if recipe_search_form.include_ingredients_AND_operator.value %}checked="checked"{% endif %}>
+				</div>
+				<div class="incl-ing incl-ing-template">
+					{{ include_ingredients_formset.empty_form }}
+					<div class="ing-name">
+						<span class="text"></span>
+						<a href="#" class="pull-right" onclick="$(this).parent().parent().fadeOut(200, function(){$(this).remove();ajax_search_recipes();});return false;"><span class="glyphicon glyphicon-remove"></span></a>
+					</div>
+				</div>
+				<div class="ing-input-wrapper" style="position: relative;">
+					<input id="incl-ingredients-input" type="search" placeholder="Voer ingrediënten in...">
+					<img src="{% static "img/decoration/ajax-loader.png" %}" class="ajax-loader" />
+				</div>
+			</div>
+		</div>
+		
+		<div id="excl-ingredients" class="cd-filter-block">
+			<h4>Ongewenste Ingrediënten</h4>
+			<div class="cd-filter-content">
+				<div class="excl-ing excl-ing-template">
+					{{ exclude_ingredients_formset.empty_form }}
+					<div class="ing-name">
+						<span class="text"></span>
+						<a href="#" class="pull-right" onclick="$(this).parent().parent().fadeOut(200, function(){$(this).remove();ajax_search_recipes();});return false;"><span class="glyphicon glyphicon-remove"></span></a>
+					</div>
+				</div>
+				<div class="ing-input-wrapper" style="position: relative;">
+					<input id="excl-ingredients-input" type="search" placeholder="Voer ingrediënten in...">
+					<img src="{% static "img/decoration/ajax-loader.png" %}" class="ajax-loader" />
+				</div>
+			</div>
+		</div>
+		
+		<div class="cd-filter-block boolean-inputs">
+			<h4>Type Maaltijd</h4>
+			<ul class="cd-filter-content cd-filters list">
+				{% for value,option in recipe_search_form.fields.course.choices %}
+				<li>
+					<input id="id_course_{{ value }}" name="course" value="{{ value }}"
+						   class="filter" type="checkbox" data-filter=".check1">
+					<label class="checkbox-label" for="id_course_{{ value }}">{{ option }}</label>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		
+		<div class="cd-filter-block boolean-inputs">
+			<h4>Keuken</h4>
+			<ul class="cd-filter-content cd-filters list">
+				{% for value,option in recipe_search_form.fields.cuisine.choices %}
+				<li>
+					<input id="id_cuisine_{{ value }}" name="cuisine" value="{{ value }}"
+					       class="filter" type="checkbox" data-filter=".check1">
+					<label class="checkbox-label" for="id_cuisine_{{ value }}">{{ option }}</label>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	
+	<div id="overlay-wrapper">
+		<section id="browse-recipes-wrapper">
+			
+		</section>
+		
+		<div id="dark-overlay"></div>
+	
+		<div class="search-results-loader ajax-loader top">
+			<img src="{% static "img/decoration/ajax-loader.png" %}">
+		</div>
+		<div class="search-results-loader ajax-loader bottom">
+			<img src="{% static "img/decoration/ajax-loader.png" %}">
+		</div>
+		
+		<div id="no-results" class="text-success text-center">
+			Er werden geen recepten gevonden die aan jou zoekcriteria voldoen...
+		</div>
+		
+		<div id="end-buttons" class="text-center row">
+			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
+				<a class="btn btn-success btn-block" href="#">Terug naar boven</a>
+			</div>
+		</div>
+	</div>
+	
+	
+</form>
 
+{% include "recipes/includes/demo.html" %}
 {% endblock %}

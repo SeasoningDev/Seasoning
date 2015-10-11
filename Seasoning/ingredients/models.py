@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*- 
 import time
-import datetime
-import recipes
 from django.db import models
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import date as _date
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import ResizeToFill, SmartResize
-from general import validate_image_size
+import datetime
+import re
 
 def get_image_filename(instance, old_filename):
     """
@@ -37,41 +33,41 @@ class Unit(models.Model):
         1 this_unit = ratio parent_unit
     
     """
-    class Meta:
-        db_table = 'unit'
-        
-    name = models.CharField(max_length=30L, unique=True)
-    short_name = models.CharField(max_length=10L, blank=True)
+    name = models.CharField(max_length=30, unique=True)
+    short_name = models.CharField(max_length=10, blank=True)
     
     parent_unit = models.ForeignKey('self', related_name="derived_units", null=True, blank=True, limit_choices_to=models.Q(parent_unit__exact=None), default=None)
     ratio = models.FloatField(null=True, blank=True)
     
-    def __unicode__(self):
-        return self.name
-        
-    def short(self):
-        if self.short_name:
-            return self.short_name
+    def __str__(self):
         return self.name
     
+    def name_needed(self):
+        return 'stuk' not in self.name.lower()
+    
+    def get_display_name(self):
+        if self.name_needed():
+            m = re.match('(.*)\(.*\)', self.name)
+            if m:
+                return m.group(1)
+            
+            return self.name
+        
+        return ''
+    
+    def get_display_name_plural(self):
+        if self.name_needed():
+            return self.name.replace('(', '').replace(')', '')
+        
+        return ''
+    
+    
+
 class IngredientManager(models.Manager):
     
-    def with_name(self, name):
-        name_filter = models.Q(name__iexact=name) | models.Q(synonyms__name__iexact=name)
-        return self.distinct().get(name_filter)
+    def accepted(self):
+        return self.filter(accepted=True)
     
-    def accepted_with_name(self, name):
-        name_filter = models.Q(name__iexact=name) | models.Q(synonyms__name__iexact=name)
-        return self.distinct().get(name_filter, accepted=True)
-    
-    def with_name_like(self, name):
-        name_filter = models.Q(name__icontains=name) | models.Q(synonyms__name__icontains=name)
-        return self.distinct().filter(name_filter)
-    
-    def accepted_with_name_like(self, name):
-        name_filter = models.Q(name__icontains=name) | models.Q(synonyms__name__icontains=name)
-        return self.distinct().filter(name_filter, accepted=True)
-
 class Ingredient(models.Model):
     """
     This is the base class for ingredients. It is not an abstract class, as simple
@@ -80,12 +76,14 @@ class Ingredient(models.Model):
     
     """
     class Meta:
-        db_table = 'ingredient'
+        ordering = ('name', )
     
     class BasicIngredientException(Exception):
         pass
     
     objects = IngredientManager()
+    
+    
     
     # Choices
     DRINKS, FRUIT, CEREAL, VEGETABLES, HERBS_AND_SPICES, NUTS_AND_SEEDS, OILS, LEGUME, SEAFOOD, SUPPLEMENTS, FISH, MEAT, MEAT_SUBS, DAIRY_PRODUCTS = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
@@ -112,8 +110,8 @@ class Ingredient(models.Model):
              (SEASONAL, u'Seizoensgebonden'),
              (SEASONAL_SEA,  u'Seizoensgebonden Zee'))
     
-    name = models.CharField(max_length=50L, unique=True)
-    plural_name = models.CharField(max_length=50L, blank=True)
+    name = models.CharField(max_length=50, unique=True)
+    plural_name = models.CharField(max_length=50, blank=True)
     
     type = models.PositiveSmallIntegerField(choices=TYPES, default=BASIC)
     
@@ -133,9 +131,8 @@ class Ingredient(models.Model):
     
     base_footprint = models.FloatField()
     
-    image = ProcessedImageField(format='JPEG', processors=[ResizeToFill(350, 350)], upload_to=get_image_filename, 
-                                validators=[validate_image_size], default='images/no_image.jpg')
-    thumbnail = ImageSpecField([SmartResize(220, 220)], image_field='image', format='JPEG')
+    image = ProcessedImageField(format='JPEG', processors=[ResizeToFill(350, 350)], upload_to=get_image_filename, default='images/no_image.jpg')
+    thumbnail = ImageSpecField([SmartResize(220, 220)], source='image', format='JPEG')
     image_source = models.TextField(blank=True)
     
     accepted = models.BooleanField(default=False)
@@ -143,217 +140,118 @@ class Ingredient(models.Model):
     
     useable_units = models.ManyToManyField(Unit, through='CanUseUnit')
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    @property
-    def primary_unit(self):
-        try:
-            useable_units = self.canuseunit_set.all()
-            for useable_unit in useable_units:
-                if useable_unit.is_primary_unit:
-                    return useable_unit.unit
-            return None
-        except CanUseUnit.DoesNotExist:
-            return None
-    
-    def months_preservable(self):
-        return self.preservability // 30
-    
-    def preservation_footprint_monthly(self):
-        return self.preservation_footprint * 30
-    
-    def get_available_ins(self):
-        """
-        Returns a queryset for all the available in objects belonging to this ingredient
-        
-        """
-        if self.type == Ingredient.BASIC:
-            raise self.BasicIngredientException
-        elif self.type == Ingredient.SEASONAL:
-            return self.available_in_country.all()
-        elif self.type == Ingredient.SEASONAL_SEA:
-            return self.available_in_sea.all()
-    
-    def get_available_ins_sorted(self):
-        return self.get_available_ins().order_by('footprint')
-    
-    def get_active_available_ins(self, date=None):
-        """
-        Returns a list of the available in objects belonging to this ingredient
-        that are available on the given date (The given date is between the from and until
-        date). If no date is given, the current date will be used
-        
-        The until date is extended with the preservability of the ingredient
-        
-        This is done natively instead of through SQL because the SQL query would be 
-        pretty complicated, while the performance benefit is not very obvious as
-        every ingredient will only have a few available_ins
-        
-        """
-        if date is None:
-            date = datetime.date.today()
-        
-        active_available_ins = []
-        for available_in in self.get_available_ins():
-            if available_in.is_active(date, date_until_extension=self.preservability):
-                active_available_ins.append(available_in)
-        return active_available_ins
-    
-    def get_available_in_with_smallest_footprint(self, date=None):
-        """
-        Return the AvailableIn with the smallest footprint of the AvailableIn objects 
-        that are active on the given date beloning to this ingredient. If no date
-        is given, the current date will be assumed
-        
-        If this is a basic ingredient, the footprint is just the base_footprint of the
-        object
-        
-        If this is a Seasonal ingredient, the footprint is the base_footprint of the
-        object, plus the minimal of the currently available AvailableIn* objects.
-        
-        """
-        if date is None:
-            date = datetime.date.today()
-        
-        smallest_footprint = None
-        for available_in in self.get_active_available_ins(date):
-            if not available_in.is_active(date_until_extension=0):
-                # This means this available in is currently under preservation
-                footprint = available_in.footprint + available_in.days_apart()*self.preservation_footprint
-            else:
-                footprint = available_in.footprint
-            if not smallest_footprint or smallest_footprint > footprint:
-                smallest_footprint = footprint
-                smallest_available_in = available_in
-        if smallest_footprint is None:
-            raise ObjectDoesNotExist('No active AvailableIn object was found for ingredient ' + str(self))
-        return smallest_available_in
-        
-    def always_available(self):
-        """
-        Check if this Ingredient is always available somewhere
-        
-        """
-        try:
-            available_ins = self.get_available_ins()
-        except self.BasicIngredientException:
-            return True
-        
-        # All dates before this date (in the base year) the ingredient is sure to be available
-        current_date = datetime.date(AvailableIn.BASE_YEAR, 1, 1)
-        
-        while available_ins:
-            before_loop_date = current_date
-            
-            # Find an available in that is currently active
-            for avail in available_ins:
-                # Found an active available in
-                if avail.is_active(current_date, date_until_extension=self.preservability):
-                    
-                    # The end date of this available in with preservability
-                    extended_until_date = avail.extended_date_until(date_until_extension=self.preservability)
-                    
-                    # Add a day to include dates that end the day before the start date => these are valid as well
-                    extended_until_date += datetime.timedelta(days=1)
-                    
-                    extended_until_date = extended_until_date.replace(year=AvailableIn.BASE_YEAR)
-                    
-                    if extended_until_date <= current_date:
-                        # The availability wrapped around the year => we're finished
-                        return True
-                    
-                    else:
-                        # If we wrapped around and overshot current date, we're still finished
-                        extended_until_date_year_intact = avail.extended_date_until(date_until_extension=self.preservability)
-                        if extended_until_date_year_intact.year > extended_until_date.year and extended_until_date > avail.date_from:
-                            # We wrapped around
-                            return True
-                        
-                    current_date = extended_until_date
-                    
-            if before_loop_date == current_date:
-                # This loop did nothing
-                return False        
-    
-    def footprint(self, date=None):
-        """
-        Return the (minimal available) footprint of this ingredient on the given date.
-        If no date is given, the current date will be assumed.
-        
-        If this is a basic ingredient, the footprint is just the base_footprint of the
-        object
-        
-        If this is a Seasonal ingredient, the footprint is the base_footprint of the
-        object, plus the minimal of the currently available AvailableIn* objects.
-        
-        """
-        if date is None:
-            date = datetime.date.today()
-        
-        try:
-            available_in = self.get_available_in_with_smallest_footprint(date)
-            if not available_in.is_active(date_until_extension=0):
-                # This means this available in is currently under preservation
-                footprint = available_in.footprint + available_in.days_apart()*self.preservation_footprint
-            else:
-                footprint = available_in.footprint
-            return footprint
-        except self.BasicIngredientException:
-            return self.base_footprint
-    
-    def coming_from_endangered(self):
-        if self.type == Ingredient.SEASONAL_SEA:
-            for available_in in self.get_active_available_ins():
-                if available_in.endangered:
-                    return True
-        return False
     
     def can_use_unit(self, unit):
-        return unit in self.useable_units.all()
+        unit = unit.parent_unit or unit
+        
+        if unit in self.useable_units.all():
+            return True
+        
+        return False
+        
     
-    def clean(self):
-        if self.accepted and not self.always_available():
-            raise ValidationError(_('This ingredient is not always available somewhere, and should not be accepted.'))
+    
+    ACTIVE, PRESERVING, INACTIVE = 0, 1, 2
+    def get_available_ins_sorted_by_footprint(self, date=None):
+        if self.type is self.BASIC:
+            return []
         
-    def save(self):
-        if not self.type == Ingredient.SEASONAL:
-            self.preservability = 0
-            self.preservation_footprint = 0
-        saved = super(Ingredient, self).save()
+        elif self.type is self.SEASONAL:
+            availables = self.available_in_country.all()
+            
+        elif self.type is self.SEASONAL_SEA:
+            availables = self.available_in_sea.all()
         
+        availables_fp = []
+        for available in availables:
+            availables_fp.append({'available_in_object': available, 
+                                  'state': self.ACTIVE, 
+                                  'transportation_footprint': available.transportation_footprint(),
+                                  'production_footprint': available.extra_production_footprint,
+                                  'current_footprint': available.total_extra_footprint()})
+            
+            if not available.is_active(date):
+                availables_fp[-1]['preservation_footprint'] = available.days_since_last_active(date) * self.preservation_footprint 
+                availables_fp[-1]['current_footprint'] += availables_fp[-1]['preservation_footprint']
+                
+                if self.preservability < available.days_since_last_active(date):
+                    availables_fp[-1]['state'] = self.INACTIVE
+                
+                else:
+                    availables_fp[-1]['state'] = self.PRESERVING
+                    
+        return sorted(availables_fp, key=lambda avail: avail['current_footprint'])
+    
+    def get_useable_available_in_with_lowest_footprint(self, date=None):
+        for avail in self.get_available_ins_sorted_by_footprint(date):
+            if avail['state'] is not self.INACTIVE:
+                return avail
+        
+        raise Exception('No available in object is currently active')
+            
+    def is_in_season(self, date=None):
         try:
-            availableins = self.get_available_ins()
-            for availablein in availableins:
-                availablein.save()
-        except self.BasicIngredientException:
-            pass
+            return self.get_available_ins_sorted_by_footprint(date)[0]['state'] is not self.INACTIVE
         
-        # Update all recipes using this ingredient
-        uses = recipes.models.UsesIngredient.objects.filter(ingredient=self)
-        if len(uses) > 0 and len(uses) < 100:
-            # If more than 100 recipes use this ingredient, just wait for the cron job to
-            # avoid overloading the server
-            for uses_ingredient in uses:
-                uses_ingredient.save(update_recipe=True)
-        return saved
+        except IndexError:
+            return True
+        
+    
+    
+    def footprint(self, date=None):
+        if self.type is self.BASIC:
+            return self.base_footprint
+        
+        avail = self.get_useable_available_in_with_lowest_footprint(date)
+        return self.base_footprint + avail['current_footprint']
+    
+    def footprint_breakdown(self, date=None):
+        breakdown = {'Base Footprint': self.base_footprint}
+        
+        if self.type is self.BASIC:
+            breakdown.update({'Production': 0,
+                              'Transportation': 0,
+                              'Preservation': 0})
+        
+        else:
+            avail = self.get_useable_available_in_with_lowest_footprint(date)
+            
+            breakdown.update({'Production': avail['production_footprint'],
+                              'Transportation': avail['transportation_footprint'],
+                              'Preservation': avail.get('preservation_footprint', 0)})
+                         
+        return breakdown
+        
+        
+        
+    
+    
+    
+    def is_endangered(self, date=None):
+        if self.type is not self.SEASONAL_SEA:
+            return False
+        
+        return self.get_available_ins_sorted_by_footprint(date)[0]['available_in_object'].endangered 
+        
+            
 
 class Synonym(models.Model):
     """
     Represents a synonym for an ingredient, these will be displayed when viewing
     ingredients, and can be searched for.
     
-    """    
-    class Meta:
-        db_table = 'synonym'
+    """
+    name = models.CharField(max_length=50, unique=True)
+    plural_name = models.CharField(max_length=50, blank=True)
     
-    name = models.CharField(max_length=50L, unique=True)
-    plural_name = models.CharField(max_length=50L, blank=True)
+    ingredient = models.ForeignKey(Ingredient, related_name='synonyms', null=True, blank=True)
     
-    ingredient = models.ForeignKey(Ingredient, related_name='synonyms', null=True, db_column='ingredient', blank=True)
+    def __str__(self):
+        return '{} (synonym of ingredient {})'.format(self.name, self.ingredient_id)
     
-    def __unicode__(self):
-        return self.name
+    
     
 class CanUseUnit(models.Model):
     """
@@ -364,36 +262,14 @@ class CanUseUnit(models.Model):
         1 this_unit = conversion_factor primary_unit
     
     """    
-    class Meta:
-        db_table = 'canuseunit'
-        
-    ingredient = models.ForeignKey('Ingredient', db_column='ingredient')
-    unit = models.ForeignKey('Unit', related_name='useable_by', db_column='unit', limit_choices_to=models.Q(parent_unit__exact=None))
+    ingredient = models.ForeignKey('Ingredient', related_name='can_use_units')
+    unit = models.ForeignKey('Unit', related_name='useable_by', limit_choices_to=models.Q(parent_unit__isnull=True))
     
-    is_primary_unit = models.BooleanField()
+    conversion_ratio = models.FloatField()
     
-    conversion_factor = models.FloatField()
+    def __str__(self):
+        return 'Ingredient {} can use unit {}'.format(self.ingredient_id, self.unit_id)
     
-    def __unicode__(self):
-        return self.ingredient.name + ' can use ' + self.unit.name
-    
-    def save(self, *args, **kwargs):
-        super(CanUseUnit, self).save(*args, **kwargs)
-        if self.unit.parent_unit is None:
-            for unit in self.unit.derived_units.all():
-                try:
-                    canuseunit = CanUseUnit.objects.get(ingredient=self.ingredient, unit=unit)
-                    canuseunit.conversion_factor = self.conversion_factor*unit.ratio
-                    canuseunit.save()
-                except CanUseUnit.DoesNotExist:
-                    CanUseUnit(ingredient=self.ingredient, unit=unit, is_primary_unit=False, conversion_factor=self.conversion_factor*unit.ratio).save()
-    
-    def delete(self, *args, **kwargs):
-        super(CanUseUnit, self).delete(*args, **kwargs)
-        if self.unit.parent_unit is None:
-            # If this is a base unit, check if it has any derived canuseunits that need to be deleted
-            for canuseunit in CanUseUnit.objects.filter(ingredient=self.ingredient, unit__parent_unit=self.unit):
-                canuseunit.delete()
         
 
 class Country(models.Model):
@@ -401,31 +277,26 @@ class Country(models.Model):
     This class represent countries. Each country is a certain distance away from Belgium
     
     """
-    class Meta:
-        db_table = 'country'
-    
     id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=50L)
+    name = models.CharField(max_length=50)
     distance = models.IntegerField()
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
 
 class Sea(models.Model):
     """
     Same as the ``Country`` model, but for fish ingredients
     
     """    
-    class Meta:
-        db_table = 'sea'
-    
     id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=50L)
+    name = models.CharField(max_length=50)
     distance = models.IntegerField()
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
+    
+    
     
 class TransportMethod(models.Model):
     """
@@ -433,15 +304,14 @@ class TransportMethod(models.Model):
     per km
     
     """
-    class Meta:
-        db_table = 'transportmethod'
-        
     id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=20L)
-    emission_per_km = models.FloatField()
+    name = models.CharField(max_length=20)
+    emissions_per_km = models.FloatField()
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
+    
+    
     
 class AvailableIn(models.Model):
     """
@@ -462,7 +332,7 @@ class AvailableIn(models.Model):
     # This field must be overriden by implementing models
     location = None
     
-    transport_method = models.ForeignKey('Transportmethod', db_column='transport_method')
+    transport_method = models.ForeignKey('Transportmethod')
     
     production_type  = models.CharField(max_length=10, blank=True)
     extra_production_footprint = models.FloatField(default=0)
@@ -470,41 +340,19 @@ class AvailableIn(models.Model):
     date_from = models.DateField()
     date_until = models.DateField()
     
-    # This is the added footprint when an ingredient is available with this AvailableIn object,
-    # it is calculated when the model is saved
-    footprint = models.FloatField(editable=False)
     
-    def extended_date_until(self, date_until_extension=None):
-        if date_until_extension is None:
-            date_until_extension = self.ingredient.preservability
-        date = self.date_until + datetime.timedelta(days=date_until_extension)
-        if date.year > self.BASE_YEAR:
-            tmp_date = date.replace(year=self.BASE_YEAR)
-            if tmp_date > self.date_from:
-                return self.date_from - datetime.timedelta(days=1)
-            return date
-        
-        if self.date_until < self.date_from:
-            ok_day = date.day
-            while True:
-                try:
-                    date = date.replace(day=ok_day, year=self.BASE_YEAR + 1)
-                    break
-                except ValueError:
-                    ok_day -= 1
-            
-        return date
-        
-    def month_from(self):
-        return _date(self.date_from, 'F')
     
-    def month_until(self):
-        return _date(self.date_until, 'F')
+    def innie(self):
+        # 2000      from          until  2001
+        # |---------[-------------]------|
+        return self.date_from < self.date_until
     
-    def extended_month_until(self, date_until_extension=None):
-        return _date(self.extended_date_until(date_until_extension), 'F')
+    def outie(self):
+        # 2000      until         from   2001
+        # |---------]-------------[------|
+        return self.date_from > self.date_until
     
-    def is_active(self, date=None, date_until_extension=0):
+    def is_active(self, date=None):
         """
         Returns if this available in is currently active. This means the
         ingredient can be supplied using these parameters today.
@@ -515,46 +363,16 @@ class AvailableIn(models.Model):
         else:
             date = date.replace(year=self.BASE_YEAR)
         
-        if date < self.date_from:
-            try:
-                date = date.replace(year=self.BASE_YEAR + 1)
-            except ValueError:
-                # This probably means we hit 29th feb.
-                date = date.replace(day=date.day-1, year=self.BASE_YEAR + 1)
-            
-        if self.date_from <= self.date_until:
-            # 2000      from          until  2001
-            # |---------[-------------]------|
-            extended_until_date = (self.date_until + datetime.timedelta(days=date_until_extension))
+        if self.innie():
+            if date < self.date_from or self.date_until < date:
+                return False
+            return True
         else:
-            # 2000      until         from   2001
-            # |---------]-------------[------|
-            try:
-                date_until = self.date_until.replace(year=self.BASE_YEAR + 1)
-            except ValueError:
-                if self.date_until.month == 2 and self.date_until.day == 29:
-                    date_until = self.date_until.replace(day=28, year=self.BASE_YEAR + 1)
-                else:
-                    raise
-            extended_until_date = (date_until + datetime.timedelta(days=date_until_extension))
-            
-        return date <= extended_until_date
+            if self.date_until < date and date < self.date_from:
+                return False
+            return True
     
-    def save(self, *args, **kwargs):
-        self.footprint = self.ingredient.base_footprint + self.extra_production_footprint + self.location.distance*self.transport_method.emission_per_km
-        
-        self.date_from = self.date_from.replace(year=self.BASE_YEAR)
-        self.date_until = self.date_until.replace(year=self.BASE_YEAR)
-        
-        super(AvailableIn, self).save(*args, **kwargs)
-    
-    def days_apart(self, date=None):
-        """
-        Returns the amount of days between the date_until of this available in object
-        and the given date.
-        If the given date is between date_from and date_until, 0 is returned
-        
-        """
+    def days_since_last_active(self, date=None):
         if date is None:
             date = datetime.date.today().replace(year=self.BASE_YEAR)
         else:
@@ -566,37 +384,46 @@ class AvailableIn(models.Model):
         if date < self.date_until:
             date = date.replace(year=self.BASE_YEAR + 1)
         
-        return (date - self.date_until).total_seconds() // (24*60*60)
+        return (date - self.date_until).days
     
-
+        
+    
+    def transportation_footprint(self):
+        return self.location.distance * self.transport_method.emissions_per_km
+    
+    def total_extra_footprint(self):
+        return self.transportation_footprint() + self.extra_production_footprint
+    
+    
+    
+    def save(self, force_insert=False, force_update=False, using=None, 
+        update_fields=None):
+        
+        self.date_from = self.date_from.replace(year=self.BASE_YEAR)
+        self.date_until = self.date_until.replace(year=self.BASE_YEAR)
+        
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
     
 class AvailableInCountry(AvailableIn):
     """
     An implementation of the AvailableIn model for vegetal ingredients
     
     """
-    class Meta:
-        db_table = 'availableincountry'
+    ingredient = models.ForeignKey(Ingredient, related_name='available_in_country')
+    location = models.ForeignKey('Country')
     
-    ingredient = models.ForeignKey(Ingredient, related_name='available_in_country', db_column='ingredient')
-    location = models.ForeignKey('Country', db_column='country')
-    
-    def country(self):
-        return self.location
+    def __str__(self):
+        return 'Ingredient {} is available in Country {}'.format(self.ingredient_id, self.location_id)
     
 class AvailableInSea(AvailableIn):
     """
     An implementation of the AvailableIn model for fish ingredients
     
     """    
-    class Meta:
-        db_table = 'availableinsea'
-    
-    ingredient = models.ForeignKey(Ingredient, related_name='available_in_sea', db_column='ingredient')
-    location = models.ForeignKey('Sea', db_column='sea')
+    ingredient = models.ForeignKey(Ingredient, related_name='available_in_sea')
+    location = models.ForeignKey('Sea')
     
     endangered = models.BooleanField()
     
-    def sea(self):
-        return self.location
-    
+    def __str__(self):
+        return 'Ingredient {} is available in Sea {}'.format(self.ingredient_id, self.location_id)

@@ -1,0 +1,86 @@
+body {
+	background-color: #fff;
+}
+
+
+.row.bottom-margin {
+	margin-bottom: 80px;
+}
+
+
+.page-header h3 {
+	margin-top: 0;
+}
+
+.padded {
+	margin-left: 20px;
+}
+
+.help,
+.help-visible .show-help-btn,
+.hide-help-btn {
+	display: none;
+}
+.help-visible .hide-help-btn {
+	display: inline;
+}
+
+h4 a,
+h4 a:hover,
+h4 a:focus {
+	color: inherit;
+	transition: color .5s ease;
+}
+
+h4 a.active,
+h4 a.active:hover,
+h4 a.active:focus {
+	color: #98978b;
+	text-decoration: none;
+	cursor: default;
+	outline: none; 
+}
+
+
+
+
+svg {
+	overflow: visible !important;
+}
+
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.label-line {
+  fill: none;
+  stroke: #000;
+}
+
+.current-date line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+
+
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #fff;
+}
+
+path.distribution-line {
+  fill: none;
+  stroke: rgba(0, 0, 0, .1);
+  stroke-width: 2px;
+}

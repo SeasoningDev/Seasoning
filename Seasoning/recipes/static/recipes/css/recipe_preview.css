@@ -1,0 +1,138 @@
+.recipe-preview-wrapper {
+	position: relative;
+    display: inline-block;
+    height: 350px;
+    width: 250px;
+    margin: 15px;
+    max-width: 95%;
+
+    border: 1px solid #dddddd;
+    text-decoration: none;
+    transition: all 0.25s ease-in-out 0s;
+    
+    vertical-align: top;
+	color: #3e3f3a;
+	
+	cursor: pointer;
+}
+
+.recipe-preview-wrapper:hover, .recipe-preview-wrapper:active, .recipe-preview-wrapper:focus {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 5px black;
+    color: inherit;
+    text-decoration: none;
+}
+
+.recipe-preview-wrapper .corner-ribbon {
+	position: absolute;
+	top: -3px;
+	left: -3px;
+	z-index: 100;
+}
+
+.recipe-preview-wrapper .recipe-preview {
+	height: 100%;
+	width: 100%;
+	display: inline-block;
+	
+	background-size: cover;
+	background-position: center;
+	
+	position: relative;
+}
+
+.recipe-preview .recipe-preview-source {
+	width: 100%;
+	height: 20px;
+	
+    position: absolute;
+    left: 0;
+	top: 0;
+	
+	background-color: rgba(255, 255, 255, 0.8);
+	padding: 0 10px;
+	line-height: 20px;
+	font-size: 12px;
+}
+
+.recipe-preview .recipe-preview-footprint-category {
+	position: absolute;
+	right: 5px;
+	bottom: 100px;
+	display: block;
+	width: 50px;
+	height: 50px;
+	z-index: 100;
+	
+	background-color: rgba(255, 255, 255, 1);
+	border-radius: 50px;
+	border: 5px solid #ddd;
+	
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 38px;
+	
+    transition: all 0.25s ease-in-out 0s;
+}
+.recipe-preview .recipe-preview-footprint-category:hover {
+    box-shadow: 0 0 5px 1px #333;
+    text-decoration: none;
+}
+.recipe-preview-footprint-category.category-0 {
+	color: #629b31;
+	border-color: #629b31;
+	box-shadow-color: #629b31;
+}
+.recipe-preview-footprint-category.category-1 {
+	color: #87A535;
+	border-color: #87A535;
+}
+.recipe-preview-footprint-category.category-2 {
+	color: #AFB03A;
+	border-color: #AFB03A;
+}
+.recipe-preview-footprint-category.category-3 {
+	color: #C68345;
+	border-color: #C68345;
+}
+.recipe-preview-footprint-category.category-4 {
+	color: #d9534f;
+	border-color: #d9534f;
+}
+
+.recipe-preview .recipe-preview-title {
+	width: 100%;
+	height: 85px;
+	
+    position: absolute;
+    left: 0;
+    bottom: 30px;
+	
+	background-color: rgba(255, 255, 255, 0.6);
+	padding: 10px;
+	
+	text-align: left;
+	font-size: 25px;
+	overflow:hidden; 
+}
+
+.recipe-preview .recipe-preview-footprint {
+	width: 100%;
+	height: 30px;
+	
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	
+	background-color: rgba(255, 255, 255, 0.8);
+	border-top: 1px solid rgba(255, 255, 255, 0.85);
+	padding: 0 10px;
+	line-height: 30px;
+	color: #333;
+	
+    transition: all 0.25s ease-in-out 0s;
+}
+
+.recipe-preview .recipe-preview-footprint:hover {
+    box-shadow: 0 0 5px 1px #333;
+}

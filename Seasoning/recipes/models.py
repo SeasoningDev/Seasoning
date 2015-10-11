@@ -1,109 +1,50 @@
 import time
 import ingredients
-import datetime
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator,\
+from django.core.validators import MinValueValidator,\
     MaxLengthValidator
 from django.db.models.fields import FloatField
-from django.core.exceptions import ValidationError, PermissionDenied
 from django.utils.translation import ugettext_lazy as _
-from authentication.models import User
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import SmartResize
-from ingredients.models import Ingredient, Unit
-from general import validate_image_size
+from ingredients.models import CanUseUnit, Unit, Ingredient
+import math
+from django.core.exceptions import ValidationError
+from django.core.files.temp import NamedTemporaryFile
+import urllib
+from django.core.files.base import File
+from markitup.fields import MarkupField
+from math import sqrt
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
+    print(old_filename)
     filename = '%s.%s' % (str(time.time()), extension)
     return 'images/recipes/' + filename
 
 class Cuisine(models.Model):
     
     class Meta:
-        db_table = 'cuisine'
         ordering = ["name"]
     
     name = models.CharField(max_length=50)
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-class RecipeManager(models.Manager):
     
-    def query(self, search_string='', advanced_search=False, sort_field='time_added', 
-              sort_order='-', inseason=False, ven=True, veg=True, nveg=True, cuisines=[], 
-              courses=[], include_ingredients_operator='and', include_ingredient_names=[],
-              exclude_ingredient_names=[]):
-        
-        recipes_list = self
-        
-        name_query = models.Q(name__icontains=search_string)
-            
-        veg_filter = models.Q()
-        incl_ingredient_filter = models.Q()
-        additional_filters = models.Q(accepted=True)
-        if advanced_search:
-            # Filter for Veganism
-            if ven:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGAN)
-            if veg:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.VEGETARIAN)
-            if nveg:
-                veg_filter = veg_filter | models.Q(veganism=Ingredient.NON_VEGETARIAN)
-            
-            # Filter for included en excluded ingredients
-            if include_ingredients_operator == 'and':
-                for ingredient_name in include_ingredient_names:
-                    ing_filter = models.Q(ingredients__name__icontains=ingredient_name) | models.Q(ingredients__synonyms__name__icontains=ingredient_name)
-                    recipes_list = recipes_list.filter(ing_filter)
-            elif include_ingredients_operator == 'or':
-                for ingredient_name in include_ingredient_names:
-                    ing_filter = models.Q(ingredients__name__icontains=ingredient_name) | models.Q(ingredients__synonyms__name__icontains=ingredient_name)
-                    incl_ingredient_filter = incl_ingredient_filter | models.Q(ing_filter)            
-            for ingredient_name in exclude_ingredient_names:
-                recipes_list = recipes_list.exclude(ingredients__name__icontains=ingredient_name)
-                recipes_list = recipes_list.exclude(ingredients__synonyms__name__icontains=ingredient_name)
-            
-            if inseason:
-                additional_filters = additional_filters & models.Q(inseason=True)
-                
-            if cuisines:
-                additional_filters = additional_filters & models.Q(cuisine__in=cuisines)
-            
-            if courses:
-                additional_filters = additional_filters & models.Q(course__in=courses)
-                     
-        recipes_list = recipes_list.filter(name_query & veg_filter & incl_ingredient_filter & additional_filters)
-        
-        # SORTING
-        if sort_field:
-            if 'tot_time' in sort_field:
-                recipes_list = recipes_list.extra(select={'tot_time': 'active_time + passive_time'})
-            sort_field = sort_order + sort_field
-            recipes_list = recipes_list.order_by(sort_field)
-        
-        return recipes_list.distinct()
     
-    def accepted(self):
-        return self.filter(accepted=True)
 
 class ExternalSite(models.Model):
     
     name = models.CharField(_('Name'), max_length=200,
-                            help_text=_('The names of the external website.'))
+                            help_text=_('The name of the external website.'))
     url = models.CharField(_('URL'), max_length=200,
                             help_text=_('The home url of the external website'))
     
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Recipe(models.Model):
-    
-    class Meta:
-        db_table = 'recipe'
-        
-    objects = RecipeManager()
     
     ENTRY, BREAD, BREAKFAST, DESERT, DRINK, MAIN_COURSE, SALAD, SIDE_DISH, SOUP, MARINADE_AND_SAUCE = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
     COURSES = ((ENTRY,u'Voorgerecht'),
@@ -117,10 +58,16 @@ class Recipe(models.Model):
                (SOUP,u'Soep'),
                (MARINADE_AND_SAUCE,u'Marinades en sauzen'))
     
-    name = models.CharField(_('Name'), max_length=100,
+    Ap, A, B, C, D = 0, 1, 2, 3, 4
+    FOOTPRINT_CATEGORIES = ((Ap, 'A+'), (A, 'A'), (B, 'B'), (C, 'C'), (D, 'D'))
+    FOOTPRINT_CATEGORY_CUTOFF_VALUES = {Ap: 0.1,
+                                        A: 0.25,
+                                        B: 0.5,
+                                        C: 0.75,
+                                        D: 1}
+    
+    name = models.CharField(_('Name'), max_length=300,
                             help_text=_('The names of the recipe.'))
-    author = models.ForeignKey(User, related_name='recipes', null=True)
-    time_added = models.DateTimeField(auto_now_add=True, editable=False)
     
     external = models.BooleanField(default=False)
     external_url = models.CharField(max_length=1000, null=True, blank=True)
@@ -128,257 +75,375 @@ class Recipe(models.Model):
     
     course = models.PositiveSmallIntegerField(_('Course'), choices=COURSES,
                                               help_text=_("The type of course this recipe will provide."))
-    cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine', null=True, blank=True,
+    cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), null=True, blank=True,
                                 help_text=_("The type of cuisine this recipe represents."))
-    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)],
+    description = models.TextField(_('Description'), validators=[MaxLengthValidator(140)], null=True, blank=True,
                                    help_text=_("A few sentences describing the recipe (Maximum 140 characters)."))
     portions = models.PositiveIntegerField(_('Portions'), help_text=_('The average amount of people that can be fed by this recipe '
                                                        'using the given amounts of ingredients.'))
-    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'))
-    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'))
-    
-    rating = models.FloatField(null=True, blank=True, default=None, editable=False)
-    number_of_votes = models.PositiveIntegerField(default=0, editable=False)
+    active_time = models.IntegerField(_('Active time'), help_text=_('The time needed to prepare this recipe where you are actually doing something.'), null=True, blank=True)
+    passive_time = models.IntegerField(_('Passive time'), help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'), null=True, blank=True)
     
     ingredients = models.ManyToManyField(ingredients.models.Ingredient, through='UsesIngredient', editable=False)
     extra_info = models.TextField(_('Extra info'), default='', blank=True,
                                   help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'))
-    instructions = models.TextField(_('Instructions'), help_text=_('Detailed instructions for preparing this recipe.'))
+    instructions = MarkupField(_('Instructions'), null=True, blank=True,
+                               help_text=_('Detailed instructions for preparing this recipe.'))
     
-    default_image_location = 'images/no_image.jpg'
-    image = ProcessedImageField(upload_to=get_image_filename, default=default_image_location, validators=[validate_image_size],
+    image = ProcessedImageField(upload_to=get_image_filename,
                                 help_text=_('An image of this recipe. Please do not use copyrighted images, these will be removed as quick as possible.'))
-    thumbnail = ImageSpecField([SmartResize(216, 216)], image_field='image', format='JPEG')
-    small_image = ImageSpecField([SmartResize(310, 310)], image_field='image', format='JPEG')
+    image_normal = ImageSpecField([SmartResize(400, 400)], source='image', format='JPEG')
+    image_thumbnail = ImageSpecField([SmartResize(248, 348)], source='image', format='JPEG')
+
     
-    # Derived Parameters
-    # Footprint per portion
-    footprint = FloatField(editable=False)
-    veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, editable=False)
     
-    endangered = models.BooleanField(default=False, editable=False)
-    inseason = models.BooleanField(default=False, editable=False)
+    time_added = models.DateTimeField(auto_now_add=True)
+    last_update_time = models.DateTimeField(auto_now=True)
     
-    accepted = models.BooleanField(default=False)        
     
-    def __unicode__(self):
+    """
+    Cached attributes, be very carefull when using these, might be out of sync
+    
+    """
+    cached_veganism = models.PositiveSmallIntegerField(choices=Ingredient.VEGANISMS, null=True, blank=True)
+    cached_footprint = models.FloatField(null=True, blank=True)
+    cached_in_season = models.BooleanField(default=False)
+    cached_has_endangered_ingredients = models.BooleanField(default=False)
+    
+    def __str__(self):
         return self.name
     
-    @property
-    def total_time(self):
-        return self.active_time + self.passive_time
     
-    # Set this to false if this object should not be saved (e.g. when certain fields have been 
-    # overwritten for portions calculations)
-    save_allowed = True
     
-    def save(self, *args, **kwargs):
-        """
-        Calculate the recipes footprint by adding the footprint
-        of every used ingredient
-        Calculate the recipes veganism by searching for the ingredient
-        with the lowest veganism.
-        
-        """
-        if not self.save_allowed:
-            raise PermissionDenied('Saving this object has been disallowed')
-        
-        update_usess = kwargs.pop('update_usess', True)
-        
-        self.footprint = 0
-        self.veganism = Ingredient.VEGAN
-        
+    def veganism(self):
+        return min(ingredient.veganism for ingredient in self.ingredients.all())
+    
+    def total_footprint(self, date=None):
         total_footprint = 0
-        self.accepted = True
-        self.endangered = False
-        for uses in self.uses.all():
-            if update_usess:
-                # TODO: Check of het ooit eigenlijk nodig is dat uses gesaved worden hier.
-                # Update the footprint of the usesingredients
-                uses.save()
-                
-            # Add the footprint for this used ingredient to the total
-            total_footprint += uses.footprint
+        for uses_ingredient in self.uses_ingredients.all():
+            total_footprint += uses_ingredient.footprint(date)
             
-            # Check the veganism of this ingredient
-            if uses.ingredient.veganism < self.veganism:
-                self.veganism = uses.ingredient.veganism
-            
-            # Check the state of this ingredient
-            if not uses.ingredient.accepted:
-                self.accepted = False
-            
-            # Check if this ingredient is currently from an endangered spot
-            if uses.ingredient.coming_from_endangered():
-                self.endangered = True
-            
-        self.footprint = total_footprint / self.portions
-        
-        self.inseason = self.has_lowest_footprint_in_month()
-                
-        return super(Recipe, self).save(*args, **kwargs)
+        return total_footprint
     
-    def quicksave(self, *args, **kwargs):
-        """
-        Saves this recipe without recalculating parameters such as footprint and veganism. 
-        Only use if you know what you are doing
+    def normalized_footprint(self, date=None):
+        return self.total_footprint(date) / self.portions
+    
+    def in_season(self, date=None):
+        return any(ingredient.type is not Ingredient.BASIC for ingredient in self.ingredients.all()) and \
+            all(ingredient.is_in_season(date) for ingredient in self.ingredients.all())
+    
+    def has_endangered_ingredients(self, date=None):
+        return any(ingredient.is_endangered(date) for ingredient in self.ingredients.all())
+    
+    def update_cached_attributes(self):
+        self.uses_ingredients.select_related('ingredient__can_use_units__unit',
+                                                         'unit__parent_unit').all()
+        self.cached_veganism = self.veganism()
+        self.cached_footprint = self.normalized_footprint()
+        self.cached_in_season = self.in_season()
+        self.cached_has_endangered_ingredients = self.has_endangered_ingredients()
         
-        """
-        if not self.save_allowed:
-            raise PermissionDenied('Saving this object has been disallowed')
-        return super(Recipe, self).save(*args, **kwargs)
+        self.save()
+        
         
     
-    def total_footprint(self):
-        return self.footprint * self.portions
-    
-    def normalized_footprint(self):
-        """
-        The footprint of this recipe for 4 portions
+    def footprint_category(self, display=False):
+        distribution_parameters = RecipeDistribution.objects.filter(group=self.course)
         
-        """
-        return self.footprint * 4
-    
-    def monthly_footprint(self):
-        """
-        Returns an array of 12 elements containing the footprint of this recipe
-        for every month of the year
-        
-        """
-        usess = self.uses.select_related('ingredient', 'unit__parent_unit').prefetch_related('ingredient__available_in_country', 'ingredient__available_in_sea', 'ingredient__canuseunit_set__unit__parent_unit').order_by('group', 'ingredient__name')
-        # One footprint per month
-        footprints = [0] * 12
-        dates = [datetime.date(day=1, month=month, year=ingredients.models.AvailableIn.BASE_YEAR) for month in range(1, 13)]
-        for uses in usess:
-            for i in range(12):
-                footprints[i] += uses._calculate_footprint(uses.ingredient.footprint(date=dates[i]))
-        footprints = [float('%.2f' % (4*footprint/self.portions)) for footprint in footprints]
-        return footprints
-    
-    def vote(self, user, score):
         try:
-            # Check if the user already voted on this recipe
-            vote = self.votes.get(user=user)
-            vote.score = score
-        except Vote.DoesNotExist:
-            # The given user has not voted on this recipe yet
-            vote = Vote(recipe=self, user=user, score=score)
-        vote.save()
-    
-    def unvote(self, user):
-        vote = self.votes.get(user=user)
-        vote.delete()
-    
-    def calculate_and_set_rating(self):
-        aggregate = self.votes.all().aggregate(models.Count('score'), models.Avg('score'))
-        self.rating = aggregate['score__avg']
-        self.number_of_votes = aggregate['score__count']
-        self.quicksave()
+            mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].parameter_value
+        except IndexError:
+            mean = 0
         
-    def has_lowest_footprint_in_month(self, month=None):
-        if month is None:
-            month = datetime.date.today().month
-        footprints = self.monthly_footprint()
-        min_footprint = min(footprints)
-        if (abs(min_footprint - footprints[month-1]) < 0.000001*min_footprint) and (abs(max(footprints) - min_footprint) > 0.000001*min_footprint):
-            return True
-        return False 
+        try:
+            std = list(filter(lambda x: x.parameter == RecipeDistribution.STANDARD_DEVIATION, distribution_parameters))[0].parameter_value
+        except IndexError:
+            std = 0
+        
+        for cat, cat_display in self.FOOTPRINT_CATEGORIES:
+            probit_val = mean + (std * math.sqrt(2) * RecipeDistribution.IERF[self.FOOTPRINT_CATEGORY_CUTOFF_VALUES[cat]])
+            
+            if self.cached_footprint <= probit_val:
+                if display:
+                    return cat_display
+                return cat
+    
+    def get_footprint_category_display(self):
+        return self.footprint_category(display=True)
+        
+    
 
 class UsesIngredient(models.Model):
     
-    class Meta:
-        db_table = 'usesingredient'
+    recipe = models.ForeignKey(Recipe, related_name='uses_ingredients')
+    ingredient = models.ForeignKey(ingredients.models.Ingredient)
     
-    recipe = models.ForeignKey(Recipe, related_name='uses', db_column='recipe')
-    ingredient = models.ForeignKey(ingredients.models.Ingredient, db_column='ingredient')
-    
-    group = models.CharField(max_length=100, blank=True)
+    group = models.CharField(max_length=100, null=True, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)])
-    unit = models.ForeignKey(ingredients.models.Unit, db_column='unit')
+    unit = models.ForeignKey(ingredients.models.Unit)
     
-    # Derived Parameters
-    footprint = FloatField(null=True, editable=False)
+    def __str__(self):
+        return 'Recipe {} uses Ingredient {}'.format(self.recipe_id, self.ingredient_id)
     
-    # Set this to false if this object should not be saved (e.g. when certain fields have been 
-    # overwritten for portions calculations)
-    save_allowed = True
+    def get_unit_display(self):
+        if self.amount == 1:
+            return self.unit.get_display_name()
+        
+        return self.unit.get_display_name_plural()
     
-    def _calculate_footprint(self, ingredient_footprint):
-        """
-        Calculate the footprint of the ingredient used.
+    def get_ingredient_display(self):
+        if self.amount == 1 or self.ingredient.plural_name is None or self.ingredient.plural_name == '':
+            return self.ingredient.name
         
-        """
-        for canuseunit in self.ingredient.canuseunit_set.all():
-            if canuseunit.unit == self.unit:
-                unit_properties = canuseunit
-                break
-        return self.amount * unit_properties.conversion_factor * ingredient_footprint
+        return self.ingredient.plural_name
     
-    def clean(self, *args, **kwargs):
-        # Validate that is ingredient is using a unit that it can use
-        if self.ingredient_id is None or self.unit_id is None:
-            # Something is wrong with the model, these errors will be caught elsewhere, and the
-            # useable unit validation is not required 
-            return self
-        if not self.ingredient.accepted:
-            # If the ingredient is not accepted, it might not have any useable units. To prevent
-            # unwanted errors, skip the validation
-            return self
-        try:
-            self.ingredient.useable_units.get(pk=self.unit.pk)
-            return self
-        except Unit.DoesNotExist:
-            raise ValidationError('This unit cannot be used for measuring this Ingredient.')
-        
     
-    def save(self, *args, **kwargs):
-        update_recipe = kwargs.pop('update_recipe', False)
-        
-        if not self.save_allowed:
-            raise PermissionDenied('Saving this object has been disallowed')
-        
-        if self.ingredient.accepted:
-            self.footprint = self._calculate_footprint(self.ingredient.footprint())
-        else:
-            self.footprint = 0
-        
-        saved = super(UsesIngredient, self).save(*args, **kwargs)
-        
-        if update_recipe:
-            # Update the recipe as well
-            self.recipe.save()
-        
-        return saved
+    
+    
+    
+    def unit_conversion_ratio(self):
+        if self.unit.parent_unit is not None:
+            return next(cuu for cuu in self.ingredient.can_use_units.all() if cuu.unit == self.unit.parent_unit).conversion_ratio * self.unit.ratio
+            
+        return next(cuu for cuu in self.ingredient.can_use_units.all() if cuu.unit == self.unit).conversion_ratio
+    
+    def footprint(self, date=None):
+        return self.ingredient.footprint(date) * self.amount * self.unit_conversion_ratio()
+    
+    def footprint_breakdown(self, date=None):
+        return {footprint_source: footprint * self.amount * self.unit_conversion_ratio() for footprint_source, footprint in self.ingredient.footprint_breakdown(date).items()}
+    
+    
+    
+    def clean(self):
+        if self.unit is not None and self.ingredient is not None:
+            if self.unit.parent_unit is None:
+                unit = self.unit
+            else:
+                unit = self.unit.parent_unit
+            
+            if not unit in [cuu.unit for cuu in self.ingredient.can_use_units.all()]:
+                raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
 
-class UnknownIngredient(models.Model):
+
+
+class RecipeDistribution(models.Model):
+    
+    MEAN, STANDARD_DEVIATION = 0, 1
+    DISTRIBUTION_PARAMETERS = ((MEAN, _('Mean')), (STANDARD_DEVIATION, _('Standard Deviation')))
+    
+    # Inverse Error function values
+    IERF = {0.1: -0.90619380,
+            0.25: -0.47693628,
+            0.5: 0,
+            0.75: 0.47693628,
+            1: 100000}
+    
+    
+    ALL = 100
+    GROUPS = [(ALL, _('All Recipes'))]
+    GROUPS.extend(Recipe.COURSES)
+    
+    group = models.PositiveSmallIntegerField(choices=GROUPS)
+    parameter = models.PositiveSmallIntegerField(choices=DISTRIBUTION_PARAMETERS)
+    
+    parameter_value = models.FloatField()
+    
     class Meta:
-        db_table = 'unknown_ingredient'
+        unique_together = (('group', 'parameter'), )
+        
     
-    name = models.CharField(max_length=50L)
-    requested_by = models.ForeignKey(User)
-    for_recipe = models.ForeignKey(Recipe)
+    """
+    Here we provide functions for the statistical analysis of recipe footprint.
+    We make the following assumptions:
+        * The footprints of recipes follow a normal distribution
+        * The footprint of a recipe can only be compared to other recipes of the
+          same course type
     
-    real_ingredient = models.ForeignKey(Ingredient)
+    To find the footprint category of a recipe, we need to calculate a footprint
+    that is smaller than p% of all the footprints.
     
-    def __unicode__(self):
-        return self.name
+    The probit function PHI-1(p) yields a value for which the probablity is p that
+    any other value will be smaller or equal to it. So PHI-1(0.1) gives us the 
+    10% quantile footprint.
     
-class Vote(models.Model):
+    However, since our distribution go into the negative part of the axes, and
+    negative footprints are not possible, we need to take into account that this
+    part of the distribution doesn't exist.
+    
+    As such we have:
+    PHI(0): The theorethical probability that a footprint will have a value lower
+            than 0, call this p_0
+    1 - p_0: The theorethical probability that a footprint will be higher than 0,
+             call this p_1
+    
+    This means that to find PHI-1(0.1), we actually have to find PHI-1(p_0 + (0.1 * p_1))
+    
+    For ease of calculation, we will approximate the normal distribution N(x) with the 
+    logistic distribution L(x). To achieve a comparable logistic distribution, we need a
+    scaling factor so that N(0, m, s) = l_0 * L(0, m, s)
+    
+    """
+    @classmethod
+    def logistic(cls, x, mean, std, scaling=1):
+        return scaling * (math.exp(-(x - mean) / std) / (std * math.pow((1 + math.exp(-(x - mean) / std)), 2)))
+    
+#     @classmethod
+#     def logistic_cdf(cls, x, mean, std, scaling=1):
+#         
+    
+    @classmethod
+    def distribution_scaling_factor(cls, mean, std):
+        N_0 = 1 / (std * math.sqrt(2 * math.pi))
+        L_0 = cls.logistic(0, mean, std)
+        
+        return N_0 / L_0
+    
+    
+        
+        
+    
+    
+    def __str__(self):
+        return '{} of `{}` courses is {:.2f}'.format(self.get_parameter_display(), self.get_course_display(), self.parameter_value)
+    
+  
+  
+  
+    
+class ScrapedRecipe(models.Model):
+    
     class Meta:
-        unique_together = (("recipe", "user"),)
+        unique_together = (('scraped_name', 'external_site'), )
     
-    recipe = models.ForeignKey(Recipe, related_name='votes')
-    user = models.ForeignKey(User)
-    score = models.PositiveIntegerField(validators=[MaxValueValidator(5)])
-    time_added = models.DateTimeField(default=datetime.datetime.now, editable=False)
-    time_changed = models.DateTimeField(default=datetime.datetime.now, editable=False)
+    name = models.CharField(_('Name'), max_length=300, default='',
+                            help_text=_('The name of the recipe.'),
+                            null=True, blank=True)
     
-    def save(self, *args, **kwargs):
-        self.time_changed = datetime.datetime.now()
-        super(Vote, self).save(*args, **kwargs)
-        self.recipe.calculate_and_set_rating()
+    scraped_name = models.CharField(_('Scraped Name'), max_length=300, null=True, blank=True)
     
-    def delete(self, *args, **kwargs):
-        super(Vote, self).delete(*args, **kwargs)
-        self.recipe.calculate_and_set_rating()
+    external = models.BooleanField(default=False)
+    external_url = models.CharField(max_length=1000, null=True, blank=True)
+    external_site = models.ForeignKey(ExternalSite, related_name='incomplete_recipes',
+                                      null=True, blank=True)
     
+    course = models.PositiveSmallIntegerField(_('Course'), choices=Recipe.COURSES,
+                                              help_text=_("The type of course this recipe will provide."),
+                                              null=True, blank=True)
+    course_proposal = models.CharField(max_length=100, null=True, blank=True)
+    cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine',
+                                help_text=_("The type of cuisine this recipe represents."), 
+                                null=True, blank=True)
+    cuisine_proposal = models.CharField(max_length=50, null=True, blank=True)
+    
+    description = models.TextField(_('Description'), 
+                                   default='',
+                                   validators=[MaxLengthValidator(300)],
+                                   help_text=_("A few sentences describing the recipe (Maximum 300 characters)."),
+                                   null=True, blank=True)
+    portions = models.PositiveIntegerField(_('Portions'), default=0,
+                                           help_text=_('The average amount of people that can be fed by this recipe '
+                                                       'using the given amounts of ingredients.'),
+                                           null=True, blank=True)
+    active_time = models.IntegerField(_('Active time'), default=0, 
+                                      help_text=_('The time needed to prepare this recipe where you are actually doing something.'),
+                                      null=True, blank=True)
+    passive_time = models.IntegerField(_('Passive time'), default=0, 
+                                       help_text=_('The time needed to prepare this recipe where you can do something else (e.g. water is boiling)'),
+                                       null=True, blank=True)
+    
+    extra_info = models.TextField(_('Extra info'), default='',
+                                  help_text=_('Extra info about the ingredients or needed tools (e.g. "You will need a mixer for this recipe" or "Use big potatoes")'),
+                                  null=True, blank=True)
+    instructions = models.TextField(_('Instructions'), default='', 
+                                    help_text=_('Detailed instructions for preparing this recipe.'),
+                                    null=True, blank=True)
+    
+    ignore = models.BooleanField(default=False)
+    
+    image_url = models.URLField(max_length=400, null=True, blank=True)
+    
+    first_scrape_date = models.DateField(auto_now_add=True)
+    last_update_date = models.DateField(auto_now=True)
+    
+    recipe = models.ForeignKey(Recipe, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    deleted = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return '{}: {}'.format(self.external_site.name, self.name)
+    
+    
+    
+    def is_missing_info(self):
+        if not hasattr(self, '_is_missing_info') or getattr(self, '_is_missing_info') is None:
+            if self.course is None:
+                _is_missing_info = True
+            elif len(list(filter(lambda ing: ing.ingredient is None or not ing.ingredient.accepted or ing.unit is None or ing.amount is None, self.ingredients.all()))) > 0:
+                _is_missing_info = True
+            else:
+                _is_missing_info = False
+            setattr(self, '_is_missing_info', _is_missing_info)
+    
+        return getattr(self, '_is_missing_info')
+    
+    def ao_unfinished_ingredients(self):
+        if not hasattr(self, '_ao_unfinished_ingredients') or getattr(self, '_ao_unfinished_ingredients') is None:
+            setattr(self, '_ao_unfinished_ingredients', len(list(filter(lambda ing: ing.ingredient is None or not ing.ingredient.accepted, self.ingredients.all()))))
+            
+        return getattr(self, '_ao_unfinished_ingredients')
+    
+    def ao_unknown_ingredients(self):
+        if not hasattr(self, '_ao_unknown_ingredients') or getattr(self, '_ao_unknown_ingredients') is None:
+            setattr(self, '_ao_unknown_ingredients', len(list(filter(lambda ing: ing.ingredient is None, self.ingredients.all()))))
+            
+        return getattr(self, '_ao_unknown_ingredients')
+    
+    
+    def convert_to_real_recipe(self):
+        if self.is_missing_info():
+            raise ValidationError('The recipe `{}` cannot be converted while it is missing required info'.format(self.name))
+        
+        for ingredient in self.ingredients.all():
+            ingredient.clean()
+            
+        img_temp = NamedTemporaryFile(delete=True, suffix='.jpg')
+        img_temp.write(urllib.request.urlopen(self.image_url).read())
+        img_temp.flush()
+        
+        real_recipe = Recipe(name=self.name,
+                             external=True, external_site=self.external_site, external_url=self.external_url,
+                             course=self.course, cuisine=self.cuisine, description=self.description, portions=self.portions,
+                             image=File(img_temp), instructions='')
+        
+        real_recipe.save()
+        
+        for uses_ingredient in self.ingredients.all():
+            UsesIngredient(recipe=real_recipe, ingredient=uses_ingredient.ingredient, amount=uses_ingredient.amount,
+                           unit=uses_ingredient.unit, group=uses_ingredient.group).save()
+        
+        real_recipe.update_cached_attributes()
+        
+        self.recipe = real_recipe
+        self.save()
+
+    
+class ScrapedUsesIngredient(models.Model):
+    
+    recipe = models.ForeignKey(ScrapedRecipe, related_name='ingredients')
+    
+    ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
+    ingredient_proposal = models.CharField(max_length=500)
+    
+    group = models.CharField(max_length=500, null=True, blank=True)
+    amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)], null=True, blank=True)
+    amount_proposal = models.CharField(max_length=20, null=True, blank=True)
+    
+    unit = models.ForeignKey(Unit, null=True, blank=True)
+    unit_proposal = models.CharField(max_length=50, null=True, blank=True)
+    
+    def clean(self):
+        if self.unit is not None and self.ingredient is not None:
+            if not self.ingredient.can_use_unit(self.unit):
+                raise ValidationError('Ingredient `{}` can not use unit `{}`'.format(self.ingredient, self.unit))
+            

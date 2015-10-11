@@ -1,0 +1,28 @@
+body {
+	padding-top: 60px;
+	background-color: #f4f4f4;
+	overflow-y: scroll;
+}
+
+
+
+.navbar-inverse {
+	background-color: #629b31;
+	border-color: #5b6553;	
+}
+
+.navbar img {
+	height: 40px; 
+	margin-top: 10px;
+}
+
+
+
+.ajax-loader {
+	margin: 20px auto;
+	text-align: center;
+}
+
+.ajax-loader img {
+	height: 30px;
+}

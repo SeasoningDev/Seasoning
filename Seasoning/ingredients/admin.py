@@ -1,60 +1,36 @@
+'''
+Created on Jul 5, 2015
+
+@author: joep
+'''
+from ingredients.models import Ingredient, AvailableInCountry, TransportMethod,\
+    AvailableInSea, CanUseUnit, Unit, Synonym
 from django.contrib import admin
-from django.db import models
-from authentication.forms import ShownImageInput
-from ingredients.models import Country, Sea, Unit, Ingredient, TransportMethod,\
-    Synonym, CanUseUnit, AvailableInCountry, AvailableInSea
-from ingredients.fields import LastOfMonthWidget, MonthWidget
+from administration.admin import seasoning_admin_site
 
 class SynonymInline(admin.TabularInline):
-    model = Synonym
-    extra = 1
-
-class CanUseUnitInline(admin.TabularInline):
-    model = CanUseUnit
-    extra = 1
     
-    def queryset(self, request):
-        """
-        Alter the queryset to return only base units
-        
-        """
-        qs = super(CanUseUnitInline, self).queryset(request)
-        return qs.filter(unit__parent_unit__isnull=True)
+    model = Synonym
+    
+class CanUseUnitInline(admin.TabularInline):
+    
+    model = CanUseUnit
 
 class AvailableInCountryInline(admin.TabularInline):
+    
     model = AvailableInCountry
-    extra = 1
-    
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'date_from':
-            kwargs['widget'] = MonthWidget()
-        elif db_field.name == 'date_until':
-            kwargs['widget'] = LastOfMonthWidget()
-        return super(AvailableInCountryInline, self).formfield_for_dbfield(db_field, **kwargs)
-    
-class AvailableInSeaInline(admin.TabularInline):
-    model = AvailableInSea
-    extra = 1
-    
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'date_from':
-            kwargs['widget'] = MonthWidget()
-        elif db_field.name == 'date_until':
-            kwargs['widget'] = LastOfMonthWidget()
-        return super(AvailableInSeaInline, self).formfield_for_dbfield(db_field, **kwargs)
-    
+
+
+
 class IngredientAdmin(admin.ModelAdmin):
-    inlines = [ SynonymInline,
-                CanUseUnitInline,
-                AvailableInCountryInline,
-                AvailableInSeaInline ]
+    
     search_fields = ['name']
+    inlines = [SynonymInline, CanUseUnitInline, AvailableInCountryInline]
     
-    formfield_overrides = {
-        models.ImageField: {'widget': ShownImageInput}}
-    
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Country)
-admin.site.register(Sea)
-admin.site.register(TransportMethod)
-admin.site.register(Unit)
+seasoning_admin_site.register(Ingredient, IngredientAdmin)
+seasoning_admin_site.register(AvailableInCountry)
+seasoning_admin_site.register(AvailableInSea)
+seasoning_admin_site.register(TransportMethod)
+seasoning_admin_site.register(Unit)
+seasoning_admin_site.register(CanUseUnit)
+seasoning_admin_site.register(Synonym)
