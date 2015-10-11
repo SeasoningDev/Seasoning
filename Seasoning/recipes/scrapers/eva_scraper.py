@@ -43,6 +43,8 @@ def get_recipe_pages():
                 
                 last_recipe_page_first_recipe_url = recipe_page.url
                 first = False
+            
+            yield recipe_page
                 
         page += 1
 

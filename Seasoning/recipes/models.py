@@ -330,7 +330,7 @@ class ScrapedRecipe(models.Model):
     course = models.PositiveSmallIntegerField(_('Course'), choices=Recipe.COURSES,
                                               help_text=_("The type of course this recipe will provide."),
                                               null=True, blank=True)
-    course_proposal = models.CharField(max_length=50, null=True, blank=True)
+    course_proposal = models.CharField(max_length=100, null=True, blank=True)
     cuisine = models.ForeignKey(Cuisine, verbose_name=_('Cuisine'), db_column='cuisine',
                                 help_text=_("The type of cuisine this recipe represents."), 
                                 null=True, blank=True)

@@ -66,7 +66,8 @@ def admin_recipes_update_cached_properties(request, recipe_id=None):
 def admin_scrapers(request):
     return render(request, 'admin/admin_scrapers.html', {'scraped_recipes': {'eva': ScrapedRecipe.objects.filter(external_site__name__icontains='eva vzw').count(),
                                                                              'kriskookt': ScrapedRecipe.objects.filter(external_site__name__icontains='kris').count(),
-                                                                             'evassmulhuisje': ScrapedRecipe.objects.filter(external_site__name__icontains='smulhuisje').count()}})
+                                                                             'evassmulhuisje': ScrapedRecipe.objects.filter(external_site__name__icontains='smulhuisje').count(),
+                                                                             'veganchallenge': ScrapedRecipe.objects.filter(external_site__name__icontains='veganchal').count()}})
 
 @staff_member_required
 def admin_scrape_recipes(request, scraper):
@@ -75,6 +76,8 @@ def admin_scrape_recipes(request, scraper):
         messages.add_message(request, messages.ERROR, 'This scraper has not been installed yet')
         
     else:
+        ScrapedRecipe.objects.filter(external_site__name=INSTALLED_SCRAPERS[scraper]['name']).delete()
+        
         scrape_recipes(scraper)
     
     return redirect('admin_scrapers')

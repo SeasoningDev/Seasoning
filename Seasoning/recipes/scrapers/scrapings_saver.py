@@ -8,17 +8,20 @@ from recipes.models import ExternalSite, Cuisine, Recipe, ScrapedRecipe,\
 import difflib
 from django.db import models
 from ingredients.models import Ingredient, Unit
-from recipes.scrapers import eva_scraper, kriskookt_scraper, evassmulhuisje_scraper
+from recipes.scrapers import eva_scraper, kriskookt_scraper, evassmulhuisje_scraper, veganchallenge_scraper
 from pip._vendor.distlib.compat import raw_input
 
 EVA_SCRAPER, KRISKOOKT_SCRAPER, EVASSMULHUISJE_SCRAPER = 0, 1, 2
+VEGANCHALLENGE = 3
 INSTALLED_SCRAPERS = {
     EVA_SCRAPER: {'name': 'Eva vzw',
                   'scraper': eva_scraper.get_recipe_pages},
     KRISKOOKT_SCRAPER: {'name': 'Kris kookt',
                         'scraper': kriskookt_scraper.get_recipe_pages},
     EVASSMULHUISJE_SCRAPER: {'name': 'Eva\'s Smulhuisje',
-                             'scraper': evassmulhuisje_scraper.get_recipe_pages}}
+                             'scraper': evassmulhuisje_scraper.get_recipe_pages},
+    VEGANCHALLENGE: {'name': 'VeganChallenge',
+                             'scraper': veganchallenge_scraper.get_recipe_pages}}
     
 def scrape_recipes(scraper):
     # ALL THA RECIPES ARE MINE!!!
@@ -68,19 +71,19 @@ def scrape_recipes(scraper):
                     
             if len(list(recipe_page.recipe_ingredients)) <= 0:
                 raise NotImplementedError
+        
+            recipe = ScrapedRecipe(name=recipe_page.recipe_name, scraped_name=recipe_page.recipe_name,
+                                   description=recipe_page.recipe_description,
+                                   external=True, external_site=external_site, external_url=recipe_page.url, 
+                                   course=recipe_course, course_proposal=recipe_course_proposal, 
+                                   cuisine=recipe_cuisine, cuisine_proposal=recipe_cuisine_proposal,
+                                   portions=recipe_page.recipe_portions, active_time=0,
+                                   passive_time=0,
+                                   image_url=recipe_page.recipe_image)
             
         except NotImplementedError:
             print('Could not scrape recipe on page `{}`'.format(recipe_page.url))
             continue
-        
-        recipe = ScrapedRecipe(name=recipe_page.recipe_name, scraped_name=recipe_page.recipe_name,
-                               description=recipe_page.recipe_description,
-                               external=True, external_site=external_site, external_url=recipe_page.url, 
-                               course=recipe_course, course_proposal=recipe_course_proposal, 
-                               cuisine=recipe_cuisine, cuisine_proposal=recipe_cuisine_proposal,
-                               portions=recipe_page.recipe_portions, active_time=0,
-                               passive_time=0,
-                               image_url=recipe_page.recipe_image)
         
         recipe.save()
         
@@ -137,7 +140,7 @@ def scrape_recipes(scraper):
             if '-' in str(amount):
                 amount = amount.split('-')[-1]
                 
-            if parsed_amount is None:
+            if parsed_amount is None or parsed_amount == '':
                 unit = Unit.objects.get(name__icontains='snuifje')
                 amount = 1
                             
