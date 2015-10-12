@@ -32,6 +32,6 @@ function show_demo_window(window_id) {
 
 $(function() {
 	
-	show_demo_window("#demo-start");
+	$("#demo-modal-1").modal('show');
 	
 });
