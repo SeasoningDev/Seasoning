@@ -28,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = (
+    '0.0.0.0',
+    '127.0.0.1',
+)
+
 # Determine if we are running in the test environment.
 TEST = False
 manage_command = [arg for arg in sys.argv if arg.find('manage.py') != -1]
@@ -47,7 +52,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'imagekit',
-    'authentication',
     'ingredients',
     'recipes',
     

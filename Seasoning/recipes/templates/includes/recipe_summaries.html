@@ -1,8 +1,0 @@
-{% if recipes.number == 1 %}
-<span id="search-result-count">{{ recipes.paginator.count }} recepten gevonden</span>
-{% endif %}
-{% if not recipes.0 == None %}
-{% for recipe in recipes %}
-{% include "includes/recipe_summary.html" %}
-{% endfor %}
-{% endif %}

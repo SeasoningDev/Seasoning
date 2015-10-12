@@ -100,8 +100,9 @@ class UsesIngredientModelTest(TestCase):
     def test_footprint(self):
         ing = G(Ingredient, base_footprint=1, category=Ingredient.BASIC)
         unit = G(Unit, parent_unit=None)
-        G(CanUseUnit, ingredient=ing, unit=unit, is_primary_unit=True, conversion_ratior=1)
+        G(CanUseUnit, ingredient=ing, unit=unit, is_primary_unit=True, conversion_ratio=1)
         
         uses = G(UsesIngredient, ingredient=ing, amount=1, unit=unit)
         
         self.assertEqual(uses.footprint(), 1)
+        

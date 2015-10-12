@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import ingredients.models
 import imagekit.models.fields
+import ingredients.models
 
 
 class Migration(migrations.Migration):
@@ -15,63 +15,54 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AvailableInCountry',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('production_type', models.CharField(max_length=10, blank=True)),
                 ('extra_production_footprint', models.FloatField(default=0)),
                 ('date_from', models.DateField()),
                 ('date_until', models.DateField()),
-                ('footprint', models.FloatField(editable=False, null=True, blank=True)),
             ],
             options={
-                'db_table': 'availableincountry',
+                'abstract': False,
             },
         ),
         migrations.CreateModel(
             name='AvailableInSea',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('production_type', models.CharField(max_length=10, blank=True)),
                 ('extra_production_footprint', models.FloatField(default=0)),
                 ('date_from', models.DateField()),
                 ('date_until', models.DateField()),
-                ('footprint', models.FloatField(editable=False, null=True, blank=True)),
                 ('endangered', models.BooleanField()),
             ],
             options={
-                'db_table': 'availableinsea',
+                'abstract': False,
             },
         ),
         migrations.CreateModel(
             name='CanUseUnit',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
-                ('is_primary_unit', models.BooleanField(null=True, blank=True)),
-                ('conversion_factor', models.FloatField()),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('conversion_ratio', models.FloatField()),
             ],
-            options={
-                'db_table': 'canuseunit',
-            },
         ),
         migrations.CreateModel(
             name='Country',
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
+                ('id', models.IntegerField(serialize=False, primary_key=True)),
                 ('name', models.CharField(max_length=50)),
                 ('distance', models.IntegerField()),
             ],
-            options={
-                'db_table': 'country',
-            },
         ),
         migrations.CreateModel(
             name='Ingredient',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=50, unique=True)),
                 ('plural_name', models.CharField(max_length=50, blank=True)),
-                ('type', models.PositiveSmallIntegerField(choices=[(0, 'Basis'), (1, 'Seizoensgebonden'), (2, 'Seizoensgebonden Zee')], default=0)),
+                ('type', models.PositiveSmallIntegerField(default=0, choices=[(0, 'Basis'), (1, 'Seizoensgebonden'), (2, 'Seizoensgebonden Zee')])),
                 ('category', models.PositiveSmallIntegerField(choices=[(0, 'Dranken'), (1, 'Fruit'), (2, 'Graanproducten'), (3, 'Groenten'), (4, 'Kruiden en specerijen'), (5, 'Noten en zaden'), (6, 'Oliën'), (7, 'Peulvruchten'), (8, 'Schaal- en schelpdieren'), (9, 'Supplementen'), (10, 'Vis'), (11, 'Vlees'), (12, 'Vleesvervangers'), (13, 'Zuivel')])),
-                ('veganism', models.PositiveSmallIntegerField(choices=[(2, 'Veganistisch'), (1, 'Vegetarisch'), (0, 'Niet-Vegetarisch')], default=2)),
+                ('veganism', models.PositiveSmallIntegerField(default=2, choices=[(2, 'Veganistisch'), (1, 'Vegetarisch'), (0, 'Niet-Vegetarisch')])),
                 ('description', models.TextField(blank=True)),
                 ('conservation_tip', models.TextField(blank=True)),
                 ('preparation_tip', models.TextField(blank=True)),
@@ -80,61 +71,49 @@ class Migration(migrations.Migration):
                 ('preservability', models.IntegerField(default=0)),
                 ('preservation_footprint', models.FloatField(default=0)),
                 ('base_footprint', models.FloatField()),
-                ('image', imagekit.models.fields.ProcessedImageField(upload_to=ingredients.models.get_image_filename, default='images/no_image.jpg')),
+                ('image', imagekit.models.fields.ProcessedImageField(default='images/no_image.jpg', upload_to=ingredients.models.get_image_filename)),
                 ('image_source', models.TextField(blank=True)),
                 ('accepted', models.BooleanField(default=False)),
                 ('bramified', models.BooleanField(default=False)),
             ],
             options={
-                'db_table': 'ingredient',
+                'ordering': ('name',),
             },
         ),
         migrations.CreateModel(
             name='Sea',
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
+                ('id', models.IntegerField(serialize=False, primary_key=True)),
                 ('name', models.CharField(max_length=50)),
                 ('distance', models.IntegerField()),
             ],
-            options={
-                'db_table': 'sea',
-            },
         ),
         migrations.CreateModel(
             name='Synonym',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=50, unique=True)),
                 ('plural_name', models.CharField(max_length=50, blank=True)),
-                ('ingredient', models.ForeignKey(to='ingredients.Ingredient', blank=True, db_column='ingredient', null=True, related_name='synonyms')),
+                ('ingredient', models.ForeignKey(null=True, blank=True, related_name='synonyms', to='ingredients.Ingredient')),
             ],
-            options={
-                'db_table': 'synonym',
-            },
         ),
         migrations.CreateModel(
             name='TransportMethod',
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
+                ('id', models.IntegerField(serialize=False, primary_key=True)),
                 ('name', models.CharField(max_length=20)),
-                ('emission_per_km', models.FloatField()),
+                ('emissions_per_km', models.FloatField()),
             ],
-            options={
-                'db_table': 'transportmethod',
-            },
         ),
         migrations.CreateModel(
             name='Unit',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=30, unique=True)),
                 ('short_name', models.CharField(max_length=10, blank=True)),
-                ('ratio', models.FloatField(blank=True, null=True)),
-                ('parent_unit', models.ForeignKey(to='ingredients.Unit', blank=True, default=None, null=True, related_name='derived_units')),
+                ('ratio', models.FloatField(null=True, blank=True)),
+                ('parent_unit', models.ForeignKey(null=True, blank=True, related_name='derived_units', to='ingredients.Unit', default=None)),
             ],
-            options={
-                'db_table': 'unit',
-            },
         ),
         migrations.AddField(
             model_name='ingredient',
@@ -144,41 +123,41 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='canuseunit',
             name='ingredient',
-            field=models.ForeignKey(to='ingredients.Ingredient', db_column='ingredient'),
+            field=models.ForeignKey(related_name='can_use_units', to='ingredients.Ingredient'),
         ),
         migrations.AddField(
             model_name='canuseunit',
             name='unit',
-            field=models.ForeignKey(to='ingredients.Unit', db_column='unit', related_name='useable_by'),
+            field=models.ForeignKey(related_name='useable_by', to='ingredients.Unit'),
         ),
         migrations.AddField(
             model_name='availableinsea',
             name='ingredient',
-            field=models.ForeignKey(to='ingredients.Ingredient', db_column='ingredient', related_name='available_in_sea'),
+            field=models.ForeignKey(related_name='available_in_sea', to='ingredients.Ingredient'),
         ),
         migrations.AddField(
             model_name='availableinsea',
             name='location',
-            field=models.ForeignKey(to='ingredients.Sea', db_column='sea'),
+            field=models.ForeignKey(to='ingredients.Sea'),
         ),
         migrations.AddField(
             model_name='availableinsea',
             name='transport_method',
-            field=models.ForeignKey(to='ingredients.TransportMethod', db_column='transport_method'),
+            field=models.ForeignKey(to='ingredients.TransportMethod'),
         ),
         migrations.AddField(
             model_name='availableincountry',
             name='ingredient',
-            field=models.ForeignKey(to='ingredients.Ingredient', db_column='ingredient', related_name='available_in_country'),
+            field=models.ForeignKey(related_name='available_in_country', to='ingredients.Ingredient'),
         ),
         migrations.AddField(
             model_name='availableincountry',
             name='location',
-            field=models.ForeignKey(to='ingredients.Country', db_column='country'),
+            field=models.ForeignKey(to='ingredients.Country'),
         ),
         migrations.AddField(
             model_name='availableincountry',
             name='transport_method',
-            field=models.ForeignKey(to='ingredients.TransportMethod', db_column='transport_method'),
+            field=models.ForeignKey(to='ingredients.TransportMethod'),
         ),
     ]

@@ -11,7 +11,7 @@
 	</span>
  
 	<span class="recipe-preview" title="{{ recipe.name }}"
-		  style="background-image: url('{% if 'localhost' in request.META.HTTP_HOST %}https://www.seasoning.be/media/{{ recipe.image }}{% else %}{{ recipe.image_thumbnail.url }}{% endif %}')">
+		  style="background-image: url('{% if 'localhost' in request.META.HTTP_HOST or testing %}https://www.seasoning.be/media/{{ recipe.image }}{% else %}{{ recipe.image_thumbnail.url }}{% endif %}')">
 
 		<span class="recipe-preview-source">
 			{% if recipe.external %}
