@@ -4,18 +4,18 @@
 {% block extra_script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script type="text/javascript">
-var url = "{% url 'get_request_history' 100 1000 %}";
+var url = "{% url 'get_request_history' 1000 1000 %}";
 
 var hours = 1;
 
 $(function() {
 	
-	var margin = {top: 10, right: 30, bottom: 30, left: 50},
+	var margin = {top: 10, right: 30, bottom: 70, left: 50},
 		width = 960 - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
 	
 	var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-	var formatDate = d3.time.format("%d/%m %H:%M");
+	var formatDate = d3.time.format("%d/%m");
 	var formatCount = function(x) {
 		if (x % 1 > 0)
 			return "";
@@ -72,28 +72,16 @@ $(function() {
 		
 		// Scale the range of the data by setting the domain
 		x.domain(d3.extent(timeBins));
-		y.domain([0, 1.5 * d3.max(histData, function(d) { return d.y; })]);
-		
-		// Set up one bar for each bin
-		// Months have slightly different lengths so calculate the width for each bin
-		// Note: dx, the width of the histogram bin, is in milliseconds so convert the x value
-		// into UTC time and convert the sum back to a date in order to help calculate the width
-		// Thanks to npdoty for pointing this out in this stack overflow post:
-		// http://stackoverflow.com/questions/17745682/d3-histogram-date-based
-// 		svg.selectAll(".bar")
-// 		  .data(histData)
-// 		.enter().append("rect")
-// 		  .attr("class", "bar")
-// 		  .attr("x", function(d) { return x(d.x); })
-// 		  .attr("width", function(d) { return x(new Date(d.x.getTime() + d.dx))-x(d.x)-1; })
-// 		  .attr("y", function(d) { return y(d.y); })
-// 		  .attr("height", function(d) { return height - y(d.y); });
+		y.domain([0, d3.max(histData, function(d) { return d.y; })]);
 		
 		// Add the X Axis
 		svg.append("g")
 		  .attr("class", "x axis")
 		  .attr("transform", "translate(0," + height + ")")
-		  .call(xAxis);
+		  .call(xAxis)
+		.selectAll("text")
+          .style("text-anchor", "start")
+          .attr("transform", "rotate(65)" );
 		
 		// Add the Y Axis and label
 		svg.append("g")
@@ -119,23 +107,27 @@ $(function() {
 
 {% block content %}
 <style>
+	#history-graph {
+		margin: 30px auto;
+		text-align: center;
+	}
+	
+	.bar {
+	  fill: steelblue;
+	  shape-rendering: crispEdges;
+	}
 
-		.bar {
-		  fill: steelblue;
-		  shape-rendering: crispEdges;
-		}
+	.axis path, .axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
 
-		.axis path, .axis line {
-		  fill: none;
-		  stroke: #000;
-		  shape-rendering: crispEdges;
-		}
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
+	.line {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
 </style>
 
 <div class="row">
