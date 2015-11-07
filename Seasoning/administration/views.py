@@ -17,6 +17,10 @@ from recipes.scrapers.kriskookt_scraper import debug_get_recipe_page
 from django.http.response import JsonResponse
 from _collections import defaultdict
 from ingredients.models import Ingredient
+from administration.logparsers.uwsgi import parse_uwsgi_log
+from administration.models import RequestLog
+from django.utils import timezone
+import datetime
 
 @staff_member_required
 def admin_home(request):
@@ -133,3 +137,25 @@ def admin_convert_scraped_recipe(request, scraped_recipe_id):
         messages.add_message(request, messages.ERROR, e.message)
                                 
     return redirect('admin_proofread_scraped_recipes')
+
+
+@staff_member_required
+def admin_analytics(request):
+    hits = RequestLog.objects.page_hits()
+    
+    return render(request, 'admin/admin_analytics.html', hits)
+
+@staff_member_required
+def admin_analytics_parse_uwgsi_log(request):
+    parse_uwsgi_log()
+    
+    return redirect('admin_analytics')
+
+def get_request_history(request, start_days_ago, time_interval, end_days_ago=None):
+    start_time = timezone.now() - datetime.timedelta(days=int(start_days_ago))
+    end_time = timezone.now()
+    if end_days_ago is not None:
+        end_time -= datetime.timedelta(days=int(end_days_ago))
+    
+    request_history = list(RequestLog.objects.history(start_time, end_time, int(time_interval)))
+    return JsonResponse(request_history, safe=False)

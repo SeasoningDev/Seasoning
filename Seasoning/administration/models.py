@@ -5,12 +5,14 @@ from django.db.models.aggregates import Count, Avg
 
 class RequestLogManager(models.Manager):
     
-    def history(self, days, interval_min):
+    def history(self, start_time, end_time, interval_min):
         """
         TODO: interval min omzetten naar een algemeen interval
         
         """
-        logs = RequestLog.objects.filter(time__gte=(datetime.datetime.today() - datetime.timedelta(days=days))).order_by('time')
+        logs = RequestLog.objects.filter(time__gte=start_time, time__lte=end_time).order_by('time').extra(select={'timestr':"to_char(time, 'YYYY-MM-DD HH24:MI:SS')"}).values('timestr', 'ip')
+        
+        return logs
         
         times = []
         requests = []
@@ -86,7 +88,7 @@ class RequestLog(models.Model):
     pid = models.PositiveIntegerField()
     wid = models.PositiveSmallIntegerField()
     
-    ip = models.IPAddressField()
+    ip = models.GenericIPAddressField()
     user_agent = models.CharField(max_length=300)
     
     method = models.CharField(max_length=10)
@@ -102,6 +104,9 @@ class RequestLog(models.Model):
     
     vsz = models.PositiveIntegerField()
     rss = models.PositiveIntegerField()
+    
+    def __str__(self):
+        return 'Log entry: {}'.format(self.time.strftime('%x %X'))
     
     def save(self, *args, **kwargs):
         self.minute = self.time.strftime('%Y%m%d%H%M')

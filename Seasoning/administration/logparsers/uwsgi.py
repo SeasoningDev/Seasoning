@@ -6,6 +6,7 @@ Created on 7-nov.-2015
 from django.conf import settings
 from administration.models import RequestLog
 import datetime
+from django.utils.dateparse import parse_datetime
 
 def parse_uwsgi_log():
     if settings.UWSGI_LOG_FILE is None:
@@ -14,26 +15,28 @@ def parse_uwsgi_log():
     lf = open(settings.UWSGI_LOG_FILE, 'r')
     
     try:
-        last_line_no = RequestLog.objects.latest('time')
+        last_parse_time = RequestLog.objects.latest('time').time
     except RequestLog.DoesNotExist:
-        last_line_no = datetime.datetime.utcfromtimestamp(0)
+        last_parse_time = None
         
-    for line in enumerate(lf):
-        if line_no <= last_line_no:
-            continue
+    for line in lf:
         if not line.startswith('LOG'):
             continue
         
         _, timestamp, pid, wid, ip, user_agent, method, protocol, uri, status, msec, size, referer, vsz, rss = line.split('|')[0:15]
-        time = datetime.datetime.utcfromtimestamp(int(timestamp))
+        time = parse_datetime(datetime.datetime.utcfromtimestamp(int(timestamp)).strftime('%Y-%m-%d %XZ'))
+        
+        if last_parse_time is not None and last_parse_time >= time:
+            continue
         
         try:
             int(msec)
         except ValueError:
             msec = 0
         
-        RequestLog(line=line_no, time=time, pid=pid, wid=wid, ip=ip, user_agent=user_agent,
+        RequestLog(time=time, pid=pid, wid=wid, ip=ip, user_agent=user_agent,
                    method=method, protocol=protocol, uri=uri, status=status, 
                    referer=referer, msec=msec, size=size, vsz=vsz, rss=rss).save()
     
     lf.close()
+    

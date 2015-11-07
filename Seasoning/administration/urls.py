@@ -23,4 +23,10 @@ urlpatterns = [
     url(r'^scrapers/convert/(\d+)/$', views.admin_convert_scraped_recipe, name='admin_convert_scraped_recipe'),
     
     url(r'^scrapers/scrape/(\d+)/$', views.admin_scrape_recipes, name='admin_scrape_recipes'),
+    
+    
+    url(r'^analytics/$', views.admin_analytics, name='admin_analytics'),
+    url(r'^analytics/parse/uwsgi/$', views.admin_analytics_parse_uwgsi_log, name='admin_analytics_parse_uwgsi_log'),
+    
+    url(r'^ajax/history/uwsgi/(\d+)/(\d+)/$', views.get_request_history, name='get_request_history'),
 ]

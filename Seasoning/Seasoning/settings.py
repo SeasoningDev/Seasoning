@@ -178,3 +178,5 @@ LOGGING = {
         }
     }
 }
+
+UWSGI_LOG_FILE = os.path.join(BASE_DIR, '../test_files/test_uwsgi.log')
