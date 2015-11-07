@@ -74,10 +74,11 @@
 	
     transition: all 0.25s ease-in-out 0s;
 }
+/**
 .recipe-preview .recipe-preview-footprint-category:hover {
     box-shadow: 0 0 5px 1px #333;
     text-decoration: none;
-}
+}**/
 .recipe-preview-footprint-category.category-0 {
 	color: #629b31;
 	border-color: #629b31;
