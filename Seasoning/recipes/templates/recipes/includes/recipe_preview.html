@@ -21,7 +21,7 @@
 			{% endif %}
 		</span>
 		
-		<span class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}" onclick="window.open('{% url 'view_recipe_footprint_analysis' recipe.id %}', '_blank');return false;">		
+		<span class="recipe-preview-footprint-category category-{{ recipe.footprint_category }}">		
 			{{ recipe.get_footprint_category_display }}
 		</span>
 		
