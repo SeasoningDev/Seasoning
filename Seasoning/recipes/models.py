@@ -3,18 +3,16 @@ import ingredients
 from django.db import models
 from django.core.validators import MinValueValidator,\
     MaxLengthValidator
-from django.db.models.fields import FloatField
 from django.utils.translation import ugettext_lazy as _
 from imagekit.models.fields import ProcessedImageField, ImageSpecField
 from imagekit.processors.resize import SmartResize
-from ingredients.models import CanUseUnit, Unit, Ingredient
+from ingredients.models import Unit, Ingredient
 import math
 from django.core.exceptions import ValidationError
-from django.core.files.temp import NamedTemporaryFile
 import urllib
 from django.core.files.base import File
 from markitup.fields import MarkupField
-from math import sqrt
+from tempfile import NamedTemporaryFile
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
