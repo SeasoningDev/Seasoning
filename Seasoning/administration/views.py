@@ -151,11 +151,11 @@ def admin_analytics_parse_uwgsi_log(request):
     
     return redirect('admin_analytics')
 
-def get_request_history(request, start_days_ago, time_interval, end_days_ago=None):
+def get_request_history(request, start_days_ago, end_days_ago=None):
     start_time = timezone.now() - datetime.timedelta(days=int(start_days_ago))
     end_time = timezone.now()
     if end_days_ago is not None:
         end_time -= datetime.timedelta(days=int(end_days_ago))
     
-    request_history = list(RequestLog.objects.history(start_time, end_time, int(time_interval)))
+    request_history = list(RequestLog.objects.history(start_time, end_time))
     return JsonResponse(request_history, safe=False)

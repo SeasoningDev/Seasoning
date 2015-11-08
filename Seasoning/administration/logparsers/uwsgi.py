@@ -34,6 +34,10 @@ def parse_uwsgi_log():
         except ValueError:
             msec = 0
         
+        user_agent = user_agent[0:300]
+        uri = uri[0:300]
+        referer = referer[0:300]
+        
         RequestLog(time=time, pid=pid, wid=wid, ip=ip, user_agent=user_agent,
                    method=method, protocol=protocol, uri=uri, status=status, 
                    referer=referer, msec=msec, size=size, vsz=vsz, rss=rss).save()

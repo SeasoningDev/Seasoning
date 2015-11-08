@@ -5,51 +5,14 @@ from django.db.models.aggregates import Count, Avg
 
 class RequestLogManager(models.Manager):
     
-    def history(self, start_time, end_time, interval_min):
-        """
-        TODO: interval min omzetten naar een algemeen interval
+    def history(self, start_time, end_time):
+        requests_no_admin = RequestLog.objects.exclude(uri__contains='admin')
+        request_in_timeframe = requests_no_admin.filter(time__gte=start_time, time__lte=end_time).order_by('time')
         
-        """
-        logs = RequestLog.objects.filter(time__gte=start_time, time__lte=end_time).order_by('time').extra(select={'timestr':"to_char(time, 'YYYY-MM-DD HH24:MI:SS')"}).values('timestr', 'ip')
+        history = request_in_timeframe.extra(select={'timestr':"to_char(time, 'YYYY-MM-DD HH24:MI:SS')"}).values('timestr', 'ip')
         
-        return logs
+        return history
         
-        times = []
-        requests = []
-        response_time = []
-        distinct_ips = []
-        ips = []
-        cur_time = None
-        for log in logs:
-            while cur_time is None or (log.time - cur_time) > datetime.timedelta(minutes=interval_min):
-                if cur_time is None:
-                    cur_time = log.time.replace(minute=(log.time.minute - log.time.minute % interval_min), second=0, microsecond=0)
-                else:
-                    response_time[-1] = response_time[-1]/requests[-1] if requests[-1] > 0 else 0
-                    cur_time += datetime.timedelta(minutes=5)
-                
-                requests.append(0)
-                response_time.append(0)
-                distinct_ips.append(0)
-                ips = []
-                times.append(cur_time.strftime('%d/%m/%y %H:%M'))
-            
-            requests[-1] += 1
-            response_time[-1] += log.msec
-            if log.ip not in ips:
-                ips.append(log.ip)
-                distinct_ips[-1] += 1
-        
-        response_time[-1] = response_time[-1]/requests[-1] if requests[-1] > 0 else 0
-        times_json = json.dumps(times)
-        log_json = json.dumps(requests)
-        msec_json = json.dumps(response_time)
-        ips = json.dumps(distinct_ips)
-        
-        return {'time_intervals': times_json,
-                'requests': log_json,
-                'response_times': msec_json,
-                'distinct_ips': ips}
     
     def page_hits(self, cutoff=20, days=None, order_by_responsetime=True):
         # TODO: implement uri filtering possibility (such as no admin pages)
