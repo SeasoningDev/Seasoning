@@ -1,0 +1,129 @@
+{% load staticfiles %}
+
+<div class="st-container st-effect-1">
+	<div class="info-overlay"></div>
+	
+	<nav class="st-menu st-effect-1" id="menu-1">
+		<h2 class="icon icon-lab">Gebruiksgids</h2>
+		
+		<p>
+			Seasoning is een site voor iedereen die ecologisch bewuster 
+			om wil gaan met zijn dagelijkse voeding.
+		</p>
+		<br />
+		<p>
+			Omdat je hierbij met zoveel dingen rekening moet houden (het seizoen,
+			de productiewijze, de transportmethode, het land van herkomst, ...), kan
+			het soms moeilijk zijn om door de bomen het bos nog te zien.
+		</p>
+		<br />
+		<p>
+			Seasoning vat al deze informatie samen en geeft ze op een duidelijke
+			en toegankelijke manier weer. Zo wordt het voor jou gemakkelijker een
+			duurzame maaltijd te kiezen!
+		</p>
+		
+		<hr>
+		
+		<p>
+			Onze recepten worden opgedeeld in 5 categorie&euml;n naargelang hoe duurzaam ze 
+			zijn ten opzichte van alle andere recepten. Zo kan je ze gemakkelijk onderling
+			vergelijken.
+		</p> 
+		<br>
+		
+		<div class="fp-cat-wrap clearfix">
+			<div class="fp-cat pull-left">
+				<span class="recipe-preview-footprint-category category-0">	A+ </span>
+			</div>
+			<p>
+				Recepten van deze categorie hebben een <b>lagere</b> voetafdruk per portie dan <b>90%</b> van de recepten binnen hun maaltijdstype.
+			</p>
+		</div>
+		
+		<div class="fp-cat-wrap clearfix">
+			<div class="fp-cat pull-left">
+				<span class="recipe-preview-footprint-category category-1">	A </span>
+			</div>
+			<p>
+				Recepten van deze categorie hebben een <b>lagere</b> voetafdruk per portie dan <b>75%</b> van de recepten binnen hun maaltijdstype.
+			</p>
+		</div>
+		<div class="fp-cat-wrap clearfix">
+			<div class="fp-cat pull-left">
+				<span class="recipe-preview-footprint-category category-2">	B </span>
+			</div>
+			<p>
+				Recepten van deze categorie hebben een <b>lagere</b> voetafdruk per portie dan <b>50%</b> van de recepten binnen hun maaltijdstype.
+			</p>
+		</div>
+		
+		<div class="fp-cat-wrap clearfix">
+			<div class="fp-cat pull-left">
+				<span class="recipe-preview-footprint-category category-3">	C </span>
+			</div>
+			<p>
+				Recepten van deze categorie hebben een <b>hogere</b> voetafdruk per portie dan <b>75%</b> van de recepten binnen hun maaltijdstype.
+			</p>
+		</div>
+		
+		<div class="fp-cat-wrap clearfix">
+			<div class="fp-cat pull-left">
+				<span class="recipe-preview-footprint-category category-4">	D </span>
+			</div>
+			<p>
+				Recepten van deze categorie hebben een <b>hogere</b> voetafdruk per portie dan <b>90%</b> van de recepten binnen hun maaltijdstype.
+			</p>
+		</div>
+		
+		<hr>
+		
+		
+		<p>	
+			Wanneer een recept een speciale eigenschap heeft, wordt dit aangegeven door
+			een lintje in de linkerbovenhoek.
+		</p>
+		<br>
+		
+		<div class="ribbon-info clearfix">
+			<img class="pull-left" src="{% static "recipes/img/corner-ribbon-inseason.png" %}">
+			
+			<p>
+				Dit lintje geeft aan dat een recept in seizoen is.
+			</p>
+		</div>
+		
+		<div class="ribbon-info clearfix">
+			<img class="pull-right" src="{% static "recipes/img/corner-ribbon-endangered.png" %}">
+			
+			<p>
+				Dit lintje geeft aan dat een recept vis bevat die in overbeviste gebieden geoogst wordt.
+			</p>
+		</div>
+		
+		
+		<hr>
+		
+		<p>
+			We pretenderen geen kookwebsite te zijn. Al onze recepten komen van andere kookwebsites die 
+			beter kunnen koken als ons. Seasoning is slechts een portaal dat duurzaamheidsinformatie aggregeert.
+			
+			Wil jij jouw recepten ook op seasoning? Contacteer ons!
+		</p>
+		
+		<hr>
+		
+		<p>Volg ons op deze sociale netwerken:</p>
+        <div id="social-icons" class="">
+            <a href="http://www.facebook.com/Seasoningbelgium" target="_blank"><img src="{% static "img/logos/fb-logo.png" %}" class="social-logo" title="De Facebookpagina van Seasoning" alt="Onze facebookpagina" /></a>
+            <a href="http://www.twitter.com/Seasoningbe" target="_blank"><img src="{% static "img/logos/tw-logo.png" %}" class="social-logo" title="De Twitterpagina van Seasoning" alt="Onze twitterpagina" /></a>
+            <a href="https://github.com/SeasoningDev/Seasoning" target="_blank"><img src="{% static "img/logos/gh-logo.png" %}" class="social-logo" title="De Github van Seasoning" alt="Onze github" /></a>
+        </div>
+        
+        <hr>
+        
+        <p class="text-center">
+        	<a class="btn btn-success" href="">Lees de gebruiksvoorwaarden</a>
+        </p>
+	</nav>
+</div>

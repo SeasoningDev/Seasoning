@@ -26,3 +26,10 @@ body {
 .ajax-loader img {
 	height: 30px;
 }
+
+@media only screen and (max-width: 640px) {
+	
+	.navbar #info-button {
+		display: none;
+	}
+}

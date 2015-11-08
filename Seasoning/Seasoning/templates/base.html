@@ -34,8 +34,10 @@
 			<div class="container">
 				<div class="col-xs-12 text-center">
 					<img src="{% static "img/logos/leaf.png" %}"></img>
-				</div>			
+				</div>
 		  	</div>
+		  	{% block extra_navbar %}
+		  	{% endblock %}
 		</div>
 		{% block body %}
 		

@@ -1,3 +1,20 @@
+.navbar #info-button {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	margin: 0;
+	height: 30px;
+	opacity: .5;
+	cursor: pointer;
+	transition: opacity .3s ease;
+}
+
+.navbar #info-button:hover {
+	opacity: 1;
+}
+
+
+
 #base-recipe-search-container {
     background-image: url("../img/search_backdrop.jpg");
     background-repeat: no-repeat;

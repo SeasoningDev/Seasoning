@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <link href="{% static "recipes/css/browse_recipes.css" %}" rel="stylesheet">
 <link href="{% static "recipes/css/recipe_preview.css" %}" rel="stylesheet">
-<link href="{% static "recipes/css/demo.css" %}" rel="stylesheet">
+<link href="{% static "recipes/css/infobar.css" %}" rel="stylesheet">
 {% endblock %}
 
 {% block extra_script %}
@@ -22,10 +22,17 @@
 	{% endwith %}
 </script>
 <script type="text/javascript" src="{% static "recipes/js/browse_recipes.js" %}"></script>
-<script tupe="text/javascript" src="{% static "recipes/js/demo.js" %}" ></script>
+<script tupe="text/javascript" src="{% static "recipes/js/infobar.js" %}" ></script>
 {% endblock %}
 
 
+
+{% block extra_navbar %}
+<img id="info-button" src="{% static "img/icons/info.png" %}">
+{% endblock %}
+
+
+		  	
 {% block body %}
 <a href="#" id="advanced-search-btn-mobile"></a>
 
@@ -196,8 +203,7 @@
 		</div>
 	</div>
 	
-	
 </form>
 
-{% include "recipes/includes/demo.html" %}
+{% include "recipes/includes/infobar.html" %}
 {% endblock %}
