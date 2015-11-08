@@ -26,7 +26,7 @@ SECRET_KEY = 'mzw^c$!f^7*+=uc4s4+02ohkalf1h6i(rq9x5usi^pjr-h+05&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['seasoning.be', '127.0.0.1', 'localhost']
 
 # Determine if we are running in the test environment.
 TEST = False
