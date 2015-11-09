@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('ingredients', '0001_initial'),
-        ('authentication', '0001_initial'),
     ]
 
     operations = [

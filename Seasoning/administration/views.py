@@ -6,21 +6,44 @@ Created on Jul 6, 2015
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 from recipes.models import ScrapedRecipe, ScrapedUsesIngredient, Recipe
-from administration.forms import ScrapedRecipeProofreadForm
+from administration.forms import ScrapedRecipeProofreadForm, ContactForm
 from django.forms.models import inlineformset_factory
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from recipes.forms import RecipeSearchForm
 from django.core.management import call_command
 from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
-from recipes.scrapers.kriskookt_scraper import debug_get_recipe_page
 from django.http.response import JsonResponse
-from _collections import defaultdict
 from ingredients.models import Ingredient
 from administration.logparsers.uwsgi import parse_uwsgi_log
 from administration.models import RequestLog
 from django.utils import timezone
 import datetime
+from django.views.generic.edit import FormView
+from django.core.urlresolvers import reverse_lazy
+from django.conf import settings
+
+class ContactView(FormView):
+    template_name = 'general/contact.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('contact')
+    
+    def form_valid(self, form):
+        messages_sent = form.send_email()
+        
+        if settings.DEBUG:
+            messages.add_message(self.request, messages.WARNING, 
+                                 'Het contactformulier werd niet verzonden omdat DEBUG.')
+        elif messages_sent <= 0:
+            messages.add_message(self.request, messages.WARNING, 
+                                 'Er is een fout opgetreden bij het verzenden van het formulier. Probeer het later nogmaal.')
+        else:
+            messages.add_message(self.request, messages.SUCCESS, 
+                                 'Het formulier werd met success verzonden. Wij proberen hier zo snel mogelijk op te antwoorden.')
+        
+        return super(ContactView, self).form_valid(form)
+    
+    
 
 @staff_member_required
 def admin_home(request):

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load addcss %}
+
+{% block title %}Contacteer Ons{% endblock %}
+
+
+{% block body %}
+	
+<div class="container">
+
+
+<style>
+    .header {
+        font-size: 27px;
+        padding: 10px;
+    }
+
+    .bigicon {
+        font-size: 35px;
+        color: #36A0FF;
+    }
+</style>
+
+	<br>
+	
+	{% for message in messages %}
+	<div class="message alert alert-dismissible alert-{{ message.tags }}">
+	  <button type="button" class="close" data-dismiss="alert">x</button>
+	  {{ message }}
+	</div>
+	{% endfor %}
+	
+		
+	<div class="row">
+        <div class="col-md-12">
+            <div class="well well-sm">
+                <form class="form-horizontal" method="post">
+                	{% csrf_token %}
+                    <fieldset>
+						<legend class="header">Contacteer Ons</legend>
+
+                        <div class="form-group{% if form.email.errors %} has-error{% endif %}">
+                            <div class="col-md-8 col-md-offset-2 col-sm-12">
+                            	{{ form.email|addcss:"placeholder,E-mailadres,class,form-control" }}
+                            </div>
+                        	{% for error in form.email.errors %}
+                        	<span class="col-md-8 col-md-offset-2 col-sm-12 help-block">{{ error }}</span>
+                        	{% endfor %}
+                        </div>
+
+                        <div class="form-group{% if form.contact_type.errors %} has-error{% endif %}">
+                            <div class="col-md-8 col-md-offset-2 col-sm-12">
+                            	{{ form.contact_type|addcss:"class,form-control" }}
+                            </div>
+                        	{% for error in form.contact_type.errors %}
+                        	<span class="col-md-8 col-md-offset-2 col-sm-12 help-block">{{ error }}</span>
+                        	{% endfor %}
+                        </div>
+
+                        <div class="form-group{% if form.message.errors %} has-error{% endif %}">
+                            <div class="col-md-8 col-md-offset-2 col-sm-12">
+                            	{{ form.message|addcss:"class,form-control,placeholder,Vul hier uw vraag in. Wij proberen u zo snel mogelijk te antwoorden." }}
+                            </div>
+                        	{% for error in form.message.errors %}
+                        	<span class="col-md-8 col-md-offset-2 col-sm-12 help-block">{{ error }}</span>
+                        	{% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2 text-center">
+                                <button type="submit" class="btn btn-success btn-block">Verzenden</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+	
+</div>
+{% endblock %}

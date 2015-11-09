@@ -27,11 +27,6 @@ def get_recipe_pages():
             yield RecipePage(url=recipe_div.find('h3').find('a')['href'],
                              category_name=category_name,
                              description=recipe_div.find('p').text)
-
-def debug_get_recipe_page(url):
-    return RecipePage(url=url,
-                      category_name='',
-                      description='')
             
 
 class RecipePage(object):
