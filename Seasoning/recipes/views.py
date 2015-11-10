@@ -53,7 +53,7 @@ def get_recipes(request, results_per_page=10):
         include_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='include')
         exclude_ingredients_formset = IngredientInRecipeFormset(request.POST, prefix='exclude')
         
-        if recipe_search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid:
+        if recipe_search_form.is_valid() and include_ingredients_formset.is_valid() and exclude_ingredients_formset.is_valid():
             include_ingredient_names = [form.cleaned_data['name'] for form in include_ingredients_formset if 'name' in form.cleaned_data]
             exclude_ingredient_names = [form.cleaned_data['name'] for form in exclude_ingredients_formset if 'name' in form.cleaned_data]
         
