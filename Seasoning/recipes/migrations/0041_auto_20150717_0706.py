@@ -21,6 +21,4 @@ class Migration(migrations.Migration):
             name='name',
             field=models.CharField(blank=True, max_length=300, default='', null=True, help_text='The name of the recipe.', verbose_name='Name'),
         ),
-        migrations.RunSQL(sql="UPDATE recipes_scrapedrecipe SET scraped_name=name",
-                          reverse_sql="UPDATE recipes_scrapedrecipe SET scraped_name=''"),
     ]

@@ -7,11 +7,13 @@ from django.test import TestCase
 from django_dynamic_fixture import G
 from recipes.models import Recipe
 from recipes.forms import RecipeSearchForm
+from ingredients.models import Ingredient
 
 class RecipeSearchFormTest(TestCase):
     
     def setUp(self):
         self.recipe = G(Recipe, name='Test Recipe')
+        
         G(Recipe, name='Bad')
     
     

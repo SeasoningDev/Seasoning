@@ -21,10 +21,6 @@ class Migration(migrations.Migration):
             model_name='unknowningredient',
             name='real_ingredient',
         ),
-        migrations.RemoveField(
-            model_name='unknowningredient',
-            name='requested_by',
-        ),
         migrations.AlterUniqueTogether(
             name='vote',
             unique_together=set([]),
@@ -34,16 +30,8 @@ class Migration(migrations.Migration):
             name='recipe',
         ),
         migrations.RemoveField(
-            model_name='vote',
-            name='user',
-        ),
-        migrations.RemoveField(
             model_name='recipe',
             name='accepted',
-        ),
-        migrations.RemoveField(
-            model_name='recipe',
-            name='author',
         ),
         migrations.RemoveField(
             model_name='recipe',

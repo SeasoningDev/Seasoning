@@ -57,7 +57,6 @@ class Migration(migrations.Migration):
                 ('endangered', models.BooleanField(editable=False, default=False, null=True, blank=True)),
                 ('inseason', models.BooleanField(editable=False, default=False, null=True, blank=True)),
                 ('accepted', models.BooleanField(default=False, null=True, blank=True)),
-                ('author', models.ForeignKey(to='authentication.User', null=True, related_name='recipes')),
                 ('cuisine', models.ForeignKey(to='recipes.Cuisine', blank=True, verbose_name='Cuisine', null=True, help_text='The type of cuisine this recipe represents.', db_column='cuisine')),
                 ('external_site', models.ForeignKey(to='recipes.ExternalSite', blank=True, null=True)),
             ],
@@ -72,7 +71,6 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50)),
                 ('for_recipe', models.ForeignKey(to='recipes.Recipe')),
                 ('real_ingredient', models.ForeignKey(to='ingredients.Ingredient')),
-                ('requested_by', models.ForeignKey(to='authentication.User')),
             ],
             options={
                 'db_table': 'unknown_ingredient',
@@ -101,16 +99,11 @@ class Migration(migrations.Migration):
                 ('time_added', models.DateTimeField(editable=False, default=datetime.datetime.now)),
                 ('time_changed', models.DateTimeField(editable=False, default=datetime.datetime.now)),
                 ('recipe', models.ForeignKey(to='recipes.Recipe', related_name='votes')),
-                ('user', models.ForeignKey(to='authentication.User')),
             ],
         ),
         migrations.AddField(
             model_name='recipe',
             name='ingredients',
             field=models.ManyToManyField(to='ingredients.Ingredient', editable=False, through='recipes.UsesIngredient'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='vote',
-            unique_together=set([('recipe', 'user')]),
         ),
     ]

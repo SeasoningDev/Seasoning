@@ -14,6 +14,7 @@ from django.template.context import RequestContext
 import datetime
 from ingredients.models import AvailableIn
 from decimal import Decimal
+from django.conf import settings
 
 def browse_recipes(request):
     IngredientInRecipeFormset = formset_factory(IngredientInRecipeSearchForm, extra=0)
@@ -79,7 +80,8 @@ def get_recipes(request, results_per_page=10):
         
         recipe_previews_html = ''
         for recipe in recipes_page:
-            recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', RequestContext(request, {'recipe': recipe}))
+            recipe_previews_html += render_to_string('recipes/includes/recipe_preview.html', RequestContext(request, {'recipe': recipe,
+                                                                                                                      'TEST': settings.TEST}))
             
         has_next = recipes_page.has_next()
             
