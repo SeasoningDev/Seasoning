@@ -122,8 +122,19 @@
         
         <hr>
         
-        <p class="text-center">
-        	<a class="btn btn-success" href="{% url "terms" %}">Lees de gebruiksvoorwaarden</a>
-        </p>
+        <div class="row">
+        	<div class="col-xs-6">
+        		<a class="btn btn-success btn-block" href="{% url "terms" %}">Gebruiksvoorwaarden</a>
+        	</div>
+        	<div class="col-xs-6">
+        		<a class="btn btn-success btn-block" href="{% url "contact" %}">Contact</a>
+        	</div>
+        </div>
+        <br>
+        <div class="row">
+        	<div class="col-xs-6 col-xs-offset-3">
+        		<a class="btn btn-success btn-block" href="{% url "thanks" %}">Dankbetuigingen</a>
+        	</div>
+        </div>
 	</nav>
 </div>

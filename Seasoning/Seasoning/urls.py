@@ -15,6 +15,7 @@ urlpatterns = [
     
     url(r'contact/$', ContactView.as_view(), name='contact'),
     url(r'terms/$', TemplateView.as_view(template_name='static/terms.html'), name='terms'),
+    url(r'thanks/$', TemplateView.as_view(template_name='static/thanks.html'), name='thanks'),
     
     url(r'^ingredients/', include(ingredients.urls)),
     url(r'^recipes/', include(recipes.urls)),
