@@ -13,6 +13,8 @@ import urllib
 from django.core.files.base import File
 from markitup.fields import MarkupField
 from tempfile import NamedTemporaryFile
+from django.utils import timezone
+from datetime import timedelta
 
 def get_image_filename(instance, old_filename):
     extension = old_filename.split('.')[-1]
@@ -143,10 +145,20 @@ class Recipe(models.Model):
         
         self.save()
         
+    
+    
+    _recipe_distributions_cache = None
+    _recipe_distributions_cache_since = None
+    def recipe_distribution_parameters(self, course):
+        if self._recipe_distributions_cache is None or self._recipe_distributions_cache_since is None or \
+           self._recipe_distributions_cache_since < timezone.now() - timedelta(days=1):
+            self.__class__._recipe_distributions_cache = RecipeDistribution.objects.all()
+            self.__class__._recipe_distributions_cache_since = timezone.now()
         
+        return filter(lambda x: x.group == course, self._recipe_distributions_cache)
     
     def footprint_category(self, display=False):
-        distribution_parameters = RecipeDistribution.objects.filter(group=self.course)
+        distribution_parameters = self.recipe_distribution_parameters(self.course)
         
         try:
             mean = list(filter(lambda x: x.parameter == RecipeDistribution.MEAN, distribution_parameters))[0].parameter_value

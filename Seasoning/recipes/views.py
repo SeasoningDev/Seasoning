@@ -68,6 +68,7 @@ def get_recipes(request, results_per_page=10):
         page = 1
         recipe_queryset = Recipe.objects.all()
     
+    recipe_queryset = recipe_queryset.select_related('external_site')
     
     paginator = Paginator(recipe_queryset, results_per_page)
     
