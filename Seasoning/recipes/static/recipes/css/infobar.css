@@ -19,7 +19,7 @@ body {
     transition: opacity 0.5s ease 0s;
     width: 100%;
 }
-.st-container.st-menu-open .info-overlay {
+.st-menu-open .st-container .info-overlay {
 	pointer-events: all;
 	opacity: .2;
 }
@@ -28,7 +28,7 @@ body {
     right: 0;
     position: absolute;
     top: 60px;
-    transition: all 0.5s ease 0s;
+    transition: transform 0.5s ease 0s;
     visibility: hidden;
     width: 500px;
     z-index: 1020;
@@ -55,7 +55,7 @@ body {
     transform: translate3d(100%, 0px, 0px);
     visibility: visible;
 }
-.st-effect-1.st-menu-open .st-effect-1.st-menu {
+.st-menu-open .st-effect-1 .st-effect-1.st-menu {
     transform: translate3d(0px, 0px, 0px);
     visibility: visible;
 }
@@ -96,7 +96,6 @@ body {
     font-weight: bold;
     height: 50px;
     line-height: 38px;
-    transition: all 0.25s ease-in-out 0s;
     width: 50px;
     z-index: 100;
     text-align: center;

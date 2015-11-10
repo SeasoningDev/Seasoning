@@ -9,6 +9,10 @@ from administration.views import ContactView
 urlpatterns = [
     url(r'^$', lambda r: redirect('browse_recipes')),
     
+    url(r'403/', TemplateView.as_view(template_name='403.html')),
+    url(r'404/', TemplateView.as_view(template_name='404.html')),
+    url(r'500/', TemplateView.as_view(template_name='500.html')),
+    
     url(r'contact/$', ContactView.as_view(), name='contact'),
     url(r'terms/$', TemplateView.as_view(template_name='static/terms.html'), name='terms'),
     
