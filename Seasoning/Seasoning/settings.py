@@ -140,6 +140,8 @@ STATIC_ROOT = secret.STATIC_ROOT
 MEDIA_URL ='/media/'
 MEDIA_ROOT = secret.MEDIA_ROOT
 
+MEDIA_BACKUP_DIR = secret.MEDIA_BACKUP_DIR
+
 
 
 MARKITUP_FILTER = ('markdown.markdown', {'safe_mode': True})
