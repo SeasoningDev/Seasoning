@@ -1,12 +1,12 @@
 $(function() {
+	var body = $("body");
+	
 	$("#info-button").click(function() {
-		var body = $("body");
-		
 		body.toggleClass("st-menu-open");
 	});
 	
 	$(".info-overlay").click(function() {
-		$(".st-container").removeClass("st-menu-open");
+		body.removeClass("st-menu-open");
 	});
 	
 	var infobar = $('.st-menu');
