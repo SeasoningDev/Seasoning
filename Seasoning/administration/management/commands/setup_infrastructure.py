@@ -2,6 +2,7 @@ from django.core.management.base import NoArgsCommand
 from django.conf import settings
 import os
 from django.template.loader import render_to_string
+import sys
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):
@@ -23,3 +24,9 @@ class Command(NoArgsCommand):
             f.write(render_to_string('infrastructure/cron/backup_media.sh.template', context={'settings': settings}))
             
         print('Updated Media Files backup script at /etc/cron.daily/seasoning_backup_media.sh')
+        
+        with open('/etc/cron.monthly/seasoning_update.sh', 'w+') as f:
+            f.write(render_to_string('infrastructure/cron/update.sh.template', context={'PYTHON_EXE': sys.executable,
+                                                                                        'settings': settings}))
+            
+        print('Updated Update script at /etc/cron.monthly/seasoning_update.sh')

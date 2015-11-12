@@ -1,0 +1,12 @@
+echo ======================================================================
+echo Updating Seasoning Database:
+echo	* ingredient footprints and other cached attributes
+echo 	* Recipe distributions
+echo
+echo ======================================================================
+
+
+{{ PYTHON_EXE }} {{ settings.BASE_DIR }}/manage.py update_cached_attributes
+
+
+{{ PYTHON_EXE }} {{ settings.BASE_DIR }}/manage.py calculate_recipe_distributions

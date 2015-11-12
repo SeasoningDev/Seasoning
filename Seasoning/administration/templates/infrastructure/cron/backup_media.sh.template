@@ -247,9 +247,9 @@ echo ======================================================================
 			fi
 		eval rm -fv "$BACKUPDIR/weekly/week.$REMW.*" 
 		echo
-			tar_media_files "$TARGET_DIR" "$BACKUPDIR/weekly/week.$W.$DATE.sql"
-			compression "$BACKUPDIR/weekly/week.$W.$DATE.sql"
-			BACKUPFILES="$BACKUPFILES $BACKUPDIR/weekly/week.$W.$DATE.sql$SUFFIX"
+			tar_media_files "$TARGET_DIR" "$BACKUPDIR/weekly/week.$W.$DATE.tar"
+			compression "$BACKUPDIR/weekly/week.$W.$DATE.tar"
+			BACKUPFILES="$BACKUPFILES $BACKUPDIR/weekly/week.$W.$DATE.tar$SUFFIX"
 		echo ----------------------------------------------------------------------
 		
 	# Daily Backup
@@ -259,14 +259,14 @@ echo ======================================================================
 		echo Rotating last weeks Backup...
 		eval rm -fv "$BACKUPDIR/daily/*.$DOW.sql.*" 
 		echo
-			tar_media_files "$TARGET_DIR" "$BACKUPDIR/daily/$DATE.$DOW.sql"
-			compression "$BACKUPDIR/daily/$DATE.$DOW.sql"
-			BACKUPFILES="$BACKUPFILES $BACKUPDIR/daily/$DATE.$DOW.sql$SUFFIX"
+			tar_media_files "$TARGET_DIR" "$BACKUPDIR/daily/$DATE.$DOW.tar"
+			compression "$BACKUPDIR/daily/$DATE.$DOW.tar"
+			BACKUPFILES="$BACKUPFILES $BACKUPDIR/daily/$DATE.$DOW.tar$SUFFIX"
 		echo ----------------------------------------------------------------------
 	fi
 echo Backup End Time `date`
 echo ======================================================================
-fi
+
 echo Total disk space used for backup storage..
 echo Size - Location
 echo `du -hs "$BACKUPDIR"`
