@@ -1,7 +1,7 @@
 echo ======================================================================
 echo Updating Seasoning Database:
-echo	* ingredient footprints and other cached attributes
-echo 	* Recipe distributions
+echo "	* ingredient footprints and other cached attributes"
+echo " 	* Recipe distributions"
 echo
 echo ======================================================================
 
