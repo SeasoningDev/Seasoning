@@ -4,14 +4,5 @@
 .project
 .pydevproject
 .settings
-media/*
-*~
-\#*\#
-.\#*
-.sass-cache
-*.css.map
-!style.css
 
-secrets.py
-initial_data.json
-cred*
+settings_secrets.py

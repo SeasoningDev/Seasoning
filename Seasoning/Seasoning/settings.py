@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import sys
+import Seasoning.settings_secrets as secret
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -21,10 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'mzw^c$!f^7*+=uc4s4+02ohkalf1h6i(rq9x5usi^pjr-h+05&'
+SECRET_KEY = secret.DJANGO_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = secret.DEBUG
 
 ALLOWED_HOSTS = ['seasoning.be', '127.0.0.1', 'localhost']
 
@@ -104,11 +105,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'seasoning',
-            'USER': 'seasoning',
-#            'HOST': '127.0.0.1',
-            'HOST': 'seasoning.be',
-            'PORT': '',
+            'NAME': secret.DB_NAME,
+            'USER': secret.DB_USER,
+            'PASSWORD': secret.DB_PASSWORD,
+            'HOST': secret.DB_HOST,
+            'PORT': secret.DB_PORT,
         },
     }
 
@@ -131,10 +132,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT ='/srv/static/Seasoning/'
+STATIC_ROOT = secret.STATIC_ROOT
 
 MEDIA_URL ='/media/'
-MEDIA_ROOT = '/srv/media/Seasoning/'
+MEDIA_ROOT = secret.MEDIA_ROOT
 
 
 
@@ -178,4 +179,7 @@ LOGGING = {
     }
 }
 
-UWSGI_LOG_FILE = os.path.join(BASE_DIR, '../test_files/uwsgi.log.test')
+if DEBUG or TEST:
+    UWSGI_LOG_FILE = os.path.join(BASE_DIR, secret.UWSGI_LOG_FILE)
+else:
+    UWSGI_LOG_FILE = secret.UWSGI_LOG_FILE
