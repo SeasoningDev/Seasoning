@@ -22,6 +22,8 @@ import datetime
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
+import time
+import os
 
 class ContactView(FormView):
     template_name = 'general/contact.html'
@@ -47,8 +49,17 @@ class ContactView(FormView):
 
 @staff_member_required
 def admin_home(request):
+    # Last backup download check
+    last_update = datetime.datetime.utcfromtimestamp(0)
+    
+    timestamp_filename = os.path.join(settings.MEDIA_ROOT, 'offline_backup.time')
+    if  os.path.exists(timestamp_filename):
+        last_update += datetime.timedelta(seconds=os.path.getmtime(timestamp_filename))
+        
     return render(request, 'admin/admin_dashboard.html', {'stats': {'ao_visible_recipes': RecipeSearchForm({}).search_queryset().count(),
-                                                                    'last_cache_update': Recipe.objects.all().order_by('last_update_time')[0].last_update_time}})
+                                                                    'last_cache_update': Recipe.objects.all().order_by('last_update_time')[0].last_update_time},
+                                                          'last_backup_download': last_update,
+                                                          'need_backup_download': last_update < (datetime.datetime.now() - datetime.timedelta(days=60))})
     
 @staff_member_required
 def get_admin_recipes_added_data(request):
@@ -188,7 +199,7 @@ def get_request_history(request, start_days_ago, end_days_ago=None):
 
 @staff_member_required
 def admin_download_db_backup(request):
-    import glob, os
+    import glob
     newest_backup = max(glob.iglob(os.path.join(settings.DATABASES['default']['BACKUP_DIR'], 'daily/*.sql.bz2')), key=os.path.getctime)
     
     with open(newest_backup, 'rb') as f:
