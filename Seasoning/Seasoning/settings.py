@@ -110,6 +110,9 @@ else:
             'PASSWORD': secret.DB_PASSWORD,
             'HOST': secret.DB_HOST,
             'PORT': secret.DB_PORT,
+
+            'BACKUP_USER': secret.DB_BACKUP_USER,
+            'BACKUP_DIR': secret.DB_BACKUP_DIR,
         },
     }
 
