@@ -38,6 +38,10 @@ if len(manage_command) != 0:
         TEST = sys.argv[command] == "test"
 
 
+ADMINS = secret.ADMINS
+
+
+
 # Application definition
 
 INSTALLED_APPS = (
