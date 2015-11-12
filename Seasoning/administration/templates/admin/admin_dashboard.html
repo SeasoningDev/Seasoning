@@ -220,7 +220,7 @@ d3.json(recipes_added_data_url, function(error, data) {
 	</div>
 	
 	<div class="col-lg-3 col-md-6">
-		<div class="panel panel-{% if need_backup_download %}danger{% else %}success{% endif %}">
+		<div class="panel panel-{% if need_db_download or need_media_download %}danger{% else %}success{% endif %}">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-xs-3">
@@ -228,18 +228,18 @@ d3.json(recipes_added_data_url, function(error, data) {
 							style="height: 55px;">
 					</div>
 					<div class="col-xs-9 text-right">
-						<div style="font-size: 40px;line-height:40px;">{% if need_backup_download %}NIET {% endif %}OK</div>
-						<div>Last Offline backup: <b style="margin-left:5px;">{{ last_backup_download|date:"d M Y" }}</b></div>
+						<div style="font-size: 40px;line-height:40px;">{% if need_db_download or need_media_download %}NIET {% endif %}OK</div>
+						<div>Offline {% if need_db_download %}DB{% elif need_media_download %}Media{% endif %} backup required</div>
 					</div>
 				</div>
 			</div>
 			<div class="panel-body">
 				<a style="line-height: 15px;" href="{% url 'admin_download_db_backup' %}">
-					<span class="">Download Latest Database Backup</span>
+					<span class="">Download Latest Database Backup ({{ last_db_download|date:"d M Y" }})</span>
 				</a>
 				<br>
 				<a style="line-height: 15px;" href="{% url 'admin_download_media_backup' %}">
-					<span class="">Download Latest Media Backup</span>
+					<span class="">Download Latest Media Backup ({{ last_media_download|date:"d M Y" }})</span>
 				</a>
 			</div>
 		</div>

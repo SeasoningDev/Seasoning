@@ -50,16 +50,22 @@ class ContactView(FormView):
 @staff_member_required
 def admin_home(request):
     # Last backup download check
-    last_update = datetime.datetime.utcfromtimestamp(0)
+    last_db_download = datetime.datetime.utcfromtimestamp(0)
+    db_timestamp_filename = os.path.join(settings.MEDIA_ROOT, 'offline_db_backup.time')
+    if  os.path.exists(db_timestamp_filename):
+        last_db_download += datetime.timedelta(seconds=os.path.getmtime(db_timestamp_filename))
     
-    timestamp_filename = os.path.join(settings.MEDIA_ROOT, 'offline_backup.time')
-    if  os.path.exists(timestamp_filename):
-        last_update += datetime.timedelta(seconds=os.path.getmtime(timestamp_filename))
+    last_media_download = datetime.datetime.utcfromtimestamp(0)
+    media_timestamp_filename = os.path.join(settings.MEDIA_ROOT, 'offline_db_backup.time')
+    if  os.path.exists(media_timestamp_filename):
+        last_media_download += datetime.timedelta(seconds=os.path.getmtime(media_timestamp_filename))
         
     return render(request, 'admin/admin_dashboard.html', {'stats': {'ao_visible_recipes': RecipeSearchForm({}).search_queryset().count(),
                                                                     'last_cache_update': Recipe.objects.all().order_by('last_update_time')[0].last_update_time},
-                                                          'last_backup_download': last_update,
-                                                          'need_backup_download': last_update < (datetime.datetime.now() - datetime.timedelta(days=60))})
+                                                          'last_db_download': last_db_download,
+                                                          'need_db_download': last_db_download < (datetime.datetime.now() - datetime.timedelta(days=60)),
+                                                          'last_media_download': last_media_download,
+                                                          'need_media_download': last_media_download < (datetime.datetime.now() - datetime.timedelta(days=60))})
     
 @staff_member_required
 def get_admin_recipes_added_data(request):
@@ -206,7 +212,7 @@ def admin_download_db_backup(request):
         response = HttpResponse(f.read(), content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
     
-    with open(os.path.join(settings.MEDIA_ROOT, 'offline_backup.time'), 'w+'):
+    with open(os.path.join(settings.MEDIA_ROOT, 'offline_db_backup.time'), 'w+'):
         pass
     
     return response
@@ -220,7 +226,7 @@ def admin_download_media_backup(request):
         response = HttpResponse(f.read(), content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
     
-    with open(os.path.join(settings.MEDIA_ROOT, 'offline_backup.time'), 'w+'):
+    with open(os.path.join(settings.MEDIA_ROOT, 'offline_media_backup.time'), 'w+'):
         pass
     
     return response
