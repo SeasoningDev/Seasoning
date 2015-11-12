@@ -224,11 +224,11 @@ def admin_download_media_backup(request):
     import glob
     newest_backup = max(glob.iglob(os.path.join(settings.MEDIA_BACKUP_DIR, 'daily/*.tar.bz2')), key=os.path.getctime)
     
-    with open(newest_backup, 'rb') as f:
-        response = FileResponse(f,
-                                content_type='application/force-download')
-        response['Content-Length'] = os.path.getsize(newest_backup)
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
+    f = open(newest_backup, 'rb')
+    response = FileResponse(f,
+                            content_type='application/force-download')
+    response['Content-Length'] = os.path.getsize(newest_backup)
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
     
     with open(os.path.join(settings.MEDIA_ROOT, 'offline_media_backup.time'), 'w+'):
         pass
