@@ -13,7 +13,8 @@ from django.contrib import messages
 from recipes.forms import RecipeSearchForm
 from django.core.management import call_command
 from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import JsonResponse, HttpResponse,\
+    StreamingHttpResponse
 from ingredients.models import Ingredient
 from administration.logparsers.uwsgi import parse_uwsgi_log
 from administration.models import RequestLog
@@ -24,6 +25,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
 import time
 import os
+from wsgiref.util import FileWrapper
 
 class ContactView(FormView):
     template_name = 'general/contact.html'
@@ -219,11 +221,14 @@ def admin_download_db_backup(request):
 
 @staff_member_required
 def admin_download_media_backup(request):
-    import glob, os
+    import glob
     newest_backup = max(glob.iglob(os.path.join(settings.MEDIA_BACKUP_DIR, 'daily/*.tar.bz2')), key=os.path.getctime)
     
-    with open(newest_backup, 'rb') as f:
-        response = HttpResponse(f.read(), content_type='application/force-download')
+    chunk_size = 8192
+    with open(newest_backup, 'r+') as f:
+        response = StreamingHttpResponse(FileWrapper(f, chunk_size),
+                                         content_type='application/force-download')
+        response['Content-Length'] = os.path.getsize(newest_backup)
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
     
     with open(os.path.join(settings.MEDIA_ROOT, 'offline_media_backup.time'), 'w+'):
