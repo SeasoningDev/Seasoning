@@ -59,12 +59,31 @@ function append_search_results(data) {
 	$("#browse-recipes-wrapper").append($(data.result));
 }
 
+var current_ajax_request;
 function get_recipe_search_results(page) {
-	return $.ajax({
+	if (current_ajax_request)
+		current_ajax_request.abort();
+	
+	current_ajax_request = $.ajax({
 		url: get_recipes_url,
 		data: $("#recipe-search-form").serialize(),
 		method: 'post',
+	}).always(function(xhr) {
+		$(".search-results-loader.bottom").fadeOut(200);
+		
+		if (xhr.status === 0) {
+			if (xhr.statusText === 'abort') {
+				// Has been aborted
+				return
+		    }
+		}
+		current_ajax_request = null;
+		
+		$("#dark-overlay").fadeOut(200);
+		$(".search-results-loader.top").fadeOut(200);
 	});
+	
+	return current_ajax_request;
 }
 
 function show_result_count(count) {
@@ -100,9 +119,6 @@ function ajax_search_recipes() {
 		inc_paging();
 		loading_next_page = false;
 			
-	}).always(function() {
-		$("#dark-overlay").fadeOut(200);
-		$(".search-results-loader.top").fadeOut(200);
 	});
 }
 
@@ -135,9 +151,7 @@ function ajax_load_next_page() {
 			inc_paging();
 			loading_next_page = false;
 			
-		}).always(function() {
-			$(".search-results-loader.bottom").fadeOut(200);
-		})
+		});
 	}
 }
 

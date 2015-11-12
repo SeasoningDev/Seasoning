@@ -563,7 +563,7 @@ body {
 	background-color: rgba(255, 255, 255, 0.5);
 	
 	display: none;
-	z-index: 1001;
+	z-index: 104;
 }
 
 .search-results-loader.top {
