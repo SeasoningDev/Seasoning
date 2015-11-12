@@ -247,7 +247,7 @@ echo ======================================================================
 			fi
 		eval rm -fv "$BACKUPDIR/weekly/week.$REMW.*" 
 		echo
-			dbdump "$TARGET_DIR" "$BACKUPDIR/weekly/week.$W.$DATE.sql"
+			tar_media_files "$TARGET_DIR" "$BACKUPDIR/weekly/week.$W.$DATE.sql"
 			compression "$BACKUPDIR/weekly/week.$W.$DATE.sql"
 			BACKUPFILES="$BACKUPFILES $BACKUPDIR/weekly/week.$W.$DATE.sql$SUFFIX"
 		echo ----------------------------------------------------------------------
@@ -259,7 +259,7 @@ echo ======================================================================
 		echo Rotating last weeks Backup...
 		eval rm -fv "$BACKUPDIR/daily/*.$DOW.sql.*" 
 		echo
-			dbdump "$TARGET_DIR" "$BACKUPDIR/daily/$DATE.$DOW.sql"
+			tar_media_files "$TARGET_DIR" "$BACKUPDIR/daily/$DATE.$DOW.sql"
 			compression "$BACKUPDIR/daily/$DATE.$DOW.sql"
 			BACKUPFILES="$BACKUPFILES $BACKUPDIR/daily/$DATE.$DOW.sql$SUFFIX"
 		echo ----------------------------------------------------------------------
