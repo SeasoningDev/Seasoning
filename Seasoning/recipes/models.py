@@ -155,7 +155,7 @@ class Recipe(models.Model):
             self.__class__._recipe_distributions_cache = RecipeDistribution.objects.all()
             self.__class__._recipe_distributions_cache_since = timezone.now()
         
-        return filter(lambda x: x.group == course, self._recipe_distributions_cache)
+        return list(filter(lambda x: x.group == course, self._recipe_distributions_cache))
     
     def footprint_category(self, display=False):
         distribution_parameters = self.recipe_distribution_parameters(self.course)
