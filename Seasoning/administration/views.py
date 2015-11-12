@@ -14,7 +14,7 @@ from recipes.forms import RecipeSearchForm
 from django.core.management import call_command
 from recipes.scrapers.scrapings_saver import INSTALLED_SCRAPERS, scrape_recipes
 from django.http.response import JsonResponse, HttpResponse,\
-    StreamingHttpResponse
+    StreamingHttpResponse, FileResponse
 from ingredients.models import Ingredient
 from administration.logparsers.uwsgi import parse_uwsgi_log
 from administration.models import RequestLog
@@ -224,10 +224,9 @@ def admin_download_media_backup(request):
     import glob
     newest_backup = max(glob.iglob(os.path.join(settings.MEDIA_BACKUP_DIR, 'daily/*.tar.bz2')), key=os.path.getctime)
     
-    chunk_size = 8192
-    with open(newest_backup) as f:
-        response = StreamingHttpResponse(FileWrapper(f, chunk_size),
-                                         content_type='application/force-download')
+    with open(newest_backup, 'rb') as f:
+        response = FileResponse(f,
+                                content_type='application/force-download')
         response['Content-Length'] = os.path.getsize(newest_backup)
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
     
