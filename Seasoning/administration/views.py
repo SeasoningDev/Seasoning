@@ -195,6 +195,9 @@ def admin_download_db_backup(request):
         response = HttpResponse(f.read(), content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
     
+    with open(os.path.join(settings.MEDIA_ROOT, 'offline_backup.time'), 'w+'):
+        pass
+    
     return response
 
 @staff_member_required
@@ -205,5 +208,8 @@ def admin_download_media_backup(request):
     with open(newest_backup, 'rb') as f:
         response = HttpResponse(f.read(), content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(os.path.basename(f.name))
+    
+    with open(os.path.join(settings.MEDIA_ROOT, 'offline_backup.time'), 'w+'):
+        pass
     
     return response
