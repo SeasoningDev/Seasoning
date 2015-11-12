@@ -142,12 +142,12 @@ $(function() {
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-xs-3">
-						<img src="{% static "admin/img/decoration/dinner.png" %}"
+						<img src="{% static "admin/img/decoration/log.png" %}"
 							style="height: 55px;">
 					</div>
 					<div class="col-xs-9 text-right">
-						<div style="font-size: 40px;line-height:40px;">{{ stats.ao_visible_recipes }}</div>
-						<div>Recipes visible on Seasoning</div>
+						<div style="font-size: 40px;line-height:40px;">{{ last_entry.time }}</div>
+						<div>Last parsed log entry:</div>
 					</div>
 				</div>
 			</div>
