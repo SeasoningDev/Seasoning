@@ -21,7 +21,7 @@ body {
 }
 .st-menu-open .st-container .info-overlay {
 	pointer-events: all;
-	opacity: .2;
+	opacity: .4;
 }
 .st-menu {
     background: #f9f9f9 none repeat scroll 0 0;

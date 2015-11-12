@@ -90,7 +90,6 @@ def get_recipes(request, results_per_page=10):
         recipe_previews_html = ''
         has_next = False
     
-    
     return JsonResponse(data={'result': recipe_previews_html,
                               'has_next': has_next, 
                               'result_count': paginator.count}, safe=False)

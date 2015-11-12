@@ -406,26 +406,26 @@ $(function() {
 		
 		if (scrolltop > prev_scrolltop) {
 			// Scrolling down
-			if (dir != 1) {
+			if (dir >= 0) {
 				// We weren't scrolling down before
-				dir = 1;
+				dir = -1;
 				
 				filters.css('top', filters.offset().top + 'px');
 				filters.css('position', 'absolute');
 			}
 			
-			if (filters.css('position') != 'fixed' && (filters.offset().top - scrolltop) < 110) {
+			if (filters.css('position') != 'fixed' && (filters.offset().top - scrolltop) < 60) {
 				if (scrolltop + $(window).height() > filters.offset().top + filters.outerHeight()) {
 					filters.css('position', 'fixed');
-					filters.css('top', Math.min(110, ($(window).height() - filters.outerHeight())) + 'px');
+					filters.css('top', Math.min(60, ($(window).height() - filters.outerHeight())) + 'px');
 				}
 			}
 			
 		} else if (scrolltop < prev_scrolltop) {
 			// Scrolling up
-			if (dir != 2) {
+			if (dir <= 0) {
 				// We werent scrolling up before
-				dir = 2;
+				dir = 1;
 				
 				filters.css('top', filters.offset().top + 'px');
 				filters.css('position', 'absolute');
@@ -433,7 +433,6 @@ $(function() {
 			
 			if (filters.css('position') != 'fixed' && filters.offset().top > 212) {
 				if (scrolltop + 110 <= filters.offset().top) {
-					console.log('ok');
 					filters.css('position', 'fixed');
 					filters.css('top', '110px');
 				}
@@ -442,5 +441,5 @@ $(function() {
 				filters.css('position', 'absolute');
 			}
 		}
-	})
+	});
 })
