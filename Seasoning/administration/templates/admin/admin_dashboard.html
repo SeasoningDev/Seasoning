@@ -219,6 +219,31 @@ d3.json(recipes_added_data_url, function(error, data) {
 		</div>
 	</div>
 	
+	<div class="col-lg-3 col-md-6">
+		<div class="panel panel-danger">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-xs-3">
+						<img src="{% static "admin/img/decoration/dinner.png" %}"
+							style="height: 55px;">
+					</div>
+					<div class="col-xs-9 text-right">
+						<div style="font-size: 40px;line-height:40px;">OK</div>
+						<div>Last Offline backup:</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<a style="line-height: 15px;" href="{% url 'admin_download_db_backup' %}">
+					<span class="">Download Latest Database Backup</span>
+				</a>
+				<br>
+				<a style="line-height: 15px;" href="{% url 'admin_download_db_backup' %}">
+					<span class="">Download Latest Media Backup</span>
+				</a>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="row">

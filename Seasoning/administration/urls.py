@@ -29,4 +29,9 @@ urlpatterns = [
     url(r'^analytics/parse/uwsgi/$', views.admin_analytics_parse_uwgsi_log, name='admin_analytics_parse_uwgsi_log'),
     
     url(r'^ajax/history/uwsgi/(\d+)/(\d+)/$', views.get_request_history, name='get_request_history'),
+    
+    
+    
+    url(r'^download/db/', views.admin_download_db_backup, name='admin_download_db_backup'),
+    url(r'^download/media/', views.admin_download_media_backup, name='admin_download_media_backup'),
 ]
