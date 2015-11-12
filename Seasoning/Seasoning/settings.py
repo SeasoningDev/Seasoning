@@ -188,6 +188,8 @@ LOGGING = {
     }
 }
 
+SERVER_EMAIL = 'server@seasoning.be'
+
 if DEBUG or TEST:
     UWSGI_LOG_FILE = os.path.join(BASE_DIR, secret.UWSGI_LOG_FILE)
 else:
