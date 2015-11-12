@@ -56,7 +56,7 @@ def admin_home(request):
         last_db_download += datetime.timedelta(seconds=os.path.getmtime(db_timestamp_filename))
     
     last_media_download = datetime.datetime.utcfromtimestamp(0)
-    media_timestamp_filename = os.path.join(settings.MEDIA_ROOT, 'offline_db_backup.time')
+    media_timestamp_filename = os.path.join(settings.MEDIA_ROOT, 'offline_media_backup.time')
     if  os.path.exists(media_timestamp_filename):
         last_media_download += datetime.timedelta(seconds=os.path.getmtime(media_timestamp_filename))
         
