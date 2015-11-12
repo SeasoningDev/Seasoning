@@ -177,6 +177,10 @@ class Recipe(models.Model):
                 if display:
                     return cat_display
                 return cat
+        
+        last_cat = self.FOOTPRINT_CATEGORIES[-1]
+        
+        return last_cat[0] if not display else last_cat[1] 
     
     def get_footprint_category_display(self):
         return self.footprint_category(display=True)
@@ -315,7 +319,7 @@ class RecipeDistribution(models.Model):
     
     
     def __str__(self):
-        return '{} of `{}` courses is {:.2f}'.format(self.get_parameter_display(), self.get_course_display(), self.parameter_value)
+        return '{} of `{}` courses is {:.2f}'.format(self.get_parameter_display(), self.get_group_display(), self.parameter_value)
     
   
   
