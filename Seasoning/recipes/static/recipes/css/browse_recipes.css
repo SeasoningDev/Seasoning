@@ -5,7 +5,7 @@ body {
 .navbar #info-button {
 	position: absolute;
 	top: 15px;
-	right: 15px;
+	right: 30px;
 	margin: 0;
 	height: 30px;
 	opacity: .5;
