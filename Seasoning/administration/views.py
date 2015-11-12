@@ -225,7 +225,7 @@ def admin_download_media_backup(request):
     newest_backup = max(glob.iglob(os.path.join(settings.MEDIA_BACKUP_DIR, 'daily/*.tar.bz2')), key=os.path.getctime)
     
     chunk_size = 8192
-    with open(newest_backup, 'r+') as f:
+    with open(newest_backup) as f:
         response = StreamingHttpResponse(FileWrapper(f, chunk_size),
                                          content_type='application/force-download')
         response['Content-Length'] = os.path.getsize(newest_backup)
