@@ -18,3 +18,8 @@ class Command(NoArgsCommand):
             f.write(render_to_string('infrastructure/cron/backup_db.sh.template', context={'settings': settings}))
             
         print('Updated Database backup script at /etc/cron.daily/seasoning_backup_db.sh')
+        
+        with open('/etc/cron.daily/seasoning_backup_media.sh', 'w+') as f:
+            f.write(render_to_string('infrastructure/cron/backup_media.sh.template', context={'settings': settings}))
+            
+        print('Updated Media Files backup script at /etc/cron.daily/seasoning_backup_media.sh')
