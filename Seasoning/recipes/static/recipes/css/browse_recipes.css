@@ -175,12 +175,20 @@ body {
     position: absolute;
     right: 14px;
     top: 50%;
+    -ms-transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
     transform: translateY(-50%);
     transition: all 0.3s ease 0s;
     width: 16px;
 }
 
 #advanced-search-bar #sort-by-wrapper.is-open:after {
+    -ms-transform: translateY(-50%) rotate(-180deg);
+	-webkit-transform: translateY(-50%) rotate(-180deg);
+	-moz-transform: translateY(-50%) rotate(-180deg);
+	-o-transform: translateY(-50%) rotate(-180deg);
     transform: translateY(-50%) rotate(-180deg);
 }
 
@@ -362,11 +370,19 @@ body {
     left: 0;
     position: absolute;
     top: 50%;
+    -ms-transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
     transform: translateY(-50%);
     transition: transform 0.3s ease 0s;
     width: 16px;
 }
 .cd-filter-block h4.closed::before {
+    -ms-transform: translateY(-50%) rotate(-90deg);
+	-webkit-transform: translateY(-50%) rotate(-90deg);
+	-moz-transform: translateY(-50%) rotate(-90deg);
+	-o-transform: translateY(-50%) rotate(-90deg);
     transform: translateY(-50%) rotate(-90deg);
 }
 .cd-filter-block input, .cd-filter-block select, .cd-filter-block .radio-label::before, .cd-filter-block .checkbox-label::before {
@@ -403,6 +419,10 @@ body {
     position: absolute;
     right: 14px;
     top: 50%;
+    -ms-transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
     transform: translateY(-50%);
     width: 16px;
     z-index: 1;
@@ -437,6 +457,10 @@ body {
     display: block;
     position: absolute;
     top: 50%;
+    -ms-transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
     transform: translateY(-50%);
 }
 .cd-filter-block .checkbox-label::before, .cd-filter-block .radio-label::before {
