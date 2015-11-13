@@ -52,10 +52,18 @@ body {
     width: 0;
 }
 .st-effect-1.st-menu {
+    -ms-transform: translateX(-100%);
+	-webkit-transform: translateX(-100%);
+	-moz-transform: translateX(-100%);
+	-o-transform: translateX(-100%);
     transform: translateX(100%);
     visibility: visible;
 }
 .st-menu-open .st-effect-1 .st-effect-1.st-menu {
+    -ms-transform: translateX(0px);
+	-webkit-transform: translateX(0px);
+	-moz-transform: translateX(0px);
+	-o-transform: translateX(0px);
     transform: translateX(0px);
     visibility: visible;
 }
