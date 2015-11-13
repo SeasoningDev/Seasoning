@@ -27,7 +27,7 @@ SECRET_KEY = secret.DJANGO_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = secret.DEBUG
 
-ALLOWED_HOSTS = ['*.seasoning.be', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['.seasoning.be', '127.0.0.1', 'localhost']
 
 # Determine if we are running in the test environment.
 TEST = False
