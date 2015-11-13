@@ -33,3 +33,21 @@ body {
 		display: none;
 	}
 }
+
+
+.browser-outdated-overlay {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+    background:transparent;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#70000000,endColorstr=#70000000); 
+    zoom: 1;
+    z-index: 1029;
+    text-align: center;
+}
+.browser-outdated-overlay .alert {
+	display: inline-block;
+	margin-top: 250px;
+}

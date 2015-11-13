@@ -52,11 +52,11 @@ body {
     width: 0;
 }
 .st-effect-1.st-menu {
-    transform: translate3d(100%, 0px, 0px);
+    transform: translateX(100%);
     visibility: visible;
 }
 .st-menu-open .st-effect-1 .st-effect-1.st-menu {
-    transform: translate3d(0px, 0px, 0px);
+    transform: translateX(0px);
     visibility: visible;
 }
 .st-effect-1.st-menu::after {
