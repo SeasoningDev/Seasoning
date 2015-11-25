@@ -185,7 +185,13 @@ def admin_convert_scraped_recipe(request, scraped_recipe_id):
 def admin_analytics(request):
     last_entry = RequestLog.objects.order_by('-time').first()
     
-    return render(request, 'admin/admin_analytics.html', {'last_entry': last_entry})
+    return render(request, 'admin/admin_analytics_history.html', {'last_entry': last_entry})
+
+@staff_member_required
+def admin_analytics2(request):
+    last_entry = RequestLog.objects.order_by('-time').first()
+    
+    return render(request, 'admin/admin_analytics_distinct_ips.html', {'last_entry': last_entry})
 
 @staff_member_required
 def admin_analytics_parse_uwgsi_log(request):

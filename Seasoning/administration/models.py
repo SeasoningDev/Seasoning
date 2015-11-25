@@ -14,12 +14,22 @@ class RequestLogManager(models.Manager):
         return history
     
     def distinct_ips(self, start_time, end_time):
-        requests_no_admin = RequestLog.objects.exclude(uri__contains='admin')
+        requests_no_admin = RequestLog.objects.exclude(uri__contains='admin').exclude(user_agent__iexact='-').exclude(user_agent__icontains='googlebot').exclude(user_agent__icontains='slurp').exclude(user_agent__icontains='yandexbot').exclude(user_agent__icontains='bingbot').exclude(user_agent__icontains='facebot').exclude(user_agent__icontains='twitterbot')
         request_in_timeframe = requests_no_admin.filter(time__gte=start_time, time__lte=end_time).order_by('time')
         
-        distinct_ips = request_in_timeframe.values('time__year', 'time__month', 'time__day', 'ip').distinct()
+        distinct_ips = request_in_timeframe.extra({'date':"date(time)"}).values('date', 'ip').order_by('date').distinct()
         
-        return distinct_ips
+        days = []
+        for log in distinct_ips:
+            if len(days) <= 0 or log['date'] != days[-1]['date']:
+                days.append({'date': log['date'],
+                             'count': 0,
+                             'ips': []})
+            
+            days[-1]['count'] += 1
+            days[-1]['ips'].append(log['ip'])
+        
+        return days
     
 class RequestLog(models.Model):
     

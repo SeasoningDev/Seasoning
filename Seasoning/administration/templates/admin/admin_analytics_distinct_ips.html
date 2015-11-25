@@ -1,0 +1,147 @@
+{% extends "admin/admin_base.html" %}
+{% load staticfiles %}
+
+{% block extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script type="text/javascript">
+var url = "{% url 'get_distinct_ips' 100 0 %}";
+
+var hours = 24;
+
+$(function() {
+	
+	var margin = {top: 10, right: 30, bottom: 70, left: 50},
+		width = 960 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+	
+	var parseDate = d3.time.format("%Y-%m-%d").parse;
+	var formatDate = d3.time.format("%d/%m");
+	
+	var x = d3.time.scale()
+	    .range([0, width]);
+	
+	var y = d3.scale.linear()
+	    .range([height, 0]);
+	
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .orient("bottom");
+	
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .orient("left");
+	
+	var line = d3.svg.line()
+	    .x(function(d) { return x(d.date); })
+	    .y(function(d) { return y(d.count); });
+	
+	// Create the SVG drawing area
+	var svg = d3.select("#history-graph")
+		.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+	// Get the data
+	d3.json(url, function(error, data) {
+	
+		// Parse the date strings into javascript dates
+		data.forEach(function(d) {
+			d.	date = parseDate(d["date"]);
+		});
+		
+		console.log(data);
+		
+		x.domain(d3.extent(data, function(d) { return d.date; }));
+		  y.domain(d3.extent(data, function(d) { return d.count; }));
+
+		  svg.append("g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(xAxis);
+
+		  svg.append("g")
+		      .attr("class", "y axis")
+		      .call(yAxis)
+		    .append("text")
+		      .attr("transform", "rotate(-90)")
+		      .attr("y", 6)
+		      .attr("dy", ".71em")
+		      .style("text-anchor", "end")
+		      .text("Price ($)");
+
+		  svg.append("path")
+		      .datum(data)
+		      .attr("class", "line")
+		      .attr("d", line);
+	
+	});
+	
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<style>
+	#history-graph {
+		margin: 30px auto;
+		text-align: center;
+	}
+	
+	.bar {
+	  fill: steelblue;
+	  shape-rendering: crispEdges;
+	}
+
+	.axis path, .axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+
+	.line {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
+</style>
+
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">Visitor Analytics</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-3 col-md-6">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-xs-3">
+						<img src="{% static "admin/img/decoration/log.png" %}"
+							style="height: 55px;">
+					</div>
+					<div class="col-xs-9 text-right">
+						<div>Last parsed log entry:</div>
+						<div style="font-size: 16px;line-height:40px;">{{ last_entry.time }}</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<a href="{% url 'admin_analytics_parse_uwgsi_log' %}">
+					<span style="font-size: 20px; margin: 3px 10px 0 0;" class="glyphicon glyphicon-refresh pull-left"></span>
+					<span style="line-height: 10px;" class="">Parse uWsgi Logs</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<div class="row">
+	<div id="history-graph">
+	</div>
+
+</div>
+{% endblock %}

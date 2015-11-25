@@ -26,9 +26,11 @@ urlpatterns = [
     
     
     url(r'^analytics/$', views.admin_analytics, name='admin_analytics'),
+    url(r'^analytics/2/$', views.admin_analytics2, name='admin_analytics2'),
     url(r'^analytics/parse/uwsgi/$', views.admin_analytics_parse_uwgsi_log, name='admin_analytics_parse_uwgsi_log'),
     
     url(r'^ajax/history/uwsgi/(\d+)/(\d+)/$', views.get_request_history, name='get_request_history'),
+    url(r'^ajax/ips/uwsgi/(\d+)/(\d+)/$', views.get_distinct_ips, name='get_distinct_ips'),
     
     
     
