@@ -39,7 +39,7 @@ class RecipeSearchForm(forms.Form):
         if not self.is_valid():
             return None
         
-        qs = Recipe.objects
+        qs = Recipe.objects.exclude(external=False)
         
         recipe_filter = Q(name__icontains=self.cleaned_data['search_query'])
 

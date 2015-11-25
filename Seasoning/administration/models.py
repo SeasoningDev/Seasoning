@@ -13,6 +13,14 @@ class RequestLogManager(models.Manager):
         
         return history
     
+    def distinct_ips(self, start_time, end_time):
+        requests_no_admin = RequestLog.objects.exclude(uri__contains='admin')
+        request_in_timeframe = requests_no_admin.filter(time__gte=start_time, time__lte=end_time).order_by('time')
+        
+        distinct_ips = request_in_timeframe.values('time__year', 'time__month', 'time__day', 'ip').distinct()
+        
+        return distinct_ips
+    
 class RequestLog(models.Model):
     
     objects = RequestLogManager()

@@ -203,6 +203,17 @@ def get_request_history(request, start_days_ago, end_days_ago=None):
     request_history = list(RequestLog.objects.history(start_time, end_time))
     return JsonResponse(request_history, safe=False)
 
+@staff_member_required
+def get_distinct_ips(request, start_days_ago, end_days_ago=None):
+    start_time = timezone.now() - datetime.timedelta(days=int(start_days_ago))
+    end_time = timezone.now()
+    
+    if end_days_ago is not None:
+        end_time -= datetime.timedelta(days=int(end_days_ago))
+    
+    distinct_ips = list(RequestLog.objects.distinct_ips(start_time, end_time))
+    return JsonResponse(distinct_ips, safe=False)
+
 
 
 @staff_member_required
