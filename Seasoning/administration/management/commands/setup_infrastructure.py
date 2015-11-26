@@ -43,3 +43,4 @@ def make_executable(filename):
     mode = os.stat(filename).st_mode
     mode |= (mode & 0o444) >> 2 # Copy R bits to X
     os.chmod(filename, mode)
+    

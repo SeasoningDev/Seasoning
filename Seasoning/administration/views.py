@@ -130,7 +130,7 @@ def admin_scrape_recipes(request, scraper):
 
 @staff_member_required
 def admin_proofread_scraped_recipes(request):
-    unfinished_recipes = sorted(sorted(sorted(ScrapedRecipe.objects.select_related('cuisine', 'external_site').prefetch_related('ingredients__ingredient',
+    unfinished_recipes = sorted(sorted(sorted(ScrapedRecipe.objects.exclude(ignore=True).select_related('cuisine', 'external_site').prefetch_related('ingredients__ingredient',
                                                                                                                                 'ingredients__unit').filter(recipe=None), 
                                               key=lambda recipe: recipe.ao_unknown_ingredients()),
                                        key=lambda recipe: recipe.ao_unfinished_ingredients()), 
