@@ -13,7 +13,7 @@ class RecipeSearchForm(forms.Form):
     
     search_query = forms.CharField(required=False)
     
-    SORT_CHOICES = (('cached_footprint', 'Voetafdruk (oplopend)'), ('-cached_footprint', 'Voetafdruk (aflopend)'),
+    SORT_CHOICES = (('cached_footprint_category', 'Voetafdruk (oplopend)'), ('-cached_footprint_category', 'Voetafdruk (aflopend)'),
                     ('name', 'Naam (A->Z)'), ('-name', 'Naam (Z->A)'))
     sort_by = forms.ChoiceField(choices=SORT_CHOICES, initial=SORT_CHOICES[0][0], required=False)
     
