@@ -50,7 +50,7 @@ def scrape_recipes(scraper):
     for recipe_page in get_recipe_pages():
         print(recipe_page.recipe_name)
         if ScrapedRecipe.objects.filter(external_site=external_site,
-                                        scraped_name=recipe_page.recipe_name).exists():
+                                        scraped_name__iexact=recipe_page.recipe_name).exists():
             
             print('Skipped `{}` ({}), already scraped'.format(recipe_page.recipe_name, external_site.name))
             continue

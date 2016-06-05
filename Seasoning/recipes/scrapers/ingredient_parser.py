@@ -141,6 +141,11 @@ def parse_ingredient_line(ingredient_line):
 
     ingredient = best_ing_match
 
+    if ingredient is not None and ingredient.category is Ingredient.HERBS_AND_SPICES and unit is None:
+        unit = Unit.objects.get(name__icontains='snuif')
+        if amount is None:
+            amount = 1
+
 
 
     return ingredient_line, amount, unit, ingredient
