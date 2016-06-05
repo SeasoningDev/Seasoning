@@ -110,10 +110,7 @@ def admin_recipes_update_cached_properties(request, recipe_id=None):
 
 @staff_member_required
 def admin_scrapers(request):
-    return render(request, 'admin/admin_scrapers.html', {'scraped_recipes': {'eva': ScrapedRecipe.objects.filter(external_site__name__icontains='eva vzw').count(),
-                                                                             'kriskookt': ScrapedRecipe.objects.filter(external_site__name__icontains='kris').count(),
-                                                                             'evassmulhuisje': ScrapedRecipe.objects.filter(external_site__name__icontains='smulhuisje').count(),
-                                                                             'veganchallenge': ScrapedRecipe.objects.filter(external_site__name__icontains='veganchal').count()}})
+    return render(request, 'admin/admin_scrapers.html', {'scrapers': INSTALLED_SCRAPERS.values() })
 
 @staff_member_required
 def admin_scrape_recipes(request, scraper):

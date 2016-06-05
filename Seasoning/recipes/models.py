@@ -447,15 +447,13 @@ class ScrapedUsesIngredient(models.Model):
     
     recipe = models.ForeignKey(ScrapedRecipe, related_name='ingredients')
     
+    raw_ingredient_line = models.TextField()
+
     ingredient = models.ForeignKey(Ingredient, null=True, blank=True)
-    ingredient_proposal = models.CharField(max_length=500)
     
-    group = models.CharField(max_length=500, null=True, blank=True)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0.00001)], null=True, blank=True)
-    amount_proposal = models.CharField(max_length=20, null=True, blank=True)
     
     unit = models.ForeignKey(Unit, null=True, blank=True)
-    unit_proposal = models.CharField(max_length=50, null=True, blank=True)
     
     def clean(self):
         if self.unit is not None and self.ingredient is not None:

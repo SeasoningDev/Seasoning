@@ -34,7 +34,10 @@ class Unit(models.Model):
     
     """
     name = models.CharField(max_length=30, unique=True)
+    plural_name = models.CharField(max_length=30, blank=True)
+
     short_name = models.CharField(max_length=10, blank=True)
+    synonyms = models.CharField(max_length=100, blank=True)
     
     parent_unit = models.ForeignKey('self', related_name="derived_units", null=True, blank=True, limit_choices_to=models.Q(parent_unit__exact=None), default=None)
     ratio = models.FloatField(null=True, blank=True)

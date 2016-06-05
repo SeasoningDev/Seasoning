@@ -8,21 +8,32 @@ from recipes.models import ExternalSite, Cuisine, Recipe, ScrapedRecipe,\
 import difflib
 from django.db import models
 from ingredients.models import Ingredient, Unit
-from recipes.scrapers import eva_scraper, kriskookt_scraper, evassmulhuisje_scraper, veganchallenge_scraper
+from recipes.scrapers import eva_scraper, kriskookt_scraper, evassmulhuisje_scraper, veganchallenge_scraper, \
+        dagelijksekost_scraper
 from pip._vendor.distlib.compat import raw_input
 
 EVA_SCRAPER, KRISKOOKT_SCRAPER, EVASSMULHUISJE_SCRAPER = 0, 1, 2
-VEGANCHALLENGE = 3
+VEGANCHALLENGE_SCRAPER, DAGELIJKSEKOST_SCRAPER = 3, 4
 INSTALLED_SCRAPERS = {
-    EVA_SCRAPER: {'name': 'Eva vzw',
-                  'scraper': eva_scraper.get_recipe_pages},
-    KRISKOOKT_SCRAPER: {'name': 'Kris kookt',
-                        'scraper': kriskookt_scraper.get_recipe_pages},
-    EVASSMULHUISJE_SCRAPER: {'name': 'Eva\'s Smulhuisje',
-                             'scraper': evassmulhuisje_scraper.get_recipe_pages},
-    VEGANCHALLENGE: {'name': 'VeganChallenge',
-                             'scraper': veganchallenge_scraper.get_recipe_pages}}
-    
+    DAGELIJKSEKOST_SCRAPER: {
+        'id': DAGELIJKSEKOST_SCRAPER,
+        'name': 'Dagelijkse Kost',
+        'image': 'https://images.tvgemist.be/images/programs/dagelijkse-kost.jpg',
+        'color': '#a9cfdd',
+
+        'recipes': ScrapedRecipe.objects.filter(external_site__name__exact='Dagelijkse Kost'),
+        'scraper': dagelijksekost_scraper.get_recipe_pages
+    },
+#    EVA_SCRAPER: {'name': 'Eva vzw',
+#                  'scraper': eva_scraper.get_recipe_pages},
+#    KRISKOOKT_SCRAPER: {'name': 'Kris kookt',
+#                        'scraper': kriskookt_scraper.get_recipe_pages},
+#    EVASSMULHUISJE_SCRAPER: {'name': 'Eva\'s Smulhuisje',
+#                             'scraper': evassmulhuisje_scraper.get_recipe_pages},
+#    VEGANCHALLENGE_SCRAPER: {'name': 'VeganChallenge',
+#                             'scraper': veganchallenge_scraper.get_recipe_pages}}
+}
+
 def scrape_recipes(scraper):
     # ALL THA RECIPES ARE MINE!!!
     if scraper not in INSTALLED_SCRAPERS:
@@ -37,6 +48,7 @@ def scrape_recipes(scraper):
     
     
     for recipe_page in get_recipe_pages():
+        print(recipe_page.recipe_name)
         if ScrapedRecipe.objects.filter(external_site=external_site,
                                         scraped_name=recipe_page.recipe_name).exists():
             
@@ -88,84 +100,13 @@ def scrape_recipes(scraper):
         recipe.save()
         
         scraped_uses_ingredients = []
-        for recipe_ingredient in recipe_page.recipe_ingredients:
-            parsed_ing_name = recipe_ingredient[0]
-            parsed_amount = recipe_ingredient[1]
-            parsed_unit_name = recipe_ingredient[2]
-            parsed_group_name = recipe_ingredient[3]
-            
-            fil = models.Q()
-            for i in range(min(3, len(parsed_ing_name))):
-                fil |= models.Q(name__iexact=parsed_ing_name[:len(parsed_ing_name) - i])
-                fil |= models.Q(plural_name__iexact=parsed_ing_name[:len(parsed_ing_name) - i])
-                fil |= models.Q(synonyms__name__iexact=parsed_ing_name[:len(parsed_ing_name) - i])
-            try:
-                ingredients = Ingredient.objects.filter(fil).distinct()
-                if len(ingredients) > 1:
-                    best = difflib.get_close_matches(parsed_ing_name, [ing.name for ing in ingredients], 1, 0)[0]
-                    ingredients = list(filter(lambda ing: ing.name == best, ingredients))
-
-                ingredient = ingredients[0]
-            except IndexError:
-                ingredient = None
-            
-            amount = parsed_amount
-            if '/' in str(amount) or '⁄' in str(amount):
-                parts = amount.split('/') if '/' in str(amount) else amount.split('⁄')
-                if len(parts) > 1 and parts[1] != '':
-                    amount = int(parts[0]) / float(parts[1])
-                else:
-                    
-                    amount = int(parts[0]) / 2.0
-                    
-            if ',' in str(amount):
-                amount = amount.replace(',', '.')
-            
-            if 'ml' in str(amount):
-                amount = amount.replace('ml', '')
-                if parsed_unit_name is None:
-                    parsed_unit_name = 'ml'
-            
-            elif 'l' in str(amount):
-                amount = amount.replace('l', '')
-                if amount is None:
-                    amount = 'l'
-            
-            if 'g' in str(amount):
-                amount = amount.replace('g', '')
-                amount = amount.replace('r', '')
-                if parsed_unit_name is None:
-                    parsed_unit_name = 'gram'
-            
-            if '-' in str(amount):
-                amount = amount.split('-')[-1]
-                
-            if parsed_amount is None or parsed_amount == '':
-                unit = Unit.objects.get(name__icontains='snuifje')
-                amount = 1
-                            
-            elif parsed_unit_name is None:
-                unit = Unit.objects.get(name__icontains='stuk')
-                
-            else:
-                fil = models.Q()
-                for i in range(min(4, len(parsed_unit_name))):
-                    units = Unit.objects.filter(models.Q(name__istartswith=parsed_unit_name[:len(parsed_unit_name) - i]) | models.Q(short_name__istartswith=parsed_unit_name[:len(parsed_unit_name) - i])).distinct()
-                    if len(units) <= 0:
-                        continue
-                    if len(units) > 1:
-                        best = difflib.get_close_matches(parsed_unit_name, [unit.name for unit in units], 1, 0)[0]
-                        units = list(filter(lambda unit: unit.name == best, units))
-                    unit = units[0]
-                    break
-                else:
-                    unit = None
-            
-            scraped_uses_ingredient = ScrapedUsesIngredient(recipe=recipe, 
-                                                            ingredient=ingredient, ingredient_proposal=parsed_ing_name,
-                                                            amount=amount, amount_proposal=parsed_amount,
-                                                            unit=unit, unit_proposal=parsed_unit_name,
-                                                            group=parsed_group_name)
+        for ingredient_line, amount, unit, ingredient in recipe_page.recipe_ingredients:
+            scraped_uses_ingredient = ScrapedUsesIngredient(
+                    recipe=recipe,
+                    raw_ingredient_line=ingredient_line,
+                    ingredient=ingredient,
+                    amount=amount,
+                    unit=unit)
             scraped_uses_ingredients.append(scraped_uses_ingredient)
         
         ScrapedUsesIngredient.objects.bulk_create(scraped_uses_ingredients)
