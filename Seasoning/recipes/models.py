@@ -435,7 +435,7 @@ class ScrapedRecipe(models.Model):
         
         for uses_ingredient in self.ingredients.all():
             UsesIngredient(recipe=real_recipe, ingredient=uses_ingredient.ingredient, amount=uses_ingredient.amount,
-                           unit=uses_ingredient.unit, group=uses_ingredient.group).save()
+                           unit=uses_ingredient.unit).save()
         
         real_recipe.update_cached_attributes()
         
