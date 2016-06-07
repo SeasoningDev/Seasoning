@@ -109,7 +109,7 @@ class Recipe(models.Model):
     cached_footprint = models.FloatField(null=True, blank=True)
     cached_in_season = models.BooleanField(default=False)
     cached_has_endangered_ingredients = models.BooleanField(default=False)
-    cached_footprint_category = models.PositiveSmallIntegerField(choices=FOOTPRINT_CATEGORIES)
+    cached_footprint_category = models.PositiveSmallIntegerField(choices=FOOTPRINT_CATEGORIES, null=True, blank=True)
     
     def __str__(self):
         return self.name
