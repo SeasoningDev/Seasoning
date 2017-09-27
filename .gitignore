@@ -1,8 +1,7 @@
-*.log
-*.pot
-*.pyc
-.project
-.pydevproject
-.settings
-
-settings_secrets.py
+lib/
+node_modules/
+platforms/
+tmp/
+.vscode/
+*.log*
+local.js
