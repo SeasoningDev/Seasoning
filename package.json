@@ -1,0 +1,20 @@
+{
+  "name": "seasoning",
+  "version": "2.0.0",
+  "description": "An API for calculating the ecological impact of food",
+  "main": "server/server.js",
+  "repository": "https://github.com/SeasoningDev/Seasoning.git",
+  "author": "Joep Driesen <joep.driesen@seasoning.be>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mongoose": "^4.13.7"
+  },
+  "devDependencies": {
+    "git-guppy": "^2.1.0",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^4.3.1",
+    "gulp-standard": "^10.1.1",
+    "guppy-pre-commit": "^0.4.0"
+  }
+}
