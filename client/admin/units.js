@@ -2,6 +2,7 @@ import React from 'react';
 import { Create, DeleteButton, Edit, EditButton, List } from 'admin-on-rest';
 import { Datagrid, ReferenceField, TextField } from 'admin-on-rest';
 import { AutocompleteInput, NumberInput, SimpleForm, ReferenceInput, SelectInput, TextInput } from 'admin-on-rest';
+import { required } from 'admin-on-rest'
 import EmbeddedArrayInput from './input/EmbeddedArrayInput'
 import EmbeddedArrayField from './field/EmbeddedArrayField'
 
@@ -25,12 +26,12 @@ export const UnitList = (props) => (
 export const UnitCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="shortName" />
+      <TextInput source="name" validate={required} />
+      <TextInput source="shortName" validate={required} />
       <EmbeddedArrayInput source="secondaryUnits">
-        <TextInput source="name" />
-        <TextInput source="shortName" />
-        <NumberInput source="primaryToSecondaryRatio" />
+        <TextInput source="name" validate={required} />
+        <TextInput source="shortName" validate={required} />
+        <NumberInput source="primaryToSecondaryRatio" validate={required} />
       </EmbeddedArrayInput>
     </SimpleForm>
   </Create>
@@ -39,12 +40,12 @@ export const UnitCreate = (props) => (
 export const UnitEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="shortName" />
+      <TextInput source="name" validate={required} />
+      <TextInput source="shortName" validate={required} />
       <EmbeddedArrayInput source="secondaryUnits">
-        <TextInput source="name" />
-        <TextInput source="shortName" />
-        <NumberInput source="primaryToSecondaryRatio" />
+        <TextInput source="name" validate={required} />
+        <TextInput source="shortName" validate={required} />
+        <NumberInput source="primaryToSecondaryRatio" validate={required} />
       </EmbeddedArrayInput>
     </SimpleForm>
   </Edit>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Create, DeleteButton, Edit, EditButton, List } from 'admin-on-rest';
 import { Datagrid, ReferenceField, TextField } from 'admin-on-rest';
-import { AutocompleteInput, NumberInput, SimpleForm, ReferenceInput, SelectInput, TextInput } from 'admin-on-rest';
+import { AutocompleteInput, NumberInput, SimpleForm, ReferenceInput, SelectInput, TextInput } from 'admin-on-rest'
+import { required } from 'admin-on-rest'
 import EmbeddedArrayInput from './input/EmbeddedArrayInput'
 import EmbeddedArrayField from './field/EmbeddedArrayField'
 
@@ -28,15 +29,15 @@ export const IngredientCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
       <EmbeddedArrayInput source="names">
-        <TextInput source="singular" />
-        <TextInput source="plural" />
+        <TextInput source="singular" validate={required} />
+        <TextInput source="plural" validate={required} />
       </EmbeddedArrayInput>
-      <TextInput source="footprint" />
+      <TextInput source="footprint" validate={required} />
       <EmbeddedArrayInput source="units">
         <ReferenceInput source="unit" reference="units" allowEmpty>
-          <AutocompleteInput />
+          <AutocompleteInput validate={required} /> 
         </ReferenceInput>
-        <NumberInput source="primaryToSecondaryRatio" />
+        <NumberInput source="primaryToSecondaryRatio" validate={required} />
       </EmbeddedArrayInput>
     </SimpleForm>
   </Create>
@@ -46,15 +47,15 @@ export const IngredientEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
       <EmbeddedArrayInput source="names">
-        <TextInput source="singular" />
-        <TextInput source="plural" />
+        <TextInput source="singular" validate={required} />
+        <TextInput source="plural" validate={required} />
       </EmbeddedArrayInput>
-      <TextInput source="footprint" />
+      <TextInput source="footprint" validate={required} />
       <EmbeddedArrayInput source="units">
         <ReferenceInput source="unit" reference="units" allowEmpty>
-          <AutocompleteInput />
+          <AutocompleteInput validate={required} />
         </ReferenceInput>
-        <NumberInput source="primaryToSecondaryRatio" />
+        <NumberInput source="primaryToSecondaryRatio" validate={required} />
       </EmbeddedArrayInput>
     </SimpleForm>
   </Edit>
