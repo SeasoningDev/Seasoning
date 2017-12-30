@@ -3,6 +3,7 @@ import compression from 'compression'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import path from 'path'
+import mongoSanitize from 'express-mongo-sanitize'
 
 // Webpack Requirements
 import webpack from 'webpack'
@@ -43,6 +44,10 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 app.use(Express.static(path.resolve(__dirname, '../build/client')))
 app.use('/api', apiRoutes)
 app.use('/admin', adminRoutes)
+
+app.use(mongoSanitize({
+  replaceWith: '_'
+}))
 
 // start app
 app.listen(serverConfig.port, (error) => {

@@ -1,6 +1,7 @@
 import Unit from '../models/unit'
-import sanitizeHtml from 'sanitize-html'
-import toJson from '../util/mongooseRestExport'
+import toJSON from '../util/mongooseRestExport'
+import validator from 'express-validator/check'
+import filter from 'express-validator/filter'
 
 /**
  * Get all units
@@ -10,20 +11,44 @@ import toJson from '../util/mongooseRestExport'
  */
 export async function getUnits (req, res) {
   try {
-    // TODO: start, end, order, sort parameters
+    const errors = validator.validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: errors.mapped()
+      })
+    }
+
+    const data = filter.matchedData(req)
+    const skip = data.start ? data.start : 0
+    const limit = data.end && data.end > data.start ? data.end - data.start : 20
+    const sort = data.sort ? (data.order === 'ASC' ? '-' : '') + data.sort : 'id'
+
     const units = await Unit.find()
-      .sort('name')
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
       .lean()
       .exec()
 
     return res
       .status(200)
       .header('X-Total-Count', units.length)
-      .json(units.map(u => toJson(u)))
+      .json(units.map(u => toJSON(u)))
   } catch (err) {
-    res.status(500).send(err)
+    console.log(err.stack)
+    console.log(err)
+
+    res.status(500).json({
+      message: err
+    })
   }
 }
+getUnits.validators = [
+  validator.check('start').optional().isInt({ min: 0 }).toInt(),
+  validator.check('end').optional().isInt({ min: 0 }).toInt(),
+  validator.check('sort').optional().isIn(['id', 'footprint']),
+  validator.check('order').optional().isIn(['ASC', 'DESC'])
+]
 
 /**
  * Add a new unit
@@ -33,25 +58,27 @@ export async function getUnits (req, res) {
  */
 export async function addUnit (req, res) {
   try {
-    if (!req.body.name || !req.body.shortName) {
-      res.status(403).end()
-    }
-
     const newUnit = new Unit(req.body)
-
-    // Let's sanitize inputs
-    newUnit.name = sanitizeHtml(newUnit.name)
-    newUnit.shortName = sanitizeHtml(newUnit.shortName)
 
     const saved = await newUnit.save()
 
-    res.json(toJson(saved.toJSON()))
+    return res.status(200).json(toJSON(saved.toJSON()))
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({
+        message: Object.values(err.errors).join('\n')
+      })
+    }
+
     console.log(err.stack)
     console.log(err)
-    return res.status(500).send(err)
+
+    return res.status(500).json({
+      message: err
+    })
   }
 }
+addUnit.validators = []
 
 /**
  * Get a single unit
@@ -61,15 +88,32 @@ export async function addUnit (req, res) {
  */
 export async function getUnit (req, res) {
   try {
-    const unit = await Unit.findById(req.params.id)
+    const errors = validator.validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: errors.mapped()
+      })
+    }
+
+    const data = filter.matchedData(req)
+
+    const unit = await Unit.findById(data.id)
       .lean()
       .exec()
 
-    return res.status(200).json(toJson(unit))
+    return res.status(200).json(toJSON(unit))
   } catch (err) {
-    res.status(500).send(err)
+    console.log(err.stack)
+    console.log(err)
+
+    return res.status(500).json({
+      message: err
+    })
   }
 }
+getUnit.validators = [
+  validator.check('id').isMongoId()
+]
 
 /**
  * Edit a unit
@@ -79,19 +123,36 @@ export async function getUnit (req, res) {
  */
 export async function editUnit (req, res) {
   try {
-    if (!req.body.name || !req.body.shortName) {
-      res.status(403).end()
+    const errors = validator.validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: errors.mapped()
+      })
     }
 
-    const saved = await Unit.findByIdAndUpdate(req.params.id, req.body)
+    const data = filter.matchedData(req)
 
-    res.status(200).json(toJson(saved.toJSON()))
+    const saved = await Unit.findByIdAndUpdate(data.id, req.body)
+      .lean()
+      .exec()
+
+    return res.status(200).json(toJSON(saved))
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({
+        message: Object.values(err.errors).join('\n')
+      })
+    }
+
     console.log(err.stack)
     console.log(err)
+
     return res.status(500).send(err)
   }
 }
+editUnit.validators = [
+  validator.check('id').isMongoId()
+]
 
 /**
  * Delete a unit
@@ -101,13 +162,29 @@ export async function editUnit (req, res) {
  */
 export async function deleteUnit (req, res) {
   try {
-    const unit = await Unit.findByIdAndRemove(req.params.id)
+    const errors = validator.validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: errors.mapped()
+      })
+    }
+
+    const data = filter.matchedData(req)
+
+    const unit = await Unit.findByIdAndRemove(data.id)
 
     if (!unit) {
       return res.status(404).json({})
     }
+
     return res.status(200).json({})
   } catch (err) {
+    console.log(err.stack)
+    console.log(err)
+
     return res.status(500).send(err)
   }
 }
+deleteUnit.validators = [
+  validator.check('id').isMongoId()
+]

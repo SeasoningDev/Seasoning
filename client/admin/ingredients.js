@@ -9,7 +9,10 @@ export const IngredientList = (props) => (
   <List {...props}>
     <Datagrid>
       <TextField source="id" />
-      <TextField source="names" />
+      <EmbeddedArrayField source="names">
+        <TextField source="singular" />
+        <TextField source="plural" />
+      </EmbeddedArrayField>
       <TextField source="footprint" />
       <EmbeddedArrayField source="units">
         <TextField source="unit.name" />
@@ -24,7 +27,10 @@ export const IngredientList = (props) => (
 export const IngredientCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <TextInput source="names" />
+      <EmbeddedArrayInput source="names">
+        <TextInput source="singular" />
+        <TextInput source="plural" />
+      </EmbeddedArrayInput>
       <TextInput source="footprint" />
       <EmbeddedArrayInput source="units">
         <ReferenceInput source="unit" reference="units" allowEmpty>
@@ -39,7 +45,10 @@ export const IngredientCreate = (props) => (
 export const IngredientEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
-      <TextInput source="names" />
+      <EmbeddedArrayInput source="names">
+        <TextInput source="singular" />
+        <TextInput source="plural" />
+      </EmbeddedArrayInput>
       <TextInput source="footprint" />
       <EmbeddedArrayInput source="units">
         <ReferenceInput source="unit" reference="units" allowEmpty>

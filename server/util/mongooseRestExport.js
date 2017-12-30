@@ -1,4 +1,4 @@
-const toJson = function (leanMongooseObject) {
+const toJSON = function (leanMongooseObject) {
   const json = leanMongooseObject
 
   json.id = json._id
@@ -10,4 +10,4 @@ const toJson = function (leanMongooseObject) {
   return json
 }
 
-export default toJson
+export default toJSON
