@@ -19,9 +19,9 @@ export async function getUnits (req, res) {
     }
 
     const data = filter.matchedData(req)
-    const skip = data.start ? data.start : 0
-    const limit = data.end && data.end > data.start ? data.end - data.start : 20
-    const sort = data.sort ? (data.order === 'ASC' ? '-' : '') + data.sort : 'id'
+    const skip = data._start ? data._start : 0
+    const limit = data._end && data._end > data._start ? data._end - data._start : 20
+    const sort = data._sort ? (data._order === 'DESC' ? '-' : '') + data._sort : 'id'
 
     const units = await Unit.find()
       .sort(sort)
@@ -30,9 +30,11 @@ export async function getUnits (req, res) {
       .lean()
       .exec()
 
+    const unitCount = await Unit.find().count()
+
     return res
       .status(200)
-      .header('X-Total-Count', units.length)
+      .header('X-Total-Count', unitCount)
       .json(units.map(u => toJSON(u)))
   } catch (err) {
     console.log(err.stack)
@@ -44,10 +46,10 @@ export async function getUnits (req, res) {
   }
 }
 getUnits.validators = [
-  validator.check('start').optional().isInt({ min: 0 }).toInt(),
-  validator.check('end').optional().isInt({ min: 0 }).toInt(),
-  validator.check('sort').optional().isIn(['id', 'footprint']),
-  validator.check('order').optional().isIn(['ASC', 'DESC'])
+  validator.check('_start').optional().isInt({ min: 0 }).toInt(),
+  validator.check('_end').optional().isInt({ min: 0 }).toInt(),
+  validator.check('_sort').optional().isIn(['id', 'name', 'shortName']),
+  validator.check('_order').optional().isIn(['ASC', 'DESC'])
 ]
 
 /**

@@ -19,9 +19,9 @@ export async function getIngredients (req, res) {
     }
 
     const data = filter.matchedData(req)
-    const skip = data.start ? data.start : 0
-    const limit = data.end && data.end > data.start ? data.end - data.start : 20
-    const sort = data.sort ? (data.order === 'ASC' ? '-' : '') + data.sort : 'id'
+    const skip = data._start ? data._start : 0
+    const limit = data._end && data._end > data._start ? data._end - data._start : 20
+    const sort = data._sort ? (data._order === 'DESC' ? '-' : '') + data._sort : 'id'
 
     const ingredients = await Ingredient.find()
       .populate('units.unit')
@@ -31,9 +31,11 @@ export async function getIngredients (req, res) {
       .lean()
       .exec()
 
+    const ingredientCount = await Ingredient.find().count()
+
     return res
       .status(200)
-      .header('X-Total-Count', ingredients.length)
+      .header('X-Total-Count', ingredientCount)
       .json(ingredients.map(i => toJSON(i)))
   } catch (err) {
     console.log(err.stack)
@@ -45,10 +47,10 @@ export async function getIngredients (req, res) {
   }
 }
 getIngredients.validators = [
-  validator.check('start').optional().isInt({ min: 0 }).toInt(),
-  validator.check('end').optional().isInt({ min: 0 }).toInt(),
-  validator.check('sort').optional().isIn(['id', 'footprint']),
-  validator.check('order').optional().isIn(['ASC', 'DESC'])
+  validator.check('_start').optional().isInt({ min: 0 }).toInt(),
+  validator.check('_end').optional().isInt({ min: 0 }).toInt(),
+  validator.check('_sort').optional().isIn(['id', 'footprint']),
+  validator.check('_order').optional().isIn(['ASC', 'DESC'])
 ]
 
 /**

@@ -4,6 +4,7 @@ const router = new Router()
 
 // Get all units
 router.route('/units').get(
+  UnitController.getUnits.validators,
   UnitController.getUnits
 )
 

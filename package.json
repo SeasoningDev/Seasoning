@@ -7,7 +7,8 @@
   "author": "Joep Driesen <joep.driesen@seasoning.be>",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_ENV=development nodemon index.js"
+    "start": "NODE_ENV=development nodemon index.js",
+    "load_fixtures": "NODE_ENV=development babel-node server/scripts/loadFixtures.js"
   },
   "dependencies": {
     "admin-on-rest": "^1.3.3",
@@ -26,6 +27,7 @@
     "webpack": "^3.10.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",

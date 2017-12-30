@@ -1,0 +1,206 @@
+[
+    {
+        "name": "gram",
+        "secondaryUnits": [
+            {
+                "name": "milligram",
+                "primaryToSecondaryRatio": 1000,
+                "shortName": "mg"
+            },
+            {
+                "name": "kilogram",
+                "primaryToSecondaryRatio": 0.001,
+                "shortName": "kg"
+            }
+        ],
+        "shortName": "gr"
+    },
+    {
+        "name": "liter",
+        "secondaryUnits": [
+            {
+                "name": "deciliter",
+                "primaryToSecondaryRatio": 0.1,
+                "shortName": "dl"
+            },
+            {
+                "name": "centiliter",
+                "primaryToSecondaryRatio": 0.01,
+                "shortName": "cl"
+            },
+            {
+                "name": "milliliter",
+                "primaryToSecondaryRatio": 0.001,
+                "shortName": "ml"
+            },
+            {
+                "name": "druppel",
+                "primaryToSecondaryRatio": 5e-05,
+                "shortName": "druppel(s)"
+            }
+        ],
+        "shortName": "l"
+    },
+    {
+        "name": "stuk",
+        "secondaryUnits": [
+            {
+                "name": "kwart",
+                "primaryToSecondaryRatio": 0.25,
+                "shortName": "kwart"
+            }
+        ],
+        "shortName": "stuk(s)"
+    },
+    {
+        "name": "snuifje",
+        "secondaryUnits": [],
+        "shortName": "snuifje(s)"
+    },
+    {
+        "name": "theelepel",
+        "secondaryUnits": [
+            {
+                "name": "koffielepel",
+                "primaryToSecondaryRatio": 1.1,
+                "shortName": "kl"
+            }
+        ],
+        "shortName": "tl"
+    },
+    {
+        "name": "eetlepel",
+        "secondaryUnits": [],
+        "shortName": "el"
+    },
+    {
+        "name": "kopje",
+        "secondaryUnits": [],
+        "shortName": "kopje(s)"
+    },
+    {
+        "name": "flesje",
+        "secondaryUnits": [],
+        "shortName": "flesje(s)"
+    },
+    {
+        "name": "blikje",
+        "secondaryUnits": [],
+        "shortName": "blikje(s)"
+    },
+    {
+        "name": "scheut",
+        "secondaryUnits": [],
+        "shortName": "scheut(en)"
+    },
+    {
+        "name": "klontje",
+        "secondaryUnits": [],
+        "shortName": "klontje(s)"
+    },
+    {
+        "name": "sneetje",
+        "secondaryUnits": [],
+        "shortName": "sneetje(s)"
+    },
+    {
+        "name": "takje",
+        "secondaryUnits": [],
+        "shortName": "takje(s)"
+    },
+    {
+        "name": "bussel",
+        "secondaryUnits": [],
+        "shortName": "bussel(s)"
+    },
+    {
+        "name": "krop",
+        "secondaryUnits": [],
+        "shortName": "krop(pen)"
+    },
+    {
+        "name": "bol",
+        "secondaryUnits": [],
+        "shortName": "bol(len)"
+    },
+    {
+        "name": "teentje",
+        "secondaryUnits": [],
+        "shortName": "teentje(s)"
+    },
+    {
+        "name": "blaadje",
+        "secondaryUnits": [],
+        "shortName": "blaadje(s)"
+    },
+    {
+        "name": "filet",
+        "secondaryUnits": [],
+        "shortName": "filet(s)"
+    },
+    {
+        "name": "mootje",
+        "secondaryUnits": [],
+        "shortName": "mootje(s)"
+    },
+    {
+        "name": "reepje",
+        "secondaryUnits": [],
+        "shortName": "reepje(s)"
+    },
+    {
+        "name": "vel",
+        "secondaryUnits": [],
+        "shortName": "vel(len)"
+    },
+    {
+        "name": "stengel",
+        "secondaryUnits": [],
+        "shortName": "stengel(s)"
+    },
+    {
+        "name": "toefje",
+        "secondaryUnits": [],
+        "shortName": "toefje(s)"
+    },
+    {
+        "name": "staafje",
+        "secondaryUnits": [],
+        "shortName": "staafje(s)"
+    },
+    {
+        "name": "tros",
+        "secondaryUnits": [],
+        "shortName": "tros(sen)"
+    },
+    {
+        "name": "partje",
+        "secondaryUnits": [],
+        "shortName": "partje(s)"
+    },
+    {
+        "name": "zakje",
+        "secondaryUnits": [],
+        "shortName": "zakje(s)"
+    },
+    {
+        "name": "schijfje",
+        "secondaryUnits": [],
+        "shortName": "schijfje(s"
+    },
+    {
+        "name": "bakje",
+        "secondaryUnits": [],
+        "shortName": "bakje(s)"
+    },
+    {
+        "name": "glaasje",
+        "secondaryUnits": [],
+        "shortName": "glaasje(s)"
+    },
+    {
+        "name": "stronk",
+        "secondaryUnits": [],
+        "shortName": "stonk(en)"
+    }
+]
