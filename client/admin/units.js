@@ -12,7 +12,7 @@ export const UnitList = (props) => (
       <TextField source="id" />
       <TextField source="name" />
       <TextField source="shortName" />
-      <EmbeddedArrayField source="secondaryUnits">
+      <EmbeddedArrayField source="secondaryUnits" sortable={false}>
         <TextField source="name" />
         <TextField source="shortName" />
         <TextField source="primaryToSecondaryRatio" />
@@ -29,7 +29,7 @@ export const UnitCreate = (props) => (
       <TextInput source="name" validate={required} />
       <TextInput source="shortName" validate={required} />
       <EmbeddedArrayInput source="secondaryUnits">
-        <TextInput source="name" validate={required} />
+        <TextInput source="name" label="name" validate={required} />
         <TextInput source="shortName" validate={required} />
         <NumberInput source="primaryToSecondaryRatio" validate={required} />
       </EmbeddedArrayInput>
