@@ -36,5 +36,5 @@ export async function calculateFootprint (req, res) {
   }
 }
 calculateFootprint.validators = [
-  validator.check('ingredients').isList()
+  //validator.check('ingredients').isList()
 ]
