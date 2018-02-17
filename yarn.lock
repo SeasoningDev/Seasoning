@@ -2889,6 +2889,15 @@ growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
 
+gulp-babel@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/gulp-babel/-/gulp-babel-7.0.0.tgz#7b93c975159f7a0553e4263b4a55100ccc239b28"
+  dependencies:
+    gulp-util "^3.0.0"
+    replace-ext "0.0.1"
+    through2 "^2.0.0"
+    vinyl-sourcemaps-apply "^0.2.0"
+
 gulp-mocha@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/gulp-mocha/-/gulp-mocha-4.3.1.tgz#77950b43bcff816595767c0734e0fda7d173dcd9"
@@ -5653,7 +5662,7 @@ source-map-url@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
 
-source-map@0.5.x, source-map@^0.5.3, source-map@^0.5.6, source-map@~0.5.0, source-map@~0.5.1:
+source-map@0.5.x, source-map@^0.5.1, source-map@^0.5.3, source-map@^0.5.6, source-map@~0.5.0, source-map@~0.5.1:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
 
@@ -6291,6 +6300,12 @@ vinyl-fs@^2.4.3:
     through2-filter "^2.0.0"
     vali-date "^1.0.0"
     vinyl "^1.0.0"
+
+vinyl-sourcemaps-apply@^0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/vinyl-sourcemaps-apply/-/vinyl-sourcemaps-apply-0.2.1.tgz#ab6549d61d172c2b1b87be5c508d239c8ef87705"
+  dependencies:
+    source-map "^0.5.1"
 
 vinyl@^0.4.0:
   version "0.4.6"
